@@ -1,0 +1,285 @@
+let mapleader=" "
+set multiple-cursors
+set surround
+set is
+set ic
+set scs
+set ignorecase
+set ideajoin
+set gdefault
+
+
+" "https://github.com/AlexPl292/IdeaVim-EasyMotion TODO
+
+" Scroll screen with the cursor
+noremap <C-k> 2<C-e>
+noremap <C-l> 2<C-y>
+
+
+" Insert mode
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
+inoremap <C-l> <Right>
+inoremap <C-h> <Left>
+
+" Previous / next match
+noremap { ,
+noremap } ;
+
+noremap <a-k> }
+noremap <a-l> {
+
+" ============================================================================
+" Visual
+" ============================================================================
+
+noremap <a-v> V
+
+" ============================================================================
+" Editing
+" ============================================================================
+
+nnoremap <leader>oe :action emacsclient<CR>
+
+" Moving blocks of text in visual mode
+vnoremap < <gv
+vnoremap > >gv
+
+" Select all text
+map <leader>a ggVG
+
+" Copy until the end of the line
+noremap Y y$
+
+" ============================================================================
+" Editor control
+" ============================================================================
+
+" Reload .ideavimrc
+nnoremap <leader>vs :source ~/.ideavimrc<CR>
+
+" source ~/repos/intellimacs/spacemacs.vim
+" source ~/repos/intellimacs/extra.vim
+" source ~/repos/intellimacs/major.vim
+" source ~/repos/intellimacs/hybrid.vim
+
+" " Comma for major mode
+" nmap , <leader>m
+" vmap , <leader>m
+
+
+" ============================================================================
+" IDE actions
+" ============================================================================
+
+
+nnoremap / :action Find<CR>
+nnoremap n :action FindNext<CR>
+nnoremap N :action FindPrevious<CR>
+
+nnoremap U :action $Redo<CR>
+" nnoremap s :action emacsIDEAs.AceJumpWord<CR> TODO
+nmap gb :action Back<CR>
+
+nmap <leader>l :action KJumpAction<cr>
+nmap <leader>jw :action KJumpAction.Word0<cr>
+nmap <leader>jl :action KJumpAction.Line<cr>
+nmap <leader>pp :action FindInPath<cr>
+nmap <leader>pr :action ReplaceInPath<cr>
+nmap <leader>pg :action SearchEverywhere<cr>
+nmap <leader>ps :action GotoSymbol<cr>
+nmap <leader>pc :action GotoClass<cr>
+nmap <leader>pf :action GotoFile<cr>
+nmap <leader><leader> :action GotoAction<cr>
+map <C-n> :action SelectNextOccurrence<cr>
+nmap <leader>ca :action SelectAllOccurrences<cr>
+nmap <leader>wl :action VimWindowLeft<cr>
+nmap <leader>wq :action VimWindowClose<cr>
+nmap <leader>ww :action VimWindowNext<cr>
+nmap <leader>wo :action VimWindowOnly<cr> <bar> :action CloseAllEditorsButActive<cr>
+nmap <leader>wp :action VimWindowPrev<cr>
+nmap <leader>wr :action VimWindowRight<cr>
+nmap <leader>wn :action VimWindowSplitVertical<cr>
+noremap <leader>gl :action Vcs.Show.Log<CR>
+map <leader>gb :action Git.Branches<cr>
+nmap <leader>gc :action Git.CompareWithBranch<cr>
+nmap <leader>gk :action Git.Commit.And.Push.Executor<cr>
+nmap <leader>grc :action Git.ResolveConflicts<cr>
+nmap <leader>tn    :action VimMotionNextTab<cr>
+nmap <leader>tp    :action VimMotionPreviousTab<cr>
+nmap <leader>to    :action CloseAllEditorsButActive<cr>
+nmap gc :action ActivateTerminalToolWindow<cr>
+nmap <leader>sd :action SaveDocument<cr>
+nmap <leader>sa :action SaveAll<cr>
+nmap <leader>re :action RenameElement<cr>
+nmap <leader>rf :action RenameFile<cr>
+nmap <leader>rl :action RecentLocations<cr>
+nmap gh :action ShowErrorDescription<cr>
+nmap <leader>bd :action CloseContent<cr>
+
+" misc actions
+nnoremap <leader>z :action HideAllWindows<CR>
+nnoremap <leader>Z :action Restore<CR>
+nnoremap <leader>x :q<CR>
+inoremap ;; <Esc>:action EditorCompleteStatement<CR>
+
+" help"
+nnoremap <leader>hd :action QuickJavaDoc<CR>
+
+
+" build and debug actions
+nnoremap <leader>dbl :action ViewBreakpoints<CR>
+nnoremap <leader>dbe :action EditBreakpoint<CR>
+nnoremap <leader>dbb :action ToggleLineBreakpoint<CR>
+nnoremap <leader>dbx :action RiderRemoveAllLineBreakpoints<CR>
+nnoremap <leader>dbX :action DebuggerRemoveAllLineBreakpointsInTheCurrentFile<CR>
+
+nnoremap <leader>db :action Compile<CR>
+nnoremap <leader>dB :action CompileDirty<CR>
+nnoremap <leader>bm :action Maven.ExecuteGoal<CR>
+nnoremap <leader>bM :action ActivateMavenProjectsToolWindow<CR>
+nnoremap <leader>dce :action RunClass<CR>
+nnoremap <leader>dcd :action DebugClass<CR>
+nnoremap <leader>dR :action Run<CR>
+nnoremap <leader>dd :action Debug<CR>
+nnoremap <leader>dr :action Resume<CR>
+nnoremap <leader>dj :action StepOver<CR>
+nnoremap <leader>dI :action StepInto<CR>
+nnoremap <leader>di :action SmartStepInto<CR>
+nnoremap <leader>dfi :action ForceStepInto<CR>
+nnoremap <leader>do :action StepOut<CR>
+nnoremap <leader>dq :action Stop<CR>
+
+nnoremap <leader>pdc :action ChooseRunConfiguration<CR>
+" nnoremap <leader>pcc :action CreateRunConfiguration<CR>
+" nnoremap <leader>pcE :action editRunConfigurations<CR>
+
+nnoremap <leader>dE :action EvaluateExpression<CR>
+nnoremap <leader>de :action QuickEvaluateExpression<CR>
+
+
+""
+""QuickEvaluateExpression
+
+
+" version control actions
+nnoremap <leader>g.n :action VcsShowNextChangeMarker<CR>
+nnoremap <leader>g.p :action VcsShowPrevChangeMarker<CR>
+nnoremap <leader>gh :action VcsShowCurrentChangeMarker<CR>
+nnoremap <leader>g.r :action Vcs.RollbackChangedLines<CR>
+nnoremap <leader>gu :action Vcs.UpdateProject<CR>
+nnoremap <leader>gmp :action Vcs.Push<CR>
+nnoremap <leader>gmm :action Vcs.QuickListPopupAction<CR>
+nnoremap <leader>gmb :action Git.Branches<CR>
+nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR>
+nnoremap <leader>gmce :set norelativenumber<CR>:action Annotate<CR>
+
+" extract actions
+nnoremap <leader>ei :action ExtractInterface<CR>
+nnoremap <leader>es :action ExtractSuperclass<CR>
+nnoremap <leader>en :action ExtractClass<CR>
+nnoremap <leader>em :action ExtractMethod<CR>
+vnoremap <leader>em <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action ExtractMethod<CR>
+nnoremap <leader>ev :action IntroduceVariable<CR>
+vnoremap <leader>ev <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action IntroduceVariable<CR>
+nnoremap <leader>ef :action IntroduceField<CR>
+vnoremap <leader>ef <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action IntroduceField<CR>
+nnoremap <leader>ep :action IntroduceParameter<CR>
+vnoremap <leader>ep <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action IntroduceParameter<CR>
+nnoremap <leader>ec :action IntroduceConstant<CR>
+vnoremap <leader>ec <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action IntroduceConstant<CR>
+
+" refactoring actions
+nnoremap <leader>ri :action Inline<CR>
+nnoremap <leader>rr :action RenameElement<CR>i
+nnoremap <leader>rj :action MemberPushDown<CR>
+nnoremap <leader>rk :action MemberPullUp<CR>
+nnoremap <leader>rs :action ChangeSignature<CR>
+nnoremap <leader>rd :action SafeDelete<CR>
+nnoremap <leader>rm :action Move<CR>
+nnoremap <leader>rc :action CopyElement<CR>
+
+" fix actions
+nnoremap <leader>ff :action ReformatCode<CR>
+vnoremap <leader>ff <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action ReformatCode<CR>gv
+nnoremap <leader>fi :action OptimizeImports<CR>
+nnoremap <leader>fa :action ShowIntentionActions<CR><Esc>
+
+" navigation and search
+nnoremap gu :action ShowUsages<CR>
+nnoremap gU :action FindUsages<CR>
+nnoremap gI :action GotoImplementation<CR>
+nmap gi :action ReSharperGotoImplementation<CR>
+
+
+
+nnoremap <leader>ss :action GotoSuperMethod<CR>
+nnoremap <leader>sd :action QuickImplementations<CR>
+nnoremap <leader>st :action GotoTypeDeclaration<CR>
+nnoremap <leader>sp :action Scala.TypeInfo<CR>:action ExpressionTypeInfo<CR>
+vnoremap <leader>sp <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action Scala.TypeInfo<CR>:action ExpressionTypeInfo<CR>gv
+nnoremap <leader>sq :action Scala.GoToImplicit<CR>
+vnoremap <leader>sq <Esc>gvhh:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action Scala.GoToImplicit<CR>
+nnoremap <leader>sQ :action Scala.ShowImplicitParameters<CR>
+nnoremap <leader>sb :action ShowNavBar<CR>
+nnoremap <leader>sn :action SelectIn<CR>
+
+
+
+
+" ideavim regex are a bit buggy, cannot use regex from vimrc
+nnoremap ]c /\\<trait\>\\\|\\<class\>\\\|\\<object\>\\\|\\<interface\>\\\|\\<enum\><CR>w:nohlsearch<CR>
+nnoremap [c b?\\<trait\>\\\|\\<class\>\\\|\\<object\>\\\|\\<interface\>\\\|\\<enum\><CR>w:nohlsearch<CR>
+
+nnoremap ]d /\\<def\><CR>w:nohlsearch<CR>
+nnoremap [d b?\\<def\><CR>w:nohlsearch<CR>
+
+
+
+" errors
+nnoremap <leader>en :action GotoNextError<CR>
+nnoremap <leader>ep :action GotoPreviousError<CR>
+nnoremap <leader>eN :action ReSharperGotoNextErrorInSolution<CR>
+nnoremap <leader>eP :action ReSharperGotoPrevErrorInSolution<CR>
+nnoremap <leader>er :action ReSharperReanalyzeFilesWithErrors<CR>
+nnoremap <leader>es :action ActivateErrorsInSolutionToolWindow<CR>
+
+
+" hierarchy actions
+nnoremap <leader>hh :action TypeHierarchy<CR>
+nnoremap <leader>hm :action MethodHierarchy<CR>
+nnoremap <leader>hc :action CallHierarchy<CR>
+nnoremap <leader>hd :action ShowUmlDiagramPopup<CR>
+
+" generate actions
+nnoremap <leader>ge :action GenerateEquals<CR>
+nnoremap <leader>gg :action GenerateGetter<CR>
+nnoremap <leader>gs :action GenerateSetter<CR>
+nnoremap <leader>ga :action GenerateGetterAndSetter<CR>
+nnoremap <leader>gc :action GenerateConstructor<CR>
+nnoremap <leader>gt :action Actions.ActionsPlugin.GenerateToString<CR>
+nnoremap <leader>go :action OverrideMethods<CR>
+nnoremap <leader>gi :action ImplementMethods<CR>
+nnoremap <leader>gd :action DelegateMethods<CR>
+
+" bookmarks (a bit similar to vim marks)
+nnoremap <leader>m :action ToggleBookmarkWithMnemonic<CR>
+nnoremap <leader>' :action ShowBookmarks<CR>
+nnoremap <leader>` :action ShowBookmarks<CR>
+nnoremap ]b :action GotoNextBookmark<CR>
+nnoremap [b :action GotoPreviousBookmark<CR>
+
+" fix visual selection bug
+nnoremap gv gvh
+
+" override settings from vimrc
+vnoremap v v
+vnoremap <C-v> <C-v>
+
+" toggle relative numbers
+nnoremap <F3> :set relativenumber!<CR>
+
+" comment a line, similar to tpope/vim-commentary
+nnoremap gcc :action CommentByLineComment<CR>
+vnoremap gc :<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action CommentByLineComment<CR>gv
+nnoremap gcap vap:<bs><bs><bs><bs><bs>action VimVisualSwapSelections<cr>:action CommentByLineComment<CR>gv

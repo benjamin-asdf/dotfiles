@@ -1,0 +1,34 @@
+alias ls='ls --color=auto'
+alias la='ls -A'
+alias ll='ls -alF'
+
+# git
+alias gs='git status'
+alias gfetchmerge='git fetch && git fetch origin develop:develop && git merge develop'
+
+# idlegame
+[ -n "$COSDIR" ] && alias cdcos='cd "$COSDIR"'
+
+# emacs
+alias ec='emacsclient -n'
+
+#### git-jan
+alias gcom='git commit -m'
+alias gcomall='git add --all && git commit -m'
+
+alias gx=gitx.sh # "*." "" $*
+alias gxa="gx add"
+alias gxc="gx checkout"
+alias gxr="gx reset"
+alias gxac="gxa cs"
+
+alias gd=gitd.sh # "*" "/*" $*
+alias gda="gd add"
+alias gdc="gd checkout"
+alias gdr="gd reset"
+
+alias gf=gitf.sh # "*/" ".*" $*
+alias gfa="gf add"
+alias gfc="gf checkout"
+alias gfr="gf reset"
+###
