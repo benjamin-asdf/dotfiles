@@ -416,3 +416,9 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+
+
+
+exec "xset r rate 170 130"
+exec "keynav &:"
+exec "redshift -O 1800"
