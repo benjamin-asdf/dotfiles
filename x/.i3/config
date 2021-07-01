@@ -453,5 +453,6 @@ exec --no-startup-id unclutter &
 
 exec --no-startup-id /home/benj/repos/lisp/team-elisp/lisp/tools/rapid-click/rapid-click &
 
+# this is not correct yet
 exec --no-startup-id ssh-agent &
 
