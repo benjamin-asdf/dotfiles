@@ -41,6 +41,10 @@ bindsym $mod+z exec --no-startup-id morc_menu
 
 bindsym $mod+p exec "flameshot gui"
 
+bindsym $mod+Ctrl+j exec toggle-arrow-key-mode
+bindsym $mod+Ctrl+k exec best-rapid-click
+bindsym $mod+Ctrl+Shift+k exec "rm -f /tmp/rapid-click"
+
 
 
 ################################################################################################
@@ -139,8 +143,8 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 #navigate workspaces next / previous
-bindsym $mod+Ctrl+Right workspace next
-bindsym $mod+Ctrl+Left workspace prev
+bindsym $mod+Mod1+l workspace next
+bindsym $mod+Mod1+h workspace prev
 
 # Workspace names
 # to display names or symbols instead of plain workspace numbers you can use
@@ -423,8 +427,31 @@ mode "$mode_gaps_outer" {
 }
 
 
+# unity stuff
 
-exec "xset r rate 170 130"
-exec "keynav &:"
-exec "redshift -O 1800"
-exec "flameshot &"
+no_focus [ class="Unity-editor" ]
+exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
+
+for_window [ class="(?i)unity-editor" ] move to workspace $ws6
+for_window [ class="(?i)unity-editor" window_role="pop-up" ] floating enable
+for_window [ class="(?i)unity-editor" window_role="pop-up" ] floating enable
+for_window [ title="Hold on..." class="(?i)unity-editor" ] floating enable
+for_window [ title="Hold on..." class="(?i)unity-editor" ] move to workspace $ws6
+for_window [ title="(?i)unity package manager" class="(?i)unity-editor" ] move to workspace $ws6
+no_focus   [ title="Hold on..." class="(?i)unity-editor" ]
+for_window [ title="(?i)importing" class="(?i)unity-editor" ] move to workspace $ws6
+no_focus   [ title="(?i)importing" class="(?i)unity-editor" ]
+no_focus   [ title="(?i)unity package manager" class="(?i)unity-editor" ]
+
+# end unity stuff
+
+exec --no-startup-id xset r rate 170 130
+exec --no-startup-id keynav &:
+exec --no-startup-id redshift -O 2200
+exec --no-startup-id flameshot &
+exec --no-startup-id unclutter &
+
+exec --no-startup-id /home/benj/repos/lisp/team-elisp/lisp/tools/rapid-click/rapid-click &
+
+exec --no-startup-id ssh-agent &
+

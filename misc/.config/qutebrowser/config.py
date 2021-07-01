@@ -42,6 +42,9 @@ config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
 config.bind('<Escape>', 'mode-enter normal')
 config.bind('<Ctrl-e>',':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
 config.bind('<Ctrl-v>',':spawn vlc {url}', mode='normal')
+config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
+
+config.bind('<Ctrl-p>', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
 
 c.tabs.position = "left"
 c.tabs.max_width = 7
