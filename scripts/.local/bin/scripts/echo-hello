@@ -1,0 +1,8 @@
+#!/bin/sh
+
+while true; do
+    sleep 2
+    echo hello
+    sleep 2
+    echo helloo
+done

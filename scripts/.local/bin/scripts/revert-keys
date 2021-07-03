@@ -1,0 +1,7 @@
+#!/bin/sh
+
+
+xmodmap -e "43  h H h H"
+xmodmap -e "44  j J j J"
+xmodmap -e "45  k K k K"
+xmodmap -e "46  l L l L"

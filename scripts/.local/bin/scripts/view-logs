@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p /tmp/logs
+curl "$(xclip -o -selection clipboard)" > /tmp/logs/some-log && emacsclient /tmp/logs/some-log

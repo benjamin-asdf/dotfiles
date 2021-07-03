@@ -1,0 +1,7 @@
+#!/bin/sh
+
+project=$(xdotool getactivewindow getwindowname | rg 'Unity - (\w+-?\w+?) - .*' -r '$1')
+
+echo "$(xdotool getactivewindow getwindowname)" >> /tmp/window-name
+
+bunel "$project" "$@"

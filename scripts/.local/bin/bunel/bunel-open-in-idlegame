@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+cd "$COSDIR" || exit
+project=
+
+# bunel-select-in-scene
+
+if [ "$1" == "--active-window" ]
+then
+    project=$(xdotool getactivewindow getwindowname | grep -Po 'Unity - \K[^ ]*')
+else
+    projects=$(fd -td -I Assets -d2 | cut -d'/' -f1 | rg IdleGame)
+    project=$(echo "$projects" | dmenu -b -p "Select project:")
+fi
+
+scene=$(fd -tf -I -e unity . IdleGame/Assets/Scenes/ -E Pets/ -E Heroes/ | dmenu -b -p "scene:" -l 10 -i | cut -d'/' -f2-)
+[ -n "$project" ] && [ -n "$scene" ] && bunel "$project" open-scene "$scene"

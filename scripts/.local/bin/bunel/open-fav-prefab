@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+[ ! -f /tmp/curr-favorite-prefab ] && set-fav-prefab
+
+xargs -a /tmp/curr-favorite-prefab bunel "IdleGame" open-prefab

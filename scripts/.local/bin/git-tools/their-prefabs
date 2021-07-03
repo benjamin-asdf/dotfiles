@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# 2 things, I want to here say prefab$, also it says that the null char get's lost in the command substitution or something
+files="$(git diff-files --name-only --diff-filter=U | grep -z -e '\.prefab')"
+
+
+echo "$files" | sed -z -e 's|IdleGame/||' | tr "\0" "\n"  > IdleGame/prefabs-for-rewrite.txt
+
+echo "$files" | xargs -0 -I {} sh -c " git checkout --theirs -- {} && git add -- {}"

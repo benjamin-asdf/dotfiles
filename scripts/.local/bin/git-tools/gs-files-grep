@@ -1,0 +1,4 @@
+#!/bin/sh
+
+git status --porcelain -z | grep -z -e "^$1" | cut -z -c 4-
+        # | sed -z -e 's|.. ||'

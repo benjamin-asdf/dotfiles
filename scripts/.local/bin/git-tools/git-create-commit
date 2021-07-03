@@ -1,0 +1,5 @@
+#!/bin/sh
+
+tree=$(git write-tree)
+
+echo "best commit" | git commit-tree "$tree"

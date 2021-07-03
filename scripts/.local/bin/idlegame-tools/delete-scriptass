@@ -1,0 +1,3 @@
+#!/bin/sh
+
+fd -I -td scriptass "$COSDIR" -x rm -r

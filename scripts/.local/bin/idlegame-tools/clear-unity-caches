@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Delete all relevant unity caches from the system.
+# Try delete-scriptass in isolation first, usually it is sufficient.
+
+[ -d "$HOME/.config/unity3d/cache/packages/" ] && rm -rf "$HOME/.config/unity3d/cache/packages/"
+delete-scriptass

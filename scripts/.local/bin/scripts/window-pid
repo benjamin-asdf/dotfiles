@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# click on a window and get the pid
+xprop _NET_WM_PID | cut -d' ' -f3

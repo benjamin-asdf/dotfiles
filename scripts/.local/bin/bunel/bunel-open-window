@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+window_file="$IDLEGAMEDIR/windows.best.files"
+
+[ ! -f "$window_file" ] && echo "expects a window lookup at project root windows.files" && exit 1
+
+echo "$window_file"
+
+dmenu -b -p "window to open:" -l 10 -i < "$window_file" | xargs bunel IdleGame open-window

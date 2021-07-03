@@ -1,0 +1,3 @@
+#!/bin/sh
+
+gfz | xargs -0 -otr git checkout

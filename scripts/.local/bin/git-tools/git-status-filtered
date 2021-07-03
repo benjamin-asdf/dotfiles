@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# TODO
+echo "not implemented."
+exit
+
+
+if [ "$1" == "" ]; then
+    echo "Invalid arg \"$1\""
+    exit
+fi
+
+# TODO nicer args like --added-by-us
+status_short="$1"
+
+rg_cmd="rg '^${status_short}'"
+sed_trim_cmd="sed 's|${status_short}||'"
+
+# cmd="git status --porcelain | ${rg_cmd} | ${sed_trim_cmd} | sed \"s|'|\\\'|\" | sed 's|\\(.*\\)|\"\\1\"|'"
+# cmd="git status --porcelain | ${rg_cmd}"
+
+# echo command: ${cmd}
+# echo `$cmd`
+

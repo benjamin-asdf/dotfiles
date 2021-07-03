@@ -1,0 +1,8 @@
+#!/bin/sh
+
+times="$1"
+while [  "$times" -ge 0 ]; do
+    echo "$times" >> /tmp/say-hello-times;
+    times=$((times - 1))
+    sleep 0.2
+done

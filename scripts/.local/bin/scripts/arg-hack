@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo arg number "$#" > /tmp/args-of
+echo "$@" >> /tmp/args-of

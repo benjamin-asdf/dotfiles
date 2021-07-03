@@ -1,0 +1,18 @@
+#!/run/current-system/sw/bin/bash
+
+[ -z "$1" ] && echo "provide the input vid" && exit 1
+
+function re-encode() {
+		output=$(echo "$1" | sed 's/\.\w*/.ogv/g')
+		ffmpeg -i $1 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5 $output
+}
+
+for file in "$@"
+do
+		if [ -f "$file" ]; then
+			 echo "re-encode $file"
+			 re-encode $file
+		fi
+done
+
+

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+
+# https://github.com/nbeaver/thunderlink-install-guide
+# https://askubuntu.com/questions/961745/unable-to-create-custom-uri-scheme-on-ubuntu
+
+protocol_name="x-scheme-handler/clashofstreamers"
+handler_name="idlegame-auth-handler"
+desktop_file_dir="$HOME/.local/share/applications/"
+desktop_file_name=idlegame-auth-handler.desktop
+desktop_file="$desktop_file_dir$desktop_file_name"
+# desktop_file=/tmp/some-test-file
+
+[ ! -e "$desktop_file" ] && echo "$desktop_file" is not a file. Fix your dotfiles, man && exit 1
+
+[ ! "$(idlegame-auth-handler -v)" ] && echo idlegame-auth-handler is not in your path. Check dotfiles, maybe it is not executable? You probably want to add ~/.scipts to your path. && exit 1
+
+desktop-file-install --dir="$desktop_file_dir" "$desktop_file_name" --mode
+chmod +x "$desktop_file"
+
+check_mime () {
+    gio mime "$protocol_name" | grep -qv "No default applications"
+}
+
+check_mime || gio mime "$protocol_name" "$desktop_file_name"
+
+check_mime || echo failed to register mime && exit 1
+
+
+rm -f /tmp/cos_redirect/url.txt
+
+gio open "$protocol_name" "test"
+
+[ -f /tmp/cos_redirect/url.txt ] || echo something went wrong for invoking the mime type && exit 1
+
+rm -f /tmp/cos_redirect/url.txt
+
+xdg-open "$protocol_name" "second-test"
+
+[ -f /tmp/cos_redirect/url.txt ] || echo something went wrong for invoking the mime type && exit 1
+
+rm -f /tmp/cos_redirect/url.txt

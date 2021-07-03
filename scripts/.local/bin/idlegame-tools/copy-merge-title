@@ -1,0 +1,4 @@
+#!/bin/sh
+
+my_name="Ben"
+echo "$my_name" Pending Merge "$(git symbolic-ref --short HEAD)" | xclip -selection clipboard

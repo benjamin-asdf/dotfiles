@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# fuzzy search our bin files and open emacs
+
+du -a ~/.local/bin | awk '{print $2}' | fzf | xargs -r emacsclient -n

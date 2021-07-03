@@ -444,6 +444,7 @@ exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
 no_focus [ class="(?i)unity-editor" ]
 for_window [ class="(?i)unity-editor" ] move to workspace $ws6
 for_window [ class="(?i)unity-editor" window_role="pop-up" ] floating enable
+for_window [ class="(?i)unity-editor" title="Shortcut Conflict" ] floating enable
 
 # end unity stuff
 
@@ -459,7 +460,7 @@ exec --no-startup-id /home/benj/repos/lisp/team-elisp/lisp/tools/rapid-click/rap
 for_window [ class="(?i)unity-editor" ] move to workspace $ws6
 
 
-for_window [ class="(?i)emacs" ] move to workspace $ws0
+for_window [ class="(?i)emacs" ] move to workspace $ws1
 for_window [ class="(?i)emacs"  title="Helm" ] floating enable
 for_window [ class="qutebrowser" ] move to workspace $ws4
 for_window [ class="(?i)brave-browser" ] move to workspace $ws4

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+modified-files | xargs -o -0 git-lfs-import.sh

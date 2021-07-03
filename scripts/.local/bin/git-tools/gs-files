@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+git status --porcelain | rg "^$1\s+(.*)" -o -r '$1' | sed 's|\ |\\ |g'

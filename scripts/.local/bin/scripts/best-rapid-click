@@ -1,0 +1,5 @@
+#!/bin/sh
+
+pgrep "rapid-click" || exit 1337
+
+echo "0.2" > /tmp/rapid-click

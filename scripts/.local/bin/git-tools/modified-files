@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git status -s -z | grep -z -e "^ M " | cut -z -c 4-

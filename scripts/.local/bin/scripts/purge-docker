@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# you will have to pull everything and such again, but massive yield
+docker system prune -af
+docker volume prune -f

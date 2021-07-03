@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+echo $1
+
+if [ $# -ne 1 ] ; then
+    echo "Usage: <sha>"
+    exit 1
+fi
+
+Oid12=$(echo "$1" | cut -b 1-2)
+Oid34=$(echo "$1" | cut -b 3-4)
+Object=$(git-repo-root)/.git/lfs/objects/$Oid12/$Oid34/$1
+if [ ! -e "$Object" ] ; then
+    echo "Missing file"
+    exit 2
+fi
+
+echo "$Object"

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git ls-tree -z --name-only -r "$1" | grep "$2" -zZ | tr '\0' '\n'

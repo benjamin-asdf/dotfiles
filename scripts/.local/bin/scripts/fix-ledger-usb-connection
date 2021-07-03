@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# see
+# https://gist.github.com/diffficult/e4410dad224f1e879354446e21167a0a
+# https://support.ledger.com/hc/en-us/articles/115005165269-Fix-connection-issues
+
+
+grep -q plugdev /etc/group || sudo groupadd plugdev
+
+if ! groups | grep -q plugdev; then
+    sudo gpasswd -a "$(whoami)" plugdev\
+         && echo "Changed pludgev group, you need to log out and back in. Just run this script again afterwards."
+fi
+
+wget -q -O - https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo sh
+
+# Needed?
+# udevadm trigger
+# sudo udevadm control --reload-rules

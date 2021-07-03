@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sudo -v
+idlegame-client
+idlegame-link
+idlegame-link-extra.sh
+idlegame-server

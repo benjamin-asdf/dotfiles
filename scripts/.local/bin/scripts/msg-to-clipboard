@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+fish -c best-message | xclip -selection clipboard

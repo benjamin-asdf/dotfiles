@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# TODO does not work
+
+rev=$(git branch -ra | fzf | grep "\\w+" )
+file_path=${1:-$(fzf)}
+
+file_name=$(basename "$file_path")~"$rev"
+
+[ -z "$rev" ] || [ -z "$file_name" ] && exit 0
+
+file_name=/tmp/"$file_path"~"$rev"
+echo rev: "$rev"
+echo file path: "$file_path"
+echo file name: "$file_name"
+
+git show "$rev":"$file_path" >> /tmp/$"file_name" && ec /tmp/$"file_name"

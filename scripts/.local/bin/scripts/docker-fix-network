@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# https://superuser.com/questions/1336567/installing-docker-ce-in-ubuntu-18-04-breaks-internet-connectivity-of-host
+# https://success.mirantis.com/article/how-do-i-influence-which-network-address-ranges-docker-chooses-during-a-docker-network-create
+docker network create --subnet 172.17.0.0/16 --config-only do_not_use

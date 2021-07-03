@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# # copy the most recent download into the clip board and stdout
+# download_dir=~/Downloads/
+# recentd=`ls -Art $download_dir | tail -n1`
+# echo $download_dir$recentd | xclip -selection clipboard && echo $download_dir$recentd
+
+echo hello | xclip -selection clipboard
+echo hello

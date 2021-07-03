@@ -1,0 +1,2 @@
+#!/run/current-system/sw/bin/bash
+emacsclient -cn -F "((name . \"dropdown_$1\") (width . 100) (height . 40))" ${@:2}

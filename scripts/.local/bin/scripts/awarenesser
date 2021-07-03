@@ -1,0 +1,38 @@
+#!/usr/bin/fish
+
+function _awarenesser_help
+    echo "
+Description:
+    Sends notifcations that are supposed to increase awareness.
+    Uses a message from the function 'best-message'.
+
+Optional parameters:
+    -i --interval:
+        The interval in minutes between notifcations. Default is 15
+    -h --help:
+        Print this help and exit with code 0."
+end
+
+
+function aware -d "Send notifcations for awareness"
+    set -l interval 15
+
+    getopts $argv | while read -l key value
+        switch $key
+            case _
+                _awarenesser_help >&2
+                return
+            case i interval
+                set interval $value
+            case h help
+                _awarenesser_help >&2
+                return
+            end
+        end
+
+        while true
+            notify-send "Some time passed." (best-message)
+            echo do notify-send
+            sleep "$interval"m
+        end
+end

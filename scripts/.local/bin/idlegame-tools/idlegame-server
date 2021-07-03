@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# dirCmd="cd $IDLEGAMEDIR"
+# konsole -p tabtitle="idlegame-server" -e bash -c "$dirCmd ; bash ./start_local_server.sh ; bash" &
+
+# workaround until I have time for the bug in the above
+dirCmd="cd $COSDIR/Build/Build"
+konsole -p tabtitle="idlegame-server" -e bash -c "$dirCmd ; dotnet run StartLocalServer ; bash" &

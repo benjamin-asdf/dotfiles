@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Get git lfs object file
+
+if [ $# -ne 2 ] ; then
+    echo "Usage: $0 <ref> <filename>"
+    exit 1
+fi
+
+
+Rev=$1
+File=$2
+Object=""
+
+# TODO use git lfs-obj-with-pointer
+Oid=$(git show "$Rev":"$File" 2> /dev/null | grep "sha256" | cut -d ":" -f 2)
+if [ "$Oid" != "" ]; then
+    Oid12=$(echo "$Oid" | cut -b 1-2)
+    Oid34=$(echo "$Oid" | cut -b 3-4)
+    Object=$(git-repo-root)/.git/lfs/objects/$Oid12/$Oid34/$Oid
+    if [ ! -e "$Object" ] ; then
+        echo "Missing file $File at revision $Rev"
+        exit 2
+    fi
+fi
+
+echo "$Object"

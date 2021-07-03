@@ -1,0 +1,3 @@
+#!/bin/sh
+
+bunel-select-prefab "New favorite prefab:" > /tmp/curr-favorite-prefab

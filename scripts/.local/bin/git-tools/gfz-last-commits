@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git log -n10 --oneline | fzf | awk '{print $1}'

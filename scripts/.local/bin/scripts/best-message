@@ -1,0 +1,5 @@
+#!/usr/bin/fish
+
+set best_messages (cat ~/.config/my-messages)
+set rand_num (math (random)%(count $best_messages))
+echo $best_messages[(math $rand_num +1)]
