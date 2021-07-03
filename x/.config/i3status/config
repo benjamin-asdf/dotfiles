@@ -16,13 +16,13 @@ general {
 
 # order += "ipv6"
 order += "cpu_usage"
-order += "disk /"
 order += "memory"
+order += "disk /"
 # order += "disk /home"
 # order += "wireless _first_"
 order += "ethernet _first_"
 # order += "battery all"
-# order += "load"
+order += "load"
 order += "tztime local"
 
 cpu_usage {
