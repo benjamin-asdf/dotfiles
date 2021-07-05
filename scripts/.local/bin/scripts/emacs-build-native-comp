@@ -7,6 +7,8 @@ cd ~/repos/emacs || exit 3
 # about failing smoke tests.
 export CC="gcc-10"
 
-sudo ./autogen.sh && ./configure --with-mailutils --with-native-compilation
+sudo ./autogen.sh
+./configure --with-mailutils --with-native-compilation
 
-sudo make -j$(nproc) && sudo make install
+sudo make -j$(nproc)
+sudo make install

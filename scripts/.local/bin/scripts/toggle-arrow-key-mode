@@ -21,7 +21,7 @@ if [ -f "$lock_file" ] || [ "$1" = "off" ]; then
     xmodmap -e "keycode 44 = j J j J"
     xmodmap -e "keycode 45 = k K k K"
     xmodmap -e "keycode 46 = l L l L"
-    rm "$lock_file"
+    rm -f "$lock_file"
 else
     echo setting arrow mode on
     xmodmap -e "keycode 43 = Left H Left H"
