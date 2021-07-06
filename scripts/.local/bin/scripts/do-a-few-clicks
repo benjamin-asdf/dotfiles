@@ -1,0 +1,29 @@
+#!/bin/sh
+
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
+sleep 0.2
+xdotool click 1
