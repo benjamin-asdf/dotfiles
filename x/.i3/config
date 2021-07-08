@@ -82,7 +82,7 @@ bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 bindsym $mod+bracketleft exec "xdotool click 4"
 bindsym $mod+bracketright exec "xdotool click 5"
 
-set $normy_mode normies: mouse: h,j,k,l, ,: click, <: many, arrows b,f,n,p
+set $normy_mode normies: mouse: h,j,k,l, d: click, D: many, r-click: g, arrows b,f,n,p
 bindsym $mod+semicolon mode "$normy_mode"
 
 mode "$normy_mode" {
