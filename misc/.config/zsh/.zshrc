@@ -169,7 +169,6 @@ export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 export FZF_DEFAULT_COMMAND="fd --type f"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
-#source "$HOME/.fzf/shell/key-bindings.zsh"
 
 
 # zsh-syntax-highlighting. Should be last because it checks modules
