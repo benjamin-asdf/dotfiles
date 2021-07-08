@@ -64,8 +64,9 @@ c.url.searchengines = {
     "goo"    : "https://www.google.com/search?q={}",
     'gg'     : 'https://g4gsearch.com/ws/search/search?a=true&c=%7B%7D&e=true&m&p=1&q={}&s=_score&w=%5B%5D',
     'wi'     : 'https://en.wikipedia.org/wiki/{}',
-    'un'     : 'https://docs.unity3d.com/Manual/30_search.html?q={}'
+    'un'     : 'https://docs.unity3d.com/ScriptReference/30_search.html?q={}'
 }
+
 
 
 c.editor.command = ['ec', '{file}']
