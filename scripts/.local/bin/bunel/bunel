@@ -8,6 +8,8 @@ team_cmd_handle_dir="/tmp/team-cmds-handles"
 
 [ $# -eq 0 ] && echo provide at least the project name as argument && exit 1
 
+project="$1"
+[ "$project" == "default" ] && project="IdleGame"
 handle_dir="${team_cmd_handle_dir}/${1}/"
 mkdir -p "$handle_dir"
 curr="$(find "$handle_dir" -maxdepth 1  -type f -printf x | wc -c)"

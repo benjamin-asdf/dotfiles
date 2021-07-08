@@ -15,9 +15,9 @@ default_floating_border normal
 hide_edge_borders none
 
 # change borders
-bindsym $mod+u border none
+bindsym $mod+n border none
+bindsym $mod+Shift+n border normal
 bindsym $mod+y border pixel 1
-bindsym $mod+n border normal
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -442,20 +442,28 @@ assign [class="(?i)unity-editor"] 5
 
 # end unity stuff
 
+set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode
+bindsym $mod+u mode "$unity"
+
+mode "$unity" {
+        bindsym r      exec bunel default refresh
+        bindsym o      exec bunel-open
+        bindsym l      exec bunel default jump-to-last-thing-clicked
+        bindsym p      exec bunel default playmode
+        bindsym Escape mode "default"
+
+}
+
+
+# end unity stuff
+
 exec --no-startup-id xset r rate 170 130
 exec --no-startup-id keynav &:
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
 exec --no-startup-id flameshot &
 exec --no-startup-id unclutter &
 
-exec --no-startup-id /home/benj/repos/lisp/team-elisp/lisp/tools/rapid-click/rapid-click &
-
 assign [class="(?i)emacs"] 1
 for_window [class="(?i)emacs"  title="Helm"] floating enable
 assign [class="qutebrowser"] 4
-assign [Class="(?I)Brave-browser"] 4
-
-
-
-# this is not correct yet
-# eval `ssh-agent -s`
+assign [Class="(?i)Brave-browser"] 4
