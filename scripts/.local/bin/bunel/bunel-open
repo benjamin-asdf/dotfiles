@@ -32,14 +32,15 @@ done
 
 
 
-if [ -n "$active_window" ]
-then
-    project=$(xdotool getactivewindow getwindowname | grep -Po 'Unity - \K[^ ]*')
-else
-    projects=$(fd -td -I Assets -d2 | cut -d'/' -f1 | rg IdleGame)
-    project=$(echo "$projects" | dmenu -b -p "Select project:")
-fi
+# if [ -n "$active_window" ]
+# then
+#    project=$(xdotool getactivewindow getwindowname | grep -Po 'Unity - \K[^ ]*')
+# else
+#     projects=$(fd -td -I Assets -d2 | cut -d'/' -f1 | rg IdleGame)
+#     project=$(echo "$projects" | dmenu -b -p "Select project:")
+# fi
 
+project="IdleGame"
 
 target=$(bunel-select-prefab)
 [ -n "$project" ] && [ -n "$target" ] && bunel "$project" open-prefab "$target"

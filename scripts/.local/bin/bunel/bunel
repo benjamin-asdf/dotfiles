@@ -10,7 +10,7 @@ team_cmd_handle_dir="/tmp/team-cmds-handles"
 
 project="$1"
 [ "$project" == "default" ] && project="IdleGame"
-handle_dir="${team_cmd_handle_dir}/${1}/"
+handle_dir="${team_cmd_handle_dir}/${project}/"
 mkdir -p "$handle_dir"
 curr="$(find "$handle_dir" -maxdepth 1  -type f -printf x | wc -c)"
 next=$((curr+1))

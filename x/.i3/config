@@ -442,7 +442,7 @@ assign [class="(?i)unity-editor"] 5
 
 # end unity stuff
 
-set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode
+set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-files
 bindsym $mod+u mode "$unity"
 
 mode "$unity" {
@@ -450,6 +450,7 @@ mode "$unity" {
         bindsym o      exec bunel-open
         bindsym l      exec bunel default jump-to-last-thing-clicked
         bindsym p      exec bunel default playmode
+        bindsym g      exec bunel default generate-proj-files
         bindsym Escape mode "default"
         bindsym Return mode "default"
 
