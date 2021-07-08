@@ -163,7 +163,7 @@ bindkey '^e' edit-command-line
 
 # fzf
 setopt HIST_IGNORE_ALL_DUPS # we do not want dups in our history
-[-f /usr/share/fzf/fzf-extras.zsh ] && source /usr/share/fzf/fzf-extras.zsh
+[ -f /usr/share/fzf/fzf-extras.zsh ] && source /usr/share/fzf/fzf-extras.zsh
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 export FZF_DEFAULT_COMMAND="fd --type f"

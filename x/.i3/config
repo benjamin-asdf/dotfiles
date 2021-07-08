@@ -451,6 +451,7 @@ mode "$unity" {
         bindsym l      exec bunel default jump-to-last-thing-clicked
         bindsym p      exec bunel default playmode
         bindsym Escape mode "default"
+        bindsym Return mode "default"
 
 }
 
