@@ -115,7 +115,12 @@ nmap <leader>re :action RenameElement<cr>
 nmap <leader>rf :action RenameFile<cr>
 nmap <leader>rl :action RecentLocations<cr>
 nmap gh :action ShowErrorDescription<cr>
+nmap ge :action QuickJavaDoc<cr>
 nmap <leader>bd :action CloseContent<cr>
+nmap <C-d> :action CloseContent<cr>
+nmap <leader>so :action HighlightUsagesInFile<cr>
+nmap <leader>sn :action NextHighlightedUsage<cr>
+nmap <leader>sp :action PreviousHighlightedUsage<cr>
 
 " misc actions
 nnoremap <leader>z :action HideAllWindows<CR>
