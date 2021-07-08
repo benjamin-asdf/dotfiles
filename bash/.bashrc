@@ -136,4 +136,4 @@ ex ()
   fi
 }
 
-eval `keychain --eval ssh id_rsa`
+eval `keychain -q --eval id_rsa`

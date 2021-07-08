@@ -57,7 +57,5 @@ export LESS_TERMCAP_ue
 # If we are running bash, source bashrc
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
 
-[keychain  --version ] && eval `keychain --eval ssh id_rsa`
-
 # . "$HOME/.guix-profile/etc/profile"
 # . "$HOME/.config/guix/current/etc/profile"

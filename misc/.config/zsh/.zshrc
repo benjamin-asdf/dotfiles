@@ -14,8 +14,6 @@ SAVEHIST=10000
 
 # =============================== completions ================================
 # before compinit
-# homeshick
-fpath=($HOME/.homesick/repos/homeshick/completions $fpath)
 
 # nuke
 _nuke_zsh_complete()
@@ -37,10 +35,8 @@ _dotnet_zsh_complete()
 
 compctl -K _dotnet_zsh_complete dotnet
 
-
-
 # fzf
-# fpath=($HOME/.fzf/shell/completion.zsh $fpath)
+fpath=(/usr/share/fzf/completion.zsh $fpath)
 
 autoload -U compinit
 zstyle ':completion:*' menu select
@@ -144,16 +140,16 @@ source "$HOME/.config/zsh/check-this.sh"
 # }
 
 # Use lf to switch directories and bind it to ctrl-o
-lfcd () {
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-        dir="$(cat "$tmp")"
-        rm -f "$tmp"
-        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-    fi
-}
-bindkey -s '^o' 'lfcd\n'
+# lfcd () {
+#     tmp="$(mktemp)"
+#     lf -last-dir-path="$tmp" "$@"
+#     if [ -f "$tmp" ]; then
+#         dir="$(cat "$tmp")"
+#         rm -f "$tmp"
+#         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+#     fi
+# }
+# bindkey -s '^o' 'lfcd\n'
 
 # Edit line in emacs with ctrl-e:
 autoload edit-command-line; zle -N edit-command-line
@@ -167,6 +163,8 @@ bindkey '^e' edit-command-line
 
 # fzf
 setopt HIST_IGNORE_ALL_DUPS # we do not want dups in our history
+[-f /usr/share/fzf/fzf-extras.zsh ] && source /usr/share/fzf/fzf-extras.zsh
+[ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 export FZF_DEFAULT_COMMAND="fd --type f"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -182,3 +180,5 @@ export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
 
 
 # . "$GUIX_PROFILE/etc/profile"
+
+eval `keychain -q --eval id_rsa`
