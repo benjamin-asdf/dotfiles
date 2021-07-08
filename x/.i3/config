@@ -446,11 +446,11 @@ set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-fi
 bindsym $mod+u mode "$unity"
 
 mode "$unity" {
-        bindsym r      exec bunel default refresh
-        bindsym o      exec bunel-open
-        bindsym l      exec bunel default jump-to-last-thing-clicked
-        bindsym p      exec bunel default playmode
-        bindsym g      exec bunel default generate-proj-files
+        bindsym r      exec bunel default refresh ; mode default
+        bindsym o      exec bunel-open ; mode default
+        bindsym l      exec bunel default jump-to-last-thing-clicked ; mode default
+        bindsym p      exec bunel default playmode ; mode default
+        bindsym g      exec bunel default generate-proj-files ; mode default
         bindsym Escape mode "default"
         bindsym Return mode "default"
 
