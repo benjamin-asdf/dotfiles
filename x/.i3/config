@@ -78,6 +78,7 @@ bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
 bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
 # bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
+bindsym $mod+Tab exec --no-startup-id winmenu.py
 
 bindsym $mod+bracketleft exec "xdotool click 4"
 bindsym $mod+bracketright exec "xdotool click 5"

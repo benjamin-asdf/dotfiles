@@ -9,24 +9,25 @@ dracula.draw.blood(c, {
 
 
 # ambrevar
-# c.auto_save.session = True
+c.auto_save.session = True
 c.completion.shrink = True
 c.confirm_quit = ["downloads"]
 c.content.cache.size = 5242880
-# c.downloads.location.directory = "~/temp"
+c.downloads.location.directory = "~/tmp"
 c.downloads.location.prompt = False
 c.downloads.location.remember = True
-# c.editor.command = ["emacsclient", "+{line}:{column}", "{}"]
 c.hints.scatter = False
-# c.hints.uppercase = True
+c.hints.uppercase = True
 c.input.partial_timeout = 2000
-# c.tabs.tabs_are_windows = True
-# c.new_instance_open_target = "window"
-# c.tabs.show = "multiple"
+c.tabs.tabs_are_windows = True
+c.new_instance_open_target = "window"
+c.tabs.show = "multiple"
 # c.window.title_format = "{title}{title_sep}{host}"
-# lazy_restore does not work when idle.
-# c.session.lazy_restore = True
 
+# lazy_restore does not work when idle.
+c.session.lazy_restore = True
+
+c.content.blocking.method = "both"
 
 config.bind('tb', 'config-cycle statusbar.hide true false')
 config.bind("tt", 'config-cycle tabs.show never always')
@@ -41,10 +42,11 @@ config.bind(',,', 'mode-enter normal', mode='passthrough')
 config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
 
 config.bind('<Escape>', 'mode-enter normal')
-config.bind(',e',':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
+config.bind(',e', ':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
 # config.bind(',v',':spawn vlc {url}', mode='normal')
-config.bind(',v',':spawn mpv {url}', mode='normal')
-'config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
+config.bind(',v', ':spawn mpv {url}', mode='normal')
+
+config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
 config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
 
