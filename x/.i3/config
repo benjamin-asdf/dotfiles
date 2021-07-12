@@ -475,6 +475,7 @@ mode "$unity" {
         bindsym l      exec bunel default jump-to-last-thing-clicked ; mode default
         bindsym p      exec bunel default playmode ; mode default
         bindsym g      exec bunel default generate-proj-files ; mode default
+        bindsym a      exec bunel default playmode-air ; mode default
         bindsym Escape mode "default"
         bindsym Return mode "default"
 

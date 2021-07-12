@@ -36,15 +36,19 @@ config.bind('J', 'scroll-page 0 1')
 config.bind('K', 'scroll-page 0 -1')
 config.bind('<Space><Space>', 'set-cmd-text :')
 
-config.bind('<Ctrl-l>', 'mode-enter passthrough')
+config.bind(',,', 'mode-enter passthrough', mode='normal')
+config.bind(',,', 'mode-enter normal', mode='passthrough')
 config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
 
 config.bind('<Escape>', 'mode-enter normal')
-config.bind('<Ctrl-e>',':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
-config.bind('<Ctrl-v>',':spawn vlc {url}', mode='normal')
-config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
+config.bind(',e',':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
+# config.bind(',v',':spawn vlc {url}', mode='normal')
+config.bind(',v',':spawn mpv {url}', mode='normal')
+'config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
-config.bind('<Ctrl-p>', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
+config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
+
+
 
 c.tabs.position = "left"
 c.tabs.max_width = 7
@@ -69,7 +73,7 @@ c.url.searchengines = {
 
 
 
-c.editor.command = ['ec', '{file}']
+c.editor.command = ['ec', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
 
 c.url.start_pages = [c.url.default_page, "https://trello.com/b/kABlCnCj/ben"]
 
