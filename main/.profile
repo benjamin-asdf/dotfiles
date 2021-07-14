@@ -1,10 +1,6 @@
 #!/usr/bin/env sh
 # Profile file. Runs on login.
 
-# manjaro default
-export QT_QPA_PLATFORMTHEME="qt5ct"
-export EDITOR=/usr/bin/nano
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 export BROWSER=/usr/bin/qutebrowser
 
 # benj
@@ -21,13 +17,6 @@ export VISUAL="emacsclient -a emacs"
 
 # zsh
 export ZDOTDIR="$HOME/.config/zsh/"
-
-# guix on foreign  distro
-GUIX_PROFILE="$HOME/.config/guix/current"
-export GUIX_PROFILE
-GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
-export GUIX_LOCPATH
-
 
 # idlegame
 export COSDIR="$HOME/idlegame"
@@ -51,11 +40,15 @@ export LESS_TERMCAP_us
 LESS_TERMCAP_ue="$(printf '%b' '[0m')"; a="${a%_}"
 export LESS_TERMCAP_ue
 
-# TODO
-# [ ! -f ~/.config/shortcutrc ] && shortcuts >/dev/null 2>&1
-
 # If we are running bash, source bashrc
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
 
-# . "$HOME/.guix-profile/etc/profile"
-# . "$HOME/.config/guix/current/etc/profile"
+# guix on foreign  distro
+GUIX_PROFILE="$HOME/.config/guix/current"
+export GUIX_PROFILE
+GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
+export GUIX_LOCPATH
+
+[-e "$HOME/.guix-profile" ] \
+    &&  . "$HOME/.guix-profile/etc/profile" \
+    && . "$HOME/.config/guix/current/etc/profile"
