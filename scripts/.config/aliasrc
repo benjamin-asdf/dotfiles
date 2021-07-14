@@ -3,7 +3,6 @@ alias la='ls -A'
 alias ll='ls -alF'
 
 # git
-alias gs='git status'
 alias gfetchmerge='git fetch && git fetch origin develop:develop && git merge develop'
 
 # idlegame

@@ -156,10 +156,7 @@ autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
 # Load aliases, shortcuts, dircolors, if existent.
-[ -f "$HOME/.config/shortcutrc" ] && source "$HOME/.config/shortcutrc"
-[ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
-[ -f "$HOME/.config/zsh/dir-colors.zsh" ] && source "$HOME/.config/zsh/dir-colors.zsh"
-
+[-f "$HOME/.config/zsh/dir-colors.zsh" ] && source "$HOME/.config/zsh/dir-colors.zsh"
 
 # fzf
 setopt HIST_IGNORE_ALL_DUPS # we do not want dups in our history

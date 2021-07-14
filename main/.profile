@@ -22,6 +22,8 @@ export ZDOTDIR="$HOME/.config/zsh/"
 export COSDIR="$HOME/idlegame"
 export IDLEGAMEDIR="$COSDIR/IdleGame"
 
+alias gs='git status'
+
 export PASSWORD_STORE_DIR="$HOME/.local/.password-store"
 # less/man colors
 export LESS=-R
@@ -52,3 +54,5 @@ export GUIX_LOCPATH
 [-e "$HOME/.guix-profile" ] \
     &&  . "$HOME/.guix-profile/etc/profile" \
     && . "$HOME/.config/guix/current/etc/profile"
+
+
