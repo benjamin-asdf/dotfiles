@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rider $COSDIR/RoslynAnalyzers/RoslynPlayground/RoslynPlayground.sln
