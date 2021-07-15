@@ -1,9 +1,0 @@
-#!/bin/sh
-
-tar_file="$(find "$HOME/Downloads" -regex ".*Rider.*\.tar.gz$")"
-
-sudo rm -rf /opt/rider/
-sudo mkdir /opt/rider/
-sudo tar -xf  "$tar_file" -C /opt/rider
-sudo rm -f /usr/bin/rider
-sudo ln -s "$(find /opt/rider -regex ".*/bin/rider.sh$")" /usr/bin/rider
