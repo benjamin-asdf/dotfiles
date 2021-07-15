@@ -12,8 +12,8 @@ PATH="$PATH:$HOME/go/bin"
 export PATH
 
 export ALTERNATE_EDITOR="vim"
-export EDITOR="emacsclient -t"
-export VISUAL="emacsclient -a emacs"
+export EDITOR="emacsclient"
+export VISUAL="emacsclient"
 
 # zsh
 export ZDOTDIR="$HOME/.config/zsh/"
@@ -51,7 +51,7 @@ export GUIX_PROFILE
 GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
 export GUIX_LOCPATH
 
-[-e "$HOME/.guix-profile" ] \
+[ -e "$HOME/.guix-profile" ] \
     &&  . "$HOME/.guix-profile/etc/profile" \
     && . "$HOME/.config/guix/current/etc/profile"
 
