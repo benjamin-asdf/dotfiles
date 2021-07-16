@@ -42,10 +42,6 @@ bindsym $mod+z exec --no-startup-id morc_menu
 bindsym $mod+p exec "flameshot gui"
 
 bindsym $mod+Ctrl+j exec toggle-arrow-key-mode
-bindsym $mod+Ctrl+k exec best-rapid-click
-bindsym $mod+Ctrl+Shift+k exec "rm -f /tmp/rapid-click"
-
-
 
 ################################################################################################
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
@@ -87,23 +83,35 @@ set $normy_mode normies: mouse: h,j,k,l, d: click, D: many, r-click: g, arrows b
 bindsym $mod+semicolon mode "$normy_mode"
 
 mode "$normy_mode" {
-        bindsym j           exec xdotool mousemove_relative -- 0 20
-        bindsym k           exec xdotool mousemove_relative -- 0 -20
-        bindsym h           exec xdotool mousemove_relative -- -20 0
-        bindsym l           exec xdotool mousemove_relative -- 20 0
-        bindsym Shift+j     exec xdotool mousemove_relative -- 0 100
-        bindsym Shift+k     exec xdotool mousemove_relative -- 0 -100
-        bindsym Shift+h     exec xdotool mousemove_relative -- -100 0
-        bindsym Shift+l     exec xdotool mousemove_relative -- 100 0
-        bindsym d           exec xdotool click 1
-        bindsym Shift+d     exec do-a-few-clicks
-        bindsym g           exec xdotool click 2
-        bindsym n --release exec xdotool key Down
-        bindsym p --release exec xdotool key Up
-        bindsym b --release exec xdotool key Left
-        bindsym f --release exec xdotool key Right
-        bindsym brackedleft exec xdotool click 4
-        bindsym brackedleft exec xdotool click 5
+        bindsym j            exec xdotool mousemove_relative -- 0 20
+        bindsym k            exec xdotool mousemove_relative -- 0 -20
+        bindsym h            exec xdotool mousemove_relative -- -20 0
+        bindsym l            exec xdotool mousemove_relative -- 20 0
+        bindsym Mod1+j       exec xdotool mousemove_relative -- 0 8 
+        bindsym Mod1+k       exec xdotool mousemove_relative -- 0 -8
+        bindsym Mod1+h       exec xdotool mousemove_relative -- -8 0
+        bindsym Mod1+l       exec xdotool mousemove_relative -- 8 0
+        bindsym Shift+j      exec xdotool mousemove_relative -- 0 180
+        bindsym Shift+k      exec xdotool mousemove_relative -- 0 -180
+        bindsym Shift+h      exec xdotool mousemove_relative -- -180 0
+        bindsym Shift+l      exec xdotool mousemove_relative -- 180 0
+        bindsym Ctrl+Shift+j exec xdotool mousemove_relative -- 0 550 
+        bindsym Ctrl+Shift+k exec xdotool mousemove_relative -- 0 -550
+        bindsym Ctrl+Shift+h exec xdotool mousemove_relative -- -550 0
+        bindsym Ctrl+Shift+l exec xdotool mousemove_relative -- 550 0
+        bindsym $mod+j       exec xdotool mousemove_relative -- 0 1000 
+        bindsym $mod+k       exec xdotool mousemove_relative -- 0 -1000
+        bindsym $mod+h       exec xdotool mousemove_relative -- -1000 0
+        bindsym $mod+l       exec xdotool mousemove_relative -- 1000 0
+        bindsym d            exec xdotool click 1
+        bindsym Shift+d      exec do-a-few-clicks
+        bindsym g            exec xdotool click 2
+        bindsym n --release  exec xdotool key Down
+        bindsym p --release  exec xdotool key Up
+        bindsym b --release  exec xdotool key Left
+        bindsym f --release  exec xdotool key Right
+        bindsym brackedleft  exec xdotool click 4
+        bindsym brackedleft  exec xdotool click 5
 
         bindsym Escape mode "default"
         bindsym Return mode "default"
@@ -486,12 +494,14 @@ mode "$unity" {
 # end unity stuff
 
 exec --no-startup-id xset r rate 170 130
-exec --no-startup-id keynav &:
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
 exec --no-startup-id flameshot &
 exec --no-startup-id unclutter &
+ # TODO maybe we don't need it anymore because normy mode works so well
+exec --no-startup-id keynav &:
 
 assign [class="(?i)emacs"] 1
 for_window [class="(?i)emacs"  title="Helm"] floating enable
 assign [class="qutebrowser"] 4
+assign [class="Nyxt"] 4
 assign [Class="(?i)Brave-browser"] 4
