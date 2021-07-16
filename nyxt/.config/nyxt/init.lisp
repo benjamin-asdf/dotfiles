@@ -9,6 +9,16 @@
   ((default-modes (append '(nyxt::vi-insert-mode) %slot-default%))))
 
 
+(defvar *my-keymap* (make-keymap "my-map")
+  "Keymap for `my-mode'.")
+
+(define-mode my-mode ()
+  "Dummy mode for the custom key bindings in `*my-keymap*'."
+  ((keymap-scheme (keymap:make-scheme
+                   scheme:emacs *my-keymap*
+                   scheme:vi-normal *my-keymap*))))
+
+
 (defun eval-in-emacs (&rest s-exps)
   "Evaluate S-exps with `emacsclient'."
   (let ((s-exps-string (cl-ppcre:regex-replace-all
@@ -21,12 +31,14 @@
     (ignore-errors (uiop:run-program
                     (list "emacsclient" "--eval" s-exps-string)))))
 
-(define-command trello-card-dispath ()
+(define-command trello-card-dispath (&optional (buffer (current-buffer)))
   "Call trello card dispatch on emacsclient.
 See documentation of `team-trello' package in emacs."
   (eval-in-emacs
    `(team-trello-card-dispatch
      ,(url buffer))))
+
+(define-key *my-keymap* ", e" 'trello-card-dispath)
 
 (define-command org-capture (&optional (buffer (current-buffer)))
   "Org-capture current page."
@@ -40,45 +52,52 @@ See documentation of `team-trello' package in emacs."
                :description ,(title buffer))))
    `(org-capture)))
 
+(define-key *my-keymap* ", o" 'org-capture)
+
 (define-command play-video-in-current-page (&optional (buffer (current-buffer)))
   "Play video in the currently open buffer."
   (uiop:run-program (list "mpv" (render-url (url buffer)))))
 
-(define-mode my-mode ()
-  "Dummy mode for the custom key bindings in `*my-keymap*'."
-  ((keymap-scheme (keymap:make-scheme
-                   scheme:emacs *my-keymap*
-                   scheme:vi-normal *my-keymap*))))
+(define-key *my-keymap* ", v" 'play-video-in-current-page)
+
+(defun start-markdown-mode-in-emacs ()
+  "Make emacs eval command to start markdown mode."
+  (eval-in-emacs `(markdown-mode)))
+
+(define-key
+    *my-keymap*
+  "space"
+  (let ((map (make-keymap "benj-leader-map")))
+    (define-key
+        map
+      "space" 'execute-command
+
+      "h h" 'help
+      "h t" 'tutorial
+      "h r" 'manual
+      "h v" 'describe-variable
+      "h f" 'describe-function
+      "h c" 'describe-command
+      "h C" 'describe-class
+      "h s" 'describe-slot
+      "h k" 'describe-key
+      "h b" 'describe-bindings
+
+      "b u" 'bookmark-url
+      "b d" 'delete-bookmark)
+    map))
 
 (define-configuration buffer
   ((override-map (let ((map (make-keymap "my-override-map")))
                    (define-key map
-                     "space space" 'execute-command
-                     ", c" 'org-capture
-                     ", e" 'trello-card-dispath
-                     ", v" 'play-video-in-current-page
-
-                     "space h h" 'help
-                     "space h t" 'tutorial
-                     "space h r" 'manual
-                     "space h v" 'describe-variable
-                     "space h f" 'describe-function
-                     "space h c" 'describe-command
-                     "space h C" 'describe-class
-                     "space h s" 'describe-slot
-                     "space h k" 'describe-key
-                     "space h b" 'describe-bindings
-
-                     "D" 'delete-buffer
-                     "d" 'delete-current-buffer
-
-
-                     "space b u" 'bookmark-url
-                     "space b d" 'delete-bookmark
-                     ;;  trello dispatch
-
-                     )
-                   )
+                     "C-e" 'edit-with-external-editor))
                  map)))
+
+
+(define-configuration (buffer web-buffer nosave-buffer)
+  ((default-modes (append '(;; dark-mode
+                            vi-normal-mode
+                            my-mode)
+                          %slot-default%))))
 
 (nyxt::load-lisp "~/.config/nyxt/theme-minimal.lisp")
