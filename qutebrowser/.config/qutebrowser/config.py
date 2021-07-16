@@ -37,6 +37,7 @@ config.bind('J', 'scroll-page 0 1')
 config.bind('K', 'scroll-page 0 -1')
 config.bind('<Space><Space>', 'set-cmd-text :')
 
+config.bind("u", 'undo --window')
 config.bind(',,', 'mode-enter passthrough', mode='normal')
 config.bind(',,', 'mode-enter normal', mode='passthrough')
 config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
@@ -56,12 +57,11 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-# c.url.default_page = "https://searx.bar/"
-c.url.default_page = "https://searx.fmac.xyz/"
+c.url.default_page = "https://searx.bar/"
+# c.url.default_page = "https://searx.fmac.xyz/"
 
 c.url.searchengines = {
-    # 'DEFAULT': 'https://searx.bar/?q={}',
-    'DEFAULT': 'https://searx.fmac.xyz/?q={}',
+    'DEFAULT': 'https://searx.bar/?q={}',  # 'DEFAULT': 'https://searx.fmac.xyz/?q={}',
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",
