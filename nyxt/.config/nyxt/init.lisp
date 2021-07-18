@@ -3,11 +3,11 @@
 
 (in-package :nyxt-user)
 
+
 (define-configuration buffer
   ((default-modes (append '(nyxt::vi-normal-mode) %slot-default%))))
 (define-configuration prompt-buffer
   ((default-modes (append '(nyxt::vi-insert-mode) %slot-default%))))
-
 
 (defvar *my-keymap* (make-keymap "my-map")
   "Keymap for `my-mode'.")
@@ -91,13 +91,25 @@ See documentation of `team-trello' package in emacs."
   ((override-map (let ((map (make-keymap "my-override-map")))
                    (define-key map
                      "C-e" 'edit-with-external-editor))
+                map)))
+
+
+(define-configuration (buffer prompt-buffer)
+  ((override-map (let ((map (make-keymap "my-override-map")))
+                   (define-key map
+                     "C-e" 'edit-with-external-editor
+                     "C-g" 'nyxt/prompt-buffer-mode:cancel-input))
                  map)))
+
 
 
 (define-configuration (buffer web-buffer nosave-buffer)
   ((default-modes (append '(;; dark-mode
+                            nyxt/blocker-mode:blocker-mode
                             vi-normal-mode
                             my-mode)
                           %slot-default%))))
 
 (nyxt::load-lisp "~/.config/nyxt/theme-minimal.lisp")
+
+
