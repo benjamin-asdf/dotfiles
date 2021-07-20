@@ -49,7 +49,7 @@ config.bind(',v', ':spawn mpv {url}', mode='normal')
 
 config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
-config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
+# config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
 
 
 
@@ -79,6 +79,6 @@ c.url.searchengines = {
 
 c.editor.command = ['ec', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
 
-c.url.start_pages = [c.url.default_page, "https://trello.com/b/kABlCnCj/ben"]
+c.url.start_pages = ["https://trello.com/b/kABlCnCj/ben"]
 
 config.load_autoconfig(False)

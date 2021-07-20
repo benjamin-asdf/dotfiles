@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rider $IDLEGAMEDIR/RoslynAnalyzers/RoslynAnalyzers.sln
