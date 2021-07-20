@@ -38,7 +38,6 @@ bindsym $mod+x exec --no-startup-id dmenu_recency
 # launch categorized menu
 bindsym $mod+z exec --no-startup-id morc_menu
 
-
 bindsym $mod+p exec "flameshot gui"
 
 bindsym $mod+Ctrl+j exec toggle-arrow-key-mode
@@ -110,8 +109,8 @@ mode "$normy_mode" {
         bindsym p --release  exec xdotool key Up
         bindsym b --release  exec xdotool key Left
         bindsym f --release  exec xdotool key Right
-        bindsym brackedleft  exec xdotool click 4
-        bindsym brackedleft  exec xdotool click 5
+        bindsym brackedleft --release exec xdotool click 4
+        bindsym brackedleft --release exec xdotool click 5
 
         bindsym Escape mode "default"
         bindsym Return mode "default"
@@ -473,8 +472,6 @@ exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
 no_focus [class="(?i)unity-editor"]
 assign [class="(?i)unity-editor"] 5
 
-# end unity stuff
-
 set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-files
 bindsym $mod+u mode "$unity"
 
@@ -497,10 +494,10 @@ exec --no-startup-id xset r rate 170 130
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
 exec --no-startup-id flameshot &
 exec --no-startup-id unclutter &
- # TODO maybe we don't need it anymore because normy mode works so well
+# TODO maybe we don't need it anymore because normy mode works so well
 exec --no-startup-id keynav &:
 
-assign [class="(?i)emacs"] 1
+# assign [class="(?i)emacs"] 1
 for_window [class="(?i)emacs"  title="Helm"] floating enable
 assign [class="qutebrowser"] 4
 assign [class="Nyxt"] 4
