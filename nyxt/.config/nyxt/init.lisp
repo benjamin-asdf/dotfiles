@@ -54,11 +54,36 @@ See documentation of `team-trello' package in emacs."
 
 (define-key *my-keymap* ", o" 'org-capture)
 
+
+
+(defun play-video-with-url (url)
+  "Open mpv with url."
+  (uiop:run-program (list "mpv" (render-url url))))
+
 (define-command play-video-in-current-page (&optional (buffer (current-buffer)))
   "Play video in the currently open buffer."
-  (uiop:run-program (list "mpv" (render-url (url buffer)))))
+  (play-video-with-url (url buffer)))
 
 (define-key *my-keymap* ", v" 'play-video-in-current-page)
+
+
+
+(defmethod %play-video ((a nyxt/dom:a-element))
+  (when
+      (current-buffer)
+    (play-video-with-url
+     (concatenate
+      'string
+      (url (current-buffer))
+      (url a)))))
+
+
+(define-command play-video-hint ()
+  "Use the usual hints and open mpv with the result url."
+  (nyxt/web-mode:query-hints
+   "Play video"
+   (lambda (result) (mapcar #'%play-video result)))
+  :multi-selection-p t)
 
 (defun start-markdown-mode-in-emacs ()
   "Make emacs eval command to start markdown mode."
@@ -71,6 +96,8 @@ See documentation of `team-trello' package in emacs."
     (define-key
         map
       "space" 'execute-command
+
+      "b" 'switch-buffer
 
       "h h" 'help
       "h t" 'tutorial
@@ -85,7 +112,10 @@ See documentation of `team-trello' package in emacs."
 
       "b u" 'bookmark-url
       "b d" 'delete-bookmark)
-    map))
+    map)
+
+  "d" 'delete-current-buffer
+  "D" 'delete-buffer)
 
 (define-configuration buffer
   ((override-map (let ((map (make-keymap "my-override-map")))
