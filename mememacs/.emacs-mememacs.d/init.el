@@ -23,6 +23,27 @@
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 
+;; (when (require 'package nil t)
+;;   ;; TODO: MELPA's https sometimes return
+;;   ;;   emacs melpa invalid: certificate host does not match hostname
+;;   ;; Try the following:
+;;   ;;   (setq tls-checktrust nil)
+;;   ;; Different Emacs version have different byte code.  If a versioned ELPA
+;;   ;; directory is found, use it.
+;;   (let ((versioned-dir (format "elpa-%s.%s" emacs-major-version emacs-minor-version)))
+;;     (when (member versioned-dir (directory-files (expand-file-name ".." package-user-dir)))
+;;       (setq package-user-dir (expand-file-name (concat "../" versioned-dir) package-user-dir))))
+;;   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")))
+;;   (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/"))
+;;   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;;   (package-initialize))
+
+
+(straight-use-package 'use-package)
+(setf straight-use-package-by-default t)
+(require 'use-package)
+(setq use-package-verbose t)
+
 
 
 (setq inhibit-startup-message t)
@@ -33,9 +54,6 @@
 (menu-bar-mode -1)
 (setq visible-bell 1)
 
-
-(require 'use-package)
-(setq use-package-verbose t)
 
 
 (global-display-line-numbers-mode t)
@@ -54,10 +72,9 @@
 ;; (load "local-before" t)
 
 (require 'functions)
-(require 'main)
+;; (require 'main)
 (require 'visual)
 
-(setf straight-use-package-by-default t)
 
 (use-package evil
   :init
