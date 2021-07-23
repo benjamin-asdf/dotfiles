@@ -1,3 +1,8 @@
+;;; borrowed with love from
+;;; https://gitlab.com/ambrevar/dotfiles
+;;; see COPYING in the root of this repo
+
+
 ;;; Speed up init.
 ;;; Temporarily reduce garbage collection during startup. Inspect `gcs-done'.
 (defun ambrevar/reset-gc-cons-threshold ()
@@ -43,17 +48,15 @@
 (require 'use-package)
 (setq use-package-verbose t)
 
+
+;; ;;; Local config.  See below for an example usage.
+;; (load "local-before" t)
+
+(require 'functions)
+(require 'main)
+(require 'visual)
+
 
-
-(setq inhibit-startup-message t)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(set-fringe-mode 10)
-(menu-bar-mode -1)
-(setq visible-bell 1)
-
-
 
 (global-display-line-numbers-mode t)
 
@@ -66,13 +69,6 @@
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 
-
-;; ;;; Local config.  See below for an example usage.
-;; (load "local-before" t)
-
-(require 'functions)
-;; (require 'main)
-(require 'visual)
 
 
 (use-package evil
