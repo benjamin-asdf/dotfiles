@@ -1,3 +1,0 @@
-#!/bin/sh
-
-best-message | xargs -I {} notify-send "Some time passed" "{}"

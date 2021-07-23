@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-tmp_file="/tmp/take-into-clipboard-tmp"
-
-head -n1 $1 | xclip -selection clipboard \
-    && sed '1d' $1 > $tmp_file \
-    && cat $tmp_file > $1

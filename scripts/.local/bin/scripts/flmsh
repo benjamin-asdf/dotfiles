@@ -1,5 +1,0 @@
-#!/bin/sh
-
-flameshot &
-sleep 0.5s &&
-

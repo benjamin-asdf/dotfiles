@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo "0.2" > /tmp/rapid-click
-
-exec /home/benj/repos/lisp/team-elisp/lisp/tools/rapid-click/rapid-click

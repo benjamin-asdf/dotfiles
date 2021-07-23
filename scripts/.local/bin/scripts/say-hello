@@ -1,6 +1,0 @@
-#!/bin/sh
-
-while true
-    do echo "hello" > /tmp/hello-file
-    sleep 0.5
-done
