@@ -36,7 +36,7 @@
       `(("." . ,(expand-file-name "backups" user-emacs-directory))))
 
 ;;; Default mode
-(setq-default major-mode 'text-mode)
+(setq-default major-mode 'emacs-lisp-mode)
 
 ;;; Disable suspend key since it is useless on Emacs server.
 (global-unset-key (kbd "C-z"))
@@ -145,7 +145,7 @@
 (ambrevar/global-set-keys
  "s-o" 'delete-other-windows
  ;; "s-w" 'other-window
- "s-c" 'delete-window)
+ "s-d" 'delete-window)
 
 ;; REVIEW: If xdg-open is not found, set Emacs URL browser to the environment browser,
 ;; or w3m if BROWSER is not set.
@@ -174,11 +174,6 @@
   (add-to-list 'mailcap-mime-extensions '(".ogv" . "video/ogg"))
   (add-to-list 'mailcap-mime-extensions '(".mkv" . "video/x-matroska")))
 
-;;; Default ispell dictionary. If not set, Emacs uses the current locale.
-(setq ispell-dictionary "english")
-(ambrevar/define-keys text-mode-map
-                      "C-<f6>" 'ispell-change-dictionary
-                      "<f6>" 'ispell-buffer)
 
 ;;; Show matching parenthesis
 (show-paren-mode 1)
@@ -186,6 +181,9 @@
 ;;; it to 0 to deactivate.
 (setq show-paren-delay 0)
 (setq show-paren-when-point-inside-paren t)
+
+(set-face-foreground 'show-paren-match "White")
+(setq show-paren-style 'parenthesis)
 
 ;;; Electric Pairs to auto-complete () [] {} "" etc. It works on regions.
 ;; (electric-pair-mode)
@@ -233,59 +231,6 @@
 ;;; Comint mode
 (setq comint-prompt-read-only t)
 
-;;; Desktop-mode
-;;; REVIEW: `desktop-kill' should not query the user in `kill-emacs-hook'.
-;;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=28943
-;;; TODO: Desktop mode does not save window registers properly.
-;;; See https://groups.google.com/forum/#!topic/gnu.emacs.help/64aO_O43530
-;;; and https://www.reddit.com/r/emacs/comments/4q38s1/save_register_between_sessions/?st=j419vc7r&sh=2617ffb4
-;;; and http://debbugs.gnu.org/cgi/bugreport.cgi?bug=27422
-;;; and https://stackoverflow.com/questions/5830494/windows-configuration-to-registers#5830928
-;;; and https://www.reddit.com/r/emacs/comments/7au3hj/how_do_you_manage_your_emacs_windows_and_stay_sane/dpfbg3a/?context=3.
-(when (daemonp)
-  ;; Auto-load/save sessions only when running the daemon.
-  ;; `server-running-p' is only useful once the daemon is started and cannot be
-  ;; used for initialization.  Use `daemonp' instead.
-  (when (< emacs-major-version 27)
-    ;; By default, Emacs<27 prompts for unsafe variable when loading desktop
-    ;; which stucks the daemon.  Disable this behaviour.
-    (defun ambrevar/enable-safe-local-variables ()
-      (setq enable-local-variables t))
-    (add-hook 'after-init-hook 'ambrevar/enable-safe-local-variables))
-  (require 'desktop)                    ; This adds a hook to `after-init-hook'.
-  (when (< emacs-major-version 27)
-    (defun ambrevar/enable-all-local-variables ()
-      (setq enable-local-variables :all))
-    (add-hook 'after-init-hook 'ambrevar/enable-all-local-variables))
-  (when (< emacs-major-version 27)
-    (load "patch-desktop"))
-  (setq history-length 250
-        ;; Default timer (30) is way too high: for somebody too frenzy, the timer
-        ;; might never be saved.  See
-        ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=28943.
-        desktop-auto-save-timeout 5
-        ;; desktop-restore-eager 4 ; Can be annoying as you don't have your last-loaded buffers immediately.
-        ;; desktop-load-locked-desktop 'ask
-        desktop-restore-frames nil
-        desktop-save t)
-  ;; Before Emacs 27, initialization needs the patch above.
-  (if (< emacs-major-version 27)
-      (desktop-save-mode)
-    (defun ambrevar/desktop-init (_frame)
-      (desktop-save-mode)
-      (desktop-read)
-      (remove-hook 'server-after-make-frame-hook 'ambrevar/desktop-init))
-    (add-hook 'server-after-make-frame-hook 'ambrevar/desktop-init))
-  ;; Discarding PDFs and images makes it lighter.
-  (add-to-list 'desktop-modes-not-to-save 'pdf-view-mode)
-  (add-to-list 'desktop-modes-not-to-save 'image-mode)
-  ;; TODO: `compile-history' should be buffer local but that does not work.
-  ;; http://user42.tuxfamily.org/compile-history-local/index.html
-  ;; http://stackoverflow.com/questions/22995203/one-compile-command-per-buffer-not-directory
-  ;; (add-to-list 'desktop-locals-to-save 'compile-history)
-  (add-to-list 'desktop-locals-to-save 'compile-command)
-  (add-to-list 'desktop-locals-to-save 'ispell-local-dictionary))
-
 ;;; Buffer names.
 (setq uniquify-buffer-name-style 'forward)
 
@@ -310,23 +255,11 @@
 ;;; That binding is not very useful and gets in the way of C-<mouse-1>.
 (global-unset-key (kbd "C-<down-mouse-1>"))
 
-;;; Scroll zooming.
-(ambrevar/global-set-keys
- "C-<wheel-down>" 'text-scale-decrease
- "C-<mouse-5>" 'text-scale-decrease
- "C-<wheel-up>" 'text-scale-increase
- "C-<mouse-4>" 'text-scale-increase)
-(setq text-scale-mode-step 1.1)
-
 ;;; Sort
 (setq sort-fold-case t)
 
 ;;; Replace not-so-useful comment-dwim binding.
 (global-set-key (kbd "M-;") 'comment-line)
-
-;;; Eldoc: Disable if too distracting.
-;; (global-eldoc-mode 0)
-;; (setq eldoc-idle-delay 0.1) ; Could be even more distracting.
 
 ;;; Replace `kill-buffer' binding by `kill-this-buffer'.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -338,18 +271,6 @@
 
 ;;; Trash
 (setq delete-by-moving-to-trash t)
-
-;;; Display Time World
-(setq
- zoneinfo-style-world-list
- '(("UTC" "-")
-   ("Europe/Paris" "France Germany Sweden")
-   ("Asia/Calcutta" "India")
-   ("Indian/Mauritius" "Mauritius")
-   ("Africa/Tunis" "Tunisia")
-   ("Asia/Ho_Chi_Minh" "Vietnam")
-   ("Australia/Melbourne" "Melbourne")
-   ("Africa/Nairobi" "Uganda")))
 
 ;;; Frame title
 (setq frame-title-format (concat "%b" (unless (daemonp) " [serverless]")))
@@ -366,15 +287,7 @@
 (when (require 'pinentry nil t)
   (pinentry-start))
 
-;;; Edebug
-;; (setq edebug-trace t)
-
-;;; Make windowing more reactive on.  This is especially true with Helm on EXWM.
-(when (= emacs-major-version 26)
-  (setq x-wait-for-event-timeout nil))
-
 (setq woman-fill-column fill-column)
 
-(setq abbrev-file-name (expand-file-name "abbrev_defs" "~/personal"))
 
 (provide 'main)
