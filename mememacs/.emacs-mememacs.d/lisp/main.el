@@ -144,44 +144,20 @@
 ;;; By default, it allows easy window switching with Shift+arrows. I like to
 ;;; stick to the home-row, but to avoid shadowing other binding I exceptionaly use
 ;;; 'super' (normally reserved to the WM).
-(when (fboundp 'windmove-default-keybindings)
-  (ambrevar/global-set-keys
-   "s-h" 'windmove-left
-   "s-j" 'windmove-down
-   "s-k" 'windmove-up
-   "s-l" 'windmove-right))
-(ambrevar/global-set-keys
- "s-o" 'delete-other-windows
- ;; "s-w" 'other-window
- "s-d" 'delete-window)
+;; (when (fboundp 'windmove-default-keybindings)
+;;   (ambrevar/global-set-keys
+;;    "s-h" 'windmove-left
+;;    "s-j" 'windmove-down
+;;    "s-k" 'windmove-up
+;;    "s-l" 'windmove-right))
+;; (ambrevar/global-set-keys
+;;  "s-o" 'delete-other-windows
+;;  ;; "s-w" 'other-window
+;;  "s-d" 'delete-window)
 
-;; REVIEW: If xdg-open is not found, set Emacs URL browser to the environment browser,
-;; or w3m if BROWSER is not set.
-;; See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=18986.
-(setq browse-url-generic-program (or
-                                  (executable-find (or (getenv "BROWSER") "")) ; TODO: Still need this in Emacs 26?
-                                  (when (executable-find "xdg-mime")
-                                    (let ((desktop-browser (ambrevar/call-process-to-string "xdg-mime" "query" "default" "text/html")))
-                                      (substring desktop-browser 0 (string-match "\\.desktop" desktop-browser))))
-                                  (executable-find browse-url-mozilla-program)
-                                  (executable-find browse-url-firefox-program)
-                                  (executable-find browse-url-chromium-program)
-                                  (executable-find browse-url-kde-program)
-                                  (executable-find browse-url-conkeror-program)
-                                  (executable-find browse-url-chrome-program)))
-(setq shr-external-browser browse-url-browser-function)
 
 ;; shr
 (setq shr-width (string-to-number (or (getenv "MANWIDTH") "80")))
-
-;;; Extend MIME-types support for videos.
-(with-eval-after-load 'mailcap
-  (add-to-list 'mailcap-mime-extensions '(".webm" . "video/webm"))
-  (add-to-list 'mailcap-mime-extensions '(".mp4" . "video/mp4"))
-  (add-to-list 'mailcap-mime-extensions '(".flv" . "video/mp4"))
-  (add-to-list 'mailcap-mime-extensions '(".ogv" . "video/ogg"))
-  (add-to-list 'mailcap-mime-extensions '(".mkv" . "video/x-matroska")))
-
 
 ;;; Show matching parenthesis
 (show-paren-mode 1)
@@ -191,17 +167,16 @@
 (setq show-paren-when-point-inside-paren t)
 
 (set-face-foreground 'show-paren-match "White")
+(set-face-underline 'show-paren-match "White")
 (setq show-paren-style 'parenthesis)
 
+
 ;;; Electric Pairs to auto-complete () [] {} "" etc. It works on regions.
-;; (electric-pair-mode)
+(electric-pair-mode)
 
 ;;; Spawn terminal shortcut: WM's binding is s+<return>.
 (global-set-key (kbd "C-x M-<return>") 'spawn-terminal)
 
-;;; Calendar ISO display.
-(setq calendar-week-start-day 1)
-(setq calendar-date-style 'iso)
 
 ;;; Compilation bindings and conveniences.
 (setq compilation-ask-about-save nil)
@@ -221,8 +196,6 @@
   (when (eq major-mode 'compilation-mode)
     (ansi-color-apply-on-region compilation-filter-start (point-max))))
 (add-hook 'compilation-filter-hook 'ambrevar/compilation-colorize-buffer)
-(global-set-key (kbd "<f7>") 'previous-error)
-(global-set-key (kbd "<f8>") 'next-error)
 (defun ambrevar/compile-last-command ()
   (interactive)
   (compile compile-command))
@@ -296,6 +269,19 @@
   (pinentry-start))
 
 (setq woman-fill-column fill-column)
+
+
+;; scrolling etc
+
+(setq jit-lock-defer-time 0)
+(setq redisplay-skip-fontification-on-input t)
+(setq fast-but-imprecise-scrolling t)
+(setf scroll-conservatively 0)
+
+;;  so long
+
+(global-so-long-mode 1)
+
 
 
 (provide 'main)
