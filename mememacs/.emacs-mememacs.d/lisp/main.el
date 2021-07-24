@@ -88,19 +88,10 @@
 ;;; and http://stackoverflow.com/questions/3626632/right-align-line-numbers-with-linum-mode.
 ;;; The complexity is not worth the benefit.
 
-;;; Alternative scrolling
-(setq scroll-error-top-bottom t)
 
 ;;; Kill whole line including \n.
 (setq kill-whole-line t)
 
-;;; Indentation
-(setq-default tab-width 2)
-(defvaralias 'standard-indent 'tab-width)
-(setq-default indent-tabs-mode t)
-
-;;; Line by line scrolling
-(setq scroll-step 1)
 
 (setq
  whitespace-style
@@ -118,11 +109,9 @@
 ;; (add-hook 'find-file-hook 'ambrevar/turn-on-prettify-before-save)
 (add-hook 'find-file-hook 'ambrevar/turn-on-delete-trailing-whitespace)
 
-;;; Cycle spacing instead of just-one-space.  This frees M-\.
-(global-set-key [remap just-one-space] 'cycle-spacing)
 
 ;;; Hippie expand
-;; (global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;;; Abbreviation is like snippets: annoying at times, especially in
 ;;; prog-mode.  They are useful in text mode to avoid the sprawling of
@@ -135,10 +124,6 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;; (setq sentence-end-double-space nil)
 
-;;; Enforce horizontal splitting. 140 means that the window is large enough to
-;;; hold 2 other windows of 70 columns.
-(setq split-height-threshold nil
-      split-width-threshold 140)
 
 ;;; Windmove mode
 ;;; By default, it allows easy window switching with Shift+arrows. I like to
@@ -165,9 +150,6 @@
 ;;; it to 0 to deactivate.
 (setq show-paren-delay 0)
 (setq show-paren-when-point-inside-paren t)
-
-(set-face-foreground 'show-paren-match "White")
-(set-face-underline 'show-paren-match "White")
 (setq show-paren-style 'parenthesis)
 
 
@@ -272,11 +254,12 @@
 
 
 ;; scrolling etc
-
 (setq jit-lock-defer-time 0)
 (setq redisplay-skip-fontification-on-input t)
 (setq fast-but-imprecise-scrolling t)
 (setf scroll-conservatively 0)
+(setq scroll-step 0)
+(setq scroll-error-top-bottom t)
 
 ;;  so long
 

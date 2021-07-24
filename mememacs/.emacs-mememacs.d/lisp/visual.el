@@ -6,6 +6,8 @@
 ;;; To find the variable associated to a currently used color, place the cursor
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
+;; todo find copy from doom-monokai
+
 ;;; General
 (set-face-attribute 'default nil :foreground "white" :background "black")
 
@@ -21,7 +23,7 @@
 ;; (set-face-foreground 'link "#00ffff")
 (set-face-underline 'link t)
 (set-face-foreground 'minibuffer-prompt "#00ffff")
-(set-face-background 'region "#191970")
+(set-face-background 'region "gray17")
 (set-face-attribute 'isearch nil :foreground 'unspecified :background "#2f4f4f" :box "white")
 (set-face-attribute 'lazy-highlight nil :inherit 'isearch :foreground 'unspecified :background 'unspecified :box nil)
 ;;; TODO: Highlight with box does not render well in Sx, ediff, occur, evil-search.
@@ -47,7 +49,7 @@
   (set-face-background 'whitespace-indentation "#696969"))
 
 ;;; Programming
-(set-face-foreground 'font-lock-comment-face "#00ced1")
+(set-face-foreground 'font-lock-comment-face "#727072")
 (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
 (set-face-foreground 'font-lock-doc-face "#00dfff")
 (set-face-foreground 'font-lock-string-face "#0080d4")
@@ -90,10 +92,9 @@
 
 ;;; show-paren
 (with-eval-after-load 'paren
-  ;; (set-face-background 'show-paren-match-face (face-background 'default)) ; Disable background color.
-  (set-face-background 'show-paren-match "#555555")
-  (set-face-foreground 'show-paren-match "#def")
-  (set-face-attribute 'show-paren-match nil :weight 'extra-bold))
+  (set-face-foreground 'show-paren-match "White")
+  (set-face-background 'show-paren-match "Black")
+  (set-face-underline 'show-paren-match "White"))
 
 ;;; Mail mode
 (font-lock-add-keywords
