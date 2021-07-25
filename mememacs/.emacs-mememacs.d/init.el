@@ -44,8 +44,8 @@
 
 
 (straight-use-package 'use-package)
-(setf straight-use-package-by-default t)
 (require 'use-package)
+(setf straight-use-package-by-default t)
 (setq use-package-verbose t)
 
 
@@ -64,11 +64,26 @@
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
-	              treemacs-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 
+
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package general
+  :after evil
+  :config
+  ;; (general-create-definer efs/leader-keys
+  ;;                         :keymaps '(normal insert visual emacs)
+  ;;                         :prefix "SPC"
+  ;;                         :global-prefix "C-SPC")
+
+  ;; (efs/leader-keys
+  ;;  "t"  '(:ignore t :which-key "toggles")
+  ;;  "tt" '(counsel-load-theme :which-key "choose theme")
+  ;;  "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
+  )
 
 
 (use-package evil
@@ -92,6 +107,9 @@
   ;; (global-set-key (kbd "M-x") 'helm-M-x)
   (require 'init-helm)
   )
+
+
+
 
 
 

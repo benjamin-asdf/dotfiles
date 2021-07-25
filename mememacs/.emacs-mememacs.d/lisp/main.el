@@ -10,9 +10,10 @@
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
+;; Give some breathing room
+(set-fringe-mode 10)
+(setq inhibit-startup-message t)
 
-;; (set-fringe-mode 10)
-;; (setq inhibit-startup-message t)
 ;; (setq visible-bell 1)
 
 
@@ -186,10 +187,6 @@
                       ;; Do not use `recompile' since we want to change the compilation folder for the current buffer.
                       "<f6>" 'ambrevar/compile-last-command)
 
-;;; REVIEW: Bug 26658 reports that cc-modes mistakenly does not make use of prog-mode-map.
-;;; The following line is a suggested work-around.
-;;; This should be fixed in Emacs 26.
-(eval-after-load 'cc-mode '(set-keymap-parent c-mode-base-map prog-mode-map))
 
 ;;; Comint mode
 (setq comint-prompt-read-only t)
@@ -197,24 +194,19 @@
 ;;; Buffer names.
 (setq uniquify-buffer-name-style 'forward)
 
-;;; Skeleton settings
-;;; Do not expand abbrevs in skeletons.
-(setq-default skeleton-further-elements '((abbrev-mode nil)))
-(ambrevar/turn-on-skeleton-markers)
-(ambrevar/global-set-keys
- "C->" 'skeleton-next-position
- "C-<" 'skeleton-previous-position)
 
 ;;; Disable prompt (but leave warning) on git symlink.
 (setq vc-follow-symlinks t)
 
 ;;; Clipboard and primary selection.
 ;; (setq select-enable-clipboard t)
-(setq select-enable-primary t
-      save-interprogram-paste-before-kill t)
+;; TODO
+;; (setq select-enable-primary t
+;;       save-interprogram-paste-before-kill t)
 
 ;;; Move mouse away.
-(mouse-avoidance-mode 'banish)
+;; I don't need this because of "unclutter"
+;; (mouse-avoidance-mode 'banish)
 ;;; That binding is not very useful and gets in the way of C-<mouse-1>.
 (global-unset-key (kbd "C-<down-mouse-1>"))
 
