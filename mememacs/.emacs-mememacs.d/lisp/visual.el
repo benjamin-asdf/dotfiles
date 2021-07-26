@@ -49,16 +49,16 @@
   (set-face-background 'whitespace-indentation "#696969"))
 
 ;;; Programming
-(set-face-foreground 'font-lock-comment-face "#727072")
-(set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
-(set-face-foreground 'font-lock-doc-face "#00dfff")
-(set-face-foreground 'font-lock-string-face "#0080d4")
-(set-face-foreground 'font-lock-builtin-face (face-foreground 'default))
-(set-face-foreground 'font-lock-constant-face (face-foreground 'default))
-(set-face-foreground 'font-lock-function-name-face (face-foreground 'default))
-(set-face-foreground 'font-lock-keyword-face (face-foreground 'default))
-(set-face-foreground 'font-lock-type-face (face-foreground 'default))
-(set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-comment-face "#727072")
+;; (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
+;; (set-face-foreground 'font-lock-doc-face "#00dfff")
+;; (set-face-foreground 'font-lock-string-face "#0080d4")
+;; (set-face-foreground 'font-lock-builtin-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-constant-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-function-name-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-keyword-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
+;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
 
 ;;; Compilation mode
 (with-eval-after-load 'compile

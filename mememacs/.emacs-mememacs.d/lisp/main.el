@@ -74,14 +74,6 @@
 ;;; TODO: Battery status (%b) does not work properly.
 ;; (setq battery-mode-line-format "[%p%%%b %t]")
 
-;;; Line numbers
-;;; Adding to `find-file-hook' ensures it will work for every file, regardless of
-;;; the mode, but it won't work for buffers without files nor on mode change.
-(dolist (hook '(prog-mode-hook text-mode-hook))
-  (add-hook hook 'ambrevar/turn-on-column-number-mode)
-  (add-hook hook 'ambrevar/turn-off-line-number-mode)
-  (add-hook hook 'display-line-numbers-mode))
-(setq display-line-numbers-type 'visual)
 ;;; Emacs-nox does not display a fringe after the linum: Setting linum-format in
 ;;; linum-before-numbering-hook is not the right approach as it will change the
 ;;; type of linum-format in the middle. See linum-update-window.

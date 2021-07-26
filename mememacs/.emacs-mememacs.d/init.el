@@ -45,9 +45,10 @@
 
 (straight-use-package 'use-package)
 (require 'use-package)
-(setf straight-use-package-by-default t)
-(setq use-package-verbose t)
-
+(setf
+ straight-use-package-by-default t
+ use-package-verbose t
+ use-package-always-demand t)
 
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
@@ -57,27 +58,42 @@
 (require 'visual)
 
 
-
-(global-display-line-numbers-mode t)
-
-;; Disable line numbers for some modes
-(dolist (mode '(org-mode-hook
-                term-mode-hook
-                shell-mode-hook
-                eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-
-
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;; (display-line-numbers-mode 0)
 
 (use-package general
   :after evil
   :config
-  ;; (general-create-definer efs/leader-keys
-  ;;                         :keymaps '(normal insert visual emacs)
-  ;;                         :prefix "SPC"
-  ;;                         :global-prefix "C-SPC")
+
+  (general-create-definer
+   mememacs/leader-keys
+   :keymaps '(normal insert visual emacs)
+   :prefix "SPC"
+   :global-prefix "C-SPC")
+
+  (mememacs/leader-keys
+   "SPC" #'helm-M-x
+   "t" '(:ignore t)
+   "n" #'line-number-mode
+
+   "b" '(:ignore t)
+   "d" #'kill-buffer-and-window
+
+   "f" '(:ignore t)
+   "d" #'delete-file
+
+   "w" '(:ignore t)
+   "d" #'delete-window
+   "h" #'windmove-left
+   "l" #'windmove-right
+   "k" #'windmove-up
+   "j" #'windmove-down
+
+   )
+
+  ;; (mememacs/define-key
+  ;;  )
 
   ;; (efs/leader-keys
   ;;  "t"  '(:ignore t :which-key "toggles")
@@ -85,12 +101,24 @@
   ;;  "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
   )
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package helpful
+  :init
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+  (global-set-key (kbd "C-h F") #'helpful-function)
+  (global-set-key (kbd "C-h C") #'helpful-command))
+
 
 (use-package evil
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-u-scroll nil)
   (setq evil-want-C-i-jump nil)
   :config
   (evil-mode 1)
@@ -102,14 +130,34 @@
 
 
 (use-package helm
-  :demand t
   :config
   ;; (global-set-key (kbd "M-x") 'helm-M-x)
   (require 'init-helm)
   )
 
 
+(use-package company
+  :config
+  (add-hook 'after-init-hook #'global-company-mode)
+  ;; (setq company-idle-delay 0)
 
+  )
+
+(use-package
+  helm-company
+  :after company
+  :config 
+  (define-key company-active-map (kbd "C-/") 'helm-company)
+  (dolist (map (list company-active-map company-search-map))
+    (define-key map (kbd "C-j") 'company-select-next)
+    (define-key map (kbd "C-k") 'company-select-previous)
+    (define-key map (kbd "C-l") 'company-complete-selection))
+  (defun my-company-manual-begin ()
+    (interactive)
+    (if (company-tooltip-visible-p)
+        (company-select-next)
+      (company-manual-begin)))
+  (define-key evil-insert-state-map (kbd "C-j") #'my-company-manual-begin))
 
 
 

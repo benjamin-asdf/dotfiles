@@ -127,38 +127,6 @@ selectively."
     (setq key (pop bindings)
           def (pop bindings))))
 
-(defun ambrevar/move-border-left (arg)
-  "Move window border in a natural manner.
-If this is a window with its right edge being the edge of the
-screen, enlarge the window horizontally. If this is a window with
-its left edge being the edge of the screen, shrink the window
-horizontally. Otherwise, default to enlarging horizontally.\n
-Enlarge/Shrink by ARG columns, or 5 if ARG is nil."
-  (interactive "P")
-  (if (= (count-windows) 2)
-      (ambrevar/move-border-left-or-right arg t)))
-(global-set-key (kbd "M-(") 'ambrevar/move-border-left)
-
-(defun ambrevar/move-border-left-or-right (arg dir-left)
-  "Wrapper around ‘move-border-left’ and ‘move-border-right’.
-ARG is the number of columns to move.
-If DIR-LEFT is t, then move left, otherwise move right."
-  (interactive)
-  (unless arg (setq arg 5))
-  (let ((left-edge (= (car (window-edges)) 0)))
-    (if (or
-         (and left-edge dir-left)
-         (and (not left-edge) (not dir-left)))
-        (shrink-window arg t)
-      (enlarge-window arg t))))
-
-(defun ambrevar/move-border-right (arg)
-  "See `move-border-left'."
-  (interactive "P")
-  (if (= (count-windows) 2)
-      (ambrevar/move-border-left-or-right arg nil)))
-(global-set-key (kbd "M-)") 'ambrevar/move-border-right)
-
 (defun ambrevar/reset-fill-column ()
   "Reset `fill-column' to its default value."
   (setq fill-column (default-value 'fill-column)))
