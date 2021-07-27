@@ -66,29 +66,38 @@
   :after evil
   :config
 
-  (general-create-definer
-   mememacs/leader-keys
-   :keymaps '(normal insert visual emacs)
+  (general-create-definer mememacs/leader-def
+   ;; :keymaps '(normal visual)
    :prefix "SPC"
    :global-prefix "C-SPC")
 
-  (mememacs/leader-keys
+  (general-create-definer
+   mememacs/local-leader-def
+   :keymaps '(normal visual)
+   :prefix ","
+   ;; :global-prefix "C-SPC"
+   )
+
+  (mememacs/leader-def
+   :states 'normal
    "SPC" #'helm-M-x
    "t" '(:ignore t)
    "n" #'line-number-mode
 
    "b" '(:ignore t)
-   "d" #'kill-buffer-and-window
+   "bd" #'kill-buffer-and-window
 
    "f" '(:ignore t)
-   "d" #'delete-file
+   "fd" #'delete-file
+   "fs" #'save-buffer
 
    "w" '(:ignore t)
-   "d" #'delete-window
-   "h" #'windmove-left
-   "l" #'windmove-right
-   "k" #'windmove-up
-   "j" #'windmove-down
+   "wd" #'delete-window
+   "wh" #'windmove-left
+   "wl" #'windmove-right
+   "wk" #'windmove-up
+   "wj" #'windmove-down
+   ;; "s"
 
    )
 
@@ -128,12 +137,25 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
 
 (use-package helm
   :config
   ;; (global-set-key (kbd "M-x") 'helm-M-x)
   (require 'init-helm)
   )
+
+(use-package magit
+  :defer t
+  :config
+  (setq auto-revert-mode-text "")
+  (setq git-commit-summary-max-length fill-column)
+  (require 'init-magit))
 
 
 (use-package company
