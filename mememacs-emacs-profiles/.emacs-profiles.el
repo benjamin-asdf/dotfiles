@@ -1,2 +1,2 @@
-(("default" . ((user-emacs-directory . ".emacs-mememacs.d")
+(("default" . ((user-emacs-directory . "~/.emacs-mememacs.d")
                (straight-p . t))))
