@@ -7,9 +7,7 @@
 ;; Add new services (defined using 'make <service>') to shepherd here by
 ;; providing them as arguments to 'register-services'.
 (apply register-services
-       (append main-services
-               display-services
-               laptop-services))
+       display-services)
 
 ;; Send shepherd into the background.
 (action 'shepherd 'daemonize)
