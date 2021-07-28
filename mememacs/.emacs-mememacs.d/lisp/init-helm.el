@@ -378,10 +378,4 @@ returning a string."
      (format "%s" (helm-get-selection nil (not arg))))))
 
 
-(with-eval-after-load
-    'helm-ag
-
-;(general-def helm-swoop-map)
-
-
 (provide 'init-helm)

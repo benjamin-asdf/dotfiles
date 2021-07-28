@@ -22,7 +22,5 @@
 
 (define-key helm-swoop-map (kbd "C-c C-o") #'mememacs/helm-swoop-kill-line-and-quit)
 
-
-
 (provide 'init-helm-swoop)
 
