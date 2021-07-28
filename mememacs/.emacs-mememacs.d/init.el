@@ -182,7 +182,13 @@
   :config
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
-  (require 'init-magit))
+  (require 'init-magit)
+
+  (mememacs/leader-def
+   "g" '(:ignore t :which-key "git")
+   "gs" #'magit-status)
+
+  )
 
 
 (use-package company
