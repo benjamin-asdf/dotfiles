@@ -53,75 +53,7 @@
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
 
-(require 'functions)
-(require 'main)
-(require 'visual)
-
-
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; (display-line-numbers-mode 0)
-
-(use-package general
-  :after evil
-  :config
-
-  (general-create-definer mememacs/leader-def
-   ;; :keymaps '(normal visual)
-   :prefix "SPC"
-   :global-prefix "C-SPC")
-
-  (general-create-definer
-   mememacs/local-leader-def
-   :keymaps '(normal visual)
-   :prefix ","
-   ;; :global-prefix "C-SPC"
-   )
-
-  (mememacs/leader-def
-   :states 'normal
-   "SPC" #'helm-M-x
-   "t" '(:ignore t)
-   "n" #'line-number-mode
-
-   "b" '(:ignore t)
-   "bd" #'kill-buffer-and-window
-
-   "f" '(:ignore t)
-   "fd" #'delete-file
-   "fs" #'save-buffer
-
-   "w" '(:ignore t)
-   "wd" #'delete-window
-   "wh" #'windmove-left
-   "wl" #'windmove-right
-   "wk" #'windmove-up
-   "wj" #'windmove-down
-   ;; "s"
-
-   )
-
-  ;; (mememacs/define-key
-  ;;  )
-
-  ;; (efs/leader-keys
-  ;;  "t"  '(:ignore t :which-key "toggles")
-  ;;  "tt" '(counsel-load-theme :which-key "choose theme")
-  ;;  "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
-  )
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package helpful
-  :init
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-  (global-set-key (kbd "C-h F") #'helpful-function)
-  (global-set-key (kbd "C-h C") #'helpful-command))
-
 
 (use-package evil
   :init
@@ -137,6 +69,100 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
+;; (display-line-numbers-mode 0)
+
+(use-package general
+  :after evil
+  :config
+
+  ;; (general-create-definer
+  ;;  efs/leader-keys
+  ;;  :keymaps '(normal insert visual emacs)
+  ;;  :prefix "SPC"
+  ;;  :global-prefix "C-SPC")
+
+  (general-create-definer
+   mememacs/leader-def
+   :keymaps '(normal insert visual emacs)
+   :prefix "SPC"
+   :global-prefix "C-SPC"
+
+   ;; :states '(normal visual)
+   ;; :prefix "SPC"
+   ;; :global-prefix "C-SPC"
+   )
+
+  (general-create-definer
+   mememacs/local-leader-def
+   ;; :keymaps '(normal visual)
+   :prefix ","
+   ;; :global-prefix "C-SPC"
+   )
+
+  ;; (defmacro memmacs/normal-leader-def (&rest args)
+  ;;   `(mememacs/leader-def
+  ;;    :keymaps '(normal visual)
+  ;;    ,args))
+
+  (mememacs/leader-def
+   "SPC" #'helm-M-x
+   "t" '(:ignore t)
+   "n" #'line-number-mode
+
+   "b" '(:ignore t)
+   "bd" #'kill-buffer-and-window
+   "bb" #'helm-mini
+
+   "f" nil
+   "fd" #'delete-file
+   "fs" #'save-buffer
+   "ff" #'helm-find-files
+
+   "w" '(evil-window-map :which-key "window")
+
+   "s" '(:ignore t :which-key "search")
+   "ss" #'helm-swoop
+
+   "j" '(:ignore t)
+   "jd" #'dired-jump
+   "jD" #'dired-jump-other-window
+
+
+   )
+
+  ;; (mememacs/define-key
+  ;;  )
+
+  ;; (efs/leader-keys
+  ;;  "t"  '(:ignore t :which-key "toggles")
+  ;;  "tt" '(counsel-load-theme :which-key "choose theme")
+  ;;  "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
+  )
+
+
+(require 'functions)
+(require 'functions-1)
+(require 'main)
+(require 'visual)
+
+
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+
+(use-package helpful
+  :config
+  (mememacs/leader-def
+   :states 'normal
+   "hf" #'helpful-callable
+   "hv" #'helpful-variable
+   "hk" #'helpful-key
+   "hF" #'helpful-function
+   "hC" #'helpful-command)
+
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
+
 (use-package evil-collection
   :after evil
   :ensure t
@@ -144,6 +170,7 @@
   (evil-collection-init))
 
 
+; TODO map c-j and such
 (use-package helm
   :config
   ;; (global-set-key (kbd "M-x") 'helm-M-x)
@@ -162,13 +189,12 @@
   :config
   (add-hook 'after-init-hook #'global-company-mode)
   ;; (setq company-idle-delay 0)
-
   )
 
 (use-package
   helm-company
   :after company
-  :config 
+  :config
   (define-key company-active-map (kbd "C-/") 'helm-company)
   (dolist (map (list company-active-map company-search-map))
     (define-key map (kbd "C-j") 'company-select-next)
@@ -182,6 +208,11 @@
   (define-key evil-insert-state-map (kbd "C-j") #'my-company-manual-begin))
 
 
+(use-package mood-line
+  :straight (:host github :repo "rtnlmeme-DestroyerOfDeath/mood-line")
+  :config (mood-line-mode)
+  )
+
 
 ;; TODO
 ;; (nconc package-selected-packages '(exwm helm-exwm))
@@ -194,4 +225,20 @@
 ;; (when (require 'exwm nil t) (require 'init-exwm))
 
 
+(use-package lispyville
+  :config (require 'init-lispy)
+  :hook (emacs-lisp-mode-hook .  ambrevar/init-lispy)
+  )
 
+
+(use-package which-key
+  :config
+  (which-key-mode)
+  (setf which-key-idle-delay 0.22))
+
+
+(use-package helm-swoop
+  :config (require 'init-helm-swoop))
+
+(use-package helm-ag
+  :config (require 'init-helm-ag))

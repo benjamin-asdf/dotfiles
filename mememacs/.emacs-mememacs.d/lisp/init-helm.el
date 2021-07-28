@@ -21,9 +21,11 @@
 
 (when (require 'wgrep-helm nil t)
   (setq wgrep-auto-save-buffer t
-        wgrep-enable-key (kbd "C-x C-q")))
+        wgrep-enable-key (kbd "C-x C-q"))
+  (add-hook 'wgrep-setup-hook #'wgrep-change-to-wgrep-mode))
 
 (when (require 'helm-ls-git nil t)
+  (setq helm-ls-git-fuzzy-match t)
   ;; `helm-source-ls-git' must be defined manually.
   ;; See https://github.com/emacs-helm/helm-ls-git/issues/34.
   (setq helm-source-ls-git
@@ -49,16 +51,22 @@
  helm-dwim-target 'completion
  helm-echo-input-in-header-line t
  helm-use-frame-when-more-than-two-windows nil
+ helm-grep-save-buffer-name-no-confirm t
 
+ helm-M-x-fuzzy-match t
  helm-apropos-fuzzy-match t
  helm-buffers-fuzzy-matching t
+ helm-completion-in-region-fuzzy-match t
  helm-eshell-fuzzy-match t
  helm-imenu-fuzzy-match t
- helm-M-x-fuzzy-match t
+ helm-locate-library-fuzzy-match t
  helm-recentf-fuzzy-match t
 
+ ;; To prevent M-s f from directly going to symbol at point if in same buffer.
+ helm-imenu-execute-action-at-once-if-one nil
+
  ;; Use woman instead of man.
- helm-man-or-woman-function nil
+ ;; helm-man-or-woman-function nil
 
  ;; https://github.com/emacs-helm/helm/issues/1910
  helm-buffers-end-truncated-string "…"
@@ -66,6 +74,7 @@
 
  helm-window-show-buffers-function 'helm-window-mosaic-fn
  helm-window-prefer-horizontal-split t)
+
 
 (defun ambrevar/helm-split-window-combined-fn (window)
   "Helm window splitting that combined most standard features.
@@ -99,8 +108,8 @@
                     'below)))))
 (setq helm-split-window-preferred-function 'ambrevar/helm-split-window-combined-fn)
 
-;;; Add bindings to `helm-apropos`. TODO: Does not work most of the times.
-;;; https://github.com/emacs-helm/helm/issues/1140
+;;; Add bindings to `helm-apropos`. See
+;;; https://github.com/emacs-helm/helm/issues/1140.
 (defun ambrevar/helm-def-source--emacs-commands (&optional default)
   (helm-build-in-buffer-source "Commands"
     :init `(lambda ()
@@ -110,9 +119,14 @@
                                          'helm-apropos-default-sort-fn)
     :candidate-transformer 'helm-M-x-transformer-1
     :nomark t
-    :action '(("Describe Function" . helm-describe-function)
-              ("Find Function" . helm-find-function)
+    :persistent-action (lambda (candidate)
+                         (helm-elisp--persistent-help
+                          candidate 'helm-describe-function))
+    :persistent-help "Toggle describe command"
+    :action '(("Describe function" . helm-describe-function)
+              ("Find function" . helm-find-function)
               ("Info lookup" . helm-info-lookup-symbol))))
+(advice-add 'helm-def-source--emacs-commands :override 'ambrevar/helm-def-source--emacs-commands)
 
 ;;; Make `helm-mini' almighty.
 (require 'helm-bookmark)
@@ -123,16 +137,9 @@
                                   helm-source-bookmark-set
                                   helm-source-buffer-not-found))
 
-;;; Eshell
-(defun ambrevar/helm/eshell-set-keys ()
-  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-  (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-  (define-key eshell-mode-map (kbd "M-s") nil) ; Useless when we have 'helm-eshell-history.
-  (define-key eshell-mode-map (kbd "M-s f") 'helm-eshell-prompts-all))
-(add-hook 'eshell-mode-hook 'ambrevar/helm/eshell-set-keys)
-
 ;;; Comint
 (defun ambrevar/helm/comint-set-keys ()
+  (define-key comint-mode-map (kbd "M-s f") 'helm-comint-prompts-all)
   (define-key comint-mode-map (kbd "M-p") 'helm-comint-input-ring))
 (add-hook 'comint-mode-hook 'ambrevar/helm/comint-set-keys)
 
@@ -140,8 +147,9 @@
 ;;; https://github.com/emacs-helm/helm/issues/1118
 ;; (define-key helm-read-file-map (kbd "M-p") 'helm-ff-run-switch-to-history)
 
-;;; Do not exclude any files from 'git grep'.
-(setq helm-grep-git-grep-command "git --no-pager grep -n%cH --color=always --full-name -e %p -- %f")
+;; Follow symlinks with 'ag', otherwise visiting a symlinked files and greping
+;; may yield (unexpectedly) no result.
+(setq helm-grep-ag-command "ag --follow --line-numbers -S --color --nogroup %s %s %s")
 
 (defun ambrevar/helm-grep-git-or-ag (arg)
   "Run `helm-grep-do-git-grep' if possible; fallback to `helm-do-grep-ag' otherwise.
@@ -159,17 +167,27 @@ Requires `call-process-to-string' from `functions'."
   (interactive)
   (helm-grep-do-git-grep t))
 
+(defun ambrevar/helm-mark-or-exchange-rect ()
+  "Run `helm-all-mark-rings-before-mark-point' or `rectangle-exchange-point-and-mark' if in rectangle-mark-mode."
+  (interactive)
+  (if rectangle-mark-mode
+      (rectangle-exchange-point-and-mark)
+    (helm-all-mark-rings)))
 
 (global-set-key [remap execute-extended-command] 'helm-M-x)
 (global-set-key [remap find-file] 'helm-find-files)
 (global-set-key [remap occur] 'helm-occur)
+(global-set-key [remap bookmark-jump] 'helm-filtered-bookmarks)
+(global-set-key [remap bookmark-set] 'helm-filtered-bookmarks)
 (global-set-key [remap list-buffers] 'helm-mini)
 ;; (global-set-key [remap dabbrev-expand] 'helm-dabbrev)
 (global-set-key [remap yank-pop] 'helm-show-kill-ring)
+;;; Do not remap 'exchange-point-and-mark, Evil needs it in visual mode.
+(global-set-key (kbd "C-x C-x") 'ambrevar/helm-mark-or-exchange-rect)
 (global-set-key [remap apropos-command] 'helm-apropos)
 (global-set-key [remap query-replace-regexp] 'helm-regexp)
 (unless (boundp 'completion-in-region-function)
-  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point) ; TODO: Used?
   (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
 
 (ambrevar/global-set-keys
@@ -177,24 +195,20 @@ Requires `call-process-to-string' from `functions'."
  "C-x M-G" 'helm-do-grep-ag)
 
 ;;; Use the M-s prefix just like `occur'.
-(define-key prog-mode-map (kbd "M-s f") 'helm-semantic-or-imenu)
+(define-key prog-mode-map (kbd "M-s f") 'helm-imenu-in-all-buffers)
 ;;; The text-mode-map binding targets structured text modes like Markdown.
-(define-key text-mode-map (kbd "M-s f") 'helm-semantic-or-imenu)
+(define-key text-mode-map (kbd "M-s f") 'helm-imenu-in-all-buffers)
 (with-eval-after-load 'org
+  (require 'helm-org-contacts nil t)
   (define-key org-mode-map (kbd "M-s f") 'helm-org-in-buffer-headings))
+(with-eval-after-load 'woman
+  (define-key woman-mode-map (kbd "M-s f") 'helm-imenu))
+(with-eval-after-load 'man
+  (define-key Man-mode-map (kbd "M-s f") 'helm-imenu))
 
-(set-face-attribute 'helm-source-header nil :inherit 'header-line :height 'unspecified :background 'unspecified :foreground 'unspecified)
-(set-face-background 'helm-selection "#4f4f4f")
-(set-face-background 'helm-visible-mark "#2f2f2f")
-(set-face-foreground 'helm-visible-mark nil)
-(set-face-foreground 'helm-match "red")
-(set-face-attribute 'helm-buffer-file nil :background 'unspecified :foreground "white" :weight 'normal)
-(set-face-attribute 'helm-buffer-directory nil :background 'unspecified :foreground "#1e90ff" :weight 'bold)
-(set-face-attribute 'helm-ff-directory nil :background 'unspecified :foreground 'unspecified :weight 'unspecified :inherit 'helm-buffer-directory)
-(set-face-attribute 'helm-ff-file nil :background 'unspecified :foreground 'unspecified :weight 'unspecified :inherit 'helm-buffer-file)
-(set-face-foreground 'helm-grep-finish "#00AA00")
-
-(setq helm-source-names-using-follow '("Occur" "Git-Grep" "AG" "mark-ring" "Org Headings"))
+(setq helm-source-names-using-follow '("Occur" "Git-Grep" "AG" "mark-ring" "Org Headings"
+                                       "Imenu" "Imenu in all buffers"
+                                       "All Eshell prompts" "All comint prompts"))
 
 ;;; From https://www.reddit.com/r/emacs/comments/5q922h/removing_dot_files_in_helmfindfiles_menu/.
 (defun ambrevar/helm-skip-dots (old-func &rest args)
@@ -214,7 +228,8 @@ Requires `call-process-to-string' from `functions'."
   (add-to-list 'desktop-globals-to-save 'last-kbd-macro)
   (add-to-list 'desktop-globals-to-save 'kmacro-counter)
   (add-to-list 'desktop-globals-to-save 'kmacro-counter-format)
-  (add-to-list 'desktop-globals-to-save 'helm-ff-history))
+  (add-to-list 'desktop-globals-to-save 'helm-ff-history)
+  (add-to-list 'desktop-globals-to-save 'comint-input-ring))
 
 (helm-top-poll-mode)
 ;;; Column indices might need some customizing. See `helm-top-command' and
@@ -234,7 +249,10 @@ With prefix argument, UPDATE the databases with custom uptions thanks to the
   (let ((user-db (expand-file-name "~/.cache/locate.db"))
         (media-dbs (apply 'append
                           (mapcar
-                           (lambda (root) (ignore-errors (file-expand-wildcards (concat root "/*/locate.db"))))
+                           (lambda (root)
+                             (append (ignore-errors (file-expand-wildcards (concat root "/*/locate.db")))
+                                     ;; Also lookup subfolders; useful when root has snapshots (.e.g Btrfs).
+                                     (ignore-errors (file-expand-wildcards (concat root "/*/*/locate.db")))))
                            (list (concat "/run/media/" (user-login-name))
                                  (concat "/media/" (user-login-name))
                                  "/media")))))
@@ -256,5 +274,114 @@ With prefix argument, UPDATE the databases with custom uptions thanks to the
 (define-key helm-map (kbd "S-SPC") 'ambrevar/helm-toggle-visible-mark-backwards)
 
 (global-set-key  (kbd "C-<f4>") 'helm-execute-kmacro)
+
+;; From https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/init-helm.el:
+(defmethod helm-setup-user-source ((source helm-source-ffiles))
+  (helm-source-add-action-to-source-if
+   "Magit status"
+   (lambda (_candidate)
+     (magit-status helm-ff-default-directory))
+   source
+   (lambda (candidate)
+     (and (not (string-match-p ffap-url-regexp candidate))
+          helm-ff-default-directory
+          (locate-dominating-file helm-ff-default-directory ".git")))
+   2)
+  (helm-source-add-action-to-source-if
+   (format  "Add to %s playlist"
+            (if (executable-find "strawberry")
+                "strawberry"
+              "EMMS"))
+   (lambda (_candidate)
+     (or (when (executable-find "strawberry")
+           (apply #'call-process
+                  "strawberry" nil nil nil (helm-marked-candidates)))
+         (when (require 'emms nil 'noerror)
+           (mapc 'emms-add-directory-tree (helm-marked-candidates)))))
+   source
+   (lambda (candidate)
+     (or (file-directory-p candidate)
+         (and (file-name-extension candidate)
+              (string-match-p (concat (regexp-opt '("aac" "mp3" "mp4" "m4a" "ogg" "opus" "flac" "spx" "wma" "wv")) "$")
+                              (file-name-extension candidate)))))
+   1))
+
+(defun ambrevar/helm-external-command-cleanup-dotted (old-function &optional args)
+  "Remove dotted programs from `helm-run-external-command' list.
+Useful for Guix."
+  (funcall old-function args)
+  (setq helm-external-commands-list
+        (cl-delete-if (lambda (p) (string-prefix-p "." p))
+                      helm-external-commands-list)))
+(advice-add 'helm-external-commands-list-1
+            :around #'ambrevar/helm-external-command-cleanup-dotted)
+
+;; From https://github.com/emacs-helm/helm/issues/2149:
+(defun helm-occur-extract-urls-from-line (line)
+  (with-temp-buffer
+    (save-excursion (insert "\n" line))
+    (cl-loop while (re-search-forward "\\(https?\\|ftp\\)://[^ >]*" nil t)
+             collect (match-string 0))))
+
+(defun helm-occur-browse-urls (_candidate)
+  (let ((urls (helm-occur-extract-urls-from-line (helm-get-selection nil t))))
+    (browse-url (helm-comp-read "Url: " urls :exec-when-only-one t))))
+
+(defun helm-occur-action-transformer (actions _candidate)
+  (cond ((string-match "\\(https?\\|ftp\\)://[^ >]*" (helm-get-selection nil t))
+         (helm-append-at-nth actions
+                             '(("Browse urls in line" . helm-occur-browse-urls))
+                             1))
+        (t actions)))
+
+(defmethod helm-setup-user-source ((source helm-moccur-class))
+  (setf (slot-value source 'action-transformer) 'helm-occur-action-transformer))
+
+;; (require 'patch-helm)
+;; (require 'patch-helm-file-name-completion)
+
+(when (require 'helm-switch-to-repl nil :noerror)
+  (helm-switch-to-repl-setup))
+
+
+
+;; mememacs start
+
+
+(setq-default helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s")
+(setq-default helm-ag-use-grep-ignore-list 't)
+(setq-default helm-candidate-number-limit 100)
+(setq-default helm-ag-base-command "rg --color=never --no-heading" )
+
+(defun benj/helm-make-kill-selection-and-quit (op &optional arg)
+  "Store display value of current selection to kill ring.
+With a prefix arg use real value of current selection.
+Display value is shown in `helm-buffer' and real value is used to
+perform actions.
+Transform selection with OP, which should be a function with a 1 arg, a string and
+returning a string."
+  (with-helm-alive-p
+    (helm-run-after-exit
+     (lambda (el)
+       (let ((sel
+              (funcall op el)))
+         (when (fboundp 'benj/lispyville-sanitize-region)
+           (with-temp-buffer
+             (insert sel)
+             (benj/lispyville-sanitize-region (gg) (gm))
+             (setf sel (buffer-string))))
+         (kill-new sel)
+         ;; Return nil to force `helm-mode--keyboard-quit'
+         ;; in `helm-comp-read' otherwise the value "Saved to kill-ring: foo"
+         ;; is used as exit value for `helm-comp-read'.
+         (prog1 nil (message "Saved to kill-ring: %s" sel) (sit-for 1))))
+     (format "%s" (helm-get-selection nil (not arg))))))
+
+
+(with-eval-after-load
+    'helm-ag
+
+;(general-def helm-swoop-map)
+
 
 (provide 'init-helm)

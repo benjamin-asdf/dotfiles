@@ -6,10 +6,29 @@
 ;;; To find the variable associated to a currently used color, place the cursor
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
-;; todo find copy from doom-monokai
 
-(use-package gruvbox)
+(use-package gruvbox-theme 
+  :config
+  (load-theme 'gruvbox t))
 
+;;; Programming
+;; (set-face-foreground 'font-lock-comment-face "#727072")
+;; (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
+;; (set-face-foreground 'font-lock-doc-face "#00dfff")
+;; (set-face-foreground 'font-lock-string-face "#0080d4")
+;; ;; (set-face-foreground 'font-lock-builtin-face (face-foreground 'default))
+;; ;; (set-face-foreground 'font-lock-constant-face (face-foreground 'default))
+(set-face-foreground 'font-lock-function-name-face "green yellow")
+;; ;; (set-face-foreground 'font-lock-keyword-face (face-foreground 'default))
+;; ;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
+;; ;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
+
+
+;;; Cursor type: default (box) is visible and practical.
+;; (setq-default cursor-type 'hollow)
+(setq-default x-stretch-cursor t)
+;;; Blinking cursor is on only when Emacs is not daemonized.
+(blink-cursor-mode 0)
 
 ;;; show-paren
 (with-eval-after-load 'paren
@@ -51,11 +70,6 @@
 ;; (set-face-attribute 'highlight nil :background 'unspecified :box "white")
 ;; (set-face-attribute 'error nil :foreground "red" :weight 'bold)
 
-;; ;;; Cursor type: default (box) is visible and practical.
-;; ;; (setq-default cursor-type 'hollow)
-;; (setq-default x-stretch-cursor t)
-;; ;;; Blinking cursor is on only when Emacs is not daemonized.
-;; (blink-cursor-mode 0)
 
 ;; ;;; Line numbers.
 ;; ;;; Graphic version has a gray bar separating text from line
@@ -69,17 +83,6 @@
 ;;   (set-face-background 'whitespace-space-after-tab "#a9a9a9")
 ;;   (set-face-background 'whitespace-indentation "#696969"))
 
-;; ;;; Programming
-;; (set-face-foreground 'font-lock-comment-face "#727072")
-;; (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
-;; (set-face-foreground 'font-lock-doc-face "#00dfff")
-;; (set-face-foreground 'font-lock-string-face "#0080d4")
-;; ;; (set-face-foreground 'font-lock-builtin-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-constant-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-function-name-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-keyword-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
 
 ;; ;;; Compilation mode
 ;; (with-eval-after-load 'compile
