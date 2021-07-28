@@ -232,6 +232,7 @@
 
 
 (use-package lispyville
+  :ensure t
   :config (require 'init-lispy)
   :hook (emacs-lisp-mode-hook .  ambrevar/init-lispy)
   )
@@ -248,3 +249,11 @@
 
 (use-package helm-ag
   :config (require 'init-helm-ag))
+
+(use-package projectile
+  :config
+  (projectile-mode)
+  (mememacs/leader-def
+    "p" 'projectile-command-map))
+
+(use-package helm-projectile)
