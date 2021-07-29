@@ -471,6 +471,7 @@ exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
 
 no_focus [class="(?i)unity-editor"]
 assign [class="(?i)unity-editor"] 5
+assign [title="IdeaPlayground"] 2
 
 set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-files
 bindsym $mod+u mode "$unity"
