@@ -40,7 +40,6 @@ Some DM merge this automatically; we merge it for the others."
     #:start (make-system-constructor
              (string-join '("setxkbmap"
                             "-layout" "us"
-                            "-variant" "altgr-intl"
                             "-option" "ctrl:swapcaps,nodeadkeys,nbsp:level3")))
     #:one-shot? #t))
 
@@ -104,11 +103,18 @@ front of the screen at night."
     #:stop (make-system-destructor "pkill xss-lock")
     #:respawn? #t))
 
+(define x-repeat-rate
+  (make <service>
+    #:provides '(x-repeat-rate)
+    #:start (make-system-constructor "xset r rate 170 130")
+    #:one-shot #t))
+
 (define display-services
   (list
    xrdb
    setxkbmap
    xcape
+   redshift
    no-bell
    auto-lock
-   redshift))
+   x-repeat-rate))
