@@ -75,7 +75,7 @@ replace the expression with its result."
     "Y" 'lispy-new-copy
     (kbd "S-<return>") 'lispy-eval-other-window
     ;; "p" 'lispy-paste
-    
+
     "D" 'lispy-kill)
   )
 
@@ -113,8 +113,7 @@ replace the expression with its result."
     (set-face-foreground 'lispy-face-hint "#FF00FF")
     (when (require 'lispyville nil t)
       (add-hook 'lispy-mode-hook 'lispyville-mode))
-    (lispy-mode)
-    (lispyville-mode)))
+    (lispy-mode)))
 
 (defun mememacs/init-lispy-targets ()
   (setq targets-text-objects nil)

@@ -110,7 +110,7 @@
    "n" #'line-number-mode
 
    "b" '(:ignore t)
-   "bd" #'kill-buffer-and-window
+   "bd" #'kill-buffer
    "bb" #'helm-mini
 
    "f" nil
@@ -119,6 +119,7 @@
    "ff" #'helm-find-files
 
    "w" '(evil-window-map :which-key "window")
+   "wm" #'delete-other-windows
 
    "s" '(:ignore t :which-key "search")
    "ss" #'helm-swoop
@@ -154,7 +155,6 @@
 (use-package helpful
   :config
   (mememacs/leader-def
-   :states 'normal
    "hf" #'helpful-callable
    "hv" #'helpful-variable
    "hk" #'helpful-key
@@ -173,9 +173,8 @@
 ; TODO map c-j and such
 (use-package helm
   :config
-  ;; (global-set-key (kbd "M-x") 'helm-M-x)
-  (require 'init-helm)
-  )
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (require 'init-helm))
 
 (use-package magit
   :defer t
@@ -234,8 +233,7 @@
 (use-package lispyville
   :ensure t
   :config (require 'init-lispy)
-  :hook (emacs-lisp-mode-hook .  ambrevar/init-lispy)
-  )
+  :hook (emacs-lisp-mode-hook .  ambrevar/init-lispy))
 
 
 (use-package which-key
