@@ -83,11 +83,8 @@ Some DM merge this automatically; we merge it for the others."
     #:docstring "Redshift adjusts the color temperature of your screen according
 to your surroundings.  This may help your eyes hurt less if you are working in
 front of the screen at night."
-    #:start (make-forkexec-constructor
-             (string-join '("redshift"
-                            "-O"
-                            "2000")))
-    #:stop (make-kill-destructor)
+    #:start
+    (make-system-constructor "redshift -O 2000")
     #:one-shot? #t))
 
 (define no-bell
