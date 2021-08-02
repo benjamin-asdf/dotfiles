@@ -53,7 +53,8 @@
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
 
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+
 
 (use-package evil
   :init
@@ -70,6 +71,17 @@
   (evil-set-initial-state 'dashboard-mode 'normal))
 
 ;; (display-line-numbers-mode 0)
+
+(use-package hydra
+  :config
+  (defhydra hydra-buffer ()
+    "buffer"
+    ("d" #'kill-this-buffer)
+    ("k" #'previous-buffer)
+    ("j" #'previous-buffer)
+    ("a" #'mark-whole-buffer))
+
+  )
 
 (use-package general
   :after evil
@@ -93,10 +105,10 @@
    )
 
   (general-create-definer
-   mememacs/local-leader-def
-   ;; :keymaps '(normal visual)
+   mememacs/comma-def
+   :keymaps '(normal insert visual emacs)
    :prefix ","
-   ;; :global-prefix "C-SPC"
+   :global-prefix "C-,"
    )
 
   ;; (defmacro memmacs/normal-leader-def (&rest args)
@@ -109,11 +121,12 @@
    "t" '(:ignore t)
    "n" #'line-number-mode
 
-   "b" '(:ignore t)
-   "bd" #'kill-buffer
+   "b" '(:ignore t :which-key "b..")
+   "bd" #'kill-this-buffer
    "bb" #'helm-mini
+   "b." #'hydra-buffer/body
 
-   "f" nil
+   "f" '(:ignore t :which-key "f..")
    "fd" #'delete-file
    "fs" #'save-buffer
    "ff" #'helm-find-files
@@ -127,17 +140,10 @@
    "j" '(:ignore t)
    "jd" #'dired-jump
    "jD" #'dired-jump-other-window
+   "jf" #'find-function
 
-
-   )
-
-  ;; (mememacs/define-key
-  ;;  )
-
-  ;; (efs/leader-keys
-  ;;  "t"  '(:ignore t :which-key "toggles")
-  ;;  "tt" '(counsel-load-theme :which-key "choose theme")
-  ;;  "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
+   ;; todo toggle buffer
+   "<tab>" #'previous-buffer)
   )
 
 
@@ -229,12 +235,23 @@
 ;;   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
 ;; (when (require 'exwm nil t) (require 'init-exwm))
 
+(use-package macrostep
+  :config
+  (general-def
+    emacs-lisp-mode-map
+    ",m" #'macrostep-expand))
+
+(use-package lispy
+  :ensure t
+  :hook
+  (emacs-lisp-mode . lispy-mode)
+  (lisp-interaction-mode . lispy-mode)
+  (emacs-lisp-mode . lispy-mode))
 
 (use-package lispyville
-  :ensure t
-  :config (require 'init-lispy)
-  :hook (emacs-lisp-mode-hook .  ambrevar/init-lispy))
-
+  :after lispy
+  :config (require 'init-lispyville)
+  )
 
 (use-package which-key
   :config
@@ -253,5 +270,7 @@
   (projectile-mode)
   (mememacs/leader-def
     "p" 'projectile-command-map))
+
+(use-package evil-mc)
 
 (use-package helm-projectile)

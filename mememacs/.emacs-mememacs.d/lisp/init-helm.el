@@ -377,5 +377,24 @@ returning a string."
          (prog1 nil (message "Saved to kill-ring: %s" sel) (sit-for 1))))
      (format "%s" (helm-get-selection nil (not arg))))))
 
+
+
+
+(general-def
+  :keymaps 'helm-map
+  "<tab>" #'helm-execute-persistent-action
+  "C-i" #'helm-execute-persistent-action
+  "C-z" #'helm-select-action
+  "C-j" #'helm-next-line
+  "C-J" #'helm-follow-action-forward
+  "C-k" #'helm-previous-line
+  "C-K" #'helm-follow-action-backward
+  "C-d" #'helm-delete-minibuffer-contents)
+
+;; (general-def
+;;   :keymaps 'helm-find-files-map
+;;   )
+
+
 
 (provide 'init-helm)
