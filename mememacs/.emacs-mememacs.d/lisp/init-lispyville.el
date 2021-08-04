@@ -108,7 +108,8 @@ replace the expression with its result."
 
 (with-eval-after-load
     'evil-mc
-  (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode))
+  (when (boundp 'evil-mc-incompatible-minor-modes)
+    (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode)))
 
 (if (require 'slime nil 'noerror)
     ;; REVIEW: Fix SLIME REPL issue with "goto".
