@@ -37,5 +37,5 @@ export LESS_TERMCAP_ue
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
 
 [ -e "$HOME/.guix-profile" ] \
-    &&  . "$HOME/.guix-profile/etc/profile" \
+    && . "$HOME/.guix-profile/etc/profile" \
     && . "$HOME/.config/guix/current/etc/profile"
