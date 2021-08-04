@@ -56,11 +56,7 @@ replace the expression with its result."
   ;; TODO: lispy-eval-and-replace
   ")" #'lispy-right
   (kbd "C-3") #'lispyville-up-list
-  "=" #'lispyville-prettify
-
-  "d" #
-
-  )
+  "=" #'lispyville-prettify)
 
 (lispyville--define-key 'insert
   (kbd "<backspace>") 'lispy-delete-backward
