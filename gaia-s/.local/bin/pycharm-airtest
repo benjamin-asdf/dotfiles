@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PYTHONPATH="$PYTHONPATH":"$COSDIR/Airtest/":"$COSDIR/Airtest/main":"$COSDIR/Airtest/scripts"
+export PYTHONPATH
+pycharm "$COSDIR/Airtest/"

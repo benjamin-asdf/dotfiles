@@ -143,8 +143,7 @@
    "jf" #'find-function
 
    ;; todo toggle buffer
-   "<tab>" #'previous-buffer)
-  )
+   "<tab>" #'previous-buffer))
 
 
 (require 'functions)
