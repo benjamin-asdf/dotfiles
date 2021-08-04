@@ -37,7 +37,3 @@ export LESS_TERMCAP_ue
 
 # If we are running bash, source bashrc
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
-
-[ -e "$HOME/.guix-profile" ] \
-    && . "$HOME/.guix-profile/etc/profile" \
-    && . "$HOME/.config/guix/current/etc/profile"
