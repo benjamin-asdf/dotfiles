@@ -6,8 +6,10 @@ export BROWSER=nyxt
 # benj
 
 # Adds `~/.local/bin/` and all subdirectories to $PATH
-PATH="$PATH:$(du "$HOME/.local/bin/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
-export PATH
+if [ -d "$HOME/.local/bin/" ] ; then
+    PATH="$PATH:$(du "$HOME/.local/bin/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
+    export PATH
+fi
 
 export ALTERNATE_EDITOR="vim"
 export EDITOR="emacsclient"
