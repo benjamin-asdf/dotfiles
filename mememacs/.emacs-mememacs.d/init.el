@@ -273,3 +273,10 @@
 (use-package evil-mc)
 
 (use-package helm-projectile)
+
+;; todo
+(use-package cider)
+;; helm-cider
+;; flycheck-clojure
+;; flycheck-clj-kondo
+;; flycheck-joker
