@@ -50,6 +50,13 @@
  use-package-verbose t
  use-package-always-demand t)
 
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+
+
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
 
