@@ -280,3 +280,5 @@
 ;; flycheck-clojure
 ;; flycheck-clj-kondo
 ;; flycheck-joker
+
+(use-package emacs-guix)
