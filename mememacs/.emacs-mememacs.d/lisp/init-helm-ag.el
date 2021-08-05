@@ -1,6 +1,9 @@
 ;;; init-helm-ag.el ---
 
 
+(define-key helm-ag-map (kbd "C-c C-o") #'benj/helm-ag-dwim-kill-selection)
+
+
 (custom-set-variables
  '(helm-ag-base-command "rg --no-heading")
  `(helm-ag-success-exit-status '(0 2))
@@ -9,9 +12,6 @@
  ;; helm-ag-base-command "rg --color=never --no-heading"
  ;; helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s"
  )
-
-
-(define-key helm-ag-map (kbd "C-c C-o") #'benj/helm-ag-dwim-kill-selection)
 
 (defun benj/helm-ag-dwim-kill-selection (arg)
   (interactive "P")

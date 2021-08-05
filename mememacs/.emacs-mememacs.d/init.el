@@ -132,6 +132,8 @@
    "bd" #'kill-this-buffer
    "bb" #'helm-mini
    "b." #'hydra-buffer/body
+   "bs" #'
+
 
    "f" '(:ignore t :which-key "f..")
    "fd" #'delete-file
@@ -150,7 +152,20 @@
    "jf" #'find-function
 
    ;; todo toggle buffer
-   "<tab>" #'previous-buffer))
+   "<tab>" #'previous-buffer
+   "/" #'helm-do-grep-ag))
+
+
+(use-package hydra
+  :config
+  (defhydra hydra-buffer ()
+    "buffer"
+    ("d" #'kill-this-buffer)
+    ("k" #'previous-buffer)
+    ("j" #'previous-buffer)
+    ("a" #'mark-whole-buffer))
+
+  )
 
 
 (require 'functions)
@@ -179,6 +194,8 @@
   :after evil
   :ensure t
   :config
+  (setf evil-collection-mode-list
+	(remove 'lispy evil-collection-mode-list))
   (evil-collection-init))
 
 
@@ -293,11 +310,17 @@
 
 (use-package evil-mc)
 
-(use-package helm-projectile
-  )
+(use-package helm-projectile)
 
 ;; todo
+;; (use-package symbol-overlay)
+
+;; persistant scratch
+;; avy jump
+;; ace window
+
 (use-package cider)
+;; todo
 ;; helm-cider
 ;; flycheck-clojure
 ;; flycheck-clj-kondo

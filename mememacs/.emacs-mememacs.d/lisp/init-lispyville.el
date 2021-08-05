@@ -12,6 +12,16 @@ replace the expression with its result."
 (setq lispyville-motions-put-into-special t)
 (setq lispyville-commands-put-into-special t)
 
+(lispyville--define-key 'insert
+  (kbd "<backspace>") 'lispy-delete-backward
+  (kbd "M-<backspace>") 'lispyville-delete-backward-word
+  ";" 'lispy-comment
+  ;; ":" 'lispy-colon ; The colon is not always used to delimit keys.
+  "(" 'lispy-parens
+  ")" 'lispy-right-nostring
+
+  (kbd "C-h") #'lispy-delete-backward)
+
 (lispyville-set-key-theme
  '(operators
    c-w
@@ -24,8 +34,19 @@ replace the expression with its result."
    additional-wrap
    additional-insert
    mark-toggle
-   slurp/barf-lispy
-   ))
+   slurp/barf-lispy))
+
+(lispyville--define-key '(motion normal)
+  "q" 'lispy-ace-paren
+  ;; "f" 'lispy-ace-paren
+  ;; "Q" 'lispy-ace-symbol
+  ;; "t" 'lispy-ace-char
+  "Y" 'lispy-new-copy
+  (kbd "S-<return>") 'lispy-eval-other-window
+  ;; "p" 'lispy-paste
+
+  "D" 'lispy-kill)
+
 (lispyville--define-key '(motion normal visual)
   (kbd "^") #'lispy-left
   (kbd "M-h") #'lispyville-previous-opening
@@ -58,27 +79,6 @@ replace the expression with its result."
   (kbd "C-3") #'lispyville-up-list
   "=" #'lispyville-prettify)
 
-(lispyville--define-key 'insert
-  (kbd "<backspace>") 'lispy-delete-backward
-  (kbd "M-<backspace>") 'lispyville-delete-backward-word
-  ";" 'lispy-comment
-  ;; ":" 'lispy-colon ; The colon is not always used to delimit keys.
-  "(" 'lispy-parens
-  ")" 'lispy-right-nostring
-
-  (kbd "C-h") #'lispy-delete-backward
-  )
-
-(lispyville--define-key '(motion normal)
-  "q" 'lispy-ace-paren
-  ;; "f" 'lispy-ace-paren
-  ;; "Q" 'lispy-ace-symbol
-  ;; "t" 'lispy-ace-char
-  "Y" 'lispy-new-copy
-  (kbd "S-<return>") 'lispy-eval-other-window
-  ;; "p" 'lispy-paste
-
-  "D" 'lispy-kill)
 
 (defun mememacs/init-lispy-targets ()
   (setq targets-text-objects nil)
