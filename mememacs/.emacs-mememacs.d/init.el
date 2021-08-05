@@ -275,11 +275,26 @@
   :config
   (projectile-mode)
   (mememacs/leader-def
-    "p" 'projectile-command-map))
+    "p" 'projectile-command-map)
+  (projectile-indexing-method setf 'alien)
+  (defconst mememacs-fd-command)
+  (let ((cmd
+	 "fd --hidden --exclude=.git --type=f . --print0"))
+    (setf
+     projectile-git-command cmd
+     projectile-generic-command cmd))
+  (setf projectile-completion-system 'helm))
+
+;; TODO
+;; add emacs-dir/backups to known projects
+
+
+
 
 (use-package evil-mc)
 
-(use-package helm-projectile)
+(use-package helm-projectile
+  )
 
 ;; todo
 (use-package cider)
@@ -288,4 +303,4 @@
 ;; flycheck-clj-kondo
 ;; flycheck-joker
 
-(use-package emacs-guix)
+;; (use-package emacs-guix)

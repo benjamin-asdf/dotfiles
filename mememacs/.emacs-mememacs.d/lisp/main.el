@@ -42,7 +42,7 @@
 
 ;;; Place backup files in specific directory.
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name "backups" user-emacs-directory))))
+      `(("." . ,(expand-file-name "~/backups/"))))
 
 ;;; Default mode
 (setq-default major-mode 'emacs-lisp-mode)
