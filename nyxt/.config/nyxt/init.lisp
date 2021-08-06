@@ -68,14 +68,14 @@ See documentation of `team-trello' package in emacs."
 
 
 
-(defmethod %play-video ((a nyxt/dom:a-element))
-  (when
-      (current-buffer)
-    (play-video-with-url
-     (concatenate
-      'string
-      (url (current-buffer))
-      (url a)))))
+;; (defmethod %play-video ((a nyxt/dom:a-element))
+;;   (when
+;;       (current-buffer)
+;;     (play-video-with-url
+;;      (concatenate
+;;       'string
+;;       (url (current-buffer))
+;;       (url a)))))
 
 
 (define-command play-video-hint ()
