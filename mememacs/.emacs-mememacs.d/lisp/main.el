@@ -197,8 +197,7 @@
 ;;       save-interprogram-paste-before-kill t)
 
 ;;; Move mouse away.
-;; I don't need this because of "unclutter"
-;; (mouse-avoidance-mode 'banish)
+(mouse-avoidance-mode 'banish)
 ;;; That binding is not very useful and gets in the way of C-<mouse-1>.
 (global-unset-key (kbd "C-<down-mouse-1>"))
 
