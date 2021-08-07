@@ -2,15 +2,8 @@
 
 ;;; When stating the client from .xinitrc, `save-buffer-kill-terminal' will
 ;;; force-kill Emacs before it can run through `kill-emacs-hook'.
-(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 
-;;; REVIEW: Athena+Xaw3d confuses xcape when binding Caps-lock to both L_Ctrl
-;;; escape, in which case it will procude <C-escape> in Emacs. In practice, it
-;;; means that `C-` keys will works but `<escape>` will need a fast double tap
-;;; on Caps Lock.
-;;;
-;;; See https://github.com/ch11ng/exwm/issues/285
-;;; and https://gitlab.com/interception/linux/plugins/caps2esc/issues/2.
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 
 ;;; REVIEW: Pressing "s-a" ('emms-smart-browse) loses the cursor.
 ;;; Sometimes waiting helps.  Calling emms-smart-browse manually does not trigger the issue.
@@ -126,7 +119,8 @@
 (exwm-input-set-key (kbd "s-&") #'ambrevar/exwm-start)
 (exwm-input-set-key (kbd "s-r") #'ambrevar/exwm-start)
 
-(when (require 'helm-exwm nil t)
+(use-package helm-exwm
+  :config
   (add-to-list 'helm-source-names-using-follow "EXWM buffers")
   (setq helm-exwm-emacs-buffers-source (helm-exwm-build-emacs-buffers-source))
   (setq helm-exwm-source (helm-exwm-build-source))

@@ -248,6 +248,7 @@
 
 (global-so-long-mode 1)
 
+(setf browse-url-generic-program (or (getenv "BROWSER") "nyxt"))
 
 
 (provide 'main)

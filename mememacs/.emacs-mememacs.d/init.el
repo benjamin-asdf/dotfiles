@@ -79,6 +79,8 @@
 
 ;; (display-line-numbers-mode 0)
 
+;; todo config backtrace here so we get better debug init
+
 (use-package hydra
   :config
   (defhydra hydra-buffer ()
@@ -86,42 +88,23 @@
     ("d" #'kill-this-buffer)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
-    ("a" #'mark-whole-buffer))
-
-  )
+    ("a" #'mark-whole-buffer)))
 
 (use-package general
   :after evil
   :config
 
-  ;; (general-create-definer
-  ;;  efs/leader-keys
-  ;;  :keymaps '(normal insert visual emacs)
-  ;;  :prefix "SPC"
-  ;;  :global-prefix "C-SPC")
-
   (general-create-definer
    mememacs/leader-def
    :keymaps '(normal insert visual emacs)
    :prefix "SPC"
-   :global-prefix "C-SPC"
-
-   ;; :states '(normal visual)
-   ;; :prefix "SPC"
-   ;; :global-prefix "C-SPC"
-   )
+   :global-prefix "C-SPC")
 
   (general-create-definer
    mememacs/comma-def
    :keymaps '(normal insert visual emacs)
    :prefix ","
-   :global-prefix "C-,"
-   )
-
-  ;; (defmacro memmacs/normal-leader-def (&rest args)
-  ;;   `(mememacs/leader-def
-  ;;    :keymaps '(normal visual)
-  ;;    ,args))
+   :global-prefix "C-,")
 
   (mememacs/leader-def
    "SPC" #'helm-M-x
@@ -132,8 +115,6 @@
    "bd" #'kill-this-buffer
    "bb" #'helm-mini
    "b." #'hydra-buffer/body
-   "bs" #'
-
 
    "f" '(:ignore t :which-key "f..")
    "fd" #'delete-file
@@ -142,6 +123,7 @@
 
    "w" '(evil-window-map :which-key "window")
    "wm" #'delete-other-windows
+   "wd" #'evil-window-delete
 
    "s" '(:ignore t :which-key "search")
    "ss" #'helm-swoop
@@ -163,15 +145,12 @@
     ("d" #'kill-this-buffer)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
-    ("a" #'mark-whole-buffer))
-
-  )
-
+    ("a" #'mark-whole-buffer)))
 
 (require 'functions)
-(require 'functions-1)
 (require 'main)
 (require 'visual)
+;(require 'functions-1)
 
 
 
