@@ -106,6 +106,13 @@ front of the screen at night."
     #:start (make-system-constructor "xset r rate 170 130")
     #:one-shot #t))
 
+(define unclutter
+  (make <service>
+    #:provides '(unclutter)
+    #:start (make-system-constructor "unclutter &")
+    #:stop (make-system-destructor "pkill unclutter")
+    #:respawn? #t))
+
 (define display-services
   (list
    xrdb
@@ -114,4 +121,5 @@ front of the screen at night."
    redshift
    no-bell
    auto-lock
-   x-repeat-rate))
+   x-repeat-rate
+   unclutter))
