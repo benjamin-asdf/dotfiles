@@ -150,7 +150,7 @@
 (require 'functions)
 (require 'main)
 (require 'visual)
-;(require 'functions-1)
+(require 'functions-1)
 
 
 
@@ -204,6 +204,7 @@
   ;; (setq company-idle-delay 0)
   )
 
+
 (use-package
   helm-company
   :after company
@@ -231,16 +232,18 @@
 ;; (nconc package-selected-packages '(exwm helm-exwm))
 ;; (nconc package-selected-packages '(pulseaudio-control))
 
-;; (with-eval-after-load 'pulseaudio-control
-;;   ;; REVIEW: Upstream should set path dynamically.
-;;   ;; https://github.com/flexibeast/pulseaudio-control/issues/7
-;;   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
-;; (when (require 'exwm nil t) (require 'init-exwm))
+(with-eval-after-load 'pulseaudio-control
+  ;; REVIEW: Upstream should set path dynamically.
+  ;; https://github.com/flexibeast/pulseaudio-control/issues/7
+  (setq pulseaudio-control-pactl-path (executable-find "pactl")))
+
+(when (require 'exwm nil t) (require 'init-exwm))
 
 (use-package macrostep
   :config
   (general-def
-    emacs-lisp-mode-map
+    :states '(normal motion)
+    :keymaps 'emacs-lisp-mode-map
     ",m" #'macrostep-expand))
 
 (use-package lispy
@@ -272,8 +275,7 @@
   (projectile-mode)
   (mememacs/leader-def
     "p" 'projectile-command-map)
-  (projectile-indexing-method setf 'alien)
-  (defconst mememacs-fd-command)
+  (setf projectile-indexing-method 'alien)
   (let ((cmd
 	 "fd --hidden --exclude=.git --type=f . --print0"))
     (setf
@@ -298,7 +300,13 @@
 ;; avy jump
 ;; ace window
 
+;; lispy kill new before lispy delete but only in special
+
 (use-package cider)
+
+(use-package flycheck)
+
+
 ;; todo
 ;; helm-cider
 ;; flycheck-clojure
@@ -306,3 +314,7 @@
 ;; flycheck-joker
 
 ;; (use-package emacs-guix)
+
+
+;; fix a hydra with exwm stuff
+;; figure out how to have exwm buffs better

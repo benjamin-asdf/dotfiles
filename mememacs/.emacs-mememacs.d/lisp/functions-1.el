@@ -19,12 +19,34 @@
   (interactive)
   (switch-to-buffer
    (get-buffer-create
-    *scratch*"")))
+     "*scratch*")))
 
 (mememacs/leader-def
   "bs" #'mememacs/switch-to-scratch-buffer)
 
+(defun mememacs/lispy-eval-line ()
+  (interactive)
+  (save-excursion
+    (goto-char (line-end-position))
+    (special-lispy-eval)))
 
+(defun mememacs/cancel-debugs ()
+  (interactive)
+  (cancel-debug-on-entry)
+  (cancel-debug-on-variable-change)
+  (untrace-all))
 
+(general-def
+  :states '(normal motion)
+  "," nil
+  ",e" '(:ignore t :which-key "eval")
+  ",el" #'mememacs/lispy-eval-line
+  ",ef" #'eval-defun
+  ",ed" #'edebug-defun
+  ",d" '(:ignore t :which-key "devel")
+  ",dv" #'debug-on-variable-change
+  ",dd" #'debug-on-entry
+  ",dt" #'trace-function
+  ",dx" #'mememacs/cancel-debugs)
 
 (provide 'functions-1)
