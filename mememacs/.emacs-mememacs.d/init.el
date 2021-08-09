@@ -313,12 +313,14 @@
   :config
   (require 'patch-helm-projectile))
 
-;; todo
-;; (use-package symbol-overlay)
 
-;; persistant scratch
-;; avy jump
-;; ace window
+(use-package ace-window
+  :config
+  (setq aw-keys '(?k ?j ?h ?n ?i ?a ?s ?d ?l ?e ?r ?t)
+	aw-background nil)
+  (mememacs/leader-def
+    "wu" #'ace-window
+    "wD" #'ace-delete-window))
 
 ;; lispy kill new before lispy delete but only in special
 
@@ -331,6 +333,7 @@
 (use-package flycheck-joker)
 
 
+;; todo binds
 (use-package geiser)
 
 (use-package geiser-guile
@@ -339,7 +342,7 @@
 	'guile)
   (setf geiser-guile-load-path
 	(expand-file-name
-	 ~/.guix-profile/lib/guile/3.0/site-ccache"")))
+	 "~/.guix-profile/lib/guile/3.0/site-cache")))
 
 
 (use-package avy
@@ -412,8 +415,5 @@
 ;; flycheck-clj-kondo
 ;; flycheck-joker
 
-;; fiwm stuff
-;; figure out how to have exwm buffs better
-
-
-;; (use-package emacs-guix)
+;; figure out guix manifests
+;; figure out guix packages for clj kondo etc
