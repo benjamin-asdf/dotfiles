@@ -80,6 +80,11 @@
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
+  (define-key evil-normal-state-map
+    (kbd)
+    )
+
+
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -191,11 +196,13 @@
   (evil-collection-init))
 
 
-; TODO map c-j and such
 (use-package helm
   :config
   (global-set-key (kbd "M-x") 'helm-M-x)
-  (require 'init-helm))
+  (require 'init-helm)
+  (mememacs/leader-def
+    "r" '(:ignore t :which-key "r..")
+    "rl" #'helm-resume))
 
 (use-package magit
   :defer t
@@ -302,7 +309,9 @@
 ;; add emacs-dir/backups to known projects
 
 
-(use-package helm-projectile)
+(use-package helm-projectile
+  :config
+  (require 'patch-helm-projectile))
 
 ;; todo
 ;; (use-package symbol-overlay)
@@ -317,27 +326,7 @@
 
 (use-package flycheck)
 
-(use-package flycheck-clj-kondo
-  ;; TODO
-  ;; (unless (executable-find "clj-kondo")
-;;     ;; (url-retrieve
-;;     ;;  "https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo"
-;;     ;;  (lambda (_)
-;;     ;;    (switch-to-buffer (current-buffer))
-;;     ;;    (skip-chars-forward "^\n\n")
-
-;;     ;;    )
-;;     ;;  )
-
-
-;; ;; chmod +x install-clj-kondo
-;; ;; ./install-clj-kondo
-
-
-;;     )
-  )
-
-;; TODO
+(use-package flycheck-clj-kondo)
 (use-package flycheck-clojure)
 (use-package flycheck-joker)
 
@@ -386,6 +375,28 @@
 
 
 
+(use-package link-hint
+  :config
+  (mememacs/leader-def
+    "ju" #'link-hint-open-link
+    )
+
+  )
+
+(use-package guix
+  :defer t
+  :init
+  (mememacs/leader-def
+   "G"  '(:ignore t :which-key "Guix")
+   "Gg" '(guix :which-key "Guix")
+   "Gi" '(guix-installed-user-packages :which-key "user packages")
+   "GI" '(guix-installed-system-packages :which-key "system packages")
+   "Gp" '(guix-packages-by-name :which-key "search packages")
+   "GP" '(guix-pull :which-key "pull")))
+
+
+;; https://github.com/noctuid/link-hint.el
+
 ;; evil undo system
 ;; redo to U
 ;; a nice hydra for this instead of visualizer
@@ -401,8 +412,8 @@
 ;; flycheck-clj-kondo
 ;; flycheck-joker
 
-;; (use-package emacs-guix)
-
-
 ;; fiwm stuff
 ;; figure out how to have exwm buffs better
+
+
+;; (use-package emacs-guix)
