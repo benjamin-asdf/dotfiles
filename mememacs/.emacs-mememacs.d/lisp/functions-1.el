@@ -36,6 +36,23 @@
   (cancel-debug-on-variable-change)
   (untrace-all))
 
+(defun mememacs/mkstr (obj)
+  (with-output-to-string
+    (princ obj)))
+
+(defun mememacs/eval-last-sexp-dwim (arg)
+  "Eval last sexp.
+If it is a quoted symbol, eval symbol value instead.
+See `eval-last-sexp'."
+  (interactive "P")
+  (let ((s (sexp-at-point)))
+    (if (eq 'quote (car-safe s))
+	(with-temp-buffer
+	  (insert (mememacs/mkstr (cadr s)))
+	  (goto-char (point-max))
+	  (eval-last-sexp arg))
+      (eval-last-sexp arg))))
+
 (general-def
   :states '(normal motion)
   "," nil
@@ -43,10 +60,32 @@
   ",el" #'mememacs/lispy-eval-line
   ",ef" #'eval-defun
   ",ed" #'edebug-defun
+  ",ee" #'mememacs/eval-last-sexp-dwim
+  ",et" #'toggle-debug-on-error
+  ",eq" #'toggle-debug-on-quit
   ",d" '(:ignore t :which-key "devel")
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dt" #'trace-function
   ",dx" #'mememacs/cancel-debugs)
+
+(defun mememacs/switch-to-message-buffer ()
+  ""
+  (interactive)
+  (switch-to-buffer "*Messages*"))
+
+(defun mememacs/ghetto-kill-and-open-buffer ()
+  "Kill buffer and open again."
+  (interactive)
+  (when-let ((p (point))
+	     (f (buffer-file-name)))
+    (kill-this-buffer)
+    (find-file f)
+    (goto-char p)))
+
+(mememacs/leader-def
+  "bm" #'mememacs/switch-to-message-buffer
+  "bR" #'mememacs/ghetto-kill-and-open-buffer
+  "br" #'revert-buffer)
 
 (provide 'functions-1)

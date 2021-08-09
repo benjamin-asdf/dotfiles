@@ -250,5 +250,7 @@
 
 (setf browse-url-generic-program (or (getenv "BROWSER") "nyxt"))
 
+(global-visual-line-mode)
+
 
 (provide 'main)

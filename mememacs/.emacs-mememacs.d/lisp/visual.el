@@ -7,7 +7,7 @@
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
 
-(use-package gruvbox-theme 
+(use-package gruvbox-theme
   :config
   (load-theme 'gruvbox t))
 
@@ -33,7 +33,7 @@
 ;;; show-paren
 (with-eval-after-load 'paren
   (set-face-foreground 'show-paren-match "White")
-  (set-face-background 'show-paren-match "Black")
+  ;; (set-face-background 'show-paren-match "Black")
   (set-face-underline 'show-paren-match "White"))
 
 

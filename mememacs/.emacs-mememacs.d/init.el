@@ -63,6 +63,12 @@
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
 
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode))
+
+
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -76,6 +82,12 @@
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+
+
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode 1))
+
 
 ;; (display-line-numbers-mode 0)
 
@@ -126,7 +138,8 @@
    "wd" #'evil-window-delete
 
    "s" '(:ignore t :which-key "search")
-   "ss" #'helm-swoop
+   "ss" #'helm-swoop-without-pre-input
+   "sS" #'helm-swoop
 
    "j" '(:ignore t)
    "jd" #'dired-jump
@@ -251,7 +264,9 @@
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
-  (emacs-lisp-mode . lispy-mode))
+  (emacs-lisp-mode . lispy-mode)
+  (common-lisp-mode . lispy-mode)
+  (scheme-mode . lispy-mode))
 
 (use-package lispyville
   :after lispy
@@ -287,10 +302,6 @@
 ;; add emacs-dir/backups to known projects
 
 
-
-
-(use-package evil-mc)
-
 (use-package helm-projectile)
 
 ;; todo
@@ -306,15 +317,92 @@
 
 (use-package flycheck)
 
+(use-package flycheck-clj-kondo
+  ;; TODO
+  ;; (unless (executable-find "clj-kondo")
+;;     ;; (url-retrieve
+;;     ;;  "https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo"
+;;     ;;  (lambda (_)
+;;     ;;    (switch-to-buffer (current-buffer))
+;;     ;;    (skip-chars-forward "^\n\n")
+
+;;     ;;    )
+;;     ;;  )
+
+
+;; ;; chmod +x install-clj-kondo
+;; ;; ./install-clj-kondo
+
+
+;;     )
+  )
+
+;; TODO
+(use-package flycheck-clojure)
+(use-package flycheck-joker)
+
+
+(use-package geiser)
+
+(use-package geiser-guile
+  :config
+  (setf geiser-scheme-implementation
+	'guile)
+  (setf geiser-guile-load-path
+	(expand-file-name
+	 ~/.guix-profile/lib/guile/3.0/site-ccache"")))
+
+
+(use-package avy
+  (mememacs/leader-def
+    "jj" #'avy-goto-char-timer
+    "jw" #'avy-goto-word-1
+    "jl" #'avy-goto-line)
+  :config)
+
+(use-package symbol-overlay
+  :config
+
+  (defhydra hydra-symbol-overlay ()
+    "smbol overlay"
+    "o" #'symbol-overlay-put
+    "m" #'symbol-overlay-mode
+    "a" #'symbol-overlay-maybe-put-temp
+    "O" #'symbol-overlay-remove-all
+    "n" #'symbol-overlay-jump-next)
+
+  (mememacs/leader-def
+    "so" #'symbol-overlay)
+
+
+  )
+
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default))
+
+
+(use-package backup-each-save)
+
+
+
+;; evil undo system
+;; redo to U
+;; a nice hydra for this instead of visualizer
+
+;; todo get rid of caches in emacs dir
+;; everything to ~/tmp
+
+
+;; (defhydra best-hydra ())
 
 ;; todo
 ;; helm-cider
-;; flycheck-clojure
 ;; flycheck-clj-kondo
 ;; flycheck-joker
 
 ;; (use-package emacs-guix)
 
 
-;; fix a hydra with exwm stuff
+;; fiwm stuff
 ;; figure out how to have exwm buffs better

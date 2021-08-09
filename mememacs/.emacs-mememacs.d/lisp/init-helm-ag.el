@@ -21,6 +21,8 @@
     (s-split-up-to ":" el 2)))
     arg))
 
+(mememacs/leader-def
+  "/" #'helm-projectile-ag)
 
 
 
