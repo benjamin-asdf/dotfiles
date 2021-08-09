@@ -80,21 +80,20 @@
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-  (define-key evil-normal-state-map
-    (kbd)
-    )
+  ;; (define-key evil-normal-state-map
+  ;;   (kbd)
+  ;;   )
 
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
-
-(use-package evil-mc
+(use-package evil-surround
   :config
-  (global-evil-mc-mode 1))
-
-
-;; (display-line-numbers-mode 0)
+  (global-evil-surround-mode 1)
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda ()
+              (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
 ;; todo config backtrace here so we get better debug init
 
@@ -110,50 +109,48 @@
 (use-package general
   :after evil
   :config
+  (general-create-definer
+    mememacs/leader-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
 
   (general-create-definer
-   mememacs/leader-def
-   :keymaps '(normal insert visual emacs)
-   :prefix "SPC"
-   :global-prefix "C-SPC")
-
-  (general-create-definer
-   mememacs/comma-def
-   :keymaps '(normal insert visual emacs)
-   :prefix ","
-   :global-prefix "C-,")
+    mememacs/comma-def
+    :keymaps '(normal insert visual emacs)
+    :prefix ","
+    :global-prefix "C-,")
 
   (mememacs/leader-def
-   "SPC" #'helm-M-x
-   "t" '(:ignore t)
-   "n" #'line-number-mode
+    "SPC" #'helm-M-x
+    "t" '(:ignore t)
+    "n" #'line-number-mode
 
-   "b" '(:ignore t :which-key "b..")
-   "bd" #'kill-this-buffer
-   "bb" #'helm-mini
-   "b." #'hydra-buffer/body
+    "b" '(:ignore t :which-key "b..")
+    "bd" #'kill-this-buffer
+    "bb" #'helm-mini
+    "b." #'hydra-buffer/body
 
-   "f" '(:ignore t :which-key "f..")
-   "fd" #'delete-file
-   "fs" #'save-buffer
-   "ff" #'helm-find-files
+    "f" '(:ignore t :which-key "f..")
+    "fd" #'delete-file
+    "fs" #'save-buffer
+    "ff" #'helm-find-files
 
-   "w" '(evil-window-map :which-key "window")
-   "wm" #'delete-other-windows
-   "wd" #'evil-window-delete
+    "w" '(evil-window-map :which-key "window")
+    "wm" #'delete-other-windows
+    "wd" #'evil-window-delete
 
-   "s" '(:ignore t :which-key "search")
-   "ss" #'helm-swoop-without-pre-input
-   "sS" #'helm-swoop
+    "s" '(:ignore t :which-key "search")
+    "ss" #'helm-swoop-without-pre-input
+    "sS" #'helm-swoop
 
-   "j" '(:ignore t)
-   "jd" #'dired-jump
-   "jD" #'dired-jump-other-window
-   "jf" #'find-function
+    "j" '(:ignore t)
+    "jd" #'dired-jump
+    "jD" #'dired-jump-other-window
+    "jf" #'find-function
 
-   ;; todo toggle buffer
-   "<tab>" #'previous-buffer
-   "/" #'helm-do-grep-ag))
+    "/" #'helm-do-grep-ag
+    "hc" #'describe-char))
 
 
 (use-package hydra
@@ -175,15 +172,20 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package evil-goggles
+  :config
+  (setf evil-goggles-enable-delete nil)
+  (evil-goggles-mode))
+
 
 (use-package helpful
   :config
   (mememacs/leader-def
-   "hf" #'helpful-callable
-   "hv" #'helpful-variable
-   "hk" #'helpful-key
-   "hF" #'helpful-function
-   "hC" #'helpful-command)
+    "hf" #'helpful-callable
+    "hv" #'helpful-variable
+    "hk" #'helpful-key
+    "hF" #'helpful-function
+    "hC" #'helpful-command)
 
   (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
@@ -212,10 +214,12 @@
   (require 'init-magit)
 
   (mememacs/leader-def
-   "g" '(:ignore t :which-key "git")
-   "gs" #'magit-status)
+    "g" '(:ignore t :which-key "git")
+    "gs" #'magit-status)
 
-  )
+  (add-hook 'git-commit-mode-hook
+	    (lambda ()
+	      (visual-line-mode -1))))
 
 
 (use-package company
@@ -346,28 +350,43 @@
 
 
 (use-package avy
+  :config
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
     "jw" #'avy-goto-word-1
-    "jl" #'avy-goto-line)
-  :config)
+    "jl" #'avy-goto-line))
 
 (use-package symbol-overlay
   :config
 
+
   (defhydra hydra-symbol-overlay ()
     "smbol overlay"
-    "o" #'symbol-overlay-put
-    "m" #'symbol-overlay-mode
-    "a" #'symbol-overlay-maybe-put-temp
-    "O" #'symbol-overlay-remove-all
-    "n" #'symbol-overlay-jump-next)
+    ("o" #'symbol-overlay-put)
+    ("j" #'symbol-overlay-jump-next)
+    ("k" #'symbol-overlay-jump-prev)
+    ("m" #'symbol-overlay-mode)
+    ("a" #'symbol-overlay-maybe-put-temp)
+    ("O" #'symbol-overlay-remove-all)
+    ("n" #'symbol-overlay-jump-next))
+
+  ;; todo
+
+  ;; (defmacro mm/wrap-symb-ov-hydra (cmd)
+  ;;   `(defun ,(symbol-name (concat
+  ;; 			   (mememacs/mkstr
+  ;; 			    (cadr cmd))
+  ;; 			   "-and-hydra"))
+  ;; 	 ()
+  ;;      (interactive)
+  ;;      (call-interactively ,cmd)
+  ;;      (hydra-symbol-overlay/body)))
+
+  ;; (mm/wrap-symb-ov-hydra
+  ;;  #'symbol-overlay-put)
 
   (mememacs/leader-def
-    "so" #'symbol-overlay)
-
-
-  )
+    "so" #'hydra-symbol-overlay/body))
 
 (use-package persistent-scratch
   :config
@@ -382,9 +401,7 @@
   :config
   (mememacs/leader-def
     "ju" #'link-hint-open-link
-    )
-
-  )
+    ))
 
 (use-package guix
   :defer t
@@ -417,3 +434,8 @@
 
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
+
+
+;; org
+
+;; lispy mood line

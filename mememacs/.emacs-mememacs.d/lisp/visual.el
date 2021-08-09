@@ -23,6 +23,11 @@
 ;; ;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
 ;; ;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
 
+(set-face-foreground 'link "goldenrod")
+(set-face-underline 'link "goldenrod")
+(set-face-bold 'link t)
+
+
 
 ;;; Cursor type: default (box) is visible and practical.
 ;; (setq-default cursor-type 'hollow)

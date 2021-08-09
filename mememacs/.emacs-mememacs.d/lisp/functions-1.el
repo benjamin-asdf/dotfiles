@@ -59,6 +59,7 @@ See `eval-last-sexp'."
   ",e" '(:ignore t :which-key "eval")
   ",el" #'mememacs/lispy-eval-line
   ",ef" #'eval-defun
+  ",eb" #'eval-buffer
   ",ed" #'edebug-defun
   ",ee" #'mememacs/eval-last-sexp-dwim
   ",et" #'toggle-debug-on-error
