@@ -80,13 +80,45 @@
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-  ;; (define-key evil-normal-state-map
-  ;;   (kbd)
-  ;;   )
+  (custom-set-variables
+   '(evil-undo-system
+     undo-tree))
 
+  (define-key evil-normal-state-map "U" #'evil-redo)
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+
+
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode 1)
+
+  (defhydra hydra-evil-mc ()
+    "mc"
+    ("n" #'evil-mc-make-and-goto-next-match)
+    ("j" #'evil-mc-make-cursor-move-next-line)
+    ("q" #'evil-mc-undo-all-cursors)
+    ("a" 'evil-mc-key-map)
+    ("k" #'evil-mc-undo-last-added-cursor)
+    ("p" #'evil-mc-find-prev-cursor))
+
+  (general-def
+    :states '(normal visual)
+    "gn" #'hydra-evil-mc/body)
+
+  (mememacs/leader-def
+    "gn" '(evil-mc-key-map :which-key "mc"))
+
+  (defun mememacs/disable-evil-mc-mode ()
+    (evil-mc-mode -1))
+  (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
+
+  (defadvice evil-force-normal-state (before mm/evil-normal-state-maybe-delete-mc-cursors activ)
+    (when (and
+	   evil-mc-cursor-state
+	   (eq evil-state 'normal))
+      (evil-mc-undo-all-cursors))))
 
 (use-package evil-surround
   :config
@@ -150,7 +182,8 @@
     "jf" #'find-function
 
     "/" #'helm-do-grep-ag
-    "hc" #'describe-char))
+    "hc" #'describe-char
+    "hi" #'helm-info-emacs))
 
 
 (use-package hydra
@@ -174,7 +207,9 @@
 
 (use-package evil-goggles
   :config
-  (setf evil-goggles-enable-delete nil)
+  (setf
+   evil-goggles-enable-delete nil
+   evil-goggles-enable-change nil)
   (evil-goggles-mode))
 
 
