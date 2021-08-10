@@ -11,6 +11,7 @@ if [ -d "$HOME/.local/bin/" ] ; then
     export PATH
 fi
 
+
 export ALTERNATE_EDITOR="vim"
 export EDITOR="emacsclient"
 export VISUAL="emacsclient"
@@ -35,5 +36,9 @@ export LESS_TERMCAP_us
 LESS_TERMCAP_ue="$(printf '%b' '[0m')"; a="${a%_}"
 export LESS_TERMCAP_ue
 
-# If we are running bash, source bashrc
-[ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
+
+## End: Source .bashrc. The rc file should guard against non-interactive shells.
+[ "$(ps -o comm= $$)" != bash ] && return
+[ -f ~/.bashrc ] && . ~/.bashrc
+
+[ -z "$DISPLAY" ] && [ "$(tty)" = '/dev/tty1' ] && exec xinit -- vt01

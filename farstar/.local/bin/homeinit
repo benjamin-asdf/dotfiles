@@ -1,0 +1,38 @@
+#!/bin/sh
+
+run_current_guix() {
+	if [ -z "$EXTRA_SUBSTITUTE_URLS" ]; then
+		~/.config/guix/current/bin/guix "$@"
+	else
+		~/.config/guix/current/bin/guix --substitute-urls="$EXTRA_SUBSTITUTE_URLS $SUBSTITUTE_URLS" "$@"
+	fi
+}
+
+guix_install_profile() {
+	local profile
+	local manifest
+	manifest=$HOME/.package-lists/guix-$1-manifest.scm
+	if [ -f "$manifest" ]; then
+		if [ "$1" = "default" ]; then
+			info "Installing default profile..." package --manifest="$manifest" --keep-failed
+			. ~/.guix-profile/etc/profile
+		else
+			profile=$HOME/.guix-extra-profiles/$1/$1
+			if [ ! -d "$HOME/.guix-extra-profiles/$1/$1" ]; then
+				info "Installing profile '$profile'..."
+				mkdir -p $(dirname "$profile")
+				run_current_guix package --manifest="$manifest" --keep-failed --profile="$profile"
+				if [ -f "$profile"/etc/profile ]; then
+					. "$profile"/etc/profile
+				fi
+			else
+				info "Profile '$profile' already installed."
+			fi
+		fi
+	else
+		echo "Manifest '$manifest' not found."
+	fi
+}
+
+
+guix_install_profile main

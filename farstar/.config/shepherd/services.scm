@@ -40,7 +40,7 @@ Some DM merge this automatically; we merge it for the others."
     #:start (make-system-constructor
              (string-join '("setxkbmap"
                             "-layout" "us"
-                            "-option" "ctrl:swapcaps,nodeadkeys,nbsp:level3")))
+                            "-option" "ctrl:swapcaps,nodeadkeys,nbsp:level3,altwin:prtsc_rwin")))
     #:one-shot? #t))
 
 (define xcape

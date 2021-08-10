@@ -1,9 +1,31 @@
 #!/bin/sh
 
-## Start user services.
-## For now, we need to start it here after X has started since it has graphical services.
-# shepherd
 
 ## Internet browsers that need X to run.
 export BROWSER=nyxt
 
+
+
+## ~/.local/share/applications/mimeapps.list should symlink to ~/.config/mimeapps.list.
+cat<<EOF > ~/.config/mimeapps.list
+[Added Associations]
+image/jpeg=sxiv.desktop
+video/H264=mpv.desktop
+video/mpeg=mpv.desktop
+text/html=$BROWSER.desktop
+application/pdf=$BROWSER.desktop
+
+[Default Applications]
+image/jpeg=sxiv.desktop
+image/png=sxiv.desktop
+video/mpeg=mpv.desktop
+text/html=$BROWSER.desktop
+x-scheme-handler/http=$BROWSER.desktop
+x-scheme-handler/https=$BROWSER.desktop
+x-scheme-handler/mailto=emacs-mail.desktop
+EOF
+
+
+## Start user services.
+## For now, we need to start it here after X has started since it has graphical services.
+shepherd
