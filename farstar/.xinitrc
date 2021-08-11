@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "hi" > ~/hi-bro
+echo "hi" > /tmp/hi-bro
 
 # Source .profile for common environment vars
 # . ~/.profile
