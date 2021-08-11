@@ -20,8 +20,6 @@
    "curl"
    "gnupg"
 
-   "clojure-tools-cli"
-
    "redshift"
 
    "stow"

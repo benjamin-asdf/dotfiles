@@ -1,6 +1,7 @@
 
 (specifications->manifest
  '(
+   "sicp"
    "node"
    "xhost"
    "scrot"

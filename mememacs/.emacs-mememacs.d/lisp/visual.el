@@ -38,7 +38,7 @@
 ;;; show-paren
 (with-eval-after-load 'paren
   (set-face-foreground 'show-paren-match "White")
-  ;; (set-face-background 'show-paren-match "Black")
+  (set-face-background 'show-paren-match (face-background 'default))
   (set-face-underline 'show-paren-match "White"))
 
 
