@@ -115,10 +115,10 @@ front of the screen at night."
 
 (define display-services
   (list
-   xrdb
+   ;; xrdb
    setxkbmap
    xcape
-   redshift
+   ;; redshift
    no-bell
    auto-lock
    x-repeat-rate

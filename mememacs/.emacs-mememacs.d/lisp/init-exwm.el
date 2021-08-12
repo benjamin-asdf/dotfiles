@@ -29,6 +29,15 @@
 (exwm-systemtray-enable)
 (setq exwm-systemtray-height 16)
 
+(defhydra hydra-exwm ()
+  "exwm"
+  ("r" #'exwm-reset))
+
+
+;; The following can only apply to EXWM buffers, else it could have unexpected effects.
+(push ?\s-  exwm-input-prefix-keys)
+(exwm-input-set-key (kbd "s-SPC") #'hydra-exwm/body)
+
 ;;; Those cannot be set globally: if Emacs would be run in another WM, the "s-"
 ;;; prefix will conflict with the WM bindings.
 (exwm-input-set-key (kbd "s-R") #'exwm-reset)
@@ -48,9 +57,6 @@
   (exwm-input-set-key (kbd "s-K") 'ambrevar/swap-windows-above)
   (exwm-input-set-key (kbd "s-L") 'ambrevar/swap-windows-right))
 
-;; The following can only apply to EXWM buffers, else it could have unexpected effects.
-(push ?\s-  exwm-input-prefix-keys)
-(define-key exwm-mode-map (kbd "s-SPC") #'exwm-floating-toggle-floating)
 
 (exwm-input-set-key (kbd "s-i") #'follow-delete-other-windows-and-split)
 (exwm-input-set-key (kbd "s-o") #'ambrevar/toggle-single-window)
@@ -172,5 +178,9 @@
   (when (string-prefix-p "emacs" exwm-instance-name)
     (exwm-input-release-keyboard (exwm--buffer->id (window-buffer)))))
 (add-hook 'exwm-manage-finish-hook 'ambrevar/exwm-start-in-char-mode)
+
+
+
+(exwm-enable)
 
 (provide 'init-exwm)

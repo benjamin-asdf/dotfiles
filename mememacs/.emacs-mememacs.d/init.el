@@ -44,8 +44,10 @@
 
 
 (straight-use-package 'use-package)
+
 (require 'use-package)
 (setf
+ straight-vc-git-default-protocol 'ssh
  straight-use-package-by-default t
  use-package-verbose t
  use-package-always-demand t)
@@ -77,7 +79,7 @@
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
 
   (custom-set-variables
    '(evil-undo-system
@@ -97,14 +99,14 @@
     ("j" #'previous-buffer)
     ("a" #'mark-whole-buffer)))
 
+;; todo config backtrace here so we get better debug init
+
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1)
   (add-hook 'emacs-lisp-mode-hook
 	    (lambda ()
               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
-
-;; todo config backtrace here so we get better debug init
 
 (use-package general
   :after evil
@@ -135,6 +137,7 @@
     "fd" #'delete-file
     "fs" #'save-buffer
     "ff" #'helm-find-files
+    "fr" #'helm-recentf
 
     "w" '(evil-window-map :which-key "window")
     "wm" #'delete-other-windows
@@ -151,6 +154,7 @@
 
     "/" #'helm-do-grep-ag
     "hc" #'describe-char
+    "hm" #'describe-mode
     "hi" #'helm-info-emacs))
 
 (use-package evil-mc
@@ -183,7 +187,6 @@
 	   (eq evil-state 'normal))
       (evil-mc-undo-all-cursors))))
 
-
 (use-package hydra
   :config
   (defhydra hydra-buffer ()
@@ -192,6 +195,24 @@
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
     ("a" #'mark-whole-buffer)))
+
+(use-package debug
+  :ensure nil
+  :config
+  (general-def
+    :keymap 'debugger-mode-map
+    :state '(normal motion)
+    "." #'backtrace-expand-ellipses
+    "+" #'backtrace-multi-line
+    "-" #'backtrace-single-line))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (setf evil-collection-mode-list
+	(remove 'lispy evil-collection-mode-list))
+  (evil-collection-init))
 
 (require 'functions)
 (require 'main)
@@ -202,14 +223,6 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package evil-goggles
-  :config
-  (setf
-   evil-goggles-enable-delete nil
-   evil-goggles-enable-change nil)
-  (evil-goggles-mode))
-
 
 (use-package helpful
   :config
@@ -222,13 +235,12 @@
 
   (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
-(use-package evil-collection
-  :after evil
-  :ensure t
+(use-package evil-goggles
   :config
-  (setf evil-collection-mode-list
-	(remove 'lispy evil-collection-mode-list))
-  (evil-collection-init))
+  (setf
+   evil-goggles-enable-delete nil
+   evil-goggles-enable-change nil)
+  (evil-goggles-mode))
 
 
 (use-package helm
@@ -280,10 +292,8 @@
 
 
 (use-package mood-line
-  :straight (:host github :repo "rtnlmeme-DestroyerOfDeath/mood-line")
-  :config (mood-line-mode)
-  )
-
+  :straight (:host github :repo "benjamin-asdf/mood-line")
+  :config (mood-line-mode))
 
 ;; TODO
 ;; (nconc package-selected-packages '(exwm helm-exwm))
@@ -294,7 +304,11 @@
   ;; https://github.com/flexibeast/pulseaudio-control/issues/7
   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
 
-(when (require 'exwm nil t) (require 'init-exwm))
+(use-package exwm
+  :config
+  (require 'init-exwm))
+
+;; (use-package emacs-desktop-environment)
 
 (use-package macrostep
   :config
@@ -310,7 +324,8 @@
   (lisp-interaction-mode . lispy-mode)
   (emacs-lisp-mode . lispy-mode)
   (common-lisp-mode . lispy-mode)
-  (scheme-mode . lispy-mode))
+  (scheme-mode . lispy-mode)
+  (clojure-mode . lispy-mode))
 
 (use-package lispyville
   :after lispy
@@ -378,8 +393,9 @@
   (setf geiser-scheme-implementation
 	'guile)
   (setf geiser-guile-load-path
-	(expand-file-name
-	 "~/.guix-profile/lib/guile/3.0/site-cache")))
+	(list
+	 (expand-file-name
+	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
 
 
 (use-package avy
@@ -428,13 +444,10 @@
 
 (use-package backup-each-save)
 
-
-
 (use-package link-hint
   :config
   (mememacs/leader-def
-    "ju" #'link-hint-open-link
-    ))
+    "ju" #'link-hint-open-link))
 
 (use-package guix
   :defer t
@@ -446,6 +459,12 @@
    "GI" '(guix-installed-system-packages :which-key "system packages")
    "Gp" '(guix-packages-by-name :which-key "search packages")
    "GP" '(guix-pull :which-key "pull")))
+
+(use-package hippie-exp
+  :config
+  (general-def
+    :states '(insert)
+    "C-/" #'hippie-expand))
 
 
 ;; https://github.com/noctuid/link-hint.el
@@ -474,3 +493,5 @@
 ;; lispy mood line
 
 ;; pretty print
+
+;;  nerd commenter

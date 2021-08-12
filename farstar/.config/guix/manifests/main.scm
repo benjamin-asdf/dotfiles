@@ -1,13 +1,21 @@
 
 (specifications->manifest
  '(
+   "emacs-pgtk-native-comp"
+   "emacs-desktop-environment"
+
+   "mpv"
    "sicp"
    "node"
    "xhost"
    "scrot"
    "unclutter"
    "openjdk"
+
    "clojure"
+   "clojure-tools"
+   "leiningen"
+
    "nyxt"
    "git"
    "openssh"
@@ -19,9 +27,11 @@
    "curl"
    "gnupg"
 
+
    "redshift"
 
    "stow"
+   "password-store"
 
    "unzip"
    "xbindkeys"

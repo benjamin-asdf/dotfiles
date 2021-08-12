@@ -1,9 +1,0 @@
-;;; -*- mode: emacs-lisp; -*-
-
-
-;; (require 'init-exwm (expand-file-name "~/.emacs-mememacs.d/lisp/init-exwm.el"))
-
-(require 'exwm)
-(require 'exwm-config)
-
-(exwm-config-example)
