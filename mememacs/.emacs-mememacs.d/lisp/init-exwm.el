@@ -29,9 +29,23 @@
 (exwm-systemtray-enable)
 (setq exwm-systemtray-height 16)
 
+(defun mm/xdotool (cmd)
+  (start-process-shell-command
+   "" "xdotool"
+   (concat
+    "xdotool" " " cmd)))
+
 (defhydra hydra-exwm ()
   "exwm"
-  ("r" #'exwm-reset))
+  ("r" exwm-reset "reset")
+  ("d"
+   (mm/xdotool "click 1") "click")
+  ("j"
+   (mm/xdotool "click 5"))
+  ("k"
+   (mm/xdotool "click 4"))
+  ("w" 'evil-window-map "window")
+  ("TAB" evil-switch-to-windows-last-buffer "last"))
 
 
 ;; The following can only apply to EXWM buffers, else it could have unexpected effects.

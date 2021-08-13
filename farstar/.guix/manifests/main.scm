@@ -15,10 +15,10 @@
    "ripgrep"
    "fd"
    "sbcl"
-   "emacs-guix"
    "setxkbmap"
    "curl"
    "gnupg"
+   "password-store"
 
    "redshift"
 
@@ -38,4 +38,6 @@
    "xrandr"
    "xrdb"
    "xset"
-   "xss-lock"))
+   "xss-lock"
+   "pinentry-emacs"
+   ))

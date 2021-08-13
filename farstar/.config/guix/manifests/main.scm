@@ -1,8 +1,10 @@
 
 (specifications->manifest
  '(
-   "emacs-pgtk-native-comp"
+   ;; "emacs-native-comp"
    "emacs-desktop-environment"
+
+   ;; "emacs-cider"
 
    "mpv"
    "sicp"
@@ -12,7 +14,7 @@
    "unclutter"
    "openjdk"
 
-   "clojure"
+   ;; "clojure"
    "clojure-tools"
    "leiningen"
 

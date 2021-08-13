@@ -73,7 +73,21 @@ See `eval-last-sexp'."
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dt" #'trace-function
-  ",dx" #'mememacs/cancel-debugs)
+  ",dx" #'mememacs/cancel-debugs
+  ;; ",df"
+  ;; `(,(let ((map (make-sparse-keymap "find elisp stuff")))
+  ;;      (define-key map "v" #'find-variable)
+  ;;      (define-key map "V" #'apropos-value)
+  ;;      (define-key map "l" #'apropos-library)
+  ;;      (define-key map "L" #'apropos-local-value)
+  ;;      (define-key map "d" #'apropos-documentation)
+  ;;      (define-key map "D" #'apropos-documentation-property)
+  ;;      (define-key map "f" #'apropos-command)
+  ;;      (define-key map "r" #'apropos-read-pattern)
+  ;;      (define-key map "u" #'apropos-user-option)
+  ;;      map)
+  ;;   :which-key "find")
+  )
 
 (defun mememacs/switch-to-message-buffer ()
   ""

@@ -47,7 +47,8 @@
 
 (require 'use-package)
 (setf
- straight-vc-git-default-protocol 'ssh
+ ;; straight-vc-git-default-protocol 'ssh
+ straight-vc-git-default-protocol 'https
  straight-use-package-by-default t
  use-package-verbose t
  use-package-always-demand t)
@@ -123,6 +124,11 @@
     :prefix ","
     :global-prefix "C-,")
 
+  (general-def
+    evil-window-map
+    "m" #'delete-other-windows
+    "d" #'evil-window-delete)
+
   (mememacs/leader-def
     "SPC" #'helm-M-x
     "t" '(:ignore t)
@@ -142,8 +148,6 @@
     "fr" #'helm-recentf
 
     "w" '(evil-window-map :which-key "window")
-    "wm" #'delete-other-windows
-    "wd" #'evil-window-delete
 
     "s" '(:ignore t :which-key "search")
     "ss" #'helm-swoop-without-pre-input
@@ -153,6 +157,14 @@
     "jd" #'dired-jump
     "jD" #'dired-jump-other-window
     "jf" #'find-function
+    "jF" #'find-function-other-window
+    "jv" #'find-variable
+    "jV" #'find-variable-other-window
+    "je" '(:ignore t :which-key "emacs")
+    "jel" #'find-library
+    ;; "jel" #'lisp-find-map
+    "jm" #'view-echo-area-messages
+
 
     "/" #'helm-do-grep-ag
     "hc" #'describe-char
@@ -164,6 +176,7 @@
     "xt" '(:ignore t)
     "xtw" #'transpose-words))
 
+;; todo improve
 (use-package evil-mc
   :config
   (global-evil-mc-mode 1)
@@ -239,7 +252,7 @@
     "hF" #'helpful-function
     "hC" #'helpful-command)
 
-  (global-set-key helpful-at-point #'(kbd "C-c C-d")))
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
 (use-package evil-goggles
   :config
@@ -519,3 +532,37 @@
 	  (expand-file-name "custom.el" server-socket-dir)
 	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
 (load custom-file t)
+
+
+(use-package org-jira
+  :config
+  (make-directory "~/.org-jira")
+  (setf jiralib-url "https://singularity-test.atlassian.net")
+
+  )
+
+(use-package winner
+  :config
+  (winner-mode)
+  (general-def
+    evil-window-map
+    "u" #'winner-undo
+    "r" #'winner-redo))
+
+(use-package apropos
+  :config
+  (general-def
+    :states '(normal motion)
+    ",da"
+    `(,(let ((map (make-sparse-keymap "apropos")))
+	 (define-key map "v" #'apropos-variable)
+	 (define-key map "V" #'apropos-value)
+	 (define-key map "l" #'apropos-library)
+	 (define-key map "L" #'apropos-local-value)
+	 (define-key map "d" #'apropos-documentation)
+	 (define-key map "D" #'apropos-documentation-property)
+	 (define-key map "f" #'apropos-command)
+	 (define-key map "r" #'apropos-read-pattern)
+	 (define-key map "u" #'apropos-user-option)
+	map)
+     :which-key "apropos")))
