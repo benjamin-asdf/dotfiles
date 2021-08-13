@@ -21,8 +21,14 @@
     (s-split-up-to ":" el 2)))
     arg))
 
+(defun mememacs/helm-ag-this-dir ()
+  (interactive)
+  (when default-directory
+    (helm-do-ag default-directory)))
+
 (mememacs/leader-def
-  "/" #'helm-projectile-ag)
+  "/" #'helm-projectile-ag
+  "sd" #'mememacs/helm-ag-this-dir)
 
 
 

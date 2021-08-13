@@ -130,6 +130,8 @@
 
     "b" '(:ignore t :which-key "b..")
     "bd" #'kill-this-buffer
+    "be" #'erase-buffer
+    "bw" #'toggle-read-only
     "bb" #'helm-mini
     "b." #'hydra-buffer/body
 
@@ -155,7 +157,12 @@
     "/" #'helm-do-grep-ag
     "hc" #'describe-char
     "hm" #'describe-mode
-    "hi" #'helm-info-emacs))
+    "hi" #'helm-info-emacs
+
+    "x" '(:ignore t :which-key "text")
+    "xi" #'indent-region
+    "xt" '(:ignore t)
+    "xtw" #'transpose-words))
 
 (use-package evil-mc
   :config
@@ -200,8 +207,7 @@
   :ensure nil
   :config
   (general-def
-    :keymap 'debugger-mode-map
-    :state '(normal motion)
+    debugger-mode-map
     "." #'backtrace-expand-ellipses
     "+" #'backtrace-multi-line
     "-" #'backtrace-single-line))
@@ -233,7 +239,7 @@
     "hF" #'helpful-function
     "hC" #'helpful-command)
 
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
+  (global-set-key helpful-at-point #'(kbd "C-c C-d")))
 
 (use-package evil-goggles
   :config
@@ -376,7 +382,7 @@
 
 ;; lispy kill new before lispy delete but only in special
 
-(use-package cider)
+(use-package cider :ensure nil)
 
 (use-package flycheck)
 
@@ -487,7 +493,6 @@
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
 
-
 ;; org
 
 ;; lispy mood line
@@ -495,3 +500,22 @@
 ;; pretty print
 
 ;;  nerd commenter
+
+;; c-i and c-o should be more intuitive
+
+
+;; no littering
+
+;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+;; Use no-littering to automatically set common paths to the new user-emacs-directory
+(use-package no-littering)
+
+;; Keep customization settings in a temporary file (thanks Ambrevar!)
+(setq custom-file
+      (if (boundp 'server-socket-dir)
+	  (expand-file-name "custom.el" server-socket-dir)
+	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+(load custom-file t)

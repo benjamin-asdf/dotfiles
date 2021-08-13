@@ -1,9 +1,14 @@
 ;;; Functions-1
 
+(defvar mememacs/config-dir
+  (expand-file-name "~/.emacs-mememacs.d/"))
+
 (defun mememacs/find-init-file ()
   "Open current init file."
   (interactive)
-  (find-file (expand-file-name (concat user-emacs-directory "init.el"))))
+  (find-file
+   (expand-file-name
+    (concat mememacs/config-dir "init.el"))))
 
 (defun mememacs/copy-dir-name-name-as-kill-dwim ()
   ""
@@ -88,5 +93,7 @@ See `eval-last-sexp'."
   "bm" #'mememacs/switch-to-message-buffer
   "bR" #'mememacs/ghetto-kill-and-open-buffer
   "br" #'revert-buffer)
+
+
 
 (provide 'functions-1)
