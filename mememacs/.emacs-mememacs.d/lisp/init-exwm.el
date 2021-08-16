@@ -63,6 +63,9 @@
 (exwm-input-set-key (kbd "s-D") #'kill-this-buffer)
 (exwm-input-set-key (kbd "s-b") #'list-buffers)
 (exwm-input-set-key (kbd "s-f") #'find-file)
+(exwm-input-set-key (kbd "s-d") 'evil-window-map)
+
+(define-key evil-window-map "w" )
 
 (when (require 'functions)
   (exwm-input-set-key (kbd "s-\\") 'ambrevar/toggle-window-split)

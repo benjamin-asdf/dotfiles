@@ -252,5 +252,6 @@
 
 (global-visual-line-mode)
 
+(add-hook 'after-save-hook 'check-parens)
 
 (provide 'main)

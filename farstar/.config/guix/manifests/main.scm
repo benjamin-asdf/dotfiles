@@ -3,9 +3,6 @@
  '(
    ;; "emacs-native-comp"
    "emacs-desktop-environment"
-
-   ;; "emacs-cider"
-
    "mpv"
    "sicp"
    "node"
@@ -13,7 +10,6 @@
    "scrot"
    "unclutter"
    "openjdk"
-
    ;; "clojure"
    "clojure-tools"
    "leiningen"
@@ -28,13 +24,10 @@
    "setxkbmap"
    "curl"
    "gnupg"
-
-
    "redshift"
-
    "stow"
    "password-store"
-
+   "pkg-config"
    "unzip"
    "xbindkeys"
    "xcape"
@@ -42,7 +35,6 @@
    "xdg-utils"
    "xdotool"
    "xdpyinfo"
-
    "wget"
 
    "xkill"

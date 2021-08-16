@@ -1,0 +1,9 @@
+# ln -f ~/dotfiles/exwm/exwm/exwm.desktop /usr/share/xsessions/exwm.desktop
+[Desktop Entry]
+Name=exwm
+Comment=Emacs Window Manager
+Exec=sh /home/benj/exwm/start-exwm.sh
+TryExec=sh
+Type=Application
+X-LightDM-DesktopName=best-exwm
+DesktopNames=best-exwm

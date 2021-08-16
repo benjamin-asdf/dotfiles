@@ -147,6 +147,8 @@
     "ff" #'helm-find-files
     "fr" #'helm-recentf
 
+    "u" #'undo-tree-visualize
+
     "w" '(evil-window-map :which-key "window")
 
     "s" '(:ignore t :which-key "search")
@@ -536,10 +538,14 @@
 
 (use-package org-jira
   :config
-  (make-directory "~/.org-jira")
-  (setf jiralib-url "https://singularity-test.atlassian.net")
+  (unless (file-exists-p "~/.org-jira")
+    (make-directory "~/.org-jira"))
+  (setf jiralib-use-restapi t)
+  (setf jiralib-token nil)
+  (setf jiralib-user-login-name "benjamin schwerdtner")
+  (setf jiralib-url "https://singularity-test.atlassian.net"))
 
-  )
+
 
 (use-package winner
   :config
@@ -549,9 +555,7 @@
     "u" #'winner-undo
     "r" #'winner-redo))
 
-(use-package apropos
-  :config
-  (general-def
+(general-def
     :states '(normal motion)
     ",da"
     `(,(let ((map (make-sparse-keymap "apropos")))
@@ -562,7 +566,27 @@
 	 (define-key map "d" #'apropos-documentation)
 	 (define-key map "D" #'apropos-documentation-property)
 	 (define-key map "f" #'apropos-command)
-	 (define-key map "r" #'apropos-read-pattern)
 	 (define-key map "u" #'apropos-user-option)
 	map)
-     :which-key "apropos")))
+     :which-key "apropos"))
+
+
+
+;; todo nyxt auto clone github page
+
+;; (use-package slime
+;;   (setq inferior-lisp-program "sbcl"))
+
+
+;; pprint
+
+;; redshank
+;; maybe don't need it because lispy
+
+;; elp
+;; memory-use-counts
+;; instrument package
+;; epl results
+
+
+;; figure out where the code is for guix packages
