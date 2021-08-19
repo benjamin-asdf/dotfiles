@@ -395,6 +395,8 @@ returning a string."
 ;;   :keymaps 'helm-find-files-map
 ;;   )
 
-
+(mememacs/leader-def
+  "ji" #'helm-imenu
+  "jI" #'helm-imenu-in-all-buffers)
 
 (provide 'init-helm)

@@ -65,8 +65,6 @@
 (exwm-input-set-key (kbd "s-f") #'find-file)
 (exwm-input-set-key (kbd "s-d") 'evil-window-map)
 
-(define-key evil-window-map "w" )
-
 (when (require 'functions)
   (exwm-input-set-key (kbd "s-\\") 'ambrevar/toggle-window-split)
   (exwm-input-set-key (kbd "s-H") 'ambrevar/swap-windows-left)

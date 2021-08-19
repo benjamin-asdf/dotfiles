@@ -59,6 +59,14 @@
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 
+;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+;; Use no-littering to automatically set common paths to the new user-emacs-directory
+(use-package no-littering)
+
+
 
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
@@ -132,7 +140,12 @@
   (mememacs/leader-def
     "SPC" #'helm-M-x
     "t" '(:ignore t)
-    "n" #'line-number-mode
+    "n" '(:ignore t)
+    "nn" #'display-line-numbers-mode
+    "nw" #'widen
+    "nd" #'narrow-to-defun
+    "nr" #'narrow-to-region
+
 
     "b" '(:ignore t :which-key "b..")
     "bd" #'kill-this-buffer
@@ -178,10 +191,25 @@
     "xt" '(:ignore t)
     "xtw" #'transpose-words))
 
+
 ;; todo improve
 (use-package evil-mc
   :config
   (global-evil-mc-mode 1)
+
+  (add-hook
+   'mememacs/escape-functions
+   #'evil-mc-undo-all-cursors)
+
+  (general-def
+    :states '(normal visual)
+    :keymap 'evil-mc-key-map
+    "gr" '(evil-mc-cursors-map)
+    "M-n" 'evil-mc-make-and-goto-next-cursor
+    "M-p" 'evil-mc-make-and-goto-prev-cursor
+    "C-n" 'evil-mc-make-and-goto-next-match
+    "C-t" 'evil-mc-skip-and-goto-next-match
+    "C-p" 'evil-mc-make-and-goto-prev-match)
 
   (defhydra hydra-evil-mc ()
     "mc"
@@ -197,7 +225,8 @@
     "gn" #'hydra-evil-mc/body)
 
   (mememacs/leader-def
-    "gn" '(evil-mc-key-map :which-key "mc"))
+    "gn"
+    '(evil-mc-key-map :which-key "mc"))
 
   (defun mememacs/disable-evil-mc-mode ()
     (evil-mc-mode -1))
@@ -234,6 +263,10 @@
   (setf evil-collection-mode-list
 	(remove 'lispy evil-collection-mode-list))
   (evil-collection-init))
+
+(use-package exwm
+  :config
+  (require 'init-exwm))
 
 (require 'functions)
 (require 'main)
@@ -325,10 +358,6 @@
   ;; https://github.com/flexibeast/pulseaudio-control/issues/7
   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
 
-(use-package exwm
-  :config
-  (require 'init-exwm))
-
 ;; (use-package emacs-desktop-environment)
 
 (use-package macrostep
@@ -336,7 +365,10 @@
   (general-def
     :states '(normal motion)
     :keymaps 'emacs-lisp-mode-map
-    ",m" #'macrostep-expand))
+    ",m" #'macrostep-expand)
+  (add-hook
+   'mememacs/escape-functions
+   #'macrostep-collapse-all))
 
 (use-package lispy
   :ensure t
@@ -350,8 +382,7 @@
 
 (use-package lispyville
   :after lispy
-  :config (require 'init-lispyville)
-  )
+  :config (require 'init-lispyville))
 
 (use-package which-key
   :config
@@ -428,17 +459,24 @@
 
 (use-package symbol-overlay
   :config
+  (add-hook
+   'mememacs/escape-functions
+   #'symbol-overlay-remove-all)
 
 
-  (defhydra hydra-symbol-overlay ()
-    "smbol overlay"
-    ("o" #'symbol-overlay-put)
-    ("j" #'symbol-overlay-jump-next)
-    ("k" #'symbol-overlay-jump-prev)
-    ("m" #'symbol-overlay-mode)
-    ("a" #'symbol-overlay-maybe-put-temp)
-    ("O" #'symbol-overlay-remove-all)
-    ("n" #'symbol-overlay-jump-next))
+
+  (mememacs/leader-def
+    "so" 'symbol-overlay-map)
+
+  ;; (defhydra hydra-symbol-overlay ()
+  ;;   "smbol overlay"
+  ;;   ("o" #'symbol-overlay-put)
+  ;;   ("j" #'symbol-overlay-jump-next)
+  ;;   ("k" #'symbol-overlay-jump-prev)
+  ;;   ("m" #'symbol-overlay-mode)
+  ;;   ("a" #'symbol-overlay-maybe-put-temp)
+  ;;   ("O" #'symbol-overlay-remove-all)
+  ;;   ("n" #'symbol-overlay-jump-next))
 
   ;; todo
 
@@ -455,8 +493,9 @@
   ;; (mm/wrap-symb-ov-hydra
   ;;  #'symbol-overlay-put)
 
-  (mememacs/leader-def
-    "so" #'hydra-symbol-overlay/body))
+  ;; (mememacs/leader-def
+  ;;   "so" #'hydra-symbol-overlay/body)
+  )
 
 (use-package persistent-scratch
   :config
@@ -519,14 +558,6 @@
 ;; c-i and c-o should be more intuitive
 
 
-;; no littering
-
-;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
-(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
-      url-history-file (expand-file-name "url/history" user-emacs-directory))
-
-;; Use no-littering to automatically set common paths to the new user-emacs-directory
-(use-package no-littering)
 
 ;; Keep customization settings in a temporary file (thanks Ambrevar!)
 (setq custom-file
@@ -570,8 +601,6 @@
 	map)
      :which-key "apropos"))
 
-
-
 ;; todo nyxt auto clone github page
 
 ;; (use-package slime
@@ -588,5 +617,6 @@
 ;; instrument package
 ;; epl results
 
-
 ;; figure out where the code is for guix packages
+
+(use-package jdee)

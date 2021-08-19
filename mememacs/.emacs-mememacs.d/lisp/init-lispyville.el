@@ -57,6 +57,8 @@ replace the expression with its result."
   (kbd "C-j") #'lispyville-drag-forward
   (kbd "C-k") #'lispyville-drag-backward
 
+  (kbd "C-d") #'lispy-kill-at-point
+
 
   (kbd "M-L") #'lispy-move-right
   (kbd "C-x C-e") #'ambrevar/lispy-eval
@@ -67,7 +69,7 @@ replace the expression with its result."
   (kbd "C-1") #'lispy-describe-inline
   (kbd "C-2") #'lispy-arglist-inline
 
-  ;;;;;;;;
+;;;;;;;;
   (kbd "C-4") #'lispy-x
   (kbd "gd") #'lispy-goto-symbol
   ;; (kbd "M-<backspace>") 'lispyville-delete-backward-word

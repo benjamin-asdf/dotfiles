@@ -43,7 +43,22 @@
 
 (defun mememacs/mkstr (obj)
   (with-output-to-string
-    (princ obj)))
+    (prin1 obj)))
+
+(defun mememacs/eval-and-set-test-fn (arg)
+  "Eval and bind defun to leader-tt. With ARG ask for key "
+  (interactive "P")
+  (general-define-key
+   :keymaps
+   '(normal insert visual emacs)
+   :prefix "SPC" :global-prefix "C-SPC"
+   (concat
+    "t"
+    (if arg
+	(read-from-minibuffer
+	 "Test key bind: ")
+      "t"))
+   (eval-defun nil)))
 
 (defun mememacs/eval-last-sexp-dwim (arg)
   "Eval last sexp.
@@ -58,6 +73,7 @@ See `eval-last-sexp'."
 	  (eval-last-sexp arg))
       (eval-last-sexp arg))))
 
+;; local eval
 (general-def
   :states '(normal motion)
   "," nil
@@ -69,12 +85,13 @@ See `eval-last-sexp'."
   ",ee" #'mememacs/eval-last-sexp-dwim
   ",et" #'toggle-debug-on-error
   ",eq" #'toggle-debug-on-quit
+  ",eo" #'mememacs/eval-and-set-test-fn
   ",d" '(:ignore t :which-key "devel")
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dt" #'trace-function
   ",dx" #'mememacs/cancel-debugs
-  ;; ",df"
+
   ;; `(,(let ((map (make-sparse-keymap "find elisp stuff")))
   ;;      (define-key map "v" #'find-variable)
   ;;      (define-key map "V" #'apropos-value)
@@ -109,5 +126,36 @@ See `eval-last-sexp'."
   "br" #'revert-buffer)
 
 
+
+(defvar mememacs/escape-functions '())
+(defun mememacs/escape ()
+  "Run `mememacs/escape-functions'"
+  (interactive)
+  (run-hooks 'mememacs/escape-functions))
+
+(general-def
+  "S-<escape>"
+  #'mememacs/escape)
+
+
+
+(defun mm/toggle-when-unless ()
+  (interactive)
+  (skip-chars-backward "^(")
+  (forward-char -1)
+  (when-let* ((lst (sexp-at-point))
+	      (lst
+	       (cond
+		((eq (car-safe lst) 'when)
+		 (pop lst)
+		 `(unless ,(cadar lst) ,@(cdr lst)))
+		((eq (car-safe lst) 'unless)
+		 (pop lst)
+		 `(when (not ,(car lst)) ,@(cdr lst))))))
+    (delete-region
+     (point)
+     (save-excursion
+       (forward-list)))
+    (insert (mememacs/mkstr lst))))
 
 (provide 'functions-1)
