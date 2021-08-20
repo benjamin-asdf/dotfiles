@@ -1,5 +1,7 @@
 ;;; Functions-1
 
+;;; -*- lexical-binding: t; -*-
+
 (defvar mememacs/config-dir
   (expand-file-name "~/.emacs-mememacs.d/"))
 
@@ -157,5 +159,30 @@ See `eval-last-sexp'."
      (save-excursion
        (forward-list)))
     (insert (mememacs/mkstr lst))))
+
+
+(defvar mememacs/lisp-map
+  (make-sparse-keymap "lisp"))
+
+(general-create-definer
+  mememacs/lisp-def
+  :keymapcs '(normal insert visual emacs)
+  :prefix ",k"
+  :global-prefix "C-,k"
+  mememacs/lisp-map)
+
+(defun mememacs/jump-eshell ()
+  (interactive)
+  (let* ((dir default-directory)
+	 (cd-shell
+	  (lambda ()
+            (goto-char (point-max))
+	    (insert
+	     (format "cd %s" (shell-quote-argument dir)))
+	    (eshell-send-input))))
+    (eshell)
+    (funcall cd-shell)))
+
+(mememacs/leader-def "je" #'mememacs/jump-eshell)
 
 (provide 'functions-1)

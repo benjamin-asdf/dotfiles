@@ -287,7 +287,7 @@
     "hF" #'helpful-function
     "hC" #'helpful-command)
 
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
+  (general-def "C-c C-d" #'helpful-at-point))
 
 (use-package evil-goggles
   :config
@@ -364,7 +364,8 @@
   :config
   (general-def
     :states '(normal motion)
-    :keymaps 'emacs-lisp-mode-map
+    :keymaps '(emacs-lisp-mode-map
+	       lisp-interaction-mode-map)
     ",m" #'macrostep-expand)
   (add-hook
    'mememacs/escape-functions
@@ -463,39 +464,19 @@
    'mememacs/escape-functions
    #'symbol-overlay-remove-all)
 
-
-
   (mememacs/leader-def
-    "so" 'symbol-overlay-map)
+    "so" '(:ignore t :which-key "symbol overlay")
+    "soo" #'symbol-overlay-put
+    "son" #'symbol-overlay-switch-forward
+    "sop" #'symbol-overlay-switch-backward
+    "som" #'symbol-overlay-mode
+    "soh" (defun show-symbol-overlay-map ()
+	    (interactive)
+	    (which-key-show-keymap 'symbol-overlay-map)))
 
-  ;; (defhydra hydra-symbol-overlay ()
-  ;;   "smbol overlay"
-  ;;   ("o" #'symbol-overlay-put)
-  ;;   ("j" #'symbol-overlay-jump-next)
-  ;;   ("k" #'symbol-overlay-jump-prev)
-  ;;   ("m" #'symbol-overlay-mode)
-  ;;   ("a" #'symbol-overlay-maybe-put-temp)
-  ;;   ("O" #'symbol-overlay-remove-all)
-  ;;   ("n" #'symbol-overlay-jump-next))
-
-  ;; todo
-
-  ;; (defmacro mm/wrap-symb-ov-hydra (cmd)
-  ;;   `(defun ,(symbol-name (concat
-  ;; 			   (mememacs/mkstr
-  ;; 			    (cadr cmd))
-  ;; 			   "-and-hydra"))
-  ;; 	 ()
-  ;;      (interactive)
-  ;;      (call-interactively ,cmd)
-  ;;      (hydra-symbol-overlay/body)))
-
-  ;; (mm/wrap-symb-ov-hydra
-  ;;  #'symbol-overlay-put)
-
-  ;; (mememacs/leader-def
-  ;;   "so" #'hydra-symbol-overlay/body)
-  )
+  (general-def
+    'symbol-overlay-map
+    "h" nil))
 
 (use-package persistent-scratch
   :config
@@ -601,6 +582,27 @@
 	map)
      :which-key "apropos"))
 
+
+(use-package yasnippet
+  :defer 20
+  :demand t
+  :config
+  (add-to-list
+   'yas-snippet-dirs
+   (concat mememacs/config-dir "snippets"))
+  (add-hook
+   'prog-mode-hook
+   #'yas-minor-mode-on)
+  (add-to-list
+   'hippie-expand-try-functions-list
+   #'yas-expand-from-trigger-key))
+
+(use-package yasnippet-snippets
+  :after yasnippet
+  :config
+  (yasnippet-snippets-initialize))
+
+
 ;; todo nyxt auto clone github page
 
 ;; (use-package slime
@@ -617,6 +619,12 @@
 ;; instrument package
 ;; epl results
 
+
+
+;; todo company remove icons
+
 ;; figure out where the code is for guix packages
+
+
 
 (use-package jdee)
