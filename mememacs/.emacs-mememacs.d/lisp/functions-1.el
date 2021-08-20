@@ -22,14 +22,6 @@
   "fe" #'mememacs/find-init-file
   "fD" #'mememacs/copy-dir-name-name-as-kill-dwim)
 
-(defun mememacs/switch-to-scratch-buffer ()
-  (interactive)
-  (switch-to-buffer
-   (get-buffer-create
-     "*scratch*")))
-
-(mememacs/leader-def
-  "bs" #'mememacs/switch-to-scratch-buffer)
 
 (defun mememacs/lispy-eval-line ()
   (interactive)
@@ -184,5 +176,32 @@ See `eval-last-sexp'."
     (funcall cd-shell)))
 
 (mememacs/leader-def "je" #'mememacs/jump-eshell)
+
+(defun mm/magit-kill-origin-url (&optional arg)
+  (interactive "p")
+  (kill-new
+   (magit-git-string
+    "remote"
+    "get-url"
+    (if arg
+	(magit-read-remote "kill url from: ")
+      "origin"))))
+
+;; thanks john https://github.com/jwiegley/dot-emacs.git
+
+(defun scratch ()
+  (interactive)
+  (let ((current-mode major-mode))
+    (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
+    (goto-char (point-min))
+    (when (looking-at ";")
+      (forward-line 4)
+      (delete-region (point-min) (point)))
+    (goto-char (point-max))
+    (when (memq current-mode '(emacs-lisp-mode))
+      (funcall current-mode))))
+
+(mememacs/leader-def "bs" #'scratch)
+
 
 (provide 'functions-1)

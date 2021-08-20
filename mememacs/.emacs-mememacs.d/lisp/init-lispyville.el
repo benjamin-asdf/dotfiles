@@ -148,5 +148,30 @@ replace the expression with its result."
                   (lispy-fill :face evil-goggles-fill-and-move-face :switch evil-goggles-enable-fill-and-move :advice evil-goggles--generic-async-advice))))
   (evil-goggles-mode))
 
+(with-eval-after-load 'cider
+  (setf
+   cider-jack-in-dependencies
+   (delete-dups
+    (append
+     cider-jack-in-dependencies
+     lispy-cider-jack-in-dependencies))))
+
+;; also fix cljs
+
+
+
+(general-def
+  :keymaps '(lispy-mode-map)
+  :states '(normal motion)
+  :prefix "SPC"
+  "kf" #'lispy-flow
+  "kF" #'lispyville-end-of-defun
+  "kl" #'lispy-forward
+  "km" (lispyville-wrap-command lispy-mark-symbol special)
+
+
+  )
+
+
 
 (provide 'init-lispyville)

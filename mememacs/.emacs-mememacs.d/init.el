@@ -189,7 +189,10 @@
     "x" '(:ignore t :which-key "text")
     "xi" #'indent-region
     "xt" '(:ignore t)
-    "xtw" #'transpose-words))
+    "xtw" #'transpose-words
+
+    "p" '(:ignore t :which-key "procs..")
+    "pa" #'list-processes))
 
 
 ;; todo improve
@@ -429,7 +432,8 @@
 
 ;; lispy kill new before lispy delete but only in special
 
-(use-package cider :ensure nil)
+(use-package cider :ensure nil
+  )
 
 (use-package flycheck)
 
@@ -626,5 +630,8 @@
 ;; figure out where the code is for guix packages
 
 
+
+(general-def
+  )
 
 (use-package jdee)
