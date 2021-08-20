@@ -203,5 +203,17 @@ See `eval-last-sexp'."
 
 (mememacs/leader-def "bs" #'scratch)
 
+(defun mememacs/process-menu-switch-to-buffer ()
+  (interactive)
+  (-some->>
+      (tabulated-list-get-id)
+    (process-buffer)
+    (switch-to-buffer)))
+
+(general-def
+  :states '(normal motion)
+  :keymaps '(process-menu-mode-map)
+  "b"
+  #'mememacs/process-menu-switch-to-buffer)
 
 (provide 'functions-1)

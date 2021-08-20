@@ -128,9 +128,8 @@
 
   (general-create-definer
     mememacs/comma-def
-    :keymaps '(normal insert visual emacs)
-    :prefix ","
-    :global-prefix "C-,")
+    :keymaps '(normal visual emacs)
+    :prefix ",")
 
   (general-def
     evil-window-map
@@ -361,18 +360,16 @@
   ;; https://github.com/flexibeast/pulseaudio-control/issues/7
   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
 
-;; (use-package emacs-desktop-environment)
-
 (use-package macrostep
   :config
-  (general-def
-    :states '(normal motion)
-    :keymaps '(emacs-lisp-mode-map
-	       lisp-interaction-mode-map)
-    ",m" #'macrostep-expand)
+  (mememacs/comma-def
+    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
+    "m" #'macrostep-expand)
   (add-hook
    'mememacs/escape-functions
    #'macrostep-collapse-all))
+
+;; (use-package emacs-desktop-environment)
 
 (use-package lispy
   :ensure t
@@ -432,7 +429,25 @@
 
 ;; lispy kill new before lispy delete but only in special
 
-(use-package cider :ensure nil
+(use-package cider
+  :ensure nil
+  :config
+
+  (defun mememacs/cider-macroexpand-at-place ()
+    (interactive)
+    (lispy-forward 1)
+    (forward-line 1)
+    (cider-macroexpand-1-inplace))
+
+  (add-hook
+   'mememacs/escape-functions
+   #'cider-macroexpand-undo)
+
+  (mememacs/comma-def
+    :keymaps '(clojure-mode-map cider-repl-mode)
+    "m" #'mememacs/cider-macroexpand-at-place)
+
+
   )
 
 (use-package flycheck)
@@ -631,7 +646,6 @@
 
 
 
-(general-def
-  )
+;; (general-def)
 
 (use-package jdee)
