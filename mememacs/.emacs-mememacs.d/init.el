@@ -74,6 +74,15 @@
 ;; Use no-littering to automatically set common paths to the new user-emacs-directory
 (use-package no-littering)
 
+(use-package keychain-environment
+    :straight  (:host github
+                      :repo "tarsius/keychain-environment")
+    :demand t
+    :init
+    (progn
+      (keychain-refresh-environment)
+      (auth-source-pass-enable)))
+
 
 
 ;; ;;; Local config.  See below for an example usage.
