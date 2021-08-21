@@ -216,6 +216,9 @@
 
     "p" '(:ignore t :which-key "procs..")
     "pa" #'list-processes
+
+    (kbd "<tab>") #'ambrevar/switch-to-last-buffer
+
     )
 
   (general-def
