@@ -6,8 +6,3 @@
  ("doom" . ((user-emacs-directory . ".emacs-doom.d")
             (straight-p . t)
             (env . (("DOOMDIR" . "~/doom-config"))))))
-
-
-
-
-
