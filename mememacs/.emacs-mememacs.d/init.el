@@ -560,7 +560,10 @@
   (mememacs/leader-def
     "ju" #'link-hint-open-link))
 
+
+
 (use-package guix
+  :when mememacs/enable-guix
   :defer t
   :init
   (mememacs/leader-def
