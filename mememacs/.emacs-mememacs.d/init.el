@@ -42,7 +42,16 @@
 ;;   (package-initialize))
 
 
+(defvar mememacs/use-exwm (getenv "MEMEMACS_EXWM"))
+(defvar mememacs/enable-guix nil)
+
+(load
+ (expand-file-name "local-before.el" user-emacs-directory) 'no-err)
+
+
+
 (straight-use-package 'use-package)
+
 
 (require 'use-package)
 (setf
@@ -289,9 +298,18 @@
 
 
 (use-package exwm
-  :when (getenv "MEMEMACS_EXWM")
+  :when mememacs/use-exwm
+  :ensure nil
   :config
   (require 'init-exwm))
+
+(unless mememacs/use-exwm
+  (general-def
+    "s-h" #'windmove-left
+    "s-l" #'windmove-right
+    "s-k" #'windmove-up
+    "s-j" #'windmove-down))
+
 
 (require 'functions)
 (require 'utils)

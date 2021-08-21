@@ -8,3 +8,9 @@
 
 
   
+* org projectile
+  
+* org
+** org roam  
+
+* markdown
