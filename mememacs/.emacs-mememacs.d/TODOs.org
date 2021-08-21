@@ -3,3 +3,8 @@
 
 
    
+* try to bind mod-j to mod-J in i3
+  and s-j in emacs
+
+
+  
