@@ -18,7 +18,12 @@
   (kill-new
    (file-name-directory (expand-file-name default-directory))))
 
+(defun mememacs/kill-buffer-name ()
+  (interactive)
+  (kill-new (buffer-name)))
+
 (mememacs/leader-def
+  "by" #'mememacs/kill-buffer-name
   "fe" #'mememacs/find-init-file
   "fD" #'mememacs/copy-dir-name-name-as-kill-dwim)
 
@@ -33,7 +38,11 @@
   (interactive)
   (cancel-debug-on-entry)
   (cancel-debug-on-variable-change)
-  (untrace-all))
+  (untrace-all)
+  (-some->>
+      (get-buffer "*trace-output*")
+    (kill-buffer-and-window))
+  (message ""))
 
 (defun mememacs/mkstr (obj)
   (with-output-to-string
@@ -72,33 +81,29 @@ See `eval-last-sexp'."
   :states '(normal motion)
   "," nil
   ",e" '(:ignore t :which-key "eval")
-  ",el" #'mememacs/lispy-eval-line
-  ",ef" #'eval-defun
-  ",eb" #'eval-buffer
-  ",ed" #'edebug-defun
-  ",ee" #'mememacs/eval-last-sexp-dwim
-  ",et" #'toggle-debug-on-error
-  ",eq" #'toggle-debug-on-quit
-  ",eo" #'mememacs/eval-and-set-test-fn
   ",d" '(:ignore t :which-key "devel")
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dt" #'trace-function
-  ",dx" #'mememacs/cancel-debugs
+  ",de" #'toggle-debug-on-error
+  ",dq" #'toggle-debug-on-quit
+  ",dx" #'mememacs/cancel-debugs)
 
-  ;; `(,(let ((map (make-sparse-keymap "find elisp stuff")))
-  ;;      (define-key map "v" #'find-variable)
-  ;;      (define-key map "V" #'apropos-value)
-  ;;      (define-key map "l" #'apropos-library)
-  ;;      (define-key map "L" #'apropos-local-value)
-  ;;      (define-key map "d" #'apropos-documentation)
-  ;;      (define-key map "D" #'apropos-documentation-property)
-  ;;      (define-key map "f" #'apropos-command)
-  ;;      (define-key map "r" #'apropos-read-pattern)
-  ;;      (define-key map "u" #'apropos-user-option)
-  ;;      map)
-  ;;   :which-key "find")
-  )
+(mememacs/comma-def
+  :keymaps '(emacs-lisp-mode-map
+	     lisp-interaction-mode-map)
+  "e"
+  `(,(let ((map (make-sparse-keymap "emacs-lisp")))
+       (general-def
+	 map
+	 "l" #'mememacs/lispy-eval-line
+	 "f" #'eval-defun
+	 "b" #'eval-buffer
+	 "d" #'edebug-defun
+	 "e" #'mememacs/eval-last-sexp-dwim
+	 "o" #'mememacs/eval-and-set-test-fn)
+       map)
+    :which-key "emacs lisp"))
 
 (defun mememacs/switch-to-message-buffer ()
   ""
@@ -153,15 +158,15 @@ See `eval-last-sexp'."
     (insert (mememacs/mkstr lst))))
 
 
-(defvar mememacs/lisp-map
-  (make-sparse-keymap "lisp"))
+;; (defvar mememacs/lisp-map
+;;   (make-sparse-keymap "lisp"))
 
-(general-create-definer
-  mememacs/lisp-def
-  :keymapcs '(normal insert visual emacs)
-  :prefix ",k"
-  :global-prefix "C-,k"
-  mememacs/lisp-map)
+;; (general-create-definer
+;;   mememacs/lisp-def
+;;   :keymaps '(normal insert visual emacs)
+;;   :prefix ",k"
+;;   :global-prefix "C-,k"
+;;   mememacs/lisp-map)
 
 (defun mememacs/jump-eshell ()
   (interactive)
@@ -215,5 +220,6 @@ See `eval-last-sexp'."
   :keymaps '(process-menu-mode-map)
   "b"
   #'mememacs/process-menu-switch-to-buffer)
+
 
 (provide 'functions-1)

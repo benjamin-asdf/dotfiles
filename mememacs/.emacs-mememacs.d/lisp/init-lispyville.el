@@ -9,8 +9,12 @@ replace the expression with its result."
       (lispy-eval-and-replace)
     (call-interactively #'lispy-eval)))
 
-(setq lispyville-motions-put-into-special t)
-(setq lispyville-commands-put-into-special t)
+(setf
+ lispyville-motions-put-into-special t
+ lispyville-commands-put-into-special t
+ lispy-no-permanent-semantic t
+ lispy-occur-backend 'helm
+ lispy-x-default-verbosity 1)
 
 (lispyville--define-key 'insert
   (kbd "<backspace>") 'lispy-delete-backward
@@ -156,7 +160,7 @@ replace the expression with its result."
      cider-jack-in-dependencies
      lispy-cider-jack-in-dependencies))))
 
-;; also fix cljs
+(defalias 'lispy--remember #'evil--jumps-push)
 
 
 

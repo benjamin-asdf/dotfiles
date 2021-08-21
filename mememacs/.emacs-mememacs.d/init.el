@@ -97,7 +97,11 @@
   (define-key evil-normal-state-map "U" #'evil-redo)
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
+
+  (defadvice evil-show-registers
+      (after mm/evil-show-registers-adv activate)
+    (text-mode)))
 
 (use-package hydra
   :config
@@ -128,7 +132,7 @@
 
   (general-create-definer
     mememacs/comma-def
-    :keymaps '(normal visual emacs)
+    :states '(normal visual emacs)
     :prefix ",")
 
   (general-def
@@ -168,12 +172,15 @@
     "sS" #'helm-swoop
 
     "j" '(:ignore t)
+    ;; "jr" #'
+
     "jd" #'dired-jump
     "jD" #'dired-jump-other-window
     "jf" #'find-function
     "jF" #'find-function-other-window
     "jv" #'find-variable
     "jV" #'find-variable-other-window
+    "jb" #'bookmark-jump
     "je" '(:ignore t :which-key "emacs")
     "jel" #'find-library
     ;; "jel" #'lisp-find-map
@@ -191,7 +198,18 @@
     "xtw" #'transpose-words
 
     "p" '(:ignore t :which-key "procs..")
-    "pa" #'list-processes))
+    "pa" #'list-processes
+    )
+
+  (general-def
+    "C-o" #'evil-jump-forward
+    "C-i" (defun jump-back ()
+	    (interactive)
+	    (let ((p (point)))
+	      (evil-jump-backward)
+	      (when (eq p (point))
+		(pop-tag-mark))))))
+
 
 
 ;; todo improve
@@ -204,8 +222,8 @@
    #'evil-mc-undo-all-cursors)
 
   (general-def
-    :states '(normal visual)
-    :keymap 'evil-mc-key-map
+    :states '(normal visual motion)
+    :keymaps '(evil-mc-key-map)
     "gr" '(evil-mc-cursors-map)
     "M-n" 'evil-mc-make-and-goto-next-cursor
     "M-p" 'evil-mc-make-and-goto-prev-cursor
@@ -215,12 +233,12 @@
 
   (defhydra hydra-evil-mc ()
     "mc"
-    ("n" #'evil-mc-make-and-goto-next-match)
-    ("j" #'evil-mc-make-cursor-move-next-line)
-    ("q" #'evil-mc-undo-all-cursors)
-    ("a" 'evil-mc-key-map)
-    ("k" #'evil-mc-undo-last-added-cursor)
-    ("p" #'evil-mc-find-prev-cursor))
+    ("n" #'evil-mc-make-and-goto-next-match "next match")
+    ("j" #'evil-mc-make-cursor-move-next-line "make line")
+    ("q" #'evil-mc-undo-all-cursors "undo all")
+    ("a" 'evil-mc-key-map "...")
+    ("k" #'evil-mc-undo-last-added-cursor "undo last")
+    ("p" #'evil-mc-find-prev-cursor "prev"))
 
   (general-def
     :states '(normal visual)
@@ -232,13 +250,16 @@
 
   (defun mememacs/disable-evil-mc-mode ()
     (evil-mc-mode -1))
+
   (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
 
-  (defadvice evil-force-normal-state (before mm/evil-normal-state-maybe-delete-mc-cursors activ)
-    (when (and
-	   evil-mc-cursor-state
-	   (eq evil-state 'normal))
-      (evil-mc-undo-all-cursors))))
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/maybe-delete-mc-cursors ()
+       (when (and
+	      evil-mc-cursor-state
+	      (eq evil-state 'normal))
+	 (evil-mc-undo-all-cursors)))))
 
 (use-package hydra
   :config
@@ -271,6 +292,7 @@
   (require 'init-exwm))
 
 (require 'functions)
+(require 'utils)
 (require 'main)
 (require 'visual)
 (require 'functions-1)
@@ -287,9 +309,8 @@
     "hv" #'helpful-variable
     "hk" #'helpful-key
     "hF" #'helpful-function
-    "hC" #'helpful-command)
-
-  (general-def "C-c C-d" #'helpful-at-point))
+    "hC" #'helpful-command
+    "h." #'helpful-at-point))
 
 (use-package evil-goggles
   :config
@@ -309,14 +330,14 @@
 
 (use-package magit
   :defer t
+  :init
+  (mememacs/leader-def
+    "g" '(:ignore t :which-key "git")
+    "gs" #'magit-status)
   :config
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
   (require 'init-magit)
-
-  (mememacs/leader-def
-    "g" '(:ignore t :which-key "git")
-    "gs" #'magit-status)
 
   (add-hook 'git-commit-mode-hook
 	    (lambda ()
@@ -430,8 +451,12 @@
 ;; lispy kill new before lispy delete but only in special
 
 (use-package cider
-  :ensure nil
   :config
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/cider-macroexpand-undo ()
+     (when (in major-mode 'cider-mode 'cider-repl-mode)
+       (cider-macroexpand-undo))))
 
   (defun mememacs/cider-macroexpand-at-place ()
     (interactive)
@@ -439,16 +464,9 @@
     (forward-line 1)
     (cider-macroexpand-1-inplace))
 
-  (add-hook
-   'mememacs/escape-functions
-   #'cider-macroexpand-undo)
-
   (mememacs/comma-def
     :keymaps '(clojure-mode-map cider-repl-mode)
-    "m" #'mememacs/cider-macroexpand-at-place)
-
-
-  )
+    "m" #'mememacs/cider-macroexpand-at-place))
 
 (use-package flycheck)
 
@@ -567,17 +585,6 @@
 (load custom-file t)
 
 
-(use-package org-jira
-  :config
-  (unless (file-exists-p "~/.org-jira")
-    (make-directory "~/.org-jira"))
-  (setf jiralib-use-restapi t)
-  (setf jiralib-token nil)
-  (setf jiralib-user-login-name "benjamin schwerdtner")
-  (setf jiralib-url "https://singularity-test.atlassian.net"))
-
-
-
 (use-package winner
   :config
   (winner-mode)
@@ -590,17 +597,17 @@
     :states '(normal motion)
     ",da"
     `(,(let ((map (make-sparse-keymap "apropos")))
-	 (define-key map "v" #'apropos-variable)
-	 (define-key map "V" #'apropos-value)
-	 (define-key map "l" #'apropos-library)
-	 (define-key map "L" #'apropos-local-value)
-	 (define-key map "d" #'apropos-documentation)
-	 (define-key map "D" #'apropos-documentation-property)
-	 (define-key map "f" #'apropos-command)
-	 (define-key map "u" #'apropos-user-option)
-	map)
+	 (general-def map
+	   "v" #'apropos-variable
+	   "V" #'apropos-value
+	   "l" #'apropos-library
+	   "L" #'apropos-local-value
+	   "d" #'apropos-documentation
+	   "D" #'apropos-documentation-property
+	   "f" #'apropos-command
+	   "u" #'apropos-user-option)
+	 map)
      :which-key "apropos"))
-
 
 (use-package yasnippet
   :defer 20
@@ -616,19 +623,20 @@
    'hippie-expand-try-functions-list
    #'yas-expand-from-trigger-key))
 
+
 (use-package yasnippet-snippets
   :after yasnippet
   :config
   (yasnippet-snippets-initialize))
 
-
 ;; todo nyxt auto clone github page
+
 
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 
-
 ;; pprint
+
 
 ;; redshank
 ;; maybe don't need it because lispy
@@ -638,14 +646,23 @@
 ;; instrument package
 ;; epl results
 
-
-
 ;; todo company remove icons
+
+
 
 ;; figure out where the code is for guix packages
 
-
-
 ;; (general-def)
 
-(use-package jdee)
+
+
+;; (use-package jdee)
+
+(use-package org-jira
+  :config
+  (unless (file-exists-p "~/.org-jira")
+    (make-directory "~/.org-jira"))
+  (setf jiralib-use-restapi t)
+  (setf jiralib-token nil)
+  (setf jiralib-user-login-name "benjamin schwerdtner")
+  (setf jiralib-url "https://singularity-test.atlassian.net"))
