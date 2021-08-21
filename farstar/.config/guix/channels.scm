@@ -1,7 +1,7 @@
 (list
- (channel
-  (name 'benj-guix-channel)
-  (url "file:///home/benj/repos/benj-guix-channel"))
+ ;; (channel
+ ;;  (name 'benj-guix-channel)
+ ;;  (url "file:///home/benj/repos/benj-guix-channel"))
  (channel
   (name 'flat)
   (url "https://github.com/flatwhatson/guix-channel.git")

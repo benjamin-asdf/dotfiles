@@ -16,7 +16,6 @@
   (setq file-name-handler-alist default-file-name-handler-alist))
 (add-hook 'after-init-hook 'ambrevar/reset-file-name-handler-alist)
 
-
 ;;; Avoid the "loaded old bytecode instead of newer source" pitfall.
 (setq load-prefer-newer t)
 
@@ -205,11 +204,12 @@
     "C-o" #'evil-jump-forward
     "C-i" (defun jump-back ()
 	    (interactive)
+	    (when (in major-mode 'clojure-mode)
+	      (cider-pop-back))
 	    (let ((p (point)))
 	      (evil-jump-backward)
 	      (when (eq p (point))
 		(pop-tag-mark))))))
-
 
 
 ;; todo improve
@@ -287,7 +287,9 @@
 	(remove 'lispy evil-collection-mode-list))
   (evil-collection-init))
 
+
 (use-package exwm
+  :when (getenv "MEMEMACS_EXWM")
   :config
   (require 'init-exwm))
 
@@ -464,9 +466,22 @@
     (forward-line 1)
     (cider-macroexpand-1-inplace))
 
+
+
   (mememacs/comma-def
-    :keymaps '(clojure-mode-map cider-repl-mode)
-    "m" #'mememacs/cider-macroexpand-at-place))
+    :keymaps
+    '(clojure-mode-map cider-repl-mode)
+    "m" #'mememacs/cider-macroexpand-at-place
+
+    "e" '(cider-eval-commands-map
+	  :which-key "eval"))
+
+  (general-def
+    'cider-eval-commands-map
+    "L" #'cider-eval-sexp-at-point
+    "l" #'mememacs/lispy-eval-line)
+
+  )
 
 (use-package flycheck)
 
@@ -641,23 +656,6 @@
 ;; redshank
 ;; maybe don't need it because lispy
 
-;; elp
-;; memory-use-counts
-;; instrument package
-;; epl results
-
-;; todo company remove icons
-
-
-
-;; figure out where the code is for guix packages
-
-;; (general-def)
-
-
-
-;; (use-package jdee)
-
 (use-package org-jira
   :config
   (unless (file-exists-p "~/.org-jira")
@@ -666,3 +664,21 @@
   (setf jiralib-token nil)
   (setf jiralib-user-login-name "benjamin schwerdtner")
   (setf jiralib-url "https://singularity-test.atlassian.net"))
+
+;; elp
+;; memory-use-counts
+;; instrument package
+;; epl results
+
+
+
+;; todo company remove icons
+
+;; figure out where the code is for guix packages
+
+;; (general-def)
+
+;; (use-package jdee)
+
+
+;; fix helm ag "command attempted to use minibuffer"

@@ -39,9 +39,11 @@
   (cancel-debug-on-entry)
   (cancel-debug-on-variable-change)
   (untrace-all)
-  (-some->>
+  (-some-->
       (get-buffer "*trace-output*")
-    (kill-buffer-and-window))
+    (with-current-buffer
+	it
+	(kill-buffer-and-window)))
   (message ""))
 
 (defun mememacs/mkstr (obj)
@@ -76,7 +78,6 @@ See `eval-last-sexp'."
 	  (eval-last-sexp arg))
       (eval-last-sexp arg))))
 
-;; local eval
 (general-def
   :states '(normal motion)
   "," nil
@@ -97,9 +98,9 @@ See `eval-last-sexp'."
        (general-def
 	 map
 	 "l" #'mememacs/lispy-eval-line
-	 "f" #'eval-defun
+	 "d" #'eval-defun
 	 "b" #'eval-buffer
-	 "d" #'edebug-defun
+	 "D" #'edebug-defun
 	 "e" #'mememacs/eval-last-sexp-dwim
 	 "o" #'mememacs/eval-and-set-test-fn)
        map)
@@ -180,7 +181,7 @@ See `eval-last-sexp'."
     (eshell)
     (funcall cd-shell)))
 
-(mememacs/leader-def "je" #'mememacs/jump-eshell)
+(mememacs/leader-def "jE" #'mememacs/jump-eshell)
 
 (defun mm/magit-kill-origin-url (&optional arg)
   (interactive "p")
