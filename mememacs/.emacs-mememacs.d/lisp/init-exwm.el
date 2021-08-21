@@ -2,15 +2,8 @@
 
 ;;; When stating the client from .xinitrc, `save-buffer-kill-terminal' will
 ;;; force-kill Emacs before it can run through `kill-emacs-hook'.
-(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 
-;;; REVIEW: Athena+Xaw3d confuses xcape when binding Caps-lock to both L_Ctrl
-;;; escape, in which case it will procude <C-escape> in Emacs. In practice, it
-;;; means that `C-` keys will works but `<escape>` will need a fast double tap
-;;; on Caps Lock.
-;;;
-;;; See https://github.com/ch11ng/exwm/issues/285
-;;; and https://gitlab.com/interception/linux/plugins/caps2esc/issues/2.
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 
 ;;; REVIEW: Pressing "s-a" ('emms-smart-browse) loses the cursor.
 ;;; Sometimes waiting helps.  Calling emms-smart-browse manually does not trigger the issue.
@@ -36,6 +29,29 @@
 (exwm-systemtray-enable)
 (setq exwm-systemtray-height 16)
 
+(defun mm/xdotool (cmd)
+  (start-process-shell-command
+   "" "xdotool"
+   (concat
+    "xdotool" " " cmd)))
+
+(defhydra hydra-exwm ()
+  "exwm"
+  ("r" exwm-reset "reset")
+  ("d"
+   (mm/xdotool "click 1") "click")
+  ("j"
+   (mm/xdotool "click 5"))
+  ("k"
+   (mm/xdotool "click 4"))
+  ("w" 'evil-window-map "window")
+  ("TAB" evil-switch-to-windows-last-buffer "last"))
+
+
+;; The following can only apply to EXWM buffers, else it could have unexpected effects.
+(push ?\s-  exwm-input-prefix-keys)
+(exwm-input-set-key (kbd "s-SPC") #'hydra-exwm/body)
+
 ;;; Those cannot be set globally: if Emacs would be run in another WM, the "s-"
 ;;; prefix will conflict with the WM bindings.
 (exwm-input-set-key (kbd "s-R") #'exwm-reset)
@@ -47,6 +63,7 @@
 (exwm-input-set-key (kbd "s-D") #'kill-this-buffer)
 (exwm-input-set-key (kbd "s-b") #'list-buffers)
 (exwm-input-set-key (kbd "s-f") #'find-file)
+(exwm-input-set-key (kbd "s-d") 'evil-window-map)
 
 (when (require 'functions)
   (exwm-input-set-key (kbd "s-\\") 'ambrevar/toggle-window-split)
@@ -55,9 +72,6 @@
   (exwm-input-set-key (kbd "s-K") 'ambrevar/swap-windows-above)
   (exwm-input-set-key (kbd "s-L") 'ambrevar/swap-windows-right))
 
-;; The following can only apply to EXWM buffers, else it could have unexpected effects.
-(push ?\s-  exwm-input-prefix-keys)
-(define-key exwm-mode-map (kbd "s-SPC") #'exwm-floating-toggle-floating)
 
 (exwm-input-set-key (kbd "s-i") #'follow-delete-other-windows-and-split)
 (exwm-input-set-key (kbd "s-o") #'ambrevar/toggle-single-window)
@@ -126,7 +140,8 @@
 (exwm-input-set-key (kbd "s-&") #'ambrevar/exwm-start)
 (exwm-input-set-key (kbd "s-r") #'ambrevar/exwm-start)
 
-(when (require 'helm-exwm nil t)
+(use-package helm-exwm
+  :config
   (add-to-list 'helm-source-names-using-follow "EXWM buffers")
   (setq helm-exwm-emacs-buffers-source (helm-exwm-build-emacs-buffers-source))
   (setq helm-exwm-source (helm-exwm-build-source))
@@ -178,5 +193,9 @@
   (when (string-prefix-p "emacs" exwm-instance-name)
     (exwm-input-release-keyboard (exwm--buffer->id (window-buffer)))))
 (add-hook 'exwm-manage-finish-hook 'ambrevar/exwm-start-in-char-mode)
+
+
+
+(exwm-enable)
 
 (provide 'init-exwm)

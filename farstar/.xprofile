@@ -1,9 +1,0 @@
-#!/bin/sh
-
-## Start user services.
-## For now, we need to start it here after X has started since it has graphical services.
-# shepherd
-
-## Internet browsers that need X to run.
-export BROWSER=nyxt
-

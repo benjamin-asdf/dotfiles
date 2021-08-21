@@ -42,7 +42,7 @@
 
 ;;; Place backup files in specific directory.
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name "backups" user-emacs-directory))))
+      `(("." . ,(expand-file-name "~/backups/"))))
 
 ;;; Default mode
 (setq-default major-mode 'emacs-lisp-mode)
@@ -197,8 +197,7 @@
 ;;       save-interprogram-paste-before-kill t)
 
 ;;; Move mouse away.
-;; I don't need this because of "unclutter"
-;; (mouse-avoidance-mode 'banish)
+(mouse-avoidance-mode 'banish)
 ;;; That binding is not very useful and gets in the way of C-<mouse-1>.
 (global-unset-key (kbd "C-<down-mouse-1>"))
 
@@ -249,6 +248,10 @@
 
 (global-so-long-mode 1)
 
+(setf browse-url-generic-program (or (getenv "BROWSER") "nyxt"))
 
+(global-visual-line-mode)
+
+(add-hook 'after-save-hook 'check-parens)
 
 (provide 'main)

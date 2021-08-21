@@ -16,7 +16,6 @@
   (setq file-name-handler-alist default-file-name-handler-alist))
 (add-hook 'after-init-hook 'ambrevar/reset-file-name-handler-alist)
 
-
 ;;; Avoid the "loaded old bytecode instead of newer source" pitfall.
 (setq load-prefer-newer t)
 
@@ -44,8 +43,11 @@
 
 
 (straight-use-package 'use-package)
+
 (require 'use-package)
 (setf
+ ;; straight-vc-git-default-protocol 'ssh
+ straight-vc-git-default-protocol 'https
  straight-use-package-by-default t
  use-package-verbose t
  use-package-always-demand t)
@@ -56,11 +58,24 @@
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 
+;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+;; Use no-littering to automatically set common paths to the new user-emacs-directory
+(use-package no-littering)
+
+
 
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode))
 
 
 (use-package evil
@@ -72,12 +87,20 @@
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
+
+  (custom-set-variables
+   '(evil-undo-system
+     'undo-tree))
+
+  (define-key evil-normal-state-map "U" #'evil-redo)
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
 
-;; (display-line-numbers-mode 0)
+  (defadvice evil-show-registers
+      (after mm/evil-show-registers-adv activate)
+    (text-mode)))
 
 (use-package hydra
   :config
@@ -86,120 +109,241 @@
     ("d" #'kill-this-buffer)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
-    ("a" #'mark-whole-buffer))
+    ("a" #'mark-whole-buffer)))
 
-  )
+;; todo config backtrace here so we get better debug init
+
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1)
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda ()
+              (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
 (use-package general
   :after evil
   :config
-
-  ;; (general-create-definer
-  ;;  efs/leader-keys
-  ;;  :keymaps '(normal insert visual emacs)
-  ;;  :prefix "SPC"
-  ;;  :global-prefix "C-SPC")
+  (general-create-definer
+    mememacs/leader-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
 
   (general-create-definer
-   mememacs/leader-def
-   :keymaps '(normal insert visual emacs)
-   :prefix "SPC"
-   :global-prefix "C-SPC"
+    mememacs/comma-def
+    :states '(normal visual emacs)
+    :prefix ",")
 
-   ;; :states '(normal visual)
-   ;; :prefix "SPC"
-   ;; :global-prefix "C-SPC"
-   )
-
-  (general-create-definer
-   mememacs/comma-def
-   :keymaps '(normal insert visual emacs)
-   :prefix ","
-   :global-prefix "C-,"
-   )
-
-  ;; (defmacro memmacs/normal-leader-def (&rest args)
-  ;;   `(mememacs/leader-def
-  ;;    :keymaps '(normal visual)
-  ;;    ,args))
+  (general-def
+    evil-window-map
+    "m" #'delete-other-windows
+    "d" #'evil-window-delete)
 
   (mememacs/leader-def
-   "SPC" #'helm-M-x
-   "t" '(:ignore t)
-   "n" #'line-number-mode
+    "SPC" #'helm-M-x
+    "t" '(:ignore t)
+    "n" '(:ignore t)
+    "nn" #'display-line-numbers-mode
+    "nw" #'widen
+    "nd" #'narrow-to-defun
+    "nr" #'narrow-to-region
 
-   "b" '(:ignore t :which-key "b..")
-   "bd" #'kill-this-buffer
-   "bb" #'helm-mini
-   "b." #'hydra-buffer/body
 
-   "f" '(:ignore t :which-key "f..")
-   "fd" #'delete-file
-   "fs" #'save-buffer
-   "ff" #'helm-find-files
+    "b" '(:ignore t :which-key "b..")
+    "bd" #'kill-this-buffer
+    "be" #'erase-buffer
+    "bw" #'toggle-read-only
+    "bb" #'helm-mini
+    "b." #'hydra-buffer/body
 
-   "w" '(evil-window-map :which-key "window")
-   "wm" #'delete-other-windows
+    "f" '(:ignore t :which-key "f..")
+    "fd" #'delete-file
+    "fs" #'save-buffer
+    "ff" #'helm-find-files
+    "fr" #'helm-recentf
 
-   "s" '(:ignore t :which-key "search")
-   "ss" #'helm-swoop
+    "u" #'undo-tree-visualize
 
-   "j" '(:ignore t)
-   "jd" #'dired-jump
-   "jD" #'dired-jump-other-window
-   "jf" #'find-function
+    "w" '(evil-window-map :which-key "window")
 
-   ;; todo toggle buffer
-   "<tab>" #'previous-buffer))
+    "s" '(:ignore t :which-key "search")
+    "ss" #'helm-swoop-without-pre-input
+    "sS" #'helm-swoop
 
+    "j" '(:ignore t)
+    ;; "jr" #'
+
+    "jd" #'dired-jump
+    "jD" #'dired-jump-other-window
+    "jf" #'find-function
+    "jF" #'find-function-other-window
+    "jv" #'find-variable
+    "jV" #'find-variable-other-window
+    "jb" #'bookmark-jump
+    "je" '(:ignore t :which-key "emacs")
+    "jel" #'find-library
+    ;; "jel" #'lisp-find-map
+    "jm" #'view-echo-area-messages
+
+
+    "/" #'helm-do-grep-ag
+    "hc" #'describe-char
+    "hm" #'describe-mode
+    "hi" #'helm-info-emacs
+
+    "x" '(:ignore t :which-key "text")
+    "xi" #'indent-region
+    "xt" '(:ignore t)
+    "xtw" #'transpose-words
+
+    "p" '(:ignore t :which-key "procs..")
+    "pa" #'list-processes
+    )
+
+  (general-def
+    "C-o" #'evil-jump-forward
+    "C-i" (defun jump-back ()
+	    (interactive)
+	    (when (in major-mode 'clojure-mode)
+	      (cider-pop-back))
+	    (let ((p (point)))
+	      (evil-jump-backward)
+	      (when (eq p (point))
+		(pop-tag-mark))))))
+
+
+;; todo improve
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode 1)
+
+  (add-hook
+   'mememacs/escape-functions
+   #'evil-mc-undo-all-cursors)
+
+  (general-def
+    :states '(normal visual motion)
+    :keymaps '(evil-mc-key-map)
+    "gr" '(evil-mc-cursors-map)
+    "M-n" 'evil-mc-make-and-goto-next-cursor
+    "M-p" 'evil-mc-make-and-goto-prev-cursor
+    "C-n" 'evil-mc-make-and-goto-next-match
+    "C-t" 'evil-mc-skip-and-goto-next-match
+    "C-p" 'evil-mc-make-and-goto-prev-match)
+
+  (defhydra hydra-evil-mc ()
+    "mc"
+    ("n" #'evil-mc-make-and-goto-next-match "next match")
+    ("j" #'evil-mc-make-cursor-move-next-line "make line")
+    ("q" #'evil-mc-undo-all-cursors "undo all")
+    ("a" 'evil-mc-key-map "...")
+    ("k" #'evil-mc-undo-last-added-cursor "undo last")
+    ("p" #'evil-mc-find-prev-cursor "prev"))
+
+  (general-def
+    :states '(normal visual)
+    "gn" #'hydra-evil-mc/body)
+
+  (mememacs/leader-def
+    "gn"
+    '(evil-mc-key-map :which-key "mc"))
+
+  (defun mememacs/disable-evil-mc-mode ()
+    (evil-mc-mode -1))
+
+  (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
+
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/maybe-delete-mc-cursors ()
+       (when (and
+	      evil-mc-cursor-state
+	      (eq evil-state 'normal))
+	 (evil-mc-undo-all-cursors)))))
+
+(use-package hydra
+  :config
+  (defhydra hydra-buffer ()
+    "buffer"
+    ("d" #'kill-this-buffer)
+    ("k" #'previous-buffer)
+    ("j" #'previous-buffer)
+    ("a" #'mark-whole-buffer)))
+
+(use-package debug
+  :ensure nil
+  :config
+  (general-def
+    debugger-mode-map
+    "." #'backtrace-expand-ellipses
+    "+" #'backtrace-multi-line
+    "-" #'backtrace-single-line))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (setf evil-collection-mode-list
+	(remove 'lispy evil-collection-mode-list))
+  (evil-collection-init))
+
+
+(use-package exwm
+  :when (getenv "MEMEMACS_EXWM")
+  :config
+  (require 'init-exwm))
 
 (require 'functions)
-(require 'functions-1)
+(require 'utils)
 (require 'main)
 (require 'visual)
+(require 'functions-1)
 
 
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-
 (use-package helpful
   :config
   (mememacs/leader-def
-   "hf" #'helpful-callable
-   "hv" #'helpful-variable
-   "hk" #'helpful-key
-   "hF" #'helpful-function
-   "hC" #'helpful-command)
+    "hf" #'helpful-callable
+    "hv" #'helpful-variable
+    "hk" #'helpful-key
+    "hF" #'helpful-function
+    "hC" #'helpful-command
+    "h." #'helpful-at-point))
 
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
-
-(use-package evil-collection
-  :after evil
-  :ensure t
+(use-package evil-goggles
   :config
-  (evil-collection-init))
+  (setf
+   evil-goggles-enable-delete nil
+   evil-goggles-enable-change nil)
+  (evil-goggles-mode))
 
 
-; TODO map c-j and such
 (use-package helm
   :config
   (global-set-key (kbd "M-x") 'helm-M-x)
-  (require 'init-helm))
+  (require 'init-helm)
+  (mememacs/leader-def
+    "r" '(:ignore t :which-key "r..")
+    "rl" #'helm-resume))
 
 (use-package magit
   :defer t
+  :init
+  (mememacs/leader-def
+    "g" '(:ignore t :which-key "git")
+    "gs" #'magit-status)
   :config
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
   (require 'init-magit)
 
-  (mememacs/leader-def
-   "g" '(:ignore t :which-key "git")
-   "gs" #'magit-status)
-
-  )
+  (add-hook 'git-commit-mode-hook
+	    (lambda ()
+	      (visual-line-mode -1))))
 
 
 (use-package company
@@ -207,6 +351,7 @@
   (add-hook 'after-init-hook #'global-company-mode)
   ;; (setq company-idle-delay 0)
   )
+
 
 (use-package
   helm-company
@@ -226,38 +371,42 @@
 
 
 (use-package mood-line
-  :straight (:host github :repo "rtnlmeme-DestroyerOfDeath/mood-line")
-  :config (mood-line-mode)
-  )
-
+  :straight (:host github :repo "benjamin-asdf/mood-line")
+  :config (mood-line-mode))
 
 ;; TODO
 ;; (nconc package-selected-packages '(exwm helm-exwm))
 ;; (nconc package-selected-packages '(pulseaudio-control))
 
-;; (with-eval-after-load 'pulseaudio-control
-;;   ;; REVIEW: Upstream should set path dynamically.
-;;   ;; https://github.com/flexibeast/pulseaudio-control/issues/7
-;;   (setq pulseaudio-control-pactl-path (executable-find "pactl")))
-;; (when (require 'exwm nil t) (require 'init-exwm))
+(with-eval-after-load 'pulseaudio-control
+  ;; REVIEW: Upstream should set path dynamically.
+  ;; https://github.com/flexibeast/pulseaudio-control/issues/7
+  (setq pulseaudio-control-pactl-path (executable-find "pactl")))
 
 (use-package macrostep
   :config
-  (general-def
-    emacs-lisp-mode-map
-    ",m" #'macrostep-expand))
+  (mememacs/comma-def
+    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
+    "m" #'macrostep-expand)
+  (add-hook
+   'mememacs/escape-functions
+   #'macrostep-collapse-all))
+
+;; (use-package emacs-desktop-environment)
 
 (use-package lispy
   :ensure t
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
-  (emacs-lisp-mode . lispy-mode))
+  (emacs-lisp-mode . lispy-mode)
+  (common-lisp-mode . lispy-mode)
+  (scheme-mode . lispy-mode)
+  (clojure-mode . lispy-mode))
 
 (use-package lispyville
   :after lispy
-  :config (require 'init-lispyville)
-  )
+  :config (require 'init-lispyville))
 
 (use-package which-key
   :config
@@ -275,15 +424,261 @@
   :config
   (projectile-mode)
   (mememacs/leader-def
-    "p" 'projectile-command-map))
+    "p" 'projectile-command-map)
+  (setf projectile-indexing-method 'alien)
+  (let ((cmd
+	 "fd --hidden --exclude=.git --type=f . --print0"))
+    (setf
+     projectile-git-command cmd
+     projectile-generic-command cmd))
+  (setf projectile-completion-system 'helm))
 
-(use-package evil-mc)
+;; TODO
+;; add emacs-dir/backups to known projects
 
-(use-package helm-projectile)
+
+(use-package helm-projectile
+  :config
+  (require 'patch-helm-projectile))
+
+
+(use-package ace-window
+  :config
+  (setq aw-keys '(?k ?j ?h ?n ?i ?a ?s ?d ?l ?e ?r ?t)
+	aw-background nil)
+  (mememacs/leader-def
+    "wu" #'ace-window
+    "wD" #'ace-delete-window))
+
+;; lispy kill new before lispy delete but only in special
+
+(use-package cider
+  :config
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/cider-macroexpand-undo ()
+     (when (in major-mode 'cider-mode 'cider-repl-mode)
+       (cider-macroexpand-undo))))
+
+  (defun mememacs/cider-macroexpand-at-place ()
+    (interactive)
+    (lispy-forward 1)
+    (forward-line 1)
+    (cider-macroexpand-1-inplace))
+
+
+
+  (mememacs/comma-def
+    :keymaps
+    '(clojure-mode-map cider-repl-mode)
+    "m" #'mememacs/cider-macroexpand-at-place
+
+    "e" '(cider-eval-commands-map
+	  :which-key "eval"))
+
+  (general-def
+    'cider-eval-commands-map
+    "L" #'cider-eval-sexp-at-point
+    "l" #'mememacs/lispy-eval-line)
+
+  )
+
+(use-package flycheck)
+
+(use-package flycheck-clj-kondo)
+(use-package flycheck-clojure)
+(use-package flycheck-joker)
+
+
+;; todo binds
+(use-package geiser)
+
+(use-package geiser-guile
+  :config
+  (setf geiser-scheme-implementation
+	'guile)
+  (setf geiser-guile-load-path
+	(list
+	 (expand-file-name
+	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
+
+
+(use-package avy
+  :config
+  (mememacs/leader-def
+    "jj" #'avy-goto-char-timer
+    "jw" #'avy-goto-word-1
+    "jl" #'avy-goto-line))
+
+(use-package symbol-overlay
+  :config
+  (add-hook
+   'mememacs/escape-functions
+   #'symbol-overlay-remove-all)
+
+  (mememacs/leader-def
+    "so" '(:ignore t :which-key "symbol overlay")
+    "soo" #'symbol-overlay-put
+    "son" #'symbol-overlay-switch-forward
+    "sop" #'symbol-overlay-switch-backward
+    "som" #'symbol-overlay-mode
+    "soh" (defun show-symbol-overlay-map ()
+	    (interactive)
+	    (which-key-show-keymap 'symbol-overlay-map)))
+
+  (general-def
+    'symbol-overlay-map
+    "h" nil))
+
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default))
+
+
+(use-package backup-each-save)
+
+(use-package link-hint
+  :config
+  (mememacs/leader-def
+    "ju" #'link-hint-open-link))
+
+(use-package guix
+  :defer t
+  :init
+  (mememacs/leader-def
+   "G"  '(:ignore t :which-key "Guix")
+   "Gg" '(guix :which-key "Guix")
+   "Gi" '(guix-installed-user-packages :which-key "user packages")
+   "GI" '(guix-installed-system-packages :which-key "system packages")
+   "Gp" '(guix-packages-by-name :which-key "search packages")
+   "GP" '(guix-pull :which-key "pull")))
+
+(use-package hippie-exp
+  :config
+  (general-def
+    :states '(insert)
+    "C-/" #'hippie-expand))
+
+
+;; https://github.com/noctuid/link-hint.el
+
+;; evil undo system
+;; redo to U
+;; a nice hydra for this instead of visualizer
+
+;; todo get rid of caches in emacs dir
+;; everything to ~/tmp
+
+
+;; (defhydra best-hydra ())
 
 ;; todo
-(use-package cider)
 ;; helm-cider
-;; flycheck-clojure
 ;; flycheck-clj-kondo
 ;; flycheck-joker
+
+;; figure out guix manifests
+;; figure out guix packages for clj kondo etc
+
+;; org
+
+;; lispy mood line
+
+;; pretty print
+
+;;  nerd commenter
+
+;; c-i and c-o should be more intuitive
+
+
+
+;; Keep customization settings in a temporary file (thanks Ambrevar!)
+(setq custom-file
+      (if (boundp 'server-socket-dir)
+	  (expand-file-name "custom.el" server-socket-dir)
+	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+(load custom-file t)
+
+
+(use-package winner
+  :config
+  (winner-mode)
+  (general-def
+    evil-window-map
+    "u" #'winner-undo
+    "r" #'winner-redo))
+
+(general-def
+    :states '(normal motion)
+    ",da"
+    `(,(let ((map (make-sparse-keymap "apropos")))
+	 (general-def map
+	   "v" #'apropos-variable
+	   "V" #'apropos-value
+	   "l" #'apropos-library
+	   "L" #'apropos-local-value
+	   "d" #'apropos-documentation
+	   "D" #'apropos-documentation-property
+	   "f" #'apropos-command
+	   "u" #'apropos-user-option)
+	 map)
+     :which-key "apropos"))
+
+(use-package yasnippet
+  :defer 20
+  :demand t
+  :config
+  (add-to-list
+   'yas-snippet-dirs
+   (concat mememacs/config-dir "snippets"))
+  (add-hook
+   'prog-mode-hook
+   #'yas-minor-mode-on)
+  (add-to-list
+   'hippie-expand-try-functions-list
+   #'yas-expand-from-trigger-key))
+
+
+(use-package yasnippet-snippets
+  :after yasnippet
+  :config
+  (yasnippet-snippets-initialize))
+
+;; todo nyxt auto clone github page
+
+
+;; (use-package slime
+;;   (setq inferior-lisp-program "sbcl"))
+
+;; pprint
+
+
+;; redshank
+;; maybe don't need it because lispy
+
+(use-package org-jira
+  :config
+  (unless (file-exists-p "~/.org-jira")
+    (make-directory "~/.org-jira"))
+  (setf jiralib-use-restapi t)
+  (setf jiralib-token nil)
+  (setf jiralib-user-login-name "benjamin schwerdtner")
+  (setf jiralib-url "https://singularity-test.atlassian.net"))
+
+;; elp
+;; memory-use-counts
+;; instrument package
+;; epl results
+
+
+
+;; todo company remove icons
+
+;; figure out where the code is for guix packages
+
+;; (general-def)
+
+;; (use-package jdee)
+
+
+;; fix helm ag "command attempted to use minibuffer"

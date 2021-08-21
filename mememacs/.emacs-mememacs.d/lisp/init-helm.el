@@ -391,10 +391,20 @@ returning a string."
   "C-K" #'helm-follow-action-backward
   "C-d" #'helm-delete-minibuffer-contents)
 
+
+(general-def
+  :keymaps 'helm-M-x-map
+  "C-J" #'helm-follow-action-forward
+  "C-K" #'helm-follow-action-backward
+  "C-j" #'helm-next-line
+  "C-k" #'helm-previous-line)
+
 ;; (general-def
 ;;   :keymaps 'helm-find-files-map
 ;;   )
 
-
+(mememacs/leader-def
+  "ji" #'helm-imenu
+  "jI" #'helm-imenu-in-all-buffers)
 
 (provide 'init-helm)

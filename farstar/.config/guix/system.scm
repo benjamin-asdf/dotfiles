@@ -21,11 +21,8 @@
                 %base-user-accounts))
   (packages
     (append
-      (list (specification->package "emacs")
-            (specification->package "emacs-exwm")
-            (specification->package
-              "emacs-desktop-environment")
-            (specification->package "nss-certs"))
+     (list
+      (specification->package "nss-certs"))
       %base-packages))
   (services %desktop-services)
   (bootloader

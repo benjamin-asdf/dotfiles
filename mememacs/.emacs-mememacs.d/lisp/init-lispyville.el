@@ -9,8 +9,22 @@ replace the expression with its result."
       (lispy-eval-and-replace)
     (call-interactively #'lispy-eval)))
 
-(setq lispyville-motions-put-into-special t)
-(setq lispyville-commands-put-into-special t)
+(setf
+ lispyville-motions-put-into-special t
+ lispyville-commands-put-into-special t
+ lispy-no-permanent-semantic t
+ lispy-occur-backend 'helm
+ lispy-x-default-verbosity 1)
+
+(lispyville--define-key 'insert
+  (kbd "<backspace>") 'lispy-delete-backward
+  (kbd "M-<backspace>") 'lispyville-delete-backward-word
+  ";" 'lispy-comment
+  ;; ":" 'lispy-colon ; The colon is not always used to delimit keys.
+  "(" 'lispy-parens
+  ")" 'lispy-right-nostring
+
+  (kbd "C-h") #'lispy-delete-backward)
 
 (lispyville-set-key-theme
  '(operators
@@ -24,50 +38,7 @@ replace the expression with its result."
    additional-wrap
    additional-insert
    mark-toggle
-   slurp/barf-lispy
-   ))
-(lispyville--define-key '(motion normal visual)
-  (kbd "^") #'lispy-left
-  (kbd "M-h") #'lispyville-previous-opening
-  (kbd "M-l") #'lispyville-next-opening
-  (kbd "M-j") #'lispy-down
-  (kbd "M-k") #'lispy-up
-
-  (kbd "C-j") #'lispyville-drag-forward
-  (kbd "C-k") #'lispyville-drag-backward
-
-
-  (kbd "M-L") #'lispy-move-right
-  (kbd "C-x C-e") #'ambrevar/lispy-eval
-  ;; (kbd "C-<return>") #'lispy-split
-  (kbd "S-C-<return>") #'lispy-join
-
-
-  (kbd "C-1") #'lispy-describe-inline
-  (kbd "C-2") #'lispy-arglist-inline
-
-  ;;;;;;;;
-  (kbd "C-4") #'lispy-x
-  (kbd "gd") #'lispy-goto-symbol
-  ;; (kbd "M-<backspace>") 'lispyville-delete-backward-word
-
-  ;; (kbd "/") #'lispy-occur
-  ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
-  ;; TODO: lispy-eval-and-replace
-  ")" #'lispy-right
-  (kbd "C-3") #'lispyville-up-list
-  "=" #'lispyville-prettify)
-
-(lispyville--define-key 'insert
-  (kbd "<backspace>") 'lispy-delete-backward
-  (kbd "M-<backspace>") 'lispyville-delete-backward-word
-  ";" 'lispy-comment
-  ;; ":" 'lispy-colon ; The colon is not always used to delimit keys.
-  "(" 'lispy-parens
-  ")" 'lispy-right-nostring
-
-  (kbd "C-h") #'lispy-delete-backward
-  )
+   slurp/barf-lispy))
 
 (lispyville--define-key '(motion normal)
   "q" 'lispy-ace-paren
@@ -79,6 +50,41 @@ replace the expression with its result."
   ;; "p" 'lispy-paste
 
   "D" 'lispy-kill)
+
+(lispyville--define-key '(motion normal visual)
+  (kbd "^") #'lispy-left
+  (kbd "M-h") #'lispyville-previous-opening
+  (kbd "M-l") #'lispyville-next-opening
+  (kbd "M-j") #'lispy-down
+  (kbd "M-k") #'lispy-up
+
+  (kbd "C-j") #'lispyville-drag-forward
+  (kbd "C-k") #'lispyville-drag-backward
+
+  (kbd "C-d") #'lispy-kill-at-point
+
+
+  (kbd "M-L") #'lispy-move-right
+  (kbd "C-x C-e") #'ambrevar/lispy-eval
+  ;; (kbd "C-<return>") #'lispy-split
+  (kbd "S-C-<return>") #'lispy-join
+
+
+  (kbd "C-1") #'lispy-describe-inline
+  (kbd "C-2") #'lispy-arglist-inline
+
+;;;;;;;;
+  (kbd "C-4") #'lispy-x
+  (kbd "gd") #'lispy-goto-symbol
+  ;; (kbd "M-<backspace>") 'lispyville-delete-backward-word
+
+  ;; (kbd "/") #'lispy-occur
+  ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
+  ;; TODO: lispy-eval-and-replace
+  ")" #'lispy-right
+  (kbd "C-3") #'lispyville-up-list
+  "=" #'lispyville-prettify)
+
 
 (defun mememacs/init-lispy-targets ()
   (setq targets-text-objects nil)
@@ -145,6 +151,31 @@ replace the expression with its result."
                   (lispyville-join :face evil-goggles-join-face :switch evil-goggles-enable-join :advice evil-goggles--join-advice)
                   (lispy-fill :face evil-goggles-fill-and-move-face :switch evil-goggles-enable-fill-and-move :advice evil-goggles--generic-async-advice))))
   (evil-goggles-mode))
+
+(with-eval-after-load 'cider
+  (setf
+   cider-jack-in-dependencies
+   (delete-dups
+    (append
+     cider-jack-in-dependencies
+     lispy-cider-jack-in-dependencies))))
+
+(defalias 'lispy--remember #'evil--jumps-push)
+
+
+
+(general-def
+  :keymaps '(lispy-mode-map)
+  :states '(normal motion)
+  :prefix "SPC"
+  "kf" #'lispy-flow
+  "kF" #'lispyville-end-of-defun
+  "kl" #'lispy-forward
+  "km" (lispyville-wrap-command lispy-mark-symbol special)
+
+
+  )
+
 
 
 (provide 'init-lispyville)

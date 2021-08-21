@@ -7,7 +7,7 @@
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
 
-(use-package gruvbox-theme 
+(use-package gruvbox-theme
   :config
   (load-theme 'gruvbox t))
 
@@ -23,6 +23,11 @@
 ;; ;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
 ;; ;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
 
+(set-face-foreground 'link "goldenrod")
+(set-face-underline 'link "goldenrod")
+(set-face-bold 'link t)
+
+
 
 ;;; Cursor type: default (box) is visible and practical.
 ;; (setq-default cursor-type 'hollow)
@@ -33,7 +38,7 @@
 ;;; show-paren
 (with-eval-after-load 'paren
   (set-face-foreground 'show-paren-match "White")
-  (set-face-background 'show-paren-match "Black")
+  (set-face-background 'show-paren-match (face-background 'default))
   (set-face-underline 'show-paren-match "White"))
 
 

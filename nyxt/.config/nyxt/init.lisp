@@ -68,14 +68,14 @@ See documentation of `team-trello' package in emacs."
 
 
 
-(defmethod %play-video ((a nyxt/dom:a-element))
-  (when
-      (current-buffer)
-    (play-video-with-url
-     (concatenate
-      'string
-      (url (current-buffer))
-      (url a)))))
+;; (defmethod %play-video ((a nyxt/dom:a-element))
+;;   (when
+;;       (current-buffer)
+;;     (play-video-with-url
+;;      (concatenate
+;;       'string
+;;       (url (current-buffer))
+;;       (url a)))))
 
 
 (define-command play-video-hint ()
@@ -86,8 +86,22 @@ See documentation of `team-trello' package in emacs."
   :multi-selection-p t)
 
 (defun start-markdown-mode-in-emacs ()
-  "Make emacs eval command to start markdown mode."
   (eval-in-emacs `(markdown-mode)))
+
+(defparameter magnet-handler
+  (url-dispatching-handler
+   'transmission-magnet-links
+   (match-scheme "magnet")
+   (lambda (url)
+     (uiop:launch-program
+      (list "transmission-remote" "--add"
+            (quri:render-uri url)))
+     (echo "Magnet link opened in Transmission.")
+     nil)))
+
+(defvar *my-request-resource-handlers*
+  (list
+   magnet-handler))
 
 (define-key
     *my-keymap*
@@ -133,6 +147,8 @@ See documentation of `team-trello' package in emacs."
 
 
 
+
+
 (define-configuration (buffer web-buffer nosave-buffer)
   ((default-modes (append '(;; dark-mode
                             nyxt/blocker-mode:blocker-mode
@@ -141,5 +157,3 @@ See documentation of `team-trello' package in emacs."
                           %slot-default%))))
 
 (nyxt::load-lisp "~/.config/nyxt/theme-minimal.lisp")
-
-
