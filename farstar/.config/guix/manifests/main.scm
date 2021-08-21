@@ -1,28 +1,37 @@
-
 (specifications->manifest
  '(
+   "ant"
+
+   "autoconf"
+   "automake"
    ;; "emacs-native-comp"
-   "emacs-desktop-environment"
    "mpv"
+   "emacs-desktop-environment"
    "sicp"
    "node"
    "xhost"
    "scrot"
    "unclutter"
-   "openjdk"
    ;; "clojure"
    "clojure-tools"
-   "leiningen"
+   leiningen""
+
 
    "nyxt"
+   "maven"
    "git"
    "openssh"
+   ;; "openjdk:out"
+   "openjdk:jdk"
+   "openjdk:doc"
+
    "adb"
    "ripgrep"
    "fd"
    "sbcl"
    "setxkbmap"
    "curl"
+   "gettext"
    "gnupg"
    "redshift"
    "stow"
@@ -36,6 +45,7 @@
    "xdotool"
    "xdpyinfo"
    "wget"
+   "youtube-dl"
 
    "xkill"
    "xrdb"
