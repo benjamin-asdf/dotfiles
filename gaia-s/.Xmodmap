@@ -1,8 +1,0 @@
-clear lock
-keycode 66 = Escape Escape NoSymbol NoSymbol
-
-clear mod4
-keycode 135 = Super_R
-add mod4 = Super_L Super_R Hyper_L
-
-!keycode 47 = semicolon colon Super_L

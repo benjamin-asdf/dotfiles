@@ -121,10 +121,10 @@ mode "$normy_mode" {
 # focus_follows_mouse no
 
 # change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+bindsym $mod+Mod1+h focus left
+bindsym $mod+Mod1+j focus down
+bindsym $mod+Mod1+k focus up
+bindsym $mod+Mod1+l focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -182,8 +182,8 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 #navigate workspaces next / previous
-bindsym $mod+Mod1+l workspace next
-bindsym $mod+Mod1+h workspace prev
+bindsym $mod+Mod1+n workspace next
+bindsym $mod+Mod1+p workspace prev
 
 # Workspace names
 # to display names or symbols instead of plain workspace numbers you can use
@@ -490,6 +490,9 @@ mode "$unity" {
 
 
 exec --no-startup-id xset r rate 170 130
+exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3,altwin:menu_win
+exec --no-startup-id xcape -e 'Control_L=Escape'
+
 
 # figure out how to also bind app context to super and get used to it 
 # exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3
