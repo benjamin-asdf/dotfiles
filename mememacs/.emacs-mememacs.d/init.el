@@ -677,31 +677,31 @@
   :config
   (yasnippet-snippets-initialize))
 
-;; todo nyxt auto clone github page
 
 
-;; (use-package slime
-;;   (setq inferior-lisp-program "sbcl"))
-
-;; pprint
-
-
-;; redshank
-;; maybe don't need it because lispy
+(use-package org
+  :defer t)
 
 (use-package org-jira
+  :defer t
   :config
+  (require 'cl)
+  (message "")
   (unless (file-exists-p "~/.org-jira")
     (make-directory "~/.org-jira"))
-  (setf jiralib-use-restapi t)
-  (setf jiralib-token nil)
-  (setf jiralib-user-login-name "benjamin schwerdtner")
-  (setf jiralib-url "https://singularity-test.atlassian.net"))
+  (jiralib-login
+   "benjamin.schwerdtner@gmail.com"
+   (auth-source-pick-first-password
+    :host "jira-api-token")))
 
 ;; elp
 ;; memory-use-counts
 ;; instrument package
 ;; epl results
+
+;; todo org
+
+;; (use-package org-projectile)
 
 
 
@@ -715,3 +715,15 @@
 
 
 ;; fix helm ag "command attempted to use minibuffer"
+
+
+;; redshank
+;; maybe don't need it because lispy
+
+;; todo nyxt auto clone github page
+
+
+;; (use-package slime
+;;   (setq inferior-lisp-program "sbcl"))
+
+;; pprint
