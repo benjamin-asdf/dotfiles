@@ -1,16 +1,1 @@
-* fooo
-** foo
-
-
-   
-* try to bind mod-j to mod-J in i3
-  and s-j in emacs
-
-* keychain environment
-  
-* org projectile
-  
-* org
-** org roam  
-
-* markdow
+../../../org-roam/20210801091234-mememacs.org

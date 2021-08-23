@@ -24,7 +24,9 @@ replace the expression with its result."
   "(" 'lispy-parens
   ")" 'lispy-right-nostring
 
-  (kbd "C-h") #'lispy-delete-backward)
+  (kbd "C-h") #'lispy-delete-backward
+  (kbd "M-K") #'lispy-move-left
+  (kbd "M-J") #'lispy-move-right)
 
 (lispyville-set-key-theme
  '(operators

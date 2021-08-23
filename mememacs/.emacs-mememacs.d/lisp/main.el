@@ -219,7 +219,9 @@
 (setq delete-by-moving-to-trash t)
 
 ;;; Frame title
-(setq frame-title-format (concat "%b" (unless (daemonp) " [serverless]")))
+(setq frame-title-format
+      (concat "mememacs %b"
+	      (unless (daemonp) " [serverless]")))
 
 ;;; Initial scratch buffer message.
 (require 'functions) ; For `ambrevar/fortune-scratch-message'.

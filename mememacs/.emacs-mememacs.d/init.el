@@ -341,8 +341,13 @@
     "hv" #'helpful-variable
     "hk" #'helpful-key
     "hF" #'helpful-function
-    "hC" #'helpful-command
-    "h." #'helpful-at-point))
+    "hC" #'helpful-command)
+
+  (mememacs/comma-def
+    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
+    "hh" #'helpful-at-point)
+
+  )
 
 (use-package evil-goggles
   :config
@@ -453,15 +458,24 @@
 (use-package projectile
   :config
   (projectile-mode)
-  (mememacs/leader-def
-    "p" 'projectile-command-map)
-  (setf projectile-indexing-method 'alien)
-  (let ((cmd
-	 "fd --hidden --exclude=.git --type=f . --print0"))
+
+  (let ((cmd "fd --hidden --exclude=.git --type=f . --print0"))
     (setf
+     projectile-indexing-method 'alien
      projectile-git-command cmd
-     projectile-generic-command cmd))
-  (setf projectile-completion-system 'helm))
+     projectile-generic-command cmd
+     projectile-completion-system 'helm))
+
+  (defun mememacs/projectile-todo ()
+    (interactive)
+    (-some->>
+	(projectile-project-root)
+      (expand-file-name "")
+      (find-file "TODOs.org")))
+
+  (mememacs/leader-def
+    "p" 'projectile-command-map
+    "pO" #'mememacs/projectile-todo))
 
 ;; TODO
 ;; add emacs-dir/backups to known projects
@@ -678,21 +692,24 @@
   (yasnippet-snippets-initialize))
 
 
-
+(with-eval-after-load
+    'sh-script
+  (mememacs/comma-def
+    :keymaps '(shell-script-mode)
+    "1"
+    (defun mememacs/execute-script ()
+      (interactive)
+      (-some->>
+	  (buffer-file-name)
+	(expand-file-name)
+	(shell-command))))
+  )
 (use-package org
   :defer t)
 
 (use-package org-jira
   :defer t
-  :config
-  (require 'cl)
-  (message "")
-  (unless (file-exists-p "~/.org-jira")
-    (make-directory "~/.org-jira"))
-  (jiralib-login
-   "benjamin.schwerdtner@gmail.com"
-   (auth-source-pick-first-password
-    :host "jira-api-token")))
+  :config (require 'init-org-jira))
 
 ;; elp
 ;; memory-use-counts
