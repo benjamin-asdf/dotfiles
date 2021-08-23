@@ -13,3 +13,5 @@ https://github.com/clojurians-org/clojure-ebook-2/blob/master/Pragmatic.Clojure.
 https://clojure.org/api/cheatsheet Clojure - Cheatsheet
 https://gist.github.com/ericnormand ericnormand’s gists
 https://plugins.jetbrains.com/intellij-platform-explorer IntelliJ Platform Explorer | JetBrains
+https://github.com/ahungry/org-jira/issues/200 Update Labels Property? · Issue #200 · ahungry/org-jira
+https://singularitygroup.atlassian.net/jira/software/c/projects/COS/issues/?jql=project%20%3D%20%22COS%22%20AND%20assignee%20IN%20%28currentUser%28%29%29%20AND%20status%20%3D%20INBOX%20AND%20statusCategory%20in%20%28%22New%22%2C%20%22In%20Progress%22%29%20ORDER%20BY%20created%20DESC ClashOfStreamers - Issues - Jira
