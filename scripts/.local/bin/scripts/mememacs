@@ -1,3 +1,3 @@
 #!/bin/sh
 
-emacs --with-profile mememacs --debug-init
+emacs --with-profile default --debug-init

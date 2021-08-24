@@ -13,7 +13,9 @@ replace the expression with its result."
  lispyville-motions-put-into-special t
  lispyville-commands-put-into-special t
  lispy-no-permanent-semantic t
- lispy-occur-backend 'helm
+ ;; lispy-occur-backend 'helm
+ ;; todo patch `lispy--occur-update-input'
+ lispy-occur-backend 'ivy
  lispy-x-default-verbosity 1)
 
 (lispyville--define-key 'insert
@@ -29,7 +31,8 @@ replace the expression with its result."
   (kbd "M-J") #'lispy-move-right)
 
 (lispyville-set-key-theme
- '(operators
+ '(
+   ;; operators set manualy below
    c-w
    prettify
    slurp/barf-lispy
@@ -41,6 +44,23 @@ replace the expression with its result."
    additional-insert
    mark-toggle
    slurp/barf-lispy))
+
+
+;; copied from lispyville.el
+;; I do not want the substitute part because of evil-sourround
+(lispyville--define-key nil
+  [remap evil-yank] #'lispyville-yank
+  [remap evil-delete] #'lispyville-delete
+  [remap evil-change] #'lispyville-change
+  [remap evil-yank-line] #'lispyville-yank-line
+  [remap evil-delete-line] #'lispyville-delete-line
+  [remap evil-change-line] #'lispyville-change-line
+  [remap evil-delete-char] #'lispyville-delete-char-or-splice
+  [remap evil-delete-backward-char]
+  #'lispyville-delete-char-or-splice-backwards
+  [remap evil-change-whole-line] #'lispyville-change-whole-line
+  [remap evil-join] #'lispyville-join)
+
 
 (lispyville--define-key '(motion normal)
   "q" 'lispy-ace-paren

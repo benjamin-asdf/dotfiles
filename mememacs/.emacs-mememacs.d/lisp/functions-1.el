@@ -12,11 +12,6 @@
    (expand-file-name
     (concat mememacs/config-dir "init.el"))))
 
-(defun mememacs/copy-dir-name-name-as-kill-dwim ()
-  ""
-  (interactive)
-  (kill-new
-   (file-name-directory (expand-file-name default-directory))))
 
 (defun mememacs/kill-buffer-name ()
   (interactive)
@@ -24,8 +19,7 @@
 
 (mememacs/leader-def
   "by" #'mememacs/kill-buffer-name
-  "fe" #'mememacs/find-init-file
-  "fD" #'mememacs/copy-dir-name-name-as-kill-dwim)
+  "fe" #'mememacs/find-init-file)
 
 
 (defun mememacs/lispy-eval-line ()
@@ -85,8 +79,8 @@ See `eval-last-sexp'."
   ",d" '(:ignore t :which-key "devel")
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
-  ",dt" #'trace-function
-  ",de" #'toggle-debug-on-error
+  ",dr" #'trace-function
+  ",dt" #'toggle-debug-on-error
   ",dq" #'toggle-debug-on-quit
   ",dx" #'mememacs/cancel-debugs)
 
@@ -221,6 +215,67 @@ See `eval-last-sexp'."
   :keymaps '(process-menu-mode-map)
   "b"
   #'mememacs/process-menu-switch-to-buffer)
+
+
+(defun mememacs/create-script (file)
+  (interactive "F")
+  (find-file file)
+  (insert "#!/bin/sh\n")
+  (save-buffer)
+  (evil-insert-state)
+  (set-file-modes file #o777))
+
+(mememacs/comma-def
+  :keymaps 'dired-mode-map
+  "ns" #'mememacs/create-script)
+
+
+(defun mememacs/toggle-debug-on-quit (arg)
+  (interactive "P")
+  (if arg
+    (setf ebug-on-quit
+	  (not ebug-on-quit))
+    (setf debug-on-quit
+	  (not debug-on-quit))))
+
+(general-def "C-x C-q" #'mememacs/toggle-debug-on-quit)
+
+(defun mememacs/copy-file-name-dwim (arg)
+  (interactive "P")
+  (-->
+   (if (eq major-mode 'dired-mode)
+       (progn (dired-copy-filename-as-kill)
+	      (pop kill-ring))
+     (or
+      buffer-file-name
+      (progn
+	(kill-new
+	 (buffer-name))
+	(user-error
+	 "Killed %s instead of file name" (buffer-name)))))
+   (if arg
+       (file-name-directory it)
+     it)
+   (progn (kill-new it)
+	  (message "Copied %s" it))))
+
+(mememacs/comma-def
+  :states 'normal
+  "f" nil
+  "fy" #'mememacs/copy-file-name-dwim)
+
+
+(defhydra hydra-buffer ()
+    "buffer"
+    ("d" #'kill-this-buffer)
+    ("k" #'previous-buffer)
+    ("j" #'previous-buffer)
+    ("a" #'mark-whole-buffer)
+    ("y" #'mememacs/kill-buffer-name :quit t))
+
+(mememacs/comma-def
+  :states '(normal motion)
+  "b" #'hydra-buffer/body)
 
 
 (provide 'functions-1)
