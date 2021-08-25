@@ -1,0 +1,3 @@
+#!/bin/sh
+
+emacs --with-profile spacemacs --debug-init

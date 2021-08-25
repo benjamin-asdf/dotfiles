@@ -4,6 +4,9 @@
 (unless (file-exists-p "~/.org-jira")
   (make-directory "~/.org-jira"))
 
+
+(setf jiralib-url "https://singularitygroup.atlassian.net.atlassian.net")
+
 (jiralib-login
  "benjamin.schwerdtner@gmail.com"
  (auth-source-pick-first-password
@@ -27,7 +30,9 @@
 
 (setq org-jira-custom-jqls
       '((:jql " project IN (COS) AND status = INBOX AND resolution = Unresolved AND assignee in (currentUser()) order by updated DESC" :filename "inbox")
-	(:jql "assignee = currentUser() AND resolution = Unresolved AND status != Backlog order by updated DESC" :filename "no-backlog")))
+	(:jql
+	 "assignee = currentUser() AND resolution = Unresolved AND status != CoderBacklog ORDER BY updated DESC"
+	 :filename "no-backlog")))
 
 
 

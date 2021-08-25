@@ -12,7 +12,11 @@
 
 ;; Give some breathing room
 (set-fringe-mode 10)
-(setq inhibit-startup-message t)
+(setq
+ inhibit-startup-message t
+ inhibit-startup-echo-area-message t)
+
+
 
 ;; (setq visible-bell 1)
 

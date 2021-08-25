@@ -19,10 +19,6 @@
   "t" '(:ignore t)
   "n" '(:ignore t)
   "nn" #'display-line-numbers-mode
-  "nw" #'widen
-  "nd" #'narrow-to-defun
-  "nr" #'narrow-to-region
-
 
   "b" '(:ignore t :which-key "b..")
   "bd" #'kill-this-buffer
@@ -78,6 +74,12 @@
 
   )
 
+
+(mememacs/comma-def
+  "nw" #'widen
+  "nd" #'narrow-to-defun
+  "nr" #'narrow-to-region
+  "np" #'narrow-to-page)
 
 
 

@@ -272,9 +272,15 @@
 (use-package magit
   :defer t
   :init
-  (mememacs/leader-def
-    "g" '(:ignore t :which-key "git")
-    "gs" #'magit-status)
+
+  (defhydra magit-hydra ()
+    ("s" #'magit-status :exit t)
+    ("l" #'magit-log "log" :exit t)
+    ("d" #'magit-diff "diff" :exit t))
+
+  (mememacs/comma-def
+    "g" #'magit-hydra/body)
+
   :config
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
@@ -652,4 +658,4 @@
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 
-;; pprint
+; pprint

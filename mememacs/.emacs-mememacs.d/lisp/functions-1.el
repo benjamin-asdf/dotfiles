@@ -131,6 +131,16 @@ See `eval-last-sexp'."
   "S-<escape>"
   #'mememacs/escape)
 
+(with-eval-after-load 'iedit
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/iedit-quit-maybe ()
+     (when iedit-lib-quit-func
+       (iedit--quit)))))
+
+(add-hook 'mememacs/escape-functions #'widen)
+
+
 
 
 (defun mm/toggle-when-unless ()
@@ -261,7 +271,6 @@ See `eval-last-sexp'."
 
 (mememacs/comma-def
   :states 'normal
-  "f" nil
   "fy" #'mememacs/copy-file-name-dwim)
 
 
@@ -276,6 +285,34 @@ See `eval-last-sexp'."
 (mememacs/comma-def
   :states '(normal motion)
   "b" #'hydra-buffer/body)
+
+(defun mm/kill-whole-buffer ()
+  (interactive)
+  (kill-new (buffer-substring-no-properties (point-min) (point-max)))
+  (message "killed whole buffer contents"))
+
+(defhydra scroll-hydra
+  (:pre (set-cursor-color "Red") :post (set-cursor-color "White"))
+  "scroll"
+  ("j" (evil-scroll-down 20) "down")
+  ("k" (evil-scroll-up 20) "up")
+  ("J" (evil-scroll-down 150))
+  ("K" (evil-scroll-up 150))
+  ("h" #'evil-window-top)
+  ("l" #'evil-window-bottom)
+  ("z" #'evil-scroll-line-to-center)
+  ("H" #'evil-scroll-line-to-top)
+  ("L" #'evil-scroll-line-to-bottom)
+  ("g" #'evil-goto-first-line)
+  ("G" #'evil-goto-line)
+  ("a" #'mark-whole-buffer)
+  ("y" #'mm/kill-whole-buffer :exit t))
+
+(mememacs/comma-def
+  "jj" #'scroll-hydra/body
+  "jk" #'scroll-hydra/lambda-k
+  "jJ" #'scroll-hydra/lambda-J
+  "jK" #'scroll-hydra/lambda-K)
 
 
 (provide 'functions-1)

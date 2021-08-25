@@ -68,8 +68,12 @@ nnoremap <leader>vs :source ~/.ideavimrc<CR>
 " ============================================================================
 
 nnoremap U :action $Redo<CR>
-" nnoremap s :action emacsIDEAs.AceJumpWord<CR> TODO
+nnoremap s :action emacsIDEAs.AceJumpWord<CR> TODO
 nmap gb :action Back<CR>
+
+nmap gh :action ShowErrorDescription<cr>
+nmap ge :action QuickJavaDoc<cr>
+
 
 nmap <leader>l :action KJumpAction<cr>
 nmap <leader>jw :action KJumpAction.Word0<cr>
@@ -92,7 +96,7 @@ nmap <leader>wr :action VimWindowRight<cr>
 nmap <leader>wn :action VimWindowSplitVertical<cr>
 
 " misc actions
-inoremap <C-/> :action EditorCompleteStatement<CR> 
+inoremap <C-/> :action EditorCompleteStatement<CR>
 
 " help"
 nnoremap <leader>hd :action QuickJavaDoc<CR>
@@ -100,7 +104,7 @@ nnoremap <leader>hd :action QuickJavaDoc<CR>
 nnoremap <leader>dE :action EvaluateExpression<CR>
 nnoremap <leader>de :action QuickEvaluateExpression<CR>
 
-" navigation and search
+"navigation and search
 nnoremap gu :action ShowUsages<CR>
 nnoremap gU :action FindUsages<CR>
 nnoremap gI :action GotoImplementation<CR>
@@ -118,10 +122,11 @@ nnoremap [d b?\\<def\><CR>w:nohlsearch<CR>
 
 
 
-" errors
+"errors
 nnoremap <leader>en :action GotoNextError<CR>
 nnoremap <leader>ep :action GotoPreviousError<CR>
 
 
 
-" fix g
+
+"fix g
