@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # idea-ce /home/benj/repos/kotlin/IdeaIdleKotlin/
-idea-ce /home/benj/repos/kotlin/IdeaIdle/
+idea-ce /home/benj/repos/kotlin/ideaidle/

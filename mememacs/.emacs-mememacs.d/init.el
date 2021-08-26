@@ -190,6 +190,7 @@
     ("d" #'kill-this-buffer)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
+    ("b" #'helm-mini :exit t)
     ("a" #'mark-whole-buffer)))
 
 (use-package debug
@@ -207,7 +208,10 @@
   :config
   (setf evil-collection-mode-list
 	(remove 'lispy evil-collection-mode-list))
-  (evil-collection-init))
+  (evil-collection-init)
+  (general-def
+    :states 'normal
+    :keymaps '(dired-mode-map Info-mode-map Man-mode-map) "SPC" nil))
 
 
 (use-package exwm
@@ -249,7 +253,9 @@
     "hv" #'helpful-variable
     "hk" #'helpful-key
     "hF" #'helpful-function
-    "hC" #'helpful-command)
+    "hC" #'helpful-command
+    "hc" #'describe-char
+    "hm" #'describe-mode)
 
   )
 
@@ -616,15 +622,19 @@
 	(expand-file-name)
 	(shell-command)))))
 
-;; (use-package org
-;;   :defer t)
+(use-package org
+  :defer t)
 
-;; (use-package org-jira
-;;   ;; :init (require 'cl)
-;;   :demand t
-;;   ;; :defer t
-;;   :config
-;;   (require 'init-org-jira))
+(use-package org-jira
+  :defer t
+  :config (require 'init-org-jira))
+
+(use-package org-roam
+  :init (setq org-roam-v2-ack t)
+  :config (require 'init-org-roam))
+
+
+(use-package markdown-mode)
 
 ;; elp
 ;; memory-use-counts

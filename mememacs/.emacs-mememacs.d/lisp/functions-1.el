@@ -187,15 +187,18 @@ See `eval-last-sexp'."
 
 (mememacs/leader-def "jE" #'mememacs/jump-eshell)
 
-(defun mm/magit-kill-origin-url (&optional arg)
+(defun mememacs/magit-kill-origin-url (&optional arg)
   (interactive "p")
-  (kill-new
+  (-->
    (magit-git-string
     "remote"
     "get-url"
     (if arg
 	(magit-read-remote "kill url from: ")
-      "origin"))))
+      "origin"))
+   (progn
+     (message  "Kill %s" it)
+     (kill-new it))))
 
 ;; thanks john https://github.com/jwiegley/dot-emacs.git
 
@@ -277,14 +280,16 @@ See `eval-last-sexp'."
 (defhydra hydra-buffer ()
     "buffer"
     ("d" #'kill-this-buffer)
+    ("D" #'kill-buffer-and-window)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
     ("a" #'mark-whole-buffer)
-    ("y" #'mememacs/kill-buffer-name :quit t))
+    ("y" #'mememacs/kill-buffer-name t :quit))
 
 (mememacs/comma-def
   :states '(normal motion)
-  "b" #'hydra-buffer/body)
+  "b" #'hydra-buffer/body
+  "w" #'evil-window-map)
 
 (defun mm/kill-whole-buffer ()
   (interactive)

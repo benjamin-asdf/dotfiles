@@ -1,11 +1,10 @@
 (require 'cl)
 (message "")
 
-(unless (file-exists-p "~/.org-jira")
-  (make-directory "~/.org-jira"))
 
-
-(setf jiralib-url "https://singularitygroup.atlassian.net.atlassian.net")
+(setf
+ jiralib-url "https://singularitygroup.atlassian.net"
+ org-jira-working-dir "~/org/jira")
 
 (jiralib-login
  "benjamin.schwerdtner@gmail.com"
@@ -33,7 +32,5 @@
 	(:jql
 	 "assignee = currentUser() AND resolution = Unresolved AND status != CoderBacklog ORDER BY updated DESC"
 	 :filename "no-backlog")))
-
-
 
 (provide 'init-org-jira)

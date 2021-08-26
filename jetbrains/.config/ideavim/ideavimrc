@@ -126,7 +126,6 @@ nnoremap [d b?\\<def\><CR>w:nohlsearch<CR>
 nnoremap <leader>en :action GotoNextError<CR>
 nnoremap <leader>ep :action GotoPreviousError<CR>
 
+nnoremap gcc :vsc Edit.ToggleComment<CR>
+vnoremap gc :vsc Edit.ToggleComment<CR><Esc><Esc>
 
-
-
-"fix g
