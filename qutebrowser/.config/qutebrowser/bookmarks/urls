@@ -15,3 +15,8 @@ https://gist.github.com/ericnormand ericnormand’s gists
 https://plugins.jetbrains.com/intellij-platform-explorer IntelliJ Platform Explorer | JetBrains
 https://github.com/ahungry/org-jira/issues/200 Update Labels Property? · Issue #200 · ahungry/org-jira
 https://singularitygroup.atlassian.net/jira/software/c/projects/COS/issues/?jql=project%20%3D%20%22COS%22%20AND%20assignee%20IN%20%28currentUser%28%29%29%20AND%20status%20%3D%20INBOX%20AND%20statusCategory%20in%20%28%22New%22%2C%20%22In%20Progress%22%29%20ORDER%20BY%20created%20DESC ClashOfStreamers - Issues - Jira
+https://github.com/ahungry/org-jira/issues/264 [error] request--callback: peculiar error · Issue #264 · ahungry/org-jira
+https://kotlinlang.org/docs/extensions.html#extensions-are-resolved-statically Extensions | Kotlin
+https://github.com/ GitHub
+https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20%3D%20currentUser()%20AND%20resolution%20%3D%20Unresolved%20AND%20status%20!%3D%20CoderBacklog%20ORDER%20BY%20updated%20DESC [active-no-backlog] Issue navigator - Jira
+https://unix.stackexchange.com/questions/389209/what-kinds-of-string-interpolation-does-posix-sh-support bash - What kinds of string interpolation does POSIX sh support? - Unix & Linux Stack Exchange

@@ -6,3 +6,4 @@ uwind https://forum.unity.com/threads/please-add-option-to-prevent-unity-editor-
 wam https://wiki.archlinux.org/title/System_maintenance
 jii https://singularitygroup.atlassian.net/jira/software/c/projects/COS/issues/?filter=myopenissues
 jib https://singularitygroup.atlassian.net/jira/software/c/projects/COS/issues/?jql=project%20%3D%20%22COS%22%20AND%20assignee%20IN%20%28currentUser%28%29%29%20AND%20status%20%3D%20INBOX%20AND%20statusCategory%20in%20%28%22New%22%2C%20%22In%20Progress%22%29%20ORDER%20BY%20created%20DESC
+jinb https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20%3D%20currentUser()%20AND%20resolution%20%3D%20Unresolved%20AND%20status%20!%3D%20CoderBacklog%20ORDER%20BY%20updated%20DESC
