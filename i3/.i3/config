@@ -86,7 +86,7 @@ mode "$normy_mode" {
         bindsym k            exec xdotool mousemove_relative -- 0 -20
         bindsym h            exec xdotool mousemove_relative -- -20 0
         bindsym l            exec xdotool mousemove_relative -- 20 0
-        bindsym Mod1+j       exec xdotool mousemove_relative -- 0 8 
+        bindsym Mod1+j       exec xdotool mousemove_relative -- 0 8
         bindsym Mod1+k       exec xdotool mousemove_relative -- 0 -8
         bindsym Mod1+h       exec xdotool mousemove_relative -- -8 0
         bindsym Mod1+l       exec xdotool mousemove_relative -- 8 0
@@ -94,11 +94,11 @@ mode "$normy_mode" {
         bindsym Shift+k      exec xdotool mousemove_relative -- 0 -180
         bindsym Shift+h      exec xdotool mousemove_relative -- -180 0
         bindsym Shift+l      exec xdotool mousemove_relative -- 180 0
-        bindsym Ctrl+Shift+j exec xdotool mousemove_relative -- 0 550 
+        bindsym Ctrl+Shift+j exec xdotool mousemove_relative -- 0 550
         bindsym Ctrl+Shift+k exec xdotool mousemove_relative -- 0 -550
         bindsym Ctrl+Shift+h exec xdotool mousemove_relative -- -550 0
         bindsym Ctrl+Shift+l exec xdotool mousemove_relative -- 550 0
-        bindsym $mod+j       exec xdotool mousemove_relative -- 0 1000 
+        bindsym $mod+j       exec xdotool mousemove_relative -- 0 1000
         bindsym $mod+k       exec xdotool mousemove_relative -- 0 -1000
         bindsym $mod+h       exec xdotool mousemove_relative -- -1000 0
         bindsym $mod+l       exec xdotool mousemove_relative -- 1000 0
@@ -317,7 +317,7 @@ mode "resize" {
 }
 
 # Lock screen
-bindsym $mod+9 exec --no-startup-id blurlock
+bindsym $mod+9 exec --no-startup-id best-lock.sh
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
@@ -331,7 +331,7 @@ exec --no-startup-id clipit
 # exec_always --no-startup-id sbxkb
 exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
-exec --no-startup-id xautolock -time 10 -locker blurlock
+exec --no-startup-id xautolock -time 4 -locker best-lock.sh
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
@@ -341,7 +341,7 @@ exec_always --no-startup-id fix_xcursor
 # Change the variable name at the place you want to match the color
 # of your terminal like this:
 # [example]
-# If you want your bar to have the same background color as your 
+# If you want your bar to have the same background color as your
 # terminal background change the line 362 from:
 # background #14191D
 # to:
@@ -404,7 +404,7 @@ bindsym $mod+m bar mode toggle
   client.focused_inactive #2F3D44 #2F3D44 #1ABC9C #454948
   client.unfocused        #2F3D44 #2F3D44 #1ABC9C #454948
   client.urgent           #CB4B16 #FDF6E3 #1ABC9C #268BD2
-  client.placeholder      #000000 #0c0c0c #ffffff #000000 
+  client.placeholder      #000000 #0c0c0c #ffffff #000000
 
   client.background       #2B2C2B
 
@@ -424,7 +424,7 @@ gaps outer -2
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
 
-# Smart borders (draw borders around container only if it is not the only container on this workspace) 
+# Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 
@@ -472,6 +472,7 @@ exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
 no_focus [class="(?i)unity-editor"]
 assign [class="(?i)unity-editor"] 5
 assign [title="IdeaPlayground"] 2
+assign [title="RiderPlayground - Class1.cs"] 2
 
 set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-files
 bindsym $mod+u mode "$unity"
@@ -494,7 +495,7 @@ exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:
 exec --no-startup-id xcape -e 'Control_L=Escape'
 
 
-# figure out how to also bind app context to super and get used to it 
+# figure out how to also bind app context to super and get used to it
 # exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3
 # exec --no-startup-id xcape -e 'Control_L=Escape'
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
