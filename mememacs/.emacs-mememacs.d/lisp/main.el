@@ -201,7 +201,13 @@
 ;;       save-interprogram-paste-before-kill t)
 
 ;;; Move mouse away.
-(mouse-avoidance-mode 'banish)
+;; (mouse-avoidance-mode 'banish)
+
+
+;; on gaia-s we do not need it really
+;; (setf mouse-avoidance-mode 'animate)
+;(if (eq window-system 'x) (mouse-avoidance-set-pointer-shape (nth (random 4) (list x-pointer-man x-pointer-spider x-pointer-gobbler x-pointer-gumby))))
+
 ;;; That binding is not very useful and gets in the way of C-<mouse-1>.
 (global-unset-key (kbd "C-<down-mouse-1>"))
 
