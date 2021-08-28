@@ -40,8 +40,8 @@
 
 (mememacs/leader-def
   "/" #'helm-projectile-ag
-  "sd" #'mememacs/helm-ag-this-dir)
-
+  "sd" #'mememacs/helm-ag-this-dir
+  "sb" #'helm-do-ag-buffers)
 
 
 (provide 'init-helm-ag)

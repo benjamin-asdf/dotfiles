@@ -264,6 +264,11 @@
 
 (global-visual-line-mode)
 
-(add-hook 'after-save-hook 'check-parens)
+(add-hook
+ 'after-save-hook
+ 'check-parens)
+
+
+(setf dired-dwim-target t)
 
 (provide 'main)

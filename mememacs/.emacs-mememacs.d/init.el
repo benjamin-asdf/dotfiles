@@ -118,14 +118,31 @@
       (after mm/evil-show-registers-adv activate)
     (text-mode)))
 
-(use-package hydra)
-
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1)
   (add-hook 'emacs-lisp-mode-hook
 	    (lambda ()
               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
+
+
+(use-package evil-commentary
+  :hook (prog-mode . evil-commentary-mode))
+
+
+
+(use-package hydra
+  :config
+  (defhydra hydra-buffer ()
+    "buffer"
+    ("d" #'kill-this-buffer)
+    ("k" #'previous-buffer)
+    ("j" #'previous-buffer)
+    ("b" #'helm-mini :exit t)
+    ("p" #'projectile-find-dir :exit t)
+    ("P" #'projectile-find-dir-other-window :exit t)
+    ("s" #'helm-do-ag-buffers)
+    ("a" #'mark-whole-buffer)))
 
 (use-package general
   :after evil
@@ -183,15 +200,7 @@
 	      (eq evil-state 'normal))
 	 (evil-mc-undo-all-cursors)))))
 
-(use-package hydra
-  :config
-  (defhydra hydra-buffer ()
-    "buffer"
-    ("d" #'kill-this-buffer)
-    ("k" #'previous-buffer)
-    ("j" #'previous-buffer)
-    ("b" #'helm-mini :exit t)
-    ("a" #'mark-whole-buffer)))
+
 
 (use-package debug
   :ensure nil

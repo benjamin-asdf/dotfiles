@@ -79,7 +79,14 @@
   "nw" #'widen
   "nd" #'narrow-to-defun
   "nr" #'narrow-to-region
-  "np" #'narrow-to-page)
+  "np" #'narrow-to-page
+
+  "al" #'list-processes
+
+  "fr" (defun mm/find-in-repos ()
+	 (interactive)
+	 (let ((default-directory "~/repos/"))
+	   (call-interactively #'helm-find-files))))
 
 
 
