@@ -86,7 +86,17 @@
   "fr" (defun mm/find-in-repos ()
 	 (interactive)
 	 (let ((default-directory "~/repos/"))
-	   (call-interactively #'helm-find-files))))
+	   (call-interactively #'helm-find-files)))
+
+  "f" '(:ignore t :which-key "f..")
+  "fd" #'delete-file
+  "fs" #'save-buffer
+  "ff" #'helm-find-files
+  )
+
+(mememacs/comma-def
+  'with-editor-mode-map
+  "," #'with-editor-finish)
 
 
 
