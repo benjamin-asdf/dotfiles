@@ -266,9 +266,12 @@
 
 (add-hook
  'after-save-hook
- 'check-parens)
+ (defun check-parens-when-prog-mode ()
+   (when (derived-mode-p 'prog-mode)))
+ (check-parens))
 
-
-(setf dired-dwim-target t)
+;; dired
+(setf dired-dwim-target t
+      delete-by-moving-to-trash nil)
 
 (provide 'main)
