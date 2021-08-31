@@ -280,7 +280,7 @@
   :config
   (global-set-key (kbd "M-x") 'helm-M-x)
   (require 'init-helm)
-  (mememacs/leader-def
+  (mememacs/comma-def
     "r" '(:ignore t :which-key "r..")
     "rl" #'helm-resume))
 
@@ -291,7 +291,8 @@
   (defhydra magit-hydra ()
     ("s" #'magit-status :exit t)
     ("l" #'magit-log "log" :exit t)
-    ("d" #'magit-diff "diff" :exit t))
+    ("d" #'magit-diff "diff" :exi t)
+    ("/" #'helm-grep-do-git-grep "grep" :exit t))
 
   (mememacs/comma-def
     "g" #'magit-hydra/body)
@@ -423,39 +424,12 @@
 
 (use-package cider
   :config
-  (add-hook
-   'mememacs/escape-functions
-   (defun mm/cider-macroexpand-undo ()
-     (when (in major-mode 'cider-mode 'cider-repl-mode)
-       (cider-macroexpand-undo))))
-
-  (defun mememacs/cider-macroexpand-at-place ()
-    (interactive)
-    (lispy-forward 1)
-    (forward-line 1)
-    (cider-macroexpand-1-inplace))
-
-
-
-  (mememacs/comma-def
-    :keymaps
-    '(clojure-mode-map cider-repl-mode)
-    "m" #'mememacs/cider-macroexpand-at-place
-
-    "e" '(cider-eval-commands-map
-	  :which-key "eval"))
-
-  (general-def
-    'cider-eval-commands-map
-    "L" #'cider-eval-sexp-at-point
-    "l" #'mememacs/lispy-eval-line)
-
-  )
+  (require 'init-cider))
 
 (use-package flycheck)
 
-(use-package flycheck-clj-kondo)
 (use-package flycheck-clojure)
+(use-package flycheck-clj-kondo)
 (use-package flycheck-joker)
 
 
@@ -506,7 +480,6 @@
     (persistent-scratch-mode)))
 
 
-(use-package backup-each-save)
 
 (use-package link-hint
   :config
@@ -645,6 +618,10 @@
 
 (use-package markdown-mode)
 
+;; try vc-backup
+;; and then replace every other backup file system we have
+(use-package backup-each-save)
+
 ;; elp
 ;; memory-use-counts
 ;; instrument package
@@ -677,4 +654,4 @@
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 
-; pprint
+					; pprint

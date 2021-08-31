@@ -42,7 +42,7 @@
 
 (defun mememacs/mkstr (obj)
   (with-output-to-string
-    (prin1 obj)))
+    (print obj)))
 
 (defun mememacs/eval-and-set-test-fn (arg)
   "Eval and bind defun to leader-tt. With ARG ask for key "
@@ -236,7 +236,8 @@ See `eval-last-sexp'."
   (insert "#!/bin/sh\n")
   (save-buffer)
   (evil-insert-state)
-  (set-file-modes file #o777))
+  (set-file-modes file #o777)
+  (shell-script-mode))
 
 (mememacs/comma-def
   :keymaps 'dired-mode-map
@@ -256,16 +257,19 @@ See `eval-last-sexp'."
 (defun mememacs/copy-file-name-dwim (arg)
   (interactive "P")
   (-->
-   (if (eq major-mode 'dired-mode)
-       (progn (dired-copy-filename-as-kill)
-	      (pop kill-ring))
-     (or
-      buffer-file-name
-      (progn
-	(kill-new
-	 (buffer-name))
-	(user-error
-	 "Killed %s instead of file name" (buffer-name)))))
+   (cond ((eq major-mode 'dired-mode)
+	  (dired-copy-filename-as-kill)
+	  (pop kill-ring))
+	 ((or arg (in major-mode 'eshell-mode))
+	  default-directory)
+	 (t
+	  (or
+	   buffer-file-name
+	   (progn
+	     (kill-new
+	      (buffer-name))
+	     (user-error
+	      "Killed %s instead of file name" (buffer-name))))))
    (if arg
        (file-name-directory it)
      it)
@@ -318,6 +322,36 @@ See `eval-last-sexp'."
   "jk" #'scroll-hydra/lambda-k
   "jJ" #'scroll-hydra/lambda-J
   "jK" #'scroll-hydra/lambda-K)
+
+(mememacs/comma-def
+  "fr" (defun mm/find-in-repos ()
+	 (interactive)
+	 (let ((default-directory "~/repos/"))
+	   (call-interactively #'helm-find-files)))
+
+  "f" '(:ignore t :which-key "f..")
+  "fd" #'delete-file
+  "fs" #'save-buffer
+  "ff" #'helm-find-files
+
+  "fh" (defun dired-jump-home ()
+	 (interactive)
+	 (dired-goto-file "~/")
+	 (let ((default-directory "~/")
+	       (buffer-file-name nil))
+	   (dired-jump)))
+
+  "," (defun call-C-c-C-c ()
+	(interactive)
+	(call-interactively (key-binding (kbd "C-c C-c"))))
+
+  "k" (defun call-C-c-C-k ()
+	(interactive)
+	(call-interactively (key-binding (kbd "C-c C-k"))))
+  )
+
+
+
 
 
 (provide 'functions-1)

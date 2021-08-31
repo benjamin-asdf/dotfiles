@@ -20,3 +20,5 @@ https://kotlinlang.org/docs/extensions.html#extensions-are-resolved-statically E
 https://github.com/ GitHub
 https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20%3D%20currentUser()%20AND%20resolution%20%3D%20Unresolved%20AND%20status%20!%3D%20CoderBacklog%20ORDER%20BY%20updated%20DESC [active-no-backlog] Issue navigator - Jira
 https://unix.stackexchange.com/questions/389209/what-kinds-of-string-interpolation-does-posix-sh-support bash - What kinds of string interpolation does POSIX sh support? - Unix & Linux Stack Exchange
+https://clojurescript.org/guides/quick-start ClojureScript - Quick Start
+https://reagent-project.github.io/ Reagent: Minimalistic React for ClojureScript

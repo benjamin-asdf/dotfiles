@@ -13,8 +13,9 @@
 ;; Give some breathing room
 (set-fringe-mode 10)
 (setq
- inhibit-startup-message t
- inhibit-startup-echo-area-message t)
+ inhibit-startup-message t)
+
+(defalias 'display-startup-echo-area-message (lambda ()))
 
 
 
@@ -273,5 +274,7 @@
 ;; dired
 (setf dired-dwim-target t
       delete-by-moving-to-trash nil)
+
+;; todo enforece /n prog mode
 
 (provide 'main)

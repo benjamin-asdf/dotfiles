@@ -74,6 +74,10 @@
 
   )
 
+(general-unbind evil-motion-state-map "SPC")
+
+;; todo output C-d when I do , d
+
 
 (mememacs/comma-def
   "nw" #'widen
@@ -81,24 +85,7 @@
   "nr" #'narrow-to-region
   "np" #'narrow-to-page
 
-  "al" #'list-processes
-
-  "fr" (defun mm/find-in-repos ()
-	 (interactive)
-	 (let ((default-directory "~/repos/"))
-	   (call-interactively #'helm-find-files)))
-
-  "f" '(:ignore t :which-key "f..")
-  "fd" #'delete-file
-  "fs" #'save-buffer
-  "ff" #'helm-find-files
-  )
-
-(mememacs/comma-def
-  'with-editor-mode-map
-  "," #'with-editor-finish)
-
-
+  "al" #'list-processes)
 
 (general-def
   "C-o" #'evil-jump-forward
@@ -110,6 +97,7 @@
 	    (evil-jump-backward)
 	    (when (eq p (point))
 	      (pop-tag-mark)))))
+
 
 
 (provide 'init-general)
