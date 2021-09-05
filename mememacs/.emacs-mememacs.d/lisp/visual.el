@@ -7,39 +7,137 @@
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
 
-(use-package gruvbox-theme
-  :config
-  (load-theme 'gruvbox t))
+;; (use-package gruvbox-theme
+;;   :config
+;;   (load-theme 'gruvbox t))
 
-;;; Programming
-;; (set-face-foreground 'font-lock-comment-face "#727072")
-;; (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
-;; (set-face-foreground 'font-lock-doc-face "#00dfff")
-;; (set-face-foreground 'font-lock-string-face "#0080d4")
-;; ;; (set-face-foreground 'font-lock-builtin-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-constant-face (face-foreground 'default))
-(set-face-foreground 'font-lock-function-name-face "green yellow")
-;; ;; (set-face-foreground 'font-lock-keyword-face (face-foreground 'default))
-;; ;; (set-face-foreground 'font-lock-type-face (face-foreground 'default))
+;; need to set mode line as well
+;; and tap seperator
+
+;; https://imagecolorpicker.com/
+;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
+
+(defconst mindsape/woodsmoke "#17161e")
+(defconst mindsape/brown "#543f2f")
+(defconst mindsape/sage "#95a178")
+(defconst mindsape/dark-kelp "#383d2e")
+;; (defconst mindscape)
+
+;; (set-face-foreground 'default "#d1abac")
+(set-face-background 'default mindsape/woodsmoke)
+(set-face-foreground 'default "#faf7f7")
+(set-face-background 'cursor "white")
+(set-face-foreground 'cursor "white")
+(set-cursor-color "white")
+
+
+;;; Programmingl
+
+(set-face-foreground 'font-lock-comment-face "#6b6375")
+(set-face-foreground 'font-lock-comment-delimiter-face
+		     (face-foreground 'font-lock-comment-face))
+(set-face-foreground 'font-lock-doc-face "#84892f")
+(set-face-foreground 'font-lock-string-face "#abd1d0")
+
+;; https://imagecolorpicker.com/color-code/febf8f
+(set-face-foreground 'font-lock-function-name-face "#96fe8f")
+(set-face-foreground 'font-lock-constant-face ;; "#f68ffe"
+;; "#fe8ffb"
+		     "#F689FF"
+
+
+		     )
+(set-face-foreground 'font-lock-keyword-face "#febf8f")
+(set-face-foreground 'font-lock-builtin-face "#8fcefe")
+
+(set-face-background 'region "#463c52")
+
+
+(set-face-background 'mode-line mindsape/brown)
+(set-face-background 'mode-line-inactive (face-background 'default))
+(set-face-foreground 'mode-line (face-foreground 'default))
+(set-face-foreground 'font-lock-type-face "#feb48f")
+(set-face-italic 'font-lock-type-face t)
+(set-face-bold 'font-lock-type-face t)
+
+(set-face-attribute
+ 'minibuffer-prompt
+ nil
+ :foreground "yellow"
+ :background mindsape/woodsmoke)
+
+(set-face-attribute
+ 'separator-line
+ nil
+ :background mindsape/woodsmoke)
+
+
+;; #fab481
+
 ;; ;; (set-face-foreground 'font-lock-variable-name-face (face-foreground 'default))
 
-(set-face-foreground 'link "goldenrod")
 (set-face-underline 'link "goldenrod")
+(set-face-foreground 'link "goldenrod")
 (set-face-bold 'link t)
 
+
+    ;; (default                                   (:background gruvbox-bg :foreground gruvbox-light0))
+    ;;  (cursor                                    (:background gruvbox-light0))
+    ;;  (mode-line                                 (:background gruvbox-dark3 :foreground gruvbox-light2 :box nil))
+    ;;  (mode-line-inactive                        (:background gruvbox-dark1 :foreground gruvbox-light4 :box nil))
+    ;;  (fringe                                    (:background gruvbox-bg))
+    ;;  (hl-line                                   (:background gruvbox-dark1))
+    ;;  (region                                    (:background gruvbox-dark2)) ;;selection
+    ;;  (secondary-selection                       (:background gruvbox-dark1))
+    ;;  (minibuffer-prompt                         (:background gruvbox-bg :foreground gruvbox-bright_green :bold t))
+    ;;  (vertical-border                           (:foreground gruvbox-dark2))
+    ;;  (internal-border                           (:background gruvbox-dark2))
+    ;;  (window-divider                            (:foreground gruvbox-dark2))
+    ;;  (link                                      (:foreground gruvbox-faded_blue :underline t))
+    ;;  (shadow                                    (:foreground gruvbox-dark4))
 
 
 ;;; Cursor type: default (box) is visible and practical.
 ;; (setq-default cursor-type 'hollow)
 (setq-default x-stretch-cursor t)
 ;;; Blinking cursor is on only when Emacs is not daemonized.
-(blink-cursor-mode 0)
-
 ;;; show-paren
 (with-eval-after-load 'paren
   (set-face-foreground 'show-paren-match "White")
   (set-face-background 'show-paren-match (face-background 'default))
   (set-face-underline 'show-paren-match "White"))
+
+(with-eval-after-load 'helm
+  (set-face-background 'helm-visible-mark (face-background 'region))
+  (set-face-underline 'helm-visible-mark t)
+  (set-face-foreground 'helm-visible-mark "white")
+  (set-face-attribute
+   'helm-selection
+   nil
+   :height 1.2
+   :box t
+   :background mindsape/brown
+   :foreground (face-foreground 'default))
+  (set-face-attribute
+   'helm-M-x-key
+   nil
+   :foreground (face-foreground 'font-lock-constant-face))
+
+  (set-face-attribute
+   'helm-source-header
+   nil
+   :height 1.2
+   :background mindsape/woodsmoke
+   :foreground "#32542f")
+
+  ;; (set-face-attribute
+  ;;  'helm-header
+  ;;  nil
+  ;;  :height 1.2
+  ;;  :background mindsape/woodsmoke
+  ;;  :foreground "yellow")
+
+  )
 
 
 (defun ambrevar/fontify-comment-tag ()

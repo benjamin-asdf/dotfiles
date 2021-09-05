@@ -276,7 +276,7 @@ With prefix argument, UPDATE the databases with custom uptions thanks to the
 (global-set-key  (kbd "C-<f4>") 'helm-execute-kmacro)
 
 ;; From https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/init-helm.el:
-(defmethod helm-setup-user-source ((source helm-source-ffiles))
+(cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
   (helm-source-add-action-to-source-if
    "Magit status"
    (lambda (_candidate)
@@ -334,7 +334,7 @@ Useful for Guix."
                              1))
         (t actions)))
 
-(defmethod helm-setup-user-source ((source helm-moccur-class))
+(cl-defmethod helm-setup-user-source ((source helm-moccur-class))
   (setf (slot-value source 'action-transformer) 'helm-occur-action-transformer))
 
 ;; (require 'patch-helm)
@@ -398,6 +398,10 @@ returning a string."
   "C-K" #'helm-follow-action-backward
   "C-j" #'helm-next-line
   "C-k" #'helm-previous-line)
+
+(general-def
+  :keymaps 'helm-find-files-map
+  "C-RET" #'helm-point-file-in-dired)
 
 ;; (general-def
 ;;   :keymaps 'helm-find-files-map

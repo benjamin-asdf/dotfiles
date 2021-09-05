@@ -21,7 +21,7 @@
   "nn" #'display-line-numbers-mode
 
   "b" '(:ignore t :which-key "b..")
-  "bd" #'kill-this-buffer
+  "bd" #'kill-current-buffer
   "be" #'erase-buffer
   "bw" #'toggle-read-only
   "bb" #'helm-mini
@@ -76,16 +76,31 @@
 
 (general-unbind evil-motion-state-map "SPC")
 
-;; todo output C-d when I do , d
 
-
+;; todo why is this overriden or whatever
 (mememacs/comma-def
+  "n" '(:ignore t :which-key "n..")
   "nw" #'widen
   "nd" #'narrow-to-defun
   "nr" #'narrow-to-region
   "np" #'narrow-to-page
 
-  "al" #'list-processes)
+  "a" '(:ignore t :which-key "a..")
+  "al" #'list-processes
+  "at" #'helm-timers
+  "s" '(:ignore t : which-key "s..")
+  "ss" #'helm-swoop-without-pre-input
+  "sS" #'helm-swoop
+
+  "re" #'evil-show-registers
+
+  "rp" (defun mm/evil-paste-clipboard ()
+	 (interactive)
+	 (evil-paste-from-register ?*))
+
+  ;; "x" '(ctl-x-map :which-key "c-x-map")
+
+  )
 
 (general-def
   "C-o" #'evil-jump-forward

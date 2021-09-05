@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+cd "$COSDIR" || exit 1
+pwd | grep -q -e "/idlegame" || exit 1
+fd -tf -e json global -x rm

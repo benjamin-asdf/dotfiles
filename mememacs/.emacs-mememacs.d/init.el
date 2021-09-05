@@ -135,7 +135,7 @@
   :config
   (defhydra hydra-buffer ()
     "buffer"
-    ("d" #'kill-this-buffer)
+    ("d" #'kill-current-buffer)
     ("k" #'previous-buffer)
     ("j" #'previous-buffer)
     ("b" #'helm-mini :exit t)
@@ -175,6 +175,7 @@
     ("n" #'evil-mc-make-and-goto-next-match "next match")
     ("j" #'evil-mc-make-cursor-move-next-line "make line")
     ("q" #'evil-mc-undo-all-cursors "undo all")
+    ("I" #'evil-mc-make-cursor-in-visual-selection-beg)
     ("a" 'evil-mc-key-map "...")
     ("k" #'evil-mc-undo-last-added-cursor "undo last")
     ("p" #'evil-mc-find-prev-cursor "prev"))
@@ -210,6 +211,7 @@
     "." #'backtrace-expand-ellipses
     "+" #'backtrace-multi-line
     "-" #'backtrace-single-line))
+
 
 (use-package evil-collection
   :after evil
@@ -247,6 +249,7 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
 
 (use-package helpful
   :config
@@ -318,17 +321,26 @@
   helm-company
   :after company
   :config
-  (define-key company-active-map (kbd "C-/") 'helm-company)
-  (dolist (map (list company-active-map company-search-map))
-    (define-key map (kbd "C-j") 'company-select-next)
-    (define-key map (kbd "C-k") 'company-select-previous)
-    (define-key map (kbd "C-l") 'company-complete-selection))
-  (defun my-company-manual-begin ()
+  (general-def
+    :keymaps '(company-active-map company-search-map)
+    "C-/" 'helm-company
+    "C-j" 'company-select-next
+    "C-k" 'company-select-previous
+    "C-l" 'company-complete-selection)
+
+  (general-unbind undo-tree-map "C-/")
+
+  ;; (general-def
+  ;;   :state 'insert "C-/" 'helm-company)
+  (defun mm/company-manual-begin ()
     (interactive)
     (if (company-tooltip-visible-p)
         (company-select-next)
       (company-manual-begin)))
-  (define-key evil-insert-state-map (kbd "C-j") #'my-company-manual-begin))
+  (define-key evil-insert-state-map (kbd "C-j") #'mm/company-manual-begin)
+  (setf company-format-margin-function 'company-text-icons-margin)
+
+  )
 
 
 (use-package mood-line
@@ -500,11 +512,7 @@
    "Gp" '(guix-packages-by-name :which-key "search packages")
    "GP" '(guix-pull :which-key "pull")))
 
-(use-package hippie-exp
-  :config
-  (general-def
-    :states '(insert)
-    "C-/" #'hippie-expand))
+(use-package hippie-exp)
 
 
 ;; https://github.com/noctuid/link-hint.el

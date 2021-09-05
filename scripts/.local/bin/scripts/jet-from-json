@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+jet -i json -p -k < "$1" > "$2.edn"

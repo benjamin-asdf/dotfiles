@@ -22,3 +22,6 @@ https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20%3D%2
 https://unix.stackexchange.com/questions/389209/what-kinds-of-string-interpolation-does-posix-sh-support bash - What kinds of string interpolation does POSIX sh support? - Unix & Linux Stack Exchange
 https://clojurescript.org/guides/quick-start ClojureScript - Quick Start
 https://reagent-project.github.io/ Reagent: Minimalistic React for ClojureScript
+https://plugins.jetbrains.com/docs/intellij/intellij-artifacts.html#gradle-example-for-an-individual-module-from-the-intellij-platform IntelliJ Platform Artifacts Repositories | IntelliJ Platform Plugin SDK
+https://github.com/borkdude/jet/blob/master/doc/query.md jet/query.md at master · borkdude/jet
+https://shadow-cljs.github.io/docs/UsersGuide.html#_command_line Shadow CLJS User’s Guide
