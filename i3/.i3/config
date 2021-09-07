@@ -505,7 +505,7 @@ exec --no-startup-id unclutter &
 exec --no-startup-id keynav &:
 
 # assign [class="(?i)emacs"] 1
-for_window [class="(?i)emacs"  title="Helm"] floating enable
+# for_window [class="(?i)emacs"  title="Helm"] floating enable
 assign [class="qutebrowser"] 4
 assign [class="Nyxt"] 4
 assign [Class="(?i)Brave-browser"] 4

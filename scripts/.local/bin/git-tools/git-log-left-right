@@ -1,4 +1,0 @@
-#!/bin/sh
-
-[ -z "$1" ] && echo supply revision to compare && exit 1
-git log --oneline --graph --left-right --first-parent --decorate ..."$(git rev-parse "$1")"

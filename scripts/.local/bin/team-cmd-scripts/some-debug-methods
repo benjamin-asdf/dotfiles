@@ -1,6 +1,0 @@
-#!/bin/sh
-
-#use rg to serch for parameterless methods in DebugMethods.cs
-debug_methods="${COSDIR:-C:/ClashOfStreamers}/IdleGame/Assets/#/Sources/CheatTools/DebugMethods.cs"
-[ -f  "$debug_methods" ] || (printf "%s is not a file, consider setting the COSDIR environment variable to the repo root.\n" "$debug_methods" && exit 1) || exit 1
-rg -No "void (\\w+)\(\)\s+?\{" -r='$1' "$debug_methods"

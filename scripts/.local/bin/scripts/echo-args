@@ -1,7 +1,0 @@
-#!/bin/sh
-
-args=$(tr < "$@" '\0' ' ')
-
-for i in ${args[@]} ;
-         do echo "$i"
-done

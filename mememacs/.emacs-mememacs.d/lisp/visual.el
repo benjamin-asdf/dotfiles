@@ -26,9 +26,12 @@
 ;; (set-face-foreground 'default "#d1abac")
 (set-face-background 'default mindsape/woodsmoke)
 (set-face-foreground 'default "#faf7f7")
-(set-face-background 'cursor "white")
-(set-face-foreground 'cursor "white")
-(set-cursor-color "white")
+
+(set-face-attribute
+ 'cursor
+ nil
+ :foreground "white"
+ :background "white")
 
 
 ;;; Programmingl
@@ -64,13 +67,16 @@
  'minibuffer-prompt
  nil
  :foreground "yellow"
- :background mindsape/woodsmoke)
+ :background mindsape/woodsmoke
+ :bold t
+ :height 1.2)
 
 (set-face-attribute
  'separator-line
  nil
  :background mindsape/woodsmoke)
 
+(set-face-foreground 'escape-glyph "#8ffe93")
 
 ;; #fab481
 
@@ -80,26 +86,20 @@
 (set-face-foreground 'link "goldenrod")
 (set-face-bold 'link t)
 
+(set-face-background 'fringe mindsape/woodsmoke)
+(set-face-background 'secondary-selection mindsape/brown)
+(set-face-foreground 'vertical-border mindsape/brown)
+(set-face-foreground 'internal-border mindsape/brown)
+(set-face-foreground 'window-divider mindsape/brown)
 
-    ;; (default                                   (:background gruvbox-bg :foreground gruvbox-light0))
-    ;;  (cursor                                    (:background gruvbox-light0))
-    ;;  (mode-line                                 (:background gruvbox-dark3 :foreground gruvbox-light2 :box nil))
-    ;;  (mode-line-inactive                        (:background gruvbox-dark1 :foreground gruvbox-light4 :box nil))
-    ;;  (fringe                                    (:background gruvbox-bg))
-    ;;  (hl-line                                   (:background gruvbox-dark1))
-    ;;  (region                                    (:background gruvbox-dark2)) ;;selection
-    ;;  (secondary-selection                       (:background gruvbox-dark1))
-    ;;  (minibuffer-prompt                         (:background gruvbox-bg :foreground gruvbox-bright_green :bold t))
-    ;;  (vertical-border                           (:foreground gruvbox-dark2))
-    ;;  (internal-border                           (:background gruvbox-dark2))
-    ;;  (window-divider                            (:foreground gruvbox-dark2))
-    ;;  (link                                      (:foreground gruvbox-faded_blue :underline t))
-    ;;  (shadow                                    (:foreground gruvbox-dark4))
+
+
+;;  (shadow                                    (:foreground gruvbox-dark4))
+
 
 
 ;;; Cursor type: default (box) is visible and practical.
-;; (setq-default cursor-type 'hollow)
-(setq-default x-stretch-cursor t)
+; (setq-default cursor-type 'hollow)
 ;;; Blinking cursor is on only when Emacs is not daemonized.
 ;;; show-paren
 (with-eval-after-load 'paren
@@ -118,10 +118,6 @@
    :box t
    :background mindsape/brown
    :foreground (face-foreground 'default))
-  (set-face-attribute
-   'helm-M-x-key
-   nil
-   :foreground (face-foreground 'font-lock-constant-face))
 
   (set-face-attribute
    'helm-source-header
@@ -136,8 +132,20 @@
   ;;  :height 1.2
   ;;  :background mindsape/woodsmoke
   ;;  :foreground "yellow")
-
   )
+
+(with-eval-after-load 'helm-command
+  (set-face-attribute
+   'helm-M-x-key
+   nil
+   :foreground
+   (face-foreground
+    'font-lock-constant-face)))
+
+
+(setq-default x-stretch-cursor t)
+(setq-default visible-cursor nil)
+(blink-cursor-mode -1)
 
 
 (defun ambrevar/fontify-comment-tag ()
@@ -173,13 +181,6 @@
 ;; (set-face-attribute 'highlight nil :background 'unspecified :box "white")
 ;; (set-face-attribute 'error nil :foreground "red" :weight 'bold)
 
-
-;; ;;; Line numbers.
-;; ;;; Graphic version has a gray bar separating text from line
-;; ;;; numbers, so we can leave the background black.
-;; (if (display-graphic-p)
-;;     (set-face-background 'shadow "black")
-;;   (set-face-background 'shadow "#1c1c1c"))
 
 ;; ;;; Whitespace mode
 ;; (with-eval-after-load 'whitespace

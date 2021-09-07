@@ -1,5 +1,0 @@
-#!/bin/sh
-
-git ls-files --unmerged | awk '{print $4}' | uniq | sort | sed -e 's|\ |\\ |g' > conflicted
-
-xargs -a conflicted -I {} sh -c " git checkout --theirs -- {} && git add -- {}"

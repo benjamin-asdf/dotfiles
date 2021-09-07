@@ -295,7 +295,10 @@
     ("s" #'magit-status :exit t)
     ("l" #'magit-log "log" :exit t)
     ("d" #'magit-diff "diff" :exi t)
-    ("/" #'helm-grep-do-git-grep "grep" :exit t))
+    ("/" #'helm-grep-do-git-grep "grep" :exit t)
+    ("C" #'magit-clone :exit t)
+    ("u" #'magit-fetch :exit t)
+    ("U" #'magit-pull :exit t))
 
   (mememacs/comma-def
     "g" #'magit-hydra/body)
@@ -529,8 +532,16 @@
 
 ;; todo
 ;; helm-cider
-;; flycheck-clj-kondo
-;; flycheck-joker
+
+
+(use-package flycheck-clj-kondo
+  :after cider)
+
+(use-package helm-cider
+  :after cider
+  :hook (clojure-mode . (lambda () (helm-cider-mode 1))))
+
+
 
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
@@ -629,6 +640,16 @@
 ;; try vc-backup
 ;; and then replace every other backup file system we have
 (use-package backup-each-save)
+
+
+(use-package helm-pass)
+
+(use-package restclient
+  :defer t
+  :config
+  (require 'patch-restclient))
+
+
 
 ;; elp
 ;; memory-use-counts

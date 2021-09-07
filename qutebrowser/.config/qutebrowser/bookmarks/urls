@@ -25,3 +25,7 @@ https://reagent-project.github.io/ Reagent: Minimalistic React for ClojureScript
 https://plugins.jetbrains.com/docs/intellij/intellij-artifacts.html#gradle-example-for-an-individual-module-from-the-intellij-platform IntelliJ Platform Artifacts Repositories | IntelliJ Platform Plugin SDK
 https://github.com/borkdude/jet/blob/master/doc/query.md jet/query.md at master · borkdude/jet
 https://shadow-cljs.github.io/docs/UsersGuide.html#_command_line Shadow CLJS User’s Guide
+https://stackoverflow.com/questions/7986136/how-do-i-see-the-methods-associated-with-an-object-in-clojure java - How do I see the methods associated with an object in Clojure? - Stack Overflow
+https://youtrack.jetbrains.com/issue/IDEA-261734 Cursive plugin broken by dependency zip handling in 2021.1 EAP 2 : IDEA-261734
+https://www.braveclojure.com/concurrency/ The Sacred Art of Concurrent and Parallel Programming | Clojure for the Brave and True
+https://hyperpolyglot.org/lisp Lisp: Common Lisp, Racket, Clojure, Emacs Lisp - Hyperpolyglot

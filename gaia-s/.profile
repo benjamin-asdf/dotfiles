@@ -54,5 +54,3 @@ export GUIX_LOCPATH
 [ -e "$HOME/.guix-profile" ] \
     &&  . "$HOME/.guix-profile/etc/profile" \
     && . "$HOME/.config/guix/current/etc/profile"
-
-

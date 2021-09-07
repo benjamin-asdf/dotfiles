@@ -1,0 +1,10 @@
+#!/bin/sh
+
+GRAALVM_HOME=/usr/lib/jvm/java-16-graalvm/
+PATH="$PATH:$GRAALVM_HOME/bin/"
+export PATH
+export GRAALVM_HOME
+
+cmd="$1"
+shift
+"$cmd" "$@"

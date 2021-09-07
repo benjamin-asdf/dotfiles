@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p tmp-jar-contents
+unzip -o "$2" -d tmp-jar-contents/ 1&> /dev/null
+fd "$1" tmp-jar-contents/

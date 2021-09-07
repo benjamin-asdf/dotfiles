@@ -1,3 +1,0 @@
-#!/bin/sh
-
-git status --porcelain | sed 's|\ |\\ |g' | awk '{print $2}' | rg "$1" | xargs git checkout develop --

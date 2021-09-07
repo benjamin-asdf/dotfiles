@@ -1,6 +1,0 @@
-#!/bin/sh
-
-while true;
-do
-    nc -l 33242
-done

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+
+
+fd . -e jar "$1" -x find-file-in-jar "$2"
