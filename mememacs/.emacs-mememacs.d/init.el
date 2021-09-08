@@ -445,10 +445,7 @@
   (require 'init-cider))
 
 (use-package flycheck)
-
-(use-package flycheck-clojure)
 (use-package flycheck-clj-kondo)
-(use-package flycheck-joker)
 
 
 ;; todo binds

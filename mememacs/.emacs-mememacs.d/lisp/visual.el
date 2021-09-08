@@ -31,6 +31,11 @@
 (defconst mindsape/mint-bright-4 "#d5ffd2")
 (defconst mindsape/mint-green "#96fe8f")
 
+(defun open-color-picker (beg end)
+  (interactive "r")
+  (browse-url
+   (concat "https://imagecolorpicker.com/color-code/" (buffer-substring-no-properties end beg))))
+
 ;; (defconst mindscape)
 
 ;; (set-face-foreground 'default "#d1abac")
@@ -63,7 +68,6 @@
 (set-face-foreground 'font-lock-constant-face mindsape/heliotrope)
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
 (set-face-foreground 'font-lock-builtin-face "#8fcefe")
-
 (set-face-background 'region "#463c52")
 
 
@@ -104,9 +108,7 @@
 (set-face-foreground 'window-divider mindsape/brown)
 
 
-
 ;;  (shadow                                    (:foreground gruvbox-dark4))
-
 
 
 ;;; Cursor type: default (box) is visible and practical.
@@ -196,6 +198,7 @@
    nil
    :foreground mindsape/hint-of-red
    :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)))
+
 
 
 

@@ -184,8 +184,6 @@ replace the expression with its result."
 
 (defalias 'lispy--remember #'evil--jumps-push)
 
-
-
 (general-def
   :keymaps '(lispy-mode-map)
   :states '(normal motion)
@@ -195,8 +193,10 @@ replace the expression with its result."
   "kl" #'lispy-forward
   "km" (lispyville-wrap-command lispy-mark-symbol special)
 
-
   )
+
+
+;; (defun lispy-clojure-complete-at-point () ())
 
 (defadvice lispy-clojure-complete-at-point (around mm/lispy-complete-advice activate)
   (unless (or (lispy--in-string-p) (lispy--in-comment-p))
