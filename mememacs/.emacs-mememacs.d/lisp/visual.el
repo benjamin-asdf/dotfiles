@@ -18,14 +18,24 @@
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
 (defconst mindsape/woodsmoke "#17161e")
+(defconst mindsape/woodsmoke-tint-1 "#2e2d35")
+(defconst mindsape/hint-of-red "#faf7f7")
 (defconst mindsape/brown "#543f2f")
 (defconst mindsape/sage "#95a178")
 (defconst mindsape/dark-kelp "#383d2e")
+(defconst mindsape/heliotrope "#F689FF")
+(defconst mindsape/mint-bright "#a1fe9a")
+(defconst mindsape/mint-bright-1 "#abfea5")
+(defconst mindsape/mint-bright-2 "#b6feb1")
+(defconst mindsape/mint-bright-3 "#c0febc")
+(defconst mindsape/mint-bright-4 "#d5ffd2")
+(defconst mindsape/mint-green "#96fe8f")
+
 ;; (defconst mindscape)
 
 ;; (set-face-foreground 'default "#d1abac")
 (set-face-background 'default mindsape/woodsmoke)
-(set-face-foreground 'default "#faf7f7")
+(set-face-foreground 'default mindsape/hint-of-red)
 
 (set-face-attribute
  'cursor
@@ -43,13 +53,14 @@
 (set-face-foreground 'font-lock-string-face "#abd1d0")
 
 ;; https://imagecolorpicker.com/color-code/febf8f
-(set-face-foreground 'font-lock-function-name-face "#96fe8f")
-(set-face-foreground 'font-lock-constant-face ;; "#f68ffe"
-;; "#fe8ffb"
-		     "#F689FF"
+(set-face-attribute
+ 'font-lock-function-name-face
+ nil
+ :foreground mindsape/mint-green
+ :box '(:line-width 1 :color mindsape/mint-bright))
 
 
-		     )
+(set-face-foreground 'font-lock-constant-face mindsape/heliotrope)
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
 (set-face-foreground 'font-lock-builtin-face "#8fcefe")
 
@@ -141,6 +152,51 @@
    :foreground
    (face-foreground
     'font-lock-constant-face)))
+
+
+(with-eval-after-load 'avy
+  (set-face-attribute
+   'avy-lead-face
+   nil
+   :foreground mindsape/mint-bright
+   :background mindsape/woodsmoke
+   :box t)
+
+  (set-face-attribute
+   'avy-lead-face-1
+   nil
+   :foreground mindsape/mint-bright-2
+   :background mindsape/woodsmoke
+   :box t)
+
+  (set-face-attribute
+   'avy-lead-face-0
+   nil
+   :foreground mindsape/mint-bright-1
+   :background mindsape/woodsmoke
+   :box t)
+
+  (set-face-attribute
+   'avy-lead-face-2
+   nil
+   :foreground mindsape/mint-bright-3
+   :background mindsape/woodsmoke
+   :box t)
+
+  (set-face-attribute
+   'avy-goto-char-timer-face
+   nil
+   :background mindsape/mint-bright-4
+   :foreground mindsape/woodsmoke))
+
+(with-eval-after-load 'rainbow-delimiters
+
+  (set-face-attribute
+   'rainbow-delimiters-base-face
+   nil
+   :foreground mindsape/hint-of-red
+   :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)))
+
 
 
 (setq-default x-stretch-cursor t)

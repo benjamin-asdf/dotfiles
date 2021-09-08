@@ -348,7 +348,10 @@
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
-  :config (mood-line-mode))
+  :config
+  (setf mood-line-show-cursor-point t)
+  (mood-line-mode)
+  )
 
 ;; TODO
 ;; (nconc package-selected-packages '(exwm helm-exwm))

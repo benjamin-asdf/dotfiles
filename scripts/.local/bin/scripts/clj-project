@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# # 1. Ensure dir exists
+# mkdir classes
+
+# # 2. Add `classes` dir to the classpath in `deps.edn`:
+# {:paths [... "classes"]}
+
+# Make sure you have Clojure as a dependency—uberdeps won’t automatically add it for you:
+
+# {:deps {org.clojure/clojure {:mvn/version "1.10.0"}, ...}}
+
+# # 3. Aot compile
+# clj -M -e "(compile 'app.core)"
+
+# # 4. Uberjar with --main-class option
+# clojure -M:uberjar --main-class app.core

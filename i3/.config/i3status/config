@@ -15,6 +15,7 @@ general {
 }
 
 # order += "ipv6"
+order += "run_watch FFMPEG"
 order += "cpu_usage"
 order += "memory"
 order += "disk /"
@@ -24,6 +25,12 @@ order += "ethernet _first_"
 # order += "battery all"
 order += "load"
 order += "tztime local"
+
+run_watch FFMPEG {
+    pidfile = "/tmp/recordingpid"
+    format = "REC" #⏺
+    format_down = ""
+}
 
 cpu_usage {
         format = " cpu  %usage "
