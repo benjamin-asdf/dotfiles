@@ -191,13 +191,14 @@
    :background mindsape/mint-bright-4
    :foreground mindsape/woodsmoke))
 
-(with-eval-after-load 'rainbow-delimiters
+;; (with-eval-after-load 'rainbow-delimiters
 
-  (set-face-attribute
-   'rainbow-delimiters-base-face
-   nil
-   :foreground mindsape/hint-of-red
-   :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)))
+;;   (set-face-attribute
+;;    'rainbow-delimiters-base-face
+;;    nil
+;;    :foreground mindsape/hint-of-red
+;;    ;; :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)
+;;    ))
 
 
 
