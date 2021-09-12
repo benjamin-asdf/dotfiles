@@ -6,7 +6,7 @@ export BROWSER=/usr/bin/qutebrowser
 # benj
 
 # Adds `~/.local/bin/` and all subdirectories to $PATH
-PATH="$PATH:$(du "$HOME/.local/bin/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
+PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/go/bin"
 export PATH

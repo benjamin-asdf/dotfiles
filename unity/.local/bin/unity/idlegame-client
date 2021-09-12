@@ -1,4 +1,4 @@
 #!/bin/sh
 
-[ -n "$IDLEGAMEDIR" ] && rm "$IDLEGAMEDIR/Temp/*"
+[ -n "$IDLEGAMEDIR" ] && rm -rf "$IDLEGAMEDIR/Temp/*"
 spawn-idlegame-konsole.sh idlegame-client "$IDLEGAMEDIR"
