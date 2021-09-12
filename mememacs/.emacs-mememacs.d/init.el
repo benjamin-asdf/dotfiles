@@ -48,8 +48,6 @@
 (load
  (expand-file-name "local-before.el" user-emacs-directory) 'no-err)
 
-
-
 (straight-use-package 'use-package)
 
 
@@ -85,6 +83,7 @@
 
 ;; ;;; Local config.  See below for an example usage.
 ;; (load "local-before" t)
+
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
@@ -154,7 +153,8 @@
 ;; todo improve
 (use-package evil-mc
   :config
-  (global-evil-mc-mode 1)
+  (add-hook 'prog-mode-hook #'evil-mc-initialize)
+  (add-hook 'text-mode-hook #'evil-mc-initialize)
 
   (add-hook
    'mememacs/escape-functions
@@ -222,7 +222,11 @@
   (evil-collection-init)
   (general-def
     :states 'normal
-    :keymaps '(dired-mode-map Info-mode-map Man-mode-map) "SPC" nil))
+    :keymaps '(dired-mode-map
+	       Info-mode-map
+	       Man-mode-map
+	       help-mode-map)
+    "SPC" nil))
 
 
 (use-package exwm
@@ -650,6 +654,7 @@
   (require 'patch-restclient))
 
 
+(require 'late-bindings)
 
 ;; elp
 ;; memory-use-counts

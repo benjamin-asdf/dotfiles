@@ -46,4 +46,79 @@ otherwise the whole string is unquoted."
              (backward-char 1))
            (backward-char)))))
 
+
+
+
+;; do not add completion functions
+
+(define-minor-mode lispy-mode
+  "Minor mode for navigating and editing LISP dialects.
+
+When `lispy-mode' is on, most unprefixed keys,
+i.e. [a-zA-Z+-./<>], conditionally call commands instead of
+self-inserting. The condition (called special further on) is one
+of:
+
+- the point is before \"(\"
+- the point is after \")\"
+- the region is active
+
+For instance, when special, \"j\" moves down one sexp, otherwise
+it inserts itself.
+
+When special, [0-9] call `digit-argument'.
+
+When `lispy-mode' is on, \"[\" and \"]\" move forward and
+backward through lists, which is useful to move into special.
+
+\\{lispy-mode-map}"
+  :keymap lispy-mode-map
+  :group 'lispy
+  :lighter " LY"
+  (if lispy-mode
+      (progn
+        (require 'eldoc)
+        (eldoc-remove-command 'special-lispy-eval)
+        (eldoc-remove-command 'special-lispy-x)
+        (eldoc-add-command 'lispy-space)
+        (setq lispy-old-outline-settings
+              (cons outline-regexp outline-level))
+        (setq-local outline-level 'lispy-outline-level)
+        (cond ((eq major-mode 'latex-mode)
+               (setq-local lispy-outline "^\\(?:%\\*+\\|\\\\\\(?:sub\\)?section{\\)")
+               (setq lispy-outline-header "%")
+               (setq-local outline-regexp "\\(?:%\\*+\\|\\\\\\(?:sub\\)?section{\\)"))
+              ((eq major-mode 'clojure-mode)
+               ;; (eval-after-load 'le-clojure
+               ;;   '(setq completion-at-point-functions
+	       ;; 		'(lispy-clojure-complete-at-point
+	       ;; 		  cider-complete-at-point)))
+               (setq-local outline-regexp (substring lispy-outline 1)))
+              ((eq major-mode 'python-mode)
+               (setq-local lispy-outline "^#\\*+")
+               (setq lispy-outline-header "#")
+               (setq-local outline-regexp "#\\*+")
+               (setq-local outline-heading-end-regexp "\n"))
+              (t
+               (setq-local outline-regexp (substring lispy-outline 1))))
+        (when (called-interactively-p 'any)
+          (mapc #'lispy-raise-minor-mode
+                (cons 'lispy-mode lispy-known-verbs))))
+    (when lispy-old-outline-settings
+      (setq outline-regexp (car lispy-old-outline-settings))
+      (setq outline-level (cdr lispy-old-outline-settings))
+      (setq lispy-old-outline-settings nil))))
+
+
+
+
+
+
+
+
+
+
+
+
+
 (provide 'patch-lispy)

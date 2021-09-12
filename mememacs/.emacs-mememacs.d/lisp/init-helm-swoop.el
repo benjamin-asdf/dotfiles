@@ -24,7 +24,7 @@
 (defadvice helm-swoop (around my/helm-swoop-advice (&rest args) activate)
   (if (and
        buffer-file-name
-       (> (line-number-at-pos (point-max)) 10000))
+       (> (line-number-at-pos (point-max)) 5000))
       (progn
         (message "Using rg instead of swoop in big buffer.")
         (mememacs/helm-do-ag-file))

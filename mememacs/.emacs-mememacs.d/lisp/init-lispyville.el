@@ -196,13 +196,6 @@ replace the expression with its result."
   )
 
 
-;; (defun lispy-clojure-complete-at-point () ())
-
-(defadvice lispy-clojure-complete-at-point (around mm/lispy-complete-advice activate)
-  (unless (or (lispy--in-string-p) (lispy--in-comment-p))
-    ad-do-it))
-
-
 ;; todo mode line
 
 (provide 'init-lispyville)

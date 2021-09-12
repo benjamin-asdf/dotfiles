@@ -348,10 +348,17 @@ See `eval-last-sexp'."
   "k" (defun call-C-c-C-k ()
 	(interactive)
 	(call-interactively (key-binding (kbd "C-c C-k"))))
+
+  ;; "x"
+  "x"  `(,(key-binding (kbd "C-x")) :which-key "C-x")
+
+  "c" `(,(key-binding (kbd "C-c") :which-key "C-c"))
+
   )
 
+;; (key (key-binding (kbd "C-x")))
 
 
-
+(key-binding (kbd "C-c"))
 
 (provide 'functions-1)
