@@ -9,6 +9,11 @@
   :states '(normal visual emacs)
   :prefix ",")
 
+(general-create-definer
+  mememacs/local-def
+  :states '(normal visual emacs)
+  :prefix "C-,")
+
 (general-def
   evil-window-map
   "m" #'delete-other-windows
@@ -79,18 +84,24 @@
 
 ;; todo why is this overriden or whatever
 
+(defun mememacs/jump-back ()
+  (interactive)
+  (if (in major-mode 'clojure-mode)
+      (cider-pop-back)
+    (let ((p (point)))
+      (evil-jump-backward)
+      (when (eq p (point))
+	(pop-tag-mark)))))
+
+;; xref pop marker stack
+;; we need to figure out something general
 
 (general-def
-  "C-o" #'evil-jump-forward
-  "C-i" (defun jump-back ()
-	  (interactive)
-	  (when (in major-mode 'clojure-mode)
-	    (cider-pop-back))
-	  (let ((p (point)))
-	    (evil-jump-backward)
-	    (when (eq p (point))
-	      (pop-tag-mark)))))
-
-
+  :states '(normal visual motion)
+  "C-i" #'evil-jump-forward
+  "C-o" #'mememacs/jump-back
+  ;; "C-y" #'evil-paste-pop
+  ;; "C-p"
+  )
 
 (provide 'init-general)
