@@ -156,9 +156,7 @@ replace the expression with its result."
   (general-def 'evil-outer-text-objects-map
     "S" 'evil-a-sentence))
 
-
-
-;; press ciS anywhere and be amazed!
+;; press cis anywhere and be amazed!
 
 
 
