@@ -221,15 +221,14 @@ replace the expression with its result."
   :prefix "SPC"
   :global-prefix "C-SPC"
   "k" '(:ignore t :which-key "lispy")
+  "kn" (lispyville-wrap-command lispyville-beginning-of-next-defun special)
+  "kN" (lispyville-wrap-command lispy-beginning-of-defun special)
+  "kg" (lispyville-wrap-command lispy-beginning-of-defun special)
   "kf" (lispyville-wrap-command lispy-flow special)
   "kF" (lispyville-wrap-command lispyville-end-of-defun special)
-  "kL" (lispyville-wrap-command lispy-forward special)
-  "kl" (lispyville-wrap-command lispy-right special)
+  "kJ" (lispyville-wrap-command lispy-forward special)
+  "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "kh" (lispyville-wrap-command lispyville-backward-up-list special)
-  "kg" (lispyville-wrap-command lispy-beginning-of-defun special)
-
-  ;; "kh" (lispyville-wrap-command special)
   "km" (lispyville-wrap-command lispy-mark-symbol special))
 
 

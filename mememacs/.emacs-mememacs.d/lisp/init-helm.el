@@ -379,6 +379,16 @@ returning a string."
 
 
 
+(defun mememacs/helm-mini (initial-input)
+  (interactive)
+  (helm
+   :sources helm-mini-default-sources
+   :buffer "*helm mini*"
+   :ff-transformer-show-only-basename nil
+   :truncate-lines helm-buffers-truncate-lines
+   :left-margin-width helm-buffers-left-margin-width
+   :initial-input initial-input))
+
 
 (general-def
   :keymaps 'helm-map
