@@ -387,7 +387,7 @@ returning a string."
    :ff-transformer-show-only-basename nil
    :truncate-lines helm-buffers-truncate-lines
    :left-margin-width helm-buffers-left-margin-width
-   :initial-input initial-input))
+   :input initial-input))
 
 
 (general-def
