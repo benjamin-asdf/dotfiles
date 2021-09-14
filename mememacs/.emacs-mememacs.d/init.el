@@ -130,18 +130,7 @@
 
 
 
-(use-package hydra
-  :config
-  (defhydra hydra-buffer ()
-    "buffer"
-    ("d" #'kill-current-buffer)
-    ("k" #'previous-buffer)
-    ("j" #'previous-buffer)
-    ("b" #'helm-mini :exit t)
-    ("p" #'projectile-find-dir :exit t)
-    ("P" #'projectile-find-dir-other-window :exit t)
-    ("s" #'helm-do-ag-buffers)
-    ("a" #'mark-whole-buffer)))
+(use-package hydra)
 
 (use-package general
   :after evil
@@ -391,6 +380,9 @@
   :after lispy
   :config (require 'init-lispyville))
 
+(use-package targets
+  :straight (:host github :repo "noctuid/targets.el"))
+
 (use-package which-key
   :config
   (which-key-mode)
@@ -543,7 +535,8 @@
 
 (use-package helm-cider
   :after cider
-  :hook (clojure-mode . (lambda () (helm-cider-mode 1))))
+  :hook
+  (clojure-mode . (lambda () (helm-cider-mode 1))))
 
 
 
