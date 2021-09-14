@@ -14,6 +14,10 @@
   (forward-line 1)
   (cider-macroexpand-1))
 
+(defvar mm/cider-mode-maps
+  '(cider-mode-map
+    cider-repl-mode-mapl
+    cider-macroexpansion-mode-map))
 
 
 (mememacs/comma-def
@@ -31,9 +35,7 @@
   "hh" #'cider-clojuredocs)
 
 (general-def
-  :keymaps '(cider-mode-map
-	     cider-repl-mode-mapl
-	     cider-macroexpansion-mode-map)
+  :keymaps mm/cider-mode-maps
   :states '(normal motion)
   "gd" (lambda (&optional arg)
 	 (interactive "P")
@@ -46,16 +48,46 @@
   "l" #'mememacs/lispy-eval-line)
 
 
-(defadvice lispy-eval
-    (around cider-lispy-eval (arg) activate)
-  (if (memq major-mode lispy-clojure-modes)
-      (cider-eval-last-sexp (not arg))
+(defadvice lispy-eval (around cider-lispy-eval (&optional arg) activate)
+  (if (memq
+       major-mode
+       lispy-clojure-modes)
+      (if (eq arg 1)
+	  (cider-eval-last-sexp nil)
+	(cider-eval-last-sexp t))
     ad-do-it))
+
+(defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)
+  (if (memq
+       major-mode
+       lispy-clojure-modes)
+      (if arg
+	  (cider-pprint-eval-last-sexp-to-comment nil)
+	(cider-pprint-eval-last-sexp nil))
+    ad-do-it))
+
 
 ;; todo convert all lispy eval and stuff to cider
 ;; so we do not use lispy clojure at all
 
+(mememacs/local-def
+  :keymaps mm/cider-mode-maps
+  "r" '(clojure-refactor-map :which-key "refactor"))
 
+
+(defun mememacs/bb-server ()
+  (interactive)
+  (start-process
+   "*bb-server*"
+   "*bb-server*"
+   "bb"
+   "nrepl-server"
+   "1667"))
+
+
+(defun mememacs/bb-cider ()
+  (interactive)
+  (cider-connect '(:host "localhost" :port 1667)))
 
 
 (provide 'init-cider)

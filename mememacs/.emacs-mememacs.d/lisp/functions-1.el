@@ -50,7 +50,7 @@
   (general-define-key
    :keymaps
    '(normal insert visual emacs)
-   :prefix "SPC" :global-prefix "C-SPC"
+   :prefix "," :global-prefix "C-SPC"
    (concat
     "t"
     (if arg
@@ -282,13 +282,17 @@ See `eval-last-sexp'."
 
 
 (defhydra hydra-buffer ()
-    "buffer"
-    ("d" #'kill-this-buffer)
-    ("D" #'kill-buffer-and-window)
-    ("k" #'previous-buffer)
-    ("j" #'previous-buffer)
-    ("a" #'mark-whole-buffer)
-    ("y" #'mememacs/kill-buffer-name t :quit))
+  "buffer"
+  ("d" #'kill-current-buffer)
+  ("k" #'previous-buffer)
+  ("j" #'previous-buffer)
+  ("b" #'helm-mini :exit t)
+  ("p" #'projectile-find-dir :exit t)
+  ("P" #'projectile-find-dir-other-window :exit t)
+  ("s" #'helm-do-ag-buffers)
+  ("a" #'mark-whole-buffer)
+  ("y" #'mememacs/kill-buffer-name :exit t))
+
 
 (mememacs/comma-def
   :states '(normal motion)
@@ -299,6 +303,19 @@ See `eval-last-sexp'."
   (interactive)
   (kill-new (buffer-substring-no-properties (point-min) (point-max)))
   (message "killed whole buffer contents"))
+
+(defhydra outline-hydra ()
+  ("c" #'counsel-outline :exit t)
+  ("J" #'outline-forward-same-level)
+  ("K" #'outline-backward-same-level)
+  ("L" #'outline-demote)
+  ("H" #'outline-promote)
+  ("M-j" #'outline-move-subtree-down)
+  ("M-k" #'outline-move-subtree-up)
+  ("g" #'outline-back-to-heading)
+  ("i" #'outline-cycle)
+  ("m" #'outline-hide-other)
+  ("o" #'outline-show-all))
 
 (defhydra scroll-hydra
   (:pre (set-cursor-color "Red") :post (set-cursor-color "White"))
@@ -315,9 +332,12 @@ See `eval-last-sexp'."
   ("g" #'evil-goto-first-line)
   ("G" #'evil-goto-line)
   ("a" #'mark-whole-buffer)
-  ("y" #'mm/kill-whole-buffer :exit t))
+  ("o" #'outline-hydra/body "outline" :exit t)
+  ("y" #'mm/kill-whole-buffer "kill-whole" :exit t))
+
 
 (mememacs/comma-def
+  "jo" #'outline-hydra/body
   "jj" #'scroll-hydra/body
   "jk" #'scroll-hydra/lambda-k
   "jJ" #'scroll-hydra/lambda-J
