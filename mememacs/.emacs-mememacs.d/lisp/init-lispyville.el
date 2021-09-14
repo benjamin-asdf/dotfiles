@@ -9,6 +9,13 @@ replace the expression with its result."
       (lispy-eval-and-replace)
     (call-interactively #'lispy-eval)))
 
+(defun mememacs/lispy-insert ()
+  "Call `lispy-space' with prefix arg 4 if special, `lispy-meta-return' otherwise"
+  (interactive)
+  (if (lispyville--special-p)
+      (lispy-space 4)
+    (lispy-meta-return)))
+
 (setf
  lispyville-motions-put-into-special t
  lispyville-commands-put-into-special t
@@ -27,8 +34,14 @@ replace the expression with its result."
   ")" 'lispy-right-nostring
 
   (kbd "C-h") #'lispy-delete-backward
+
+
+
+  ;; can be revisited
   (kbd "M-K") #'lispy-move-left
-  (kbd "M-J") #'lispy-move-right)
+  (kbd "M-J") #'lispy-move-right
+  (kbd "<M-return>") #'mememacs/lispy-insert)
+
 
 (lispyville-set-key-theme
  '(
@@ -73,17 +86,20 @@ replace the expression with its result."
 
   "D" 'lispy-kill)
 
+;; todo mc
+;; c-7
+
 (lispyville--define-key '(motion normal visual)
   (kbd "^") #'lispy-left
-  (kbd "M-h") #'lispyville-previous-opening
-  (kbd "M-l") #'lispyville-next-opening
-  (kbd "M-j") #'lispy-down
-  (kbd "M-k") #'lispy-up
+  (kbd "M-h") (lispyville-wrap-command lispyville-previous-opening special)
+  (kbd "M-l") (lispyville-wrap-command lispyville-next-opening special)
+  (kbd "M-j") (lispyville-wrap-command lispy-down special)
+  (kbd "M-k") (lispyville-wrap-command lispy-up special)
 
   (kbd "C-j") #'lispyville-drag-forward
   (kbd "C-k") #'lispyville-drag-backward
 
-  (kbd "C-d") #'lispy-kill-at-point
+  (kbd "C-p") #'lispy-kill-at-point
 
 
   (kbd "M-L") #'lispy-move-right
@@ -102,11 +118,17 @@ replace the expression with its result."
 
   ;; (kbd "/") #'lispy-occur
   ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
-  ;; TODO: lispy-eval-and-replace
-  ")" #'lispy-right
-  (kbd "C-3") #'lispyville-up-list
-  "=" #'lispyville-prettify)
 
+
+  (kbd "C-3") #'lispyville-up-list
+  "=" #'lispyville-prettify
+
+
+  (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special))
+
+
+(with-eval-after-load 'targets
+  (mememacs/init-lispy-targets))
 
 (defun mememacs/init-lispy-targets ()
   (setq targets-text-objects nil)
@@ -128,7 +150,17 @@ replace the expression with its result."
                      :bind t :keys "f")
   (targets-define-to lispyville-string 'lispyville-string nil object
                      :last-key nil
-                     :bind t :keys "S"))
+                     :bind t :keys "s")
+  (general-def 'evil-inner-text-objects-map
+    "S" 'evil-inner-sentence)
+  (general-def 'evil-outer-text-objects-map
+    "S" 'evil-a-sentence))
+
+
+
+;; press ciS anywhere and be amazed!
+
+
 
 
 (with-eval-after-load 'lispy
@@ -174,27 +206,38 @@ replace the expression with its result."
                   (lispy-fill :face evil-goggles-fill-and-move-face :switch evil-goggles-enable-fill-and-move :advice evil-goggles--generic-async-advice))))
   (evil-goggles-mode))
 
-(with-eval-after-load 'cider
-  (setf
-   cider-jack-in-dependencies
-   (delete-dups
-    (append
-     cider-jack-in-dependencies
-     lispy-cider-jack-in-dependencies))))
+;; (with-eval-after-load 'cider
+;;   (setf
+;;    cider-jack-in-dependencies
+;;    (delete-dups
+;;     (append
+;;      cider-jack-in-dependencies
+;;      lispy-cider-jack-in-dependencies))))
 
-(defalias 'lispy--remember #'evil--jumps-push)
+;; (defalias 'lispy--remember #'evil--jumps-push)
+
 
 (general-def
+  :states '(normal visual emacs insert)
   :keymaps '(lispy-mode-map)
-  :states '(normal motion)
   :prefix "SPC"
-  "kf" #'lispy-flow
-  "kF" #'lispyville-end-of-defun
-  "kl" #'lispy-forward
-  "km" (lispyville-wrap-command lispy-mark-symbol special)
+  :global-prefix "C-SPC"
+  "k" '(:ignore t :which-key "lispy")
+  "kf" (lispyville-wrap-command lispy-flow special)
+  "kF" (lispyville-wrap-command lispyville-end-of-defun special)
+  "kL" (lispyville-wrap-command lispy-forward special)
+  "kl" (lispyville-wrap-command lispy-right special)
+  "kh" (lispyville-wrap-command lispy-left special)
+  "kh" (lispyville-wrap-command lispyville-backward-up-list special)
+  "kg" (lispyville-wrap-command lispy-beginning-of-defun special)
 
-  )
+  ;; "kh" (lispyville-wrap-command special)
+  "km" (lispyville-wrap-command lispy-mark-symbol special))
 
+
+
+
+;; lispy show toplevel
 
 ;; todo mode line
 

@@ -17,6 +17,8 @@
 ;; https://imagecolorpicker.com/
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
+;; todo regex builder faces
+
 (defconst mindsape/woodsmoke "#17161e")
 (defconst mindsape/woodsmoke-tint-1 "#2e2d35")
 (defconst mindsape/hint-of-red "#faf7f7")
@@ -24,12 +26,16 @@
 (defconst mindsape/sage "#95a178")
 (defconst mindsape/dark-kelp "#383d2e")
 (defconst mindsape/heliotrope "#F689FF")
+(defconst mindsape/heliotrope-shade "#311b33")
 (defconst mindsape/mint-bright "#a1fe9a")
 (defconst mindsape/mint-bright-1 "#abfea5")
 (defconst mindsape/mint-bright-2 "#b6feb1")
 (defconst mindsape/mint-bright-3 "#c0febc")
 (defconst mindsape/mint-bright-4 "#d5ffd2")
 (defconst mindsape/mint-green "#96fe8f")
+(defconst mindsape/anakiwa "#8fcefe")
+(defconst mindsape/horison "#5F89A9")
+
 
 (defun open-color-picker (beg end)
   (interactive "r")
@@ -64,10 +70,25 @@
  :foreground mindsape/mint-green
  :box '(:line-width 1 :color mindsape/mint-bright))
 
+(set-face-attribute
+ 'font-lock-constant-face
+ nil
+ :foreground mindsape/heliotrope
+ :bold t
+ :box `(:line-width 2 :color ,mindsape/heliotrope-shade))
 
-(set-face-foreground 'font-lock-constant-face mindsape/heliotrope)
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
-(set-face-foreground 'font-lock-builtin-face "#8fcefe")
+
+
+(set-face-attribute
+ 'font-lock-builtin-face
+ nil
+ :foreground mindsape/anakiwa
+ :overline mindsape/horison)
+
+
+(set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
+
 (set-face-background 'region "#463c52")
 
 
@@ -206,6 +227,34 @@
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)
 (blink-cursor-mode -1)
+
+
+
+(with-eval-after-load 'cider
+
+
+  (set-face-attribute
+   'cider-fringe-good-face
+   nil
+   :foreground mindsape/horison
+   :background nil)
+
+
+  ;; cider-instrumented-face
+  ;; cider-reader-conditional-face
+
+
+
+  )
+
+
+
+
+
+
+
+
+
 
 
 (defun ambrevar/fontify-comment-tag ()
