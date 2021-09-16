@@ -164,10 +164,19 @@ replace the expression with its result."
 (with-eval-after-load 'lispy
   (require 'patch-lispy nil :noerror))
 
+(defun mm/add-lispy-to-incompatible-minor-modes ()
+  (setf
+   evil-mc-incompatible-minor-modes
+   (delete-dups
+    (append
+     '(lispy-mode)
+     evil-mc-incompatible-minor-modes))))
+
 (with-eval-after-load
     'evil-mc
-  (when (boundp 'evil-mc-incompatible-minor-modes)
-    (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode)))
+  (add-hook
+   'evil-mc-mode-hook
+   #'mm/add-lispy-to-incompatible-minor-modes))
 
 (if (require 'slime nil 'noerror)
     ;; REVIEW: Fix SLIME REPL issue with "goto".
@@ -204,16 +213,17 @@ replace the expression with its result."
                   (lispy-fill :face evil-goggles-fill-and-move-face :switch evil-goggles-enable-fill-and-move :advice evil-goggles--generic-async-advice))))
   (evil-goggles-mode))
 
-;; (with-eval-after-load 'cider
-;;   (setf
-;;    cider-jack-in-dependencies
-;;    (delete-dups
-;;     (append
-;;      cider-jack-in-dependencies
-;;      lispy-cider-jack-in-dependencies))))
+
+
+
 
 ;; (defalias 'lispy--remember #'evil--jumps-push)
 
+
+(mememacs/local-def
+  ;; :state '(normal visual emacs insert)
+  :keymaps '(lispy-mode-map)
+  "b" #'lispy-back)
 
 (general-def
   :states '(normal visual emacs insert)
@@ -230,7 +240,6 @@ replace the expression with its result."
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
   "km" (lispyville-wrap-command lispy-mark-symbol special))
-
 
 
 
