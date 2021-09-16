@@ -17,4 +17,15 @@
 
 (defalias 'helm-projectile-ag 'mememacs/helm-ag-dwm)
 
+
+
+;; helm-ff-switch-to-eshell doesn't exist
+
+(defun helm-projectile-switch-to-eshell (dir)
+  (interactive)
+  (let* ((projectile-require-project-root nil)
+         (helm-ff-default-directory (file-name-directory (projectile-expand-root dir))))
+    (helm-ff-switch-to-shell dir)))
+
+
 (provide 'patch-helm-projectile)

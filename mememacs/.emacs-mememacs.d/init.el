@@ -393,7 +393,9 @@
   :config (require 'init-helm-swoop))
 
 (use-package helm-ag
-  :config (require 'init-helm-ag))
+  :config
+  (require 'init-helm-ag)
+  (require 'patch-helm-ag))
 
 (use-package projectile
   :config
