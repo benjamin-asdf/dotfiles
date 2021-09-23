@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+$BROWSER https://singularitygroup.atlassian.net/browse/"$1"
