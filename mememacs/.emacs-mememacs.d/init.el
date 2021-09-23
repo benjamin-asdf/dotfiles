@@ -371,6 +371,7 @@
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
+  (lisp-data-mode . lispy-mode)
   (emacs-lisp-mode . lispy-mode)
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
@@ -442,7 +443,17 @@
   :config
   (require 'init-cider))
 
-(use-package flycheck)
+(use-package flycheck
+  :config
+  (general-def
+    flycheck-command-map
+    "f" #'flycheck-mode)
+  (mememacs/local-def
+    :keymaps
+    '(sh-mode-map)
+    "e" flycheck-command-map))
+
+
 (use-package flycheck-clj-kondo)
 
 
@@ -459,8 +470,9 @@
 	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
 
 
-(use-package avy
-  :config
+(use-package
+  avy
+  :config (setf avy-timeout-seconds 0.18)
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
     "jw" #'avy-goto-word-1

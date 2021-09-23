@@ -35,6 +35,7 @@
 (defconst mindsape/mint-green "#96fe8f")
 (defconst mindsape/anakiwa "#8fcefe")
 (defconst mindsape/horison "#5F89A9")
+(defconst mindsape/hit-pink "#feb48f")
 
 
 (defun open-color-picker (beg end)
@@ -95,9 +96,12 @@
 (set-face-background 'mode-line mindsape/brown)
 (set-face-background 'mode-line-inactive (face-background 'default))
 (set-face-foreground 'mode-line (face-foreground 'default))
-(set-face-foreground 'font-lock-type-face "#feb48f")
-(set-face-italic 'font-lock-type-face t)
-(set-face-bold 'font-lock-type-face t)
+(set-face-attribute
+ 'font-lock-type-face
+ nil
+ :foreground mindsape/hit-pink
+ :italic t
+ :bold t)
 
 (set-face-attribute
  'minibuffer-prompt

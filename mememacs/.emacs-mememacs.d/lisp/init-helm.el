@@ -42,7 +42,7 @@
 
 ;;; Generic configuration.
 (setq
- helm-follow-mode-persistent t
+ helm-follow-mode-persistent nil
  helm-reuse-last-window-split-state t
  helm-display-header-line nil
  helm-findutils-search-full-path t

@@ -23,6 +23,7 @@ replace the expression with its result."
  ;; lispy-occur-backend 'helm
  ;; todo patch `lispy--occur-update-input'
  lispy-occur-backend 'ivy
+ lispy-teleport-global t
  lispy-x-default-verbosity 1)
 
 (lispyville--define-key 'insert
@@ -35,6 +36,10 @@ replace the expression with its result."
 
   (kbd "C-h") #'lispy-delete-backward
 
+
+  (kbd "M-(") #'lispy-wrap-round
+  (kbd "M-{") #'lispy-wrap-braces
+  (kbd "M-[") #'lispy-wrap-brackets
 
 
   ;; can be revisited
@@ -214,7 +219,8 @@ replace the expression with its result."
   (evil-goggles-mode))
 
 
-
+;; todo swap prefix arg
+;; (defadvice lispy-ace-paren ())
 
 
 ;; (defalias 'lispy--remember #'evil--jumps-push)

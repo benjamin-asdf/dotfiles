@@ -25,6 +25,11 @@
    "AG"
    helm-source-names-using-follow)))
 
+(defun mememacs/helm-ag-this-dir ()
+  (interactive)
+  (when default-directory
+    (helm-do-ag default-directory)))
+
 (defun benj/helm-ag-dwim-kill-selection (arg)
   (interactive "P")
   (benj/helm-make-kill-selection-and-quit
@@ -32,11 +37,6 @@
      (-last-item
       (s-split-up-to ":" el 2)))
    arg))
-
-(defun mememacs/helm-ag-this-dir ()
-  (interactive)
-  (when default-directory
-    (helm-do-ag default-directory)))
 
 (mememacs/leader-def
   "/" #'helm-projectile-ag

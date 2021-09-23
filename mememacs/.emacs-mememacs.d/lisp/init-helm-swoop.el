@@ -17,10 +17,11 @@
 (defadvice helm-swoop (around my/helm-swoop-advice (&rest args) activate)
   (if (and
        buffer-file-name
+       (file-exists-p buffer-file-name)
        (> (line-number-at-pos (point-max)) 5000))
       (progn
         (message "Using rg instead of swoop in big buffer.")
-	(helm-ag-this-file))
+	(helm-ag-this-file " "))
     ad-do-it))
 
 (define-key helm-swoop-map (kbd "C-c C-o") #'mememacs/helm-swoop-kill-line-and-quit)
