@@ -70,9 +70,16 @@
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
-  "r" '(clojure-refactor-map :which-key "refactor")
-
-  "m" #'cider-macroexpand-1-inplace)
+  "r"
+  '(clojure-refactor-map
+    :which-key "refactor")
+  "m"
+  #'cider-macroexpand-1-inplace
+  "s"
+  '(:ignore t
+	    :which-key "show etc")
+  "sl"
+  #'cider-inspect-last-result)
 
 
 (with-eval-after-load 'flycheck
@@ -82,15 +89,7 @@
     "e" `(,(let ((map flycheck-command-map))
 	     (define-key map "N" #'cider-jump-to-compilation-error)
 	     map)
-	  :which-key "flycheck")
-
-
-    "s" '(:ignore t :which-key "show etc")
-    "sl" #'cider-inspect-last-result
-
-    )
-
-  )
+	  :which-key "flycheck")))
 
 ;; todo convert all lispy eval and stuff to cider
 ;; so we do not use lispy clojure at all
