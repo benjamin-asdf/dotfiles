@@ -3,12 +3,17 @@
 
 export BROWSER=/usr/bin/qutebrowser
 
-# benj
-
 # Adds `~/.local/bin/` and all subdirectories to $PATH
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/go/bin"
+
+export ANDROID_HOME=$HOME/Android/Sdk
+PATH=$PATH:$ANDROID_HOME/emulator
+PATH=$PATH:$ANDROID_HOME/tools
+PATH=$PATH:$ANDROID_HOME/tools/bin
+PATH=$PATH:$ANDROID_HOME/platform-tools
+
 export PATH
 
 export ALTERNATE_EDITOR="vim"
@@ -41,8 +46,9 @@ LESS_TERMCAP_us="$(printf '%b' '[1;32m')"; a="${a%_}"
 export LESS_TERMCAP_us
 LESS_TERMCAP_ue="$(printf '%b' '[0m')"; a="${a%_}"
 export LESS_TERMCAP_ue
-
 # If we are running bash, source bashrc
+
+# shellcheck disable=SC1091
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
 
 # guix on foreign  distro

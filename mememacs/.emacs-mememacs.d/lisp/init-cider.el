@@ -68,6 +68,25 @@
 
 
 
+(defun jet-on-region (beg end)
+  (interactive "r")
+  (let ((s (buffer-substring beg end)))
+    (with-current-buffer-window
+	"jet-edn"
+	nil nil
+	(clojure-mode)
+	(process-send-string
+	 (start-process
+	  "jet"
+	  (current-buffer)
+	  "jet"
+	  "--from"
+	  "json"
+	  "--pretty"
+	  "-")
+	 s))))
+
+
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
   "r"
@@ -80,7 +99,6 @@
 	    :which-key "show etc")
   "sl"
   #'cider-inspect-last-result)
-
 
 (with-eval-after-load 'flycheck
   (mememacs/local-def

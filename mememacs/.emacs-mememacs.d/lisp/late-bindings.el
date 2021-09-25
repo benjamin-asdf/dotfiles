@@ -13,6 +13,7 @@
   "sS" #'helm-swoop
 
   "fe" #'mememacs/find-init-file
+  "fl" #'find-file-at-point
 
   "re" #'evil-show-registers
 

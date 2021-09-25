@@ -36,11 +36,11 @@ replace the expression with its result."
 
   (kbd "C-h") #'lispy-delete-backward
 
-
   (kbd "M-(") #'lispy-wrap-round
   (kbd "M-{") #'lispy-wrap-braces
   (kbd "M-[") #'lispy-wrap-brackets
 
+  (kbd "M-l") #'lispyville-next-opening
 
   ;; can be revisited
   (kbd "M-K") #'lispy-move-left
@@ -245,9 +245,12 @@ replace the expression with its result."
   "kJ" (lispyville-wrap-command lispy-forward special)
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "km" (lispyville-wrap-command lispy-mark-symbol special))
+  "km" (lispyville-wrap-command lispy-mark-symbol special)
+  ;; "km" (lispyville-wrap-command lispy-mark-symbol special)
+  )
 
 
+;; todo  C-h should delete blank lines, if on blank line
 
 ;; lispy show toplevel
 

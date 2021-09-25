@@ -166,6 +166,7 @@
     ("q" #'evil-mc-undo-all-cursors "undo all")
     ("I" #'evil-mc-make-cursor-in-visual-selection-beg)
     ("a" 'evil-mc-key-map "...")
+    ("m" #'evil-mc-make-all-cursors)
     ("k" #'evil-mc-undo-last-added-cursor "undo last")
     ("p" #'evil-mc-find-prev-cursor "prev"))
 
@@ -445,13 +446,7 @@
 
 (use-package flycheck
   :config
-  (general-def
-    flycheck-command-map
-    "f" #'flycheck-mode)
-  (mememacs/local-def
-    :keymaps
-    '(sh-mode-map)
-    "e" flycheck-command-map))
+  (require 'init-flycheck))
 
 
 (use-package flycheck-clj-kondo)
@@ -694,5 +689,4 @@
 
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
-
 					; pprint
