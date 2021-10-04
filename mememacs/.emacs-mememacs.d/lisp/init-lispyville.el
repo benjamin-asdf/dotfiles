@@ -34,7 +34,7 @@ replace the expression with its result."
   "(" 'lispy-parens
   ")" 'lispy-right-nostring
 
-  (kbd "C-h") #'lispy-delete-backward
+  (kbd "C-h") #'mm/lispy-delete-and-blanks
 
   (kbd "M-(") #'lispy-wrap-round
   (kbd "M-{") #'lispy-wrap-braces
@@ -45,8 +45,17 @@ replace the expression with its result."
   ;; can be revisited
   (kbd "M-K") #'lispy-move-left
   (kbd "M-J") #'lispy-move-right
-  (kbd "<M-return>") #'mememacs/lispy-insert)
+  (kbd "<M-return>") #'mememacs/lispy-insert
 
+  (kbd "C-<return>") #'lispy-alt-line
+
+  "P" #'special-lispy-eval-other-window
+  "p" #'special-lispy-paste)
+
+(defun mm/lispy-delete-and-blanks (arg)
+  (interactive "p")
+  (delete-blank-lines)
+  (lispy-delete-backward arg))
 
 (lispyville-set-key-theme
  '(

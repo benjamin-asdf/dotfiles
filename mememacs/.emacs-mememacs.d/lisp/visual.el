@@ -69,7 +69,7 @@
  'font-lock-function-name-face
  nil
  :foreground mindsape/mint-green
- :box '(:line-width 1 :color mindsape/mint-bright))
+ :box `(:line-width 1 :color ,mindsape/mint-bright))
 
 (set-face-attribute
  'font-lock-constant-face
@@ -117,6 +117,8 @@
  :background mindsape/woodsmoke)
 
 (set-face-foreground 'escape-glyph "#8ffe93")
+
+;(set-face-attribute 'bookmark-face nil :foreground mindsape/horison :background mindsape/woodsmoke)
 
 ;; #fab481
 

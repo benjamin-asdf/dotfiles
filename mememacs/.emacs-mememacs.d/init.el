@@ -326,8 +326,9 @@
     "C-l" 'company-complete-selection)
 
   (general-unbind undo-tree-map "C-/")
+  (general-unbind evil-insert-state-map "C-k")
 
-  ;; (general-def
+
   ;;   :state 'insert "C-/" 'helm-company)
   (defun mm/company-manual-begin ()
     (interactive)
@@ -335,9 +336,18 @@
         (company-select-next)
       (company-manual-begin)))
   (define-key evil-insert-state-map (kbd "C-j") #'mm/company-manual-begin)
-  (setf company-format-margin-function 'company-text-icons-margin)
+  (general-def
+    :states '(insert)
+    "C-k"
+    (defun mm/company-up-or-line-up (arg)
+      (interactive "p")
+      (if (company-tooltip-visible-p)
+	  (company-select-previous arg)
+	(evil-force-normal-state)
+	(evil-previous-line arg))))
 
-  )
+
+  (setf company-format-margin-function 'company-text-icons-margin))
 
 
 (use-package mood-line
@@ -381,6 +391,16 @@
 (use-package lispyville
   :after lispy
   :config (require 'init-lispyville))
+
+;; maybe remove evil-mc if works well
+(use-package multiple-cursors
+  :config
+  (add-hook
+   'mememacs/escape-functions
+   (defun mm/mc-remmove ()
+     (deactivate-mark)
+     (mc/remove-fake-cursors))))
+
 
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
@@ -434,9 +454,9 @@
   :config
   (setq aw-keys '(?k ?j ?h ?n ?i ?a ?s ?d ?l ?e ?r ?t)
 	aw-background nil)
-  (mememacs/leader-def
-    "wu" #'ace-window
-    "wD" #'ace-delete-window))
+  (general-def 'evil-window-map
+      "w" #'ace-window
+      "D" #'ace-delete-window))
 
 ;; lispy kill new before lispy delete but only in special
 
@@ -477,7 +497,8 @@
   :config
   (add-hook
    'mememacs/escape-functions
-   #'symbol-overlay-remove-all)
+   (defun mm/so-remove-all ()
+       (call-interactively #'symbol-overlay-remove-all)))
 
   (mememacs/leader-def
     "so" '(:ignore t :which-key "symbol overlay")

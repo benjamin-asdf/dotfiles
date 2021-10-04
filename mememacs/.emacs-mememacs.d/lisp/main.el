@@ -277,4 +277,7 @@
 
 ;; todo enforece /n prog mode
 
+
+(setf bookmark-set-fringe-mark nil)
+
 (provide 'main)

@@ -66,7 +66,7 @@
 	(cider-pprint-eval-last-sexp nil))
     ad-do-it))
 
-
+;; jet -------------------
 
 (defun jet-on-region (beg end)
   (interactive "r")
@@ -85,6 +85,26 @@
 	  "--pretty"
 	  "-")
 	 s))))
+
+(defun jet-send-query ()
+  (interactive)
+  (let ((in-file (buffer-file-name)))
+    (pop-to-buffer
+     (process-buffer
+      (start-process-shell-command
+       "jet"
+       (get-buffer-create "jet")
+       (format
+	"jet -k -i json < %s -q '%s'"
+	in-file
+	(with-current-buffer
+	    (get-buffer-create "jet-query")
+	  (clojure-mode)
+	  (pop-to-buffer
+	   (current-buffer))
+	  (buffer-string))))))))
+
+;; --------------------------------------------
 
 
 (mememacs/local-def
@@ -127,6 +147,14 @@
   (interactive)
   (cider-connect '(:host "localhost" :port 1667)))
 
+
+;; ---- functions
+
+
+(defun mememacs/cider-A-build ()
+  (interactive)
+  (let ((cider-clojure-cli-global-options "-A:build"))
+    (cider)))
 
 (provide 'init-cider)
 

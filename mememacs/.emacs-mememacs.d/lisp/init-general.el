@@ -35,6 +35,7 @@
   "f" '(:ignore t :which-key "f..")
   "fd" #'delete-file
   "fs" #'save-buffer
+  "fS" #'save-some-buffers
   "ff" #'helm-find-files
   "fr" #'helm-recentf
 
