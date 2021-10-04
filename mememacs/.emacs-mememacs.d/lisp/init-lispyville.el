@@ -242,7 +242,7 @@ replace the expression with its result."
 
 (general-def
   :states '(normal visual emacs insert)
-  :keymaps '(lispy-mode-map)
+  :keymaps '(lispy-mode-map lispyville-mode-map)
   :prefix "SPC"
   :global-prefix "C-SPC"
   "k" '(:ignore t :which-key "lispy")
@@ -255,6 +255,8 @@ replace the expression with its result."
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
   "km" (lispyville-wrap-command lispy-mark-symbol special)
+  "kw" (lispyville-wrap-command lispy-wrap-round special)
+
   ;; "km" (lispyville-wrap-command lispy-mark-symbol special)
   )
 

@@ -676,7 +676,6 @@
   :config
   (require 'patch-restclient))
 
-
 (require 'late-bindings)
 
 ;; elp

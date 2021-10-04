@@ -83,6 +83,7 @@
 	  "--from"
 	  "json"
 	  "--pretty"
+	  "-k"
 	  "-")
 	 s))))
 

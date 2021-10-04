@@ -421,4 +421,8 @@ returning a string."
   "ji" #'helm-imenu
   "jI" #'helm-imenu-in-all-buffers)
 
+(mememacs/comma-def
+    :keymaps '(eshell-mode-map)
+    "hl" #'helm-eshell-history)
+
 (provide 'init-helm)

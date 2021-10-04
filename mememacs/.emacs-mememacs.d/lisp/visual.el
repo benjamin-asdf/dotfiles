@@ -19,23 +19,28 @@
 
 ;; todo regex builder faces
 
-(defconst mindsape/woodsmoke "#17161e")
-(defconst mindsape/woodsmoke-tint-1 "#2e2d35")
-(defconst mindsape/hint-of-red "#faf7f7")
-(defconst mindsape/brown "#543f2f")
-(defconst mindsape/sage "#95a178")
-(defconst mindsape/dark-kelp "#383d2e")
-(defconst mindsape/heliotrope "#F689FF")
-(defconst mindsape/heliotrope-shade "#311b33")
-(defconst mindsape/mint-bright "#a1fe9a")
-(defconst mindsape/mint-bright-1 "#abfea5")
-(defconst mindsape/mint-bright-2 "#b6feb1")
-(defconst mindsape/mint-bright-3 "#c0febc")
-(defconst mindsape/mint-bright-4 "#d5ffd2")
-(defconst mindsape/mint-green "#96fe8f")
-(defconst mindsape/anakiwa "#8fcefe")
-(defconst mindsape/horison "#5F89A9")
-(defconst mindsape/hit-pink "#feb48f")
+(defconst mindsape/woodsmoke		 "#17161e")
+(defconst mindsape/woodsmoke-tint-1	 "#2e2d35")
+(defconst mindsape/scarpa-flow		 "#5d5c62")
+(defconst mindsape/scorpion		 "#625d5c")
+(defconst mindsape/tundora		 "#4e4a4a")
+(defconst mindsape/dune			 "#3b3837")
+(defconst mindsape/hint-of-red		 "#faf7f7")
+(defconst mindsape/brown		 "#543f2f")
+(defconst mindsape/sage			 "#95a178")
+(defconst mindsape/dark-kelp		 "#383d2e")
+(defconst mindsape/heliotrope		 "#F689FF")
+(defconst mindsape/heliotrope-shade	 "#311b33")
+(defconst mindsape/mint-bright		 "#a1fe9a")
+(defconst mindsape/mint-bright-1	 "#abfea5")
+(defconst mindsape/mint-bright-2	 "#b6feb1")
+(defconst mindsape/mint-bright-3	 "#c0febc")
+(defconst mindsape/mint-bright-4	 "#d5ffd2")
+(defconst mindsape/mint-green		 "#96fe8f")
+(defconst mindsape/anakiwa		 "#8fcefe")
+(defconst mindsape/horison		 "#5F89A9")
+(defconst mindsape/hit-pink		 "#feb48f")
+(defconst mindsape/amethyst-smoke	 "#Ac98bf")
 
 
 (defun open-color-picker (beg end)
@@ -89,8 +94,7 @@
 
 
 (set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
-
-(set-face-background 'region "#463c52")
+(set-face-background 'region mindsape/tundora)
 
 
 (set-face-background 'mode-line mindsape/brown)
@@ -134,10 +138,6 @@
 (set-face-foreground 'internal-border mindsape/brown)
 (set-face-foreground 'window-divider mindsape/brown)
 
-
-;;  (shadow                                    (:foreground gruvbox-dark4))
-
-
 ;;; Cursor type: default (box) is visible and practical.
 ; (setq-default cursor-type 'hollow)
 ;;; Blinking cursor is on only when Emacs is not daemonized.
@@ -146,6 +146,14 @@
   (set-face-foreground 'show-paren-match "White")
   (set-face-background 'show-paren-match (face-background 'default))
   (set-face-underline 'show-paren-match "White"))
+
+(with-eval-after-load 'dired
+  (set-face-attribute
+   'dired-directory
+   nil
+   :background mindsape/woodsmoke-tint-1
+   :foreground mindsape/amethyst-smoke
+   :box t))
 
 (with-eval-after-load 'helm
   (set-face-background 'helm-visible-mark (face-background 'region))
@@ -166,6 +174,20 @@
    :background mindsape/woodsmoke
    :foreground "#32542f")
 
+  (set-face-attribute
+   'helm-ff-directory
+   nil
+   :background mindsape/woodsmoke-tint-1
+   :foreground mindsape/amethyst-smoke
+   :box t)
+
+  (set-face-attribute
+   'helm-buffer-directory
+   nil
+   :background mindsape/woodsmoke-tint-1
+   :foreground mindsape/amethyst-smoke
+   :box t)
+
   ;; (set-face-attribute
   ;;  'helm-header
   ;;  nil
@@ -173,6 +195,12 @@
   ;;  :background mindsape/woodsmoke
   ;;  :foreground "yellow")
   )
+
+;; (set-face-attribute
+;;    'rainbow-delimiters-depth-1-face
+;;    nil
+;;    :foreground mindsape/hit-pink
+;;    :box nil)
 
 (with-eval-after-load 'helm-command
   (set-face-attribute
@@ -227,41 +255,28 @@
 ;;    ;; :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)
 ;;    ))
 
-
-
-
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)
 (blink-cursor-mode -1)
 
-
-
-(with-eval-after-load 'cider
-
-
+(with-eval-after-load
+    'cider
   (set-face-attribute
    'cider-fringe-good-face
    nil
    :foreground mindsape/horison
    :background nil)
-
-
+  (set-face-attribute
+   'cider-error-highlight-face
+   nil
+   :foreground nil
+   :background nil
+   :underline `(:color ,mindsape/dune
+		       :style wave)
+   :box nil)
   ;; cider-instrumented-face
   ;; cider-reader-conditional-face
-
-
-
   )
-
-
-
-
-
-
-
-
-
-
 
 (defun ambrevar/fontify-comment-tag ()
   (font-lock-add-keywords

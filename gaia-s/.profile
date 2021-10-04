@@ -8,12 +8,6 @@ PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')
 PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/go/bin"
 
-export ANDROID_HOME=$HOME/Android/Sdk
-PATH=$PATH:$ANDROID_HOME/emulator
-PATH=$PATH:$ANDROID_HOME/tools
-PATH=$PATH:$ANDROID_HOME/tools/bin
-PATH=$PATH:$ANDROID_HOME/platform-tools
-
 export PATH
 
 export ALTERNATE_EDITOR="vim"
