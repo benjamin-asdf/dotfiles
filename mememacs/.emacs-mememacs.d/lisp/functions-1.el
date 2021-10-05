@@ -376,9 +376,20 @@ See `eval-last-sexp'."
 
   )
 
-;; (key (key-binding (kbd "C-x")))
+
+(defun mememacs/kill-dangling-buffs (&rest args)
+  "Kill all buffers that are connected to a file,
+where the file does not exist."
+  (interactive)
+  (cl-loop for b in (buffer-list)
+	   for f = (buffer-file-name b)
+	   when (and f (not (file-exists-p f)))
+	   do (kill-buffer b)))
 
 
-(key-binding (kbd "C-c"))
+(with-eval-after-load 'dired
+  (dolist (fn '(dired-internal-do-deletions))
+  (advice-add fn :after #'mememacs/kill-dangling-buffs)))
+
 
 (provide 'functions-1)

@@ -19,7 +19,6 @@
 ;;; Avoid the "loaded old bytecode instead of newer source" pitfall.
 (setq load-prefer-newer t)
 
-
 ;;; Store additional config in a 'lisp' subfolder and add it to the load path so
 ;;; that `require' can find the files.
 ;;; This must be done before moving `user-emacs-directory'.
@@ -50,7 +49,6 @@
 
 (straight-use-package 'use-package)
 
-
 (require 'use-package)
 (setf
  ;; straight-vc-git-default-protocol 'ssh
@@ -77,13 +75,8 @@
                       :repo "tarsius/keychain-environment")
     :demand t
     :init
-    (progn
-      (keychain-refresh-environment)
-      (auth-source-pass-enable)))
-
-;; ;;; Local config.  See below for an example usage.
-;; (load "local-before" t)
-
+    (keychain-refresh-environment)
+    (auth-source-pass-enable))
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
@@ -91,7 +84,6 @@
   :ensure t
   :config
   (global-undo-tree-mode))
-
 
 (use-package evil
   :init
@@ -124,20 +116,14 @@
 	    (lambda ()
               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
-
 (use-package evil-commentary
   :hook (prog-mode . evil-commentary-mode))
-
-
 
 (use-package hydra)
 
 (use-package general
   :after evil
   :config (require 'init-general))
-
-;; todo config backtrace here so we get better debug init
-
 
 ;; todo improve
 (use-package evil-mc
@@ -191,8 +177,6 @@
 	      (eq evil-state 'normal))
 	 (evil-mc-undo-all-cursors)))))
 
-
-
 (use-package debug
   :ensure nil
   :config
@@ -201,7 +185,6 @@
     "." #'backtrace-expand-ellipses
     "+" #'backtrace-multi-line
     "-" #'backtrace-single-line))
-
 
 (use-package evil-collection
   :after evil
@@ -218,7 +201,6 @@
 	       help-mode-map)
     "SPC" nil))
 
-
 (use-package exwm
   :when mememacs/use-exwm
   :ensure nil
@@ -232,7 +214,6 @@
     "s-k" #'windmove-up
     "s-j" #'windmove-down))
 
-
 (require 'functions)
 (require 'utils)
 (require 'main)
@@ -244,15 +225,12 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-
 (use-package helpful
   :config
   (mememacs/comma-def
     :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
     "hh" #'helpful-at-point)
-
   (mememacs/leader-def "hk" #'helpful-key)
-
   (mememacs/comma-def
     :states '(normal visual motion)
     "hf" #'helpful-callable
@@ -261,9 +239,7 @@
     "hF" #'helpful-function
     "hC" #'helpful-command
     "hc" #'describe-char
-    "hm" #'describe-mode)
-
-  )
+    "hm" #'describe-mode))
 
 (use-package evil-goggles
   :config
@@ -271,7 +247,6 @@
    evil-goggles-enable-delete nil
    evil-goggles-enable-change nil)
   (evil-goggles-mode))
-
 
 (use-package helm
   :config
@@ -306,13 +281,9 @@
 	    (lambda ()
 	      (visual-line-mode -1))))
 
-
 (use-package company
   :config
-  (add-hook 'after-init-hook #'global-company-mode)
-  ;; (setq company-idle-delay 0)
-  )
-
+  (add-hook 'after-init-hook #'global-company-mode))
 
 (use-package
   helm-company
@@ -328,8 +299,6 @@
   (general-unbind undo-tree-map "C-/")
   (general-unbind evil-insert-state-map "C-k")
 
-
-  ;;   :state 'insert "C-/" 'helm-company)
   (defun mm/company-manual-begin ()
     (interactive)
     (if (company-tooltip-visible-p)
@@ -345,17 +314,13 @@
 	  (company-select-previous arg)
 	(evil-force-normal-state)
 	(evil-previous-line arg))))
-
-
   (setf company-format-margin-function 'company-text-icons-margin))
-
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
   :config
   (setf mood-line-show-cursor-point t)
-  (mood-line-mode)
-  )
+  (mood-line-mode))
 
 ;; TODO
 ;; (nconc package-selected-packages '(exwm helm-exwm))
@@ -374,8 +339,6 @@
   (add-hook
    'mememacs/escape-functions
    #'macrostep-collapse-all))
-
-;; (use-package emacs-desktop-environment)
 
 (use-package lispy
   :ensure t
@@ -401,7 +364,6 @@
      (deactivate-mark)
      (mc/remove-fake-cursors))))
 
-
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
 
@@ -409,7 +371,6 @@
   :config
   (which-key-mode)
   (setf which-key-idle-delay 0.22))
-
 
 (use-package helm-swoop
   :config (require 'init-helm-swoop))
@@ -444,11 +405,9 @@
 ;; TODO
 ;; add emacs-dir/backups to known projects
 
-
 (use-package helm-projectile
   :config
   (require 'patch-helm-projectile))
-
 
 (use-package ace-window
   :config
@@ -458,8 +417,6 @@
       "w" #'ace-window
       "D" #'ace-delete-window))
 
-;; lispy kill new before lispy delete but only in special
-
 (use-package cider
   :config
   (require 'init-cider))
@@ -468,9 +425,7 @@
   :config
   (require 'init-flycheck))
 
-
 (use-package flycheck-clj-kondo)
-
 
 ;; todo binds
 (use-package geiser)
@@ -483,7 +438,6 @@
 	(list
 	 (expand-file-name
 	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
-
 
 (use-package
   avy
@@ -520,14 +474,10 @@
   (with-current-buffer "*scratch*"
     (persistent-scratch-mode)))
 
-
-
 (use-package link-hint
   :config
   (mememacs/leader-def
     "ju" #'link-hint-open-link))
-
-
 
 (use-package guix
   :when mememacs/enable-guix
@@ -543,23 +493,6 @@
 
 (use-package hippie-exp)
 
-
-;; https://github.com/noctuid/link-hint.el
-
-;; evil undo system
-;; redo to U
-;; a nice hydra for this instead of visualizer
-
-;; todo get rid of caches in emacs dir
-;; everything to ~/tmp
-
-
-;; (defhydra best-hydra ())
-
-;; todo
-;; helm-cider
-
-
 (use-package flycheck-clj-kondo
   :after cider)
 
@@ -568,22 +501,11 @@
   :hook
   (clojure-mode . (lambda () (helm-cider-mode 1))))
 
-
-
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
 
-;; org
-
-;; lispy mood line
-
 ;; pretty print
-
-;;  nerd commenter
-
 ;; c-i and c-o should be more intuitive
-
-
 
 ;; Keep customization settings in a temporary file (thanks Ambrevar!)
 (setq custom-file

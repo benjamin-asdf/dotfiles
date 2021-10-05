@@ -337,15 +337,10 @@ Useful for Guix."
 (cl-defmethod helm-setup-user-source ((source helm-moccur-class))
   (setf (slot-value source 'action-transformer) 'helm-occur-action-transformer))
 
-;; (require 'patch-helm)
-;; (require 'patch-helm-file-name-completion)
+(require 'patch-helm)
 
 (when (require 'helm-switch-to-repl nil :noerror)
   (helm-switch-to-repl-setup))
-
-
-
-;; mememacs start
 
 
 (setq-default helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s")
@@ -377,7 +372,20 @@ returning a string."
          (prog1 nil (message "Saved to kill-ring: %s" sel) (sit-for 1))))
      (format "%s" (helm-get-selection nil (not arg))))))
 
-
+
+(with-eval-after-load
+    'helm-ring
+  (defun mememas/helm-kill-ring-insert-rel-file-name (canditate)
+    "Insert CANDIDATE as relative file name."
+    (interactive)
+    (insert
+     (file-relative-name canditate)))
+  (setf
+   helm-kill-ring-actions
+   (append
+    helm-kill-ring-actions
+    '(("Insert rel file name" . mememas/helm-kill-ring-insert-rel-file-name)))))
+
 
 (defun mememacs/helm-mini (initial-input)
   (interactive)
