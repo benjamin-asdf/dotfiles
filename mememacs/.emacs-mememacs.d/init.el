@@ -41,7 +41,7 @@
 ;;   (package-initialize))
 
 
-(defvar mememacs/use-exwm (getenv "MEMEMACS_EXWM"))
+(defvar mememacs/use-exwm nil)
 (defvar mememacs/enable-guix nil)
 
 (load

@@ -129,10 +129,11 @@
  :bold t
  :height 1.2)
 
-(set-face-attribute
- 'separator-line
- nil
- :background mindsape/woodsmoke)
+
+;; (set-face-attribute
+;;  'separator-line
+;;  nil
+;;  :background mindsape/woodsmoke)
 
 (set-face-foreground 'escape-glyph "#8ffe93")
 
