@@ -130,7 +130,13 @@
  :height 1.2)
 
 
-;(facep 'separator-line (set-face-attribute 'separator-line nil :background mindsape/woodsmoke))
+(when
+    (facep
+     'separator-line)
+  (set-face-attribute
+   'separator-line
+   nil
+   :background mindsape/woodsmoke))
 
 (set-face-foreground 'escape-glyph "#8ffe93")
 
