@@ -26,5 +26,16 @@
   )
 
 
+(defhydra flyspell-hydra ()
+  ("j" #'evil-next-flyspell-error)
+  ("k" #'evil-prev-flyspell-error)
+  ("," #'flyspell-auto-correct-word :exit nil))
+
+(mememacs/local-def
+  :states '(normal visual emacs)
+  :keymaps '(flyspell-mode-map)
+  "sn" #'flyspell-hydra/evil-next-flyspell-error)
+
+
 
 (provide 'late-bindings)

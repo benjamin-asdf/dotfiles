@@ -1,0 +1,12 @@
+
+export BROWSER=/usr/bin/qutebrowser
+
+PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
+
+export PATH
+
+export ALTERNATE_EDITOR="vim"
+export EDITOR="emacsclient"
+export VISUAL="emacsclient"
+
+export PASSWORD_STORE_DIR="$HOME/.local/.password-store"

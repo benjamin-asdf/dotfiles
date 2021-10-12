@@ -598,6 +598,12 @@
   :config
   (require 'patch-restclient))
 
+(use-package vterm
+  :config
+  (mememacs/leader-def
+    "'" #'vterm
+    "p'" #'projectile-run-vterm))
+
 (require 'late-bindings)
 
 ;; elp

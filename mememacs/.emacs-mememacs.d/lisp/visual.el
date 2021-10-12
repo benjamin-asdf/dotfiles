@@ -93,12 +93,7 @@
  :box `(:line-width 1 :color ,mindsape/heliotrope)
  :foreground mindsape/scorpion)
 
-(set-face-attribute
- 'reb-match-0
- nil
- :box `(:line-width 2 :color ,mindsape/heliotrope)
- :background mindsape/dune
- :foreground nil)
+;(set-face-attribute 'reb-match-0 nil :box `(:line-width 2 :color ,mindsape/heliotrope) :background mindsape/dune :foreground nil)
 
 ;; (set-face-attribute
 ;;  'reb-match-1
@@ -115,10 +110,6 @@
 
 (set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
 (set-face-background 'region mindsape/tundora)
-
-(set-face-attribute
- )
-
 
 (set-face-background 'mode-line mindsape/brown)
 (set-face-background 'mode-line-inactive (face-background 'default))
