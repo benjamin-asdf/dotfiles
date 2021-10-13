@@ -279,98 +279,26 @@
 
 (use-package orderless
   :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  (setq
+   completion-styles '(orderless)
+   completion-category-defaults nil
+   completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package savehist
   :after vertico
   :init
   (savehist-mode))
 
-;; (use-package embark)
 
 (use-package consult
-  :init
-  (recentf-mode)
+  :init (recentf-mode)
   (setq completion-in-region-function #'consult-completion-in-region)
+  (advice-add
+   #'completing-read-multiple
+   :override #'consult-completing-read-multiple)
 
-  (general-def
-    :states '(insert)
-    "C-j" #'company-manual-begin)
-
-  (mememacs/local-def
-    "SPC" #'consult-mode-command)
-
-  (mememacs/comma-def
-    "ss" #'consult-line
-    "sS" #'consult-line-multi
-    "sk" #'consult-keep-lines
-    "si" #'consult-isearch
-    ;; "so" #'consult-oc
-    "sf" #'consult-focus-lines
-    "g/" #'consult-git-grep
-
-    "fl" #'consult-locate
-    "ff" #'consult-find
-    "fo" #'consult-file-externally
-    "hw" #'consult-man
-    "M" #'consult-minor-mode-menu)
-
-  (general-def
-    'vertico-map
-    "M-h" #'consult-history
-    "M-i" #'completion-at-point
-    )
-
-
-  (mememacs/leader-def
-    "SPC" #'execute-extended-command
-    "bb" #'consult-buffer
-    "bB" #'consult-buffer-other-window
-    "s" '(:ignore t :which-key "search")
-    "ss" #'consult-line
-    "sS" #'consult-line-multi
-    "ff" #'find-file
-    "fr" #'consult-recent-file
-
-    "ji" #'consult-imenu
-    "jI" #'consult-imenu-multi
-    ;; info
-    ;; pass
-
-    "jL" #'consult-goto-line
-    "jo" #'consult-org-heading
-    "jO" #'consult-outline
-    ;; org-agenda
-    "sb" #'consult-multi-occur
-
-    "mM" #'consult-register-store
-    "mm" #'consult-register
-    "mb" #'consult-bookmark
-    ":" #'consult-complex-command
-
-    "ha" #'consult-apropos
-
-    "e" nil
-    "en" #'consult-compile-eror
-    ;; flycheck
-    ;; "ef" #'consult-flymake
-
-    )
-
-
-  ;; (consult-grep)
-  ;; oh bois this is good
-  ;; (consult-line)
-  ;; (consult-imenu)
-
-  ;; (consult-ripgrep)
-  ;; (consult-buffer)
-  ;; (consult-yank-from-kill-ring "fo")
-  (general-def
-    :states '(insert)
-    "M-y" #'consult-yank-pop))
+  :config
+  (require 'init-consult))
 
 (use-package marginalia
   :bind
@@ -381,24 +309,15 @@
 
 (use-package embark
   :ensure t
-
   :init
-
-  ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-
   :config
-
   (general-def
     :states '(normal insert motion emacs)
     "C-." #'embark-act
     "C-;" #'embark-dwim)
-
   (general-def :states '(normal motion emacs)
     "C-h B" #'embark-bindings)
-
-
-  ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list
    'display-buffer-alist
    '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -410,6 +329,8 @@
   :after (embark consult)
   :demand t
   (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package wgrep)
 
 (use-package corfu
   :init

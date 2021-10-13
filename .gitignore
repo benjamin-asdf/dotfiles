@@ -6,3 +6,4 @@
 /scripts/.local/bin/airtest
 /scripts/.local/bin/__pycache__/
 /mememacs/.emacs-mememacs.d/straight/
+/mememacs/.emacs-mememacs.d/local-before.el

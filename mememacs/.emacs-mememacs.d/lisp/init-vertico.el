@@ -1,15 +1,14 @@
-  (setq vertico-cycle t)
-  (setq read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t
-        completion-ignore-case t)
+(setq vertico-cycle t)
+(setq read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      completion-ignore-case t)
 
-  (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
+(defun crm-indicator (args)
+  (cons (concat "[CRM] " (car args)) (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
@@ -17,8 +16,13 @@
   ;; (setq read-extended-command-predicate
   ;;       #'command-completion-default-include-p)
 
-  ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t)
+
+(general-def
+  :keymap vertico-map
+  "C-k" #'previous-line
+  "M-k" #'backward-paragraph
+  "M-j"  #'forward-paragraph)
 
 (add-to-list
  'load-path
