@@ -380,7 +380,36 @@
   (marginalia-mode))
 
 (use-package embark
-  )
+  :ensure t
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+
+  (general-def
+    :states '(normal insert motion emacs)
+    "C-." #'embark-act
+    "C-;" #'embark-dwim)
+
+  (general-def :states '(normal motion emacs)
+    "C-h B" #'embark-bindings)
+
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list
+   'display-buffer-alist
+   '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+     nil
+     (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :demand t
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package corfu
   :init
@@ -713,7 +742,5 @@
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 					; pprint
-
-
 
 ;; (use-package mu4e)
