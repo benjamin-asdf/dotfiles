@@ -9,8 +9,8 @@
   "al" #'list-processes
   "at" #'helm-timers
   "s" '(:ignore t : which-key "s..")
-  "ss" #'helm-swoop-without-pre-input
-  "sS" #'helm-swoop
+  "ss" #'consult-line
+  "sS" #'consult-line-multi
 
   "fe" #'mememacs/find-init-file
   "fl" #'find-file-at-point

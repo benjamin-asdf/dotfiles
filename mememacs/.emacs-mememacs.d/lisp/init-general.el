@@ -20,7 +20,6 @@
   "d" #'evil-window-delete)
 
 (mememacs/leader-def
-  "SPC" #'helm-M-x
   "t" '(:ignore t)
   "n" '(:ignore t)
   "nn" #'display-line-numbers-mode
@@ -29,23 +28,17 @@
   "bd" #'kill-current-buffer
   "be" #'erase-buffer
   "bw" #'toggle-read-only
-  "bb" #'helm-mini
   "b." #'hydra-buffer/body
 
   "f" '(:ignore t :which-key "f..")
   "fd" #'delete-file
   "fs" #'save-buffer
   "fS" #'save-some-buffers
-  "ff" #'helm-find-files
-  "fr" #'helm-recentf
 
   "u" #'undo-tree-visualize
 
   "w" '(evil-window-map :which-key "window")
 
-  "s" '(:ignore t :which-key "search")
-  "ss" #'helm-swoop-without-pre-input
-  "sS" #'helm-swoop
 
   "j" '(:ignore t)
   ;; "jr" #'
@@ -63,7 +56,8 @@
   "jm" #'view-echo-area-messages
 
 
-  "/" #'helm-do-grep-ag
+  ;; todo ripgrep
+  "/" #'consult-grep
   "hc" #'describe-char
   "hm" #'describe-mode
   "hi" #'helm-info-emacs

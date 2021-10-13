@@ -248,29 +248,19 @@
    evil-goggles-enable-change nil)
   (evil-goggles-mode))
 
-(use-package helm
-  :config
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (require 'init-helm)
-  (mememacs/comma-def
-    "r" '(:ignore t :which-key "r..")
-    "rl" #'helm-resume))
-
 (use-package magit
   :defer t
   :init
 
-  (defhydra magit-hydra ()
-    ("s" #'magit-status :exit t)
-    ("l" #'magit-log "log" :exit t)
-    ("d" #'magit-diff "diff" :exi t)
-    ("/" #'helm-grep-do-git-grep "grep" :exit t)
-    ("C" #'magit-clone :exit t)
-    ("u" #'magit-fetch :exit t)
-    ("U" #'magit-pull :exit t))
-
   (mememacs/comma-def
-    "g" #'magit-hydra/body)
+    "g" '(:ignore t :which-key "git")
+    "gs" #'magit-status
+    "gl" #'magit-log
+    "gd" #'magit-diff
+    "gC" #'magit-clone
+    "gu" #'magit-fetch
+    "gU" #'magit-pull)
+
 
   :config
   (setq auto-revert-mode-text "")
@@ -281,40 +271,139 @@
 	    (lambda ()
 	      (visual-line-mode -1))))
 
-(use-package company
+(use-package vertico
+  :init
+  (vertico-mode)
   :config
-  (add-hook 'after-init-hook #'global-company-mode))
+  (require 'init-vertico))
 
-(use-package
-  helm-company
-  :after company
-  :config
-  (general-def
-    :keymaps '(company-active-map company-search-map)
-    "C-/" 'helm-company
-    "C-j" 'company-select-next
-    "C-k" 'company-select-previous
-    "C-l" 'company-complete-selection)
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
-  (general-unbind undo-tree-map "C-/")
-  (general-unbind evil-insert-state-map "C-k")
+(use-package savehist
+  :after vertico
+  :init
+  (savehist-mode))
 
-  (defun mm/company-manual-begin ()
-    (interactive)
-    (if (company-tooltip-visible-p)
-        (company-select-next)
-      (company-manual-begin)))
-  (define-key evil-insert-state-map (kbd "C-j") #'mm/company-manual-begin)
+;; (use-package embark)
+
+(use-package consult
+  :init
+  (recentf-mode)
+  (setq completion-in-region-function #'consult-completion-in-region)
+
   (general-def
     :states '(insert)
-    "C-k"
-    (defun mm/company-up-or-line-up (arg)
-      (interactive "p")
-      (if (company-tooltip-visible-p)
-	  (company-select-previous arg)
-	(evil-force-normal-state)
-	(evil-previous-line arg))))
-  (setf company-format-margin-function 'company-text-icons-margin))
+    "C-j" #'company-manual-begin)
+
+  (mememacs/local-def
+    "SPC" #'consult-mode-command)
+
+  (mememacs/comma-def
+    "ss" #'consult-line
+    "sS" #'consult-line-multi
+    "sk" #'consult-keep-lines
+    "si" #'consult-isearch
+    ;; "so" #'consult-oc
+    "sf" #'consult-focus-lines
+    "g/" #'consult-git-grep
+
+    "fl" #'consult-locate
+    "ff" #'consult-find
+    "fo" #'consult-file-externally
+    "hw" #'consult-man
+    "M" #'consult-minor-mode-menu)
+
+  (general-def
+    'vertico-map
+    "M-h" #'consult-history
+    "M-i" #'completion-at-point
+    )
+
+
+  (mememacs/leader-def
+    "SPC" #'execute-extended-command
+    "bb" #'consult-buffer
+    "bB" #'consult-buffer-other-window
+    "s" '(:ignore t :which-key "search")
+    "ss" #'consult-line
+    "sS" #'consult-line-multi
+    "ff" #'find-file
+    "fr" #'consult-recent-file
+
+    "ji" #'consult-imenu
+    "jI" #'consult-imenu-multi
+    ;; info
+    ;; pass
+
+    "jL" #'consult-goto-line
+    "jo" #'consult-org-heading
+    "jO" #'consult-outline
+    ;; org-agenda
+    "sb" #'consult-multi-occur
+
+    "mM" #'consult-register-store
+    "mm" #'consult-register
+    "mb" #'consult-bookmark
+    ":" #'consult-complex-command
+
+    "ha" #'consult-apropos
+
+    "e" nil
+    "en" #'consult-compile-eror
+    ;; flycheck
+    ;; "ef" #'consult-flymake
+
+    )
+
+
+  ;; (consult-grep)
+  ;; oh bois this is good
+  ;; (consult-line)
+  ;; (consult-imenu)
+
+  ;; (consult-ripgrep)
+  ;; (consult-buffer)
+  ;; (consult-yank-from-kill-ring "fo")
+  (general-def
+    :states '(insert)
+    "M-y" #'consult-yank-pop))
+
+(use-package marginalia
+  :bind
+  (:map minibuffer-local-map
+   ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
+(use-package embark
+  )
+
+(use-package corfu
+  :init
+  (corfu-global-mode)
+  :config
+  (setf corfu-cycle t
+	corfu-auto t
+	corfu-quit-at-boundary t
+	corfu-quit-no-match t
+	corfu-auto-delay 0.18)
+
+  (general-def
+    :states '(insert)
+    :keymap 'corfu-map
+    "C-j" #'corfu-next
+    "C-k" #'corfu-previous
+    "C-b" #'beginning-of-buffer
+    "C-f" #'end-of-buffer
+    "C-l" #'corfu-insert)
+
+  (general-def
+    :states '(insert)
+    "C-/" #'completion-at-point))
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
@@ -372,14 +461,6 @@
   (which-key-mode)
   (setf which-key-idle-delay 0.22))
 
-(use-package helm-swoop
-  :config (require 'init-helm-swoop))
-
-(use-package helm-ag
-  :config
-  (require 'init-helm-ag)
-  (require 'patch-helm-ag))
-
 (use-package projectile
   :config
   (projectile-mode)
@@ -404,10 +485,6 @@
 
 ;; TODO
 ;; add emacs-dir/backups to known projects
-
-(use-package helm-projectile
-  :config
-  (require 'patch-helm-projectile))
 
 (use-package ace-window
   :config
@@ -496,11 +573,6 @@
 (use-package flycheck-clj-kondo
   :after cider)
 
-(use-package helm-cider
-  :after cider
-  :hook
-  (clojure-mode . (lambda () (helm-cider-mode 1))))
-
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
 
@@ -583,15 +655,10 @@
   :init (setq org-roam-v2-ack t)
   :config (require 'init-org-roam))
 
-
 (use-package markdown-mode)
-
 ;; try vc-backup
 ;; and then replace every other backup file system we have
 (use-package backup-each-save)
-
-
-(use-package helm-pass)
 
 (use-package restclient
   :defer t
@@ -638,3 +705,7 @@
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 					; pprint
+
+
+
+;; (use-package mu4e)
