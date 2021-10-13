@@ -390,7 +390,14 @@
 	corfu-auto t
 	corfu-quit-at-boundary t
 	corfu-quit-no-match t
+	corfu-auto-prefix 2
 	corfu-auto-delay 0.18)
+
+  (defun mememacs/c-completion ()
+    (interactive)
+    (corfu-quit)
+    (let ((completion-in-region-function #'consult-completion-in-region))
+      (completion-at-point)))
 
   (general-def
     :states '(insert)
@@ -399,11 +406,12 @@
     "C-k" #'corfu-previous
     "C-b" #'beginning-of-buffer
     "C-f" #'end-of-buffer
-    "C-l" #'corfu-insert)
+    "C-l" #'corfu-insert
+    "C-/" #'mememacs/c-completion)
 
   (general-def
     :states '(insert)
-    "C-/" #'completion-at-point))
+    "C-j" #'completion-at-point))
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
