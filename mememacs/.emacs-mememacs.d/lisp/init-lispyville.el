@@ -260,11 +260,19 @@ replace the expression with its result."
   ;; "km" (lispyville-wrap-command lispy-mark-symbol special)
   )
 
-
 ;; todo  C-h should delete blank lines, if on blank line
 
 ;; lispy show toplevel
 
 ;; todo mode line
+
+(defun mememacs/lispy-occur-consult ()
+  (interactive)
+  (save-restriction
+    (narrow-to-defun)
+    (consult-line)
+    (widen)))
+
+(defalias #'lispy-occur #'mememacs/lispy-occur-consult)
 
 (provide 'init-lispyville)

@@ -73,7 +73,6 @@
 (use-package keychain-environment
     :straight  (:host github
                       :repo "tarsius/keychain-environment")
-    :demand t
     :init
     (keychain-refresh-environment)
     (auth-source-pass-enable))
@@ -327,7 +326,7 @@
 (use-package embark-consult
   :ensure t
   :after (embark consult)
-  :demand t
+  :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package wgrep)
@@ -571,7 +570,6 @@
 
 (use-package yasnippet
   :defer 20
-  :demand t
   :config
   (add-to-list
    'yas-snippet-dirs
