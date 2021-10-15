@@ -645,8 +645,6 @@
 
 ;; (use-package org-projectile)
 
-
-
 ;; todo company remove icons
 
 ;; figure out where the code is for guix packages
@@ -657,10 +655,6 @@
 
 
 ;; fix helm ag "command attempted to use minibuffer"
-
-
-;; redshank
-;; maybe don't need it because lispy
 
 ;; todo nyxt auto clone github page
 
