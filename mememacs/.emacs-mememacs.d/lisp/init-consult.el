@@ -1,4 +1,4 @@
-(provide 'init-consult)
+(require 'patch-consult)
 
 (general-def
    :states '(insert)
@@ -59,9 +59,9 @@
   ;; flycheck
   ;; "ef" #'consult-flymake
   )
-
-
  ;; (consult-grep)
+
+
  ;; oh bois this is good
  ;; (consult-line)
  ;; (consult-imenu)
@@ -73,3 +73,5 @@
 (general-def
   :states '(insert)
   "M-y" #'consult-yank-pop)
+
+(provide 'init-consult)

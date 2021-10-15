@@ -17,9 +17,7 @@
 
 (defalias 'display-startup-echo-area-message (lambda ()))
 
-
-
-;; (setq visible-bell 1)
+(setq visible-bell 1)
 
 
 ;;; In some cases, Emacs can still decide by itself to use graphical boxes.
