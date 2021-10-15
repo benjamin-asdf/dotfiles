@@ -47,23 +47,29 @@
   "L" #'cider-eval-sexp-at-point
   "l" #'mememacs/lispy-eval-line)
 
-
 (defadvice lispy-eval (around cider-lispy-eval (&optional arg) activate)
   (if (memq
        major-mode
        lispy-clojure-modes)
-      (if (eq arg 1)
-	  (cider-eval-last-sexp nil)
-	(cider-eval-last-sexp t))
+      (save-excursion
+	(goto-char (cdr (lispy--bounds-dwim)))
+	(if (eq arg 1)
+	    (cider-eval-last-sexp nil)
+	  (cider-eval-last-sexp t)))
     ad-do-it))
 
 (defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)
   (if (memq
        major-mode
        lispy-clojure-modes)
-      (if arg
-	  (cider-pprint-eval-last-sexp-to-comment nil)
-	(cider-pprint-eval-last-sexp nil))
+      (save-excursion
+	(goto-char
+	 (cdr (lispy--bounds-dwim)))
+	(if arg
+	    (cider-pprint-eval-last-sexp-to-comment
+	     nil)
+	  (cider-pprint-eval-last-sexp
+	   nil)))
     ad-do-it))
 
 ;; jet -------------------

@@ -347,7 +347,7 @@ See `eval-last-sexp'."
   "fr" (defun mm/find-in-repos ()
 	 (interactive)
 	 (let ((default-directory "~/repos/"))
-	   (call-interactively #'helm-find-files)))
+	   (call-interactively #'find-file)))
 
   "f" '(:ignore t :which-key "f..")
   "fd" #'delete-file
