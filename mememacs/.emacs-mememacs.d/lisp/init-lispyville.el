@@ -273,6 +273,34 @@ replace the expression with its result."
     (consult-line)
     (widen)))
 
+(defun rand-elm (lst)
+  (nth (random (length lst)) lst))
+
 (defalias #'lispy-occur #'mememacs/lispy-occur-consult)
+
+;; (add-hook
+;;  )
+;; mindsape/mint-bright-4
+
+(defun mememacs/lispy-set-faces ()
+  (if
+      (and (eq evil-state 'insert)
+	   (lispyville--special-p))
+      (set-face-attribute
+       'show-paren-match
+       nil
+       :foreground mindsape/heliotrope
+       :underline t)
+    (set-face-attribute
+     'show-paren-match
+     nil
+     :foreground mindsape/mint-bright-2
+     :underline t)))
+
+(setf show-paren-style 'parenthesis)
+
+(add-hook 'evil-insert-state-entry-hook #'mememacs/lispy-set-faces)
+(add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
+
 
 (provide 'init-lispyville)

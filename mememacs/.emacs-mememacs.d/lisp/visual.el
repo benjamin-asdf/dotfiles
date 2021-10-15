@@ -24,12 +24,13 @@
 (defconst mindsape/scarpa-flow		 "#5d5c62")
 (defconst mindsape/scorpion		 "#625d5c")
 (defconst mindsape/tundora		 "#4e4a4a")
-(defconst mindsape/dune			 "#3b3837")
+(defconst mindsape/dune	                 "#3b3837")
 (defconst mindsape/hint-of-red		 "#faf7f7")
 (defconst mindsape/brown		 "#543f2f")
 (defconst mindsape/sage			 "#95a178")
 (defconst mindsape/heliotrope		 "#F689FF")
 (defconst mindsape/heliotrope-shade	 "#311b33")
+(defconst mindsape/purple	         "#8e41e0")
 (defconst mindsape/mint-bright		 "#a1fe9a")
 (defconst mindsape/mint-bright-1	 "#abfea5")
 (defconst mindsape/mint-bright-2	 "#b6feb1")
@@ -40,6 +41,8 @@
   "A dark shade of `mindsape/mint-green`")
 (defconst mindsape/anakiwa		 "#8fcefe")
 (defconst mindsape/horison		 "#5F89A9")
+(defconst mindsape/glacier		 "#6da2bc")
+(defconst mindsape/gimbled		 "#bcb66d")
 (defconst mindsape/hit-pink		 "#feb48f")
 (defconst mindsape/amethyst-smoke	 "#Ac98bf")
 
@@ -56,19 +59,28 @@
 (set-face-foreground 'default mindsape/hint-of-red)
 
 (set-face-attribute
- 'cursor
+'cursor
  nil
  :foreground "white"
- :background "white")
+ :background "white"
+)
 
 
 ;;; Programming
 
-(set-face-foreground 'font-lock-comment-face "#6b6375")
-(set-face-foreground 'font-lock-comment-delimiter-face
-		     (face-foreground 'font-lock-comment-face))
+(set-face-foreground 'font-lock-comment-face mindsape/tundora)
+(set-face-foreground 'font-lock-comment-delimiter-face mindsape/scorpion)
+
+(set-face-foreground
+ 'font-lock-comment-delimiter-face
+ (face-foreground
+  'font-lock-comment-face))
+
 (set-face-foreground 'font-lock-doc-face "#84892f")
+
 (set-face-foreground 'font-lock-string-face "#abd1d0")
+(set-face-foreground 'font-lock-string-face mindsape/gimbled)
+
 
 ;; https://imagecolorpicker.com/color-code/febf8f
 (set-face-attribute
@@ -86,14 +98,25 @@
 
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
 
-
 (set-face-attribute
  'match
  nil
- :box `(:line-width 1 :color ,mindsape/heliotrope)
- :foreground mindsape/scorpion)
+ :box nil
+ :background mindsape/woodsmoke
+ :bold t
+ :foreground "green")
 
-;(set-face-attribute 'reb-match-0 nil :box `(:line-width 2 :color ,mindsape/heliotrope) :background mindsape/dune :foreground nil)
+;; (set-face-attribute nil :box t)
+
+(set-face-attribute
+ 'highlight
+ nil
+ :box
+ `(:line-width 2 :color ,mindsape/heliotrope)
+ :foreground mindsape/heliotrope
+ :background mindsape/woodsmoke)
+
+
 
 ;; (set-face-attribute
 ;;  'reb-match-1
@@ -109,7 +132,17 @@
  :overline mindsape/horison)
 
 (set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
+
 (set-face-background 'region mindsape/tundora)
+
+(set-face-attribute
+ 'region
+ nil
+ :foreground nil
+ :box nil
+ :background "black"
+ :underline nil)
+
 
 (set-face-background 'mode-line mindsape/brown)
 (set-face-background 'mode-line-inactive (face-background 'default))
@@ -124,10 +157,8 @@
 (set-face-attribute
  'minibuffer-prompt
  nil
- :foreground "yellow"
- :background mindsape/woodsmoke
- :bold t
- :height 1.2)
+ :foreground mindsape/purple
+ :bold t)
 
 
 (when
@@ -163,69 +194,34 @@
    :foreground mindsape/amethyst-smoke
    :box t))
 
-(with-eval-after-load 'helm
-  (set-face-background 'helm-visible-mark (face-background 'region))
-  (set-face-underline 'helm-visible-mark t)
-  (set-face-foreground 'helm-visible-mark "white")
+(with-eval-after-load
+    'vertico
   (set-face-attribute
-   'helm-selection
+   'vertico-group-title
    nil
-   :height 1.2
-   :box t
-   :background mindsape/brown
-   :foreground (face-foreground 'default))
+   :slant 'italic
+   :foreground mindsape/hit-pink))
 
+(with-eval-after-load
+    'vertico-quick
   (set-face-attribute
-   'helm-buffer-process
+   'vertico-quick1
    nil
-   :background mindsape/woodsmoke
-   :foreground mindsape/mint-bright-4)
-
+   :background mindsape/hit-pink
+   :foreground mindsape/woodsmoke)
   (set-face-attribute
-   'helm-source-header
+   'vertico-quick2
    nil
-   :height 1.2
-   :background mindsape/woodsmoke
-   :foreground "#32542f")
-
-  (set-face-attribute
-   'helm-ff-directory
-   nil
-   :background mindsape/woodsmoke-tint-1
-   :foreground mindsape/amethyst-smoke
-   :box t)
-
-  (set-face-attribute
-   'helm-buffer-directory
-   nil
-   :background mindsape/woodsmoke-tint-1
-   :foreground mindsape/amethyst-smoke
-   :box t)
-
-  ;; (set-face-attribute
-  ;;  'helm-header
-  ;;  nil
-  ;;  :height 1.2
-  ;;  :background mindsape/woodsmoke
-  ;;  :foreground "yellow")
-  )
-
-;; (set-face-attribute
-;;    'rainbow-delimiters-depth-1-face
-;;    nil
-;;    :foreground mindsape/hit-pink
-;;    :box nil)
-
-(with-eval-after-load 'helm-command
-  (set-face-attribute
-   'helm-M-x-key
-   nil
-   :foreground
-   (face-foreground
-    'font-lock-constant-face)))
-
+   :background mindsape/glacier
+   :foreground mindsape/woodsmoke))
 
 (with-eval-after-load 'avy
+  (set-face-attribute
+   'avy-goto-char-timer-face
+   nil
+   :box nil
+   :background mindsape/mint-bright)
+
   (set-face-attribute
    'avy-lead-face
    nil
@@ -271,6 +267,7 @@
 
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)
+(set-cursor-color mindsape/mint-bright-1)
 (blink-cursor-mode -1)
 
 (with-eval-after-load
@@ -307,5 +304,9 @@
 (when (fboundp 'tool-bar-mode)
   ;; (set-face-attribute 'default nil :height 100)
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12")))
+
+
+(setq-default truncate-lines t)
+(global-visual-line-mode)
 
 (provide 'visual)

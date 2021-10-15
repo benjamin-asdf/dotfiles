@@ -311,10 +311,17 @@
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
+
   (general-def
     :states '(normal insert motion emacs)
     "C-." #'embark-act
     "C-;" #'embark-dwim)
+
+  (general-def
+    :keymap vertico-map
+    "C-." #'embark-act
+    "C-;" #'embark-dwim)
+
   (general-def :states '(normal motion emacs)
     "C-h B" #'embark-bindings)
   (add-to-list
@@ -427,7 +434,7 @@
      projectile-indexing-method 'alien
      projectile-git-command cmd
      projectile-generic-command cmd
-     projectile-completion-system 'helm))
+     projectile-completion-system 'default))
 
   (defun mememacs/projectile-todo ()
     (interactive)

@@ -16,13 +16,16 @@
   ;; (setq read-extended-command-predicate
   ;;       #'command-completion-default-include-p)
 
-  (setq enable-recursive-minibuffers t)
+(setq enable-recursive-minibuffers t)
 
 (general-def
   :keymap vertico-map
   "C-k" #'previous-line
   "M-k" #'backward-paragraph
-  "M-j"  #'forward-paragraph)
+  "M-j"  #'forward-paragraph
+  "M-f" nil
+  "M-f g" #'beginning-of-buffer
+  "M-f G" #'end-of-buffer)
 
 (add-to-list
  'load-path
@@ -32,7 +35,7 @@
 (require 'vertico-directory)
 
 (general-def
-  :keymap vertico-map
+ 'vertico-map
   "RET"  #'vertico-directory-enter
   "DEL"  #'vertico-directory-delete-char
   "M-DEL" #'vertico-directory-delete-word)
@@ -42,9 +45,10 @@
 (require 'vertico-quick)
 
 (general-def
-  :keymap 'vertico-map
+  'vertico-map
   "M-q" #'vertico-quick-insert
-  "M-," #'vertico-quick-exit)
+  "M-," #'vertico-quick-exit
+  "M-s" #'vertico-quick-jump)
 
 (mememacs/leader-def
   "bb" #'consult-buffer)
@@ -53,5 +57,20 @@
 
 (mememacs/comma-def
   "rl" #'vertico-repeat)
+
+(when nil
+  (defun mememacs/vertico-select-when-single (&rest args)
+    (interactive)
+    (ignore args)
+    (when
+	(and
+	 (eq 1 (length vertico--candidates))
+	 (eq 0 vertico--index))
+      (minibuffer-force-complete-and-exit)))
+
+  (advice-add
+   #'vertico--update-candidates
+   :after
+   #'mememacs/vertico-select-when-single))
 
 (provide 'init-vertico)
