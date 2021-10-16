@@ -62,8 +62,6 @@
  ;; (consult-grep)
 
 
- ;; oh bois this is good
- ;; (consult-line)
  ;; (consult-imenu)
 
  ;; (consult-ripgrep)
