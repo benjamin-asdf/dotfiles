@@ -1,13 +1,3 @@
-import dracula.draw
-
-dracula.draw.blood(c, {
-    'spacing': {
-        'vertical': 6,
-        'horizontal': 8
-    }
-})
-
-
 # ambrevar
 c.auto_save.session = True
 c.completion.shrink = True
@@ -51,8 +41,6 @@ config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
 # config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
 
-
-
 c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
@@ -74,8 +62,6 @@ c.url.searchengines = {
     'wi'     : 'https://en.wikipedia.org/wiki/{}',
     "clja"   : 'https://clojars.org/search?q={}'
 
-
-
     # 'un'     : 'https://docs.unity3d.com/ScriptReference/30_search.html?q={}',
     # 'glab'   : 'https://gitlab.botogames.com/search?search={}',
     # 'drive'  : 'https://drive.google.com/drive/search?q={}',
@@ -83,10 +69,6 @@ c.url.searchengines = {
 }
 
 
-
-
 c.editor.command = ['ec', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
-
-c.url.start_pages = ["https://trello.com/b/kABlCnCj/ben"]
 
 config.load_autoconfig(False)
