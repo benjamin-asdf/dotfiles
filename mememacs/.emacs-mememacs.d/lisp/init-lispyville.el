@@ -303,4 +303,27 @@ replace the expression with its result."
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
 
+(defun mm/chop-suffix-total (suffix s)
+  (if (s-ends-with? suffix s)
+      (mm/chop-suffix-total
+       suffix
+       (s-chop-suffix suffix s))
+    s))
+
+(defun mememacs/lispy-filter-he-str (args)
+  (print args)
+  (print
+   (if lispy-mode
+     `(,(mm/chop-suffix-total
+	 ")"
+	 (car args))
+       ,@(cdr args))
+     args)))
+
+
+(advice-add
+ #'he-substitute-string
+ :filter-args
+ #'mememacs/lispy-filter-he-str)
+
 (provide 'init-lispyville)
