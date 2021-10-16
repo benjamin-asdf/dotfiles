@@ -71,7 +71,7 @@
  ;; (consult-yank-from-kill-ring "fo")
 
 (general-def
-  :states '(insert)
+  :keymap vertico-map
   "M-y" #'consult-yank-pop)
 
 (provide 'init-consult)

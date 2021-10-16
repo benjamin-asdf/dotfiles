@@ -352,7 +352,7 @@ See `eval-last-sexp'."
   "f" '(:ignore t :which-key "f..")
   "fd" #'delete-file
   "fs" #'save-buffer
-  "ff" #'helm-find-files
+  "ff" #'consult-find
 
   "fh" (defun dired-jump-home ()
 	 (interactive)
@@ -372,9 +372,7 @@ See `eval-last-sexp'."
   ;; "x"
   "x"  `(,(key-binding (kbd "C-x")) :which-key "C-x")
 
-  "c" `(,(key-binding (kbd "C-c") :which-key "C-c"))
-
-  )
+  "c" `(,(key-binding (kbd "C-c") :which-key "C-c")))
 
 
 (defun mememacs/kill-dangling-buffs (&rest args)

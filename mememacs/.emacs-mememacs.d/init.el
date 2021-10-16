@@ -658,7 +658,6 @@
 
 ;; todo nyxt auto clone github page
 
-
 ;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
 					; pprint
