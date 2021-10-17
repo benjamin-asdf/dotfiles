@@ -342,18 +342,18 @@
   :init
   (corfu-global-mode)
   :config
+  (defun mememacs/c-completion ()
+    (interactive)
+    (corfu-quit)
+    (let ((completion-in-region-function #'consult-completion-in-region))
+      (completion-at-point)))
+
   (setf corfu-cycle t
 	corfu-auto t
 	corfu-quit-at-boundary t
 	corfu-quit-no-match t
 	corfu-auto-prefix 2
 	corfu-auto-delay 0.18)
-
-  (defun mememacs/c-completion ()
-    (interactive)
-    (corfu-quit)
-    (let ((completion-in-region-function #'consult-completion-in-region))
-      (completion-at-point)))
 
   (general-def
     :states '(insert)
@@ -368,6 +368,9 @@
   (general-def
     :states '(insert)
     "C-j" #'completion-at-point))
+
+
+
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
@@ -633,6 +636,15 @@
   (mememacs/leader-def
     "'" #'vterm
     "p'" #'projectile-run-vterm))
+
+(use-package emacs-bash-completion
+  :straight (:host github :repo "szermatt/emacs-bash-completion")
+  :init
+  (autoload 'bash-completion-dynamic-complete
+    "bash-completion"
+    "BASH completion hook")
+  (add-hook 'shell-dynamic-complete-functions
+            'bash-completion-dynamic-complete))
 
 (require 'late-bindings)
 

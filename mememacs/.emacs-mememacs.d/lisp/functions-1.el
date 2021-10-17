@@ -393,5 +393,15 @@ where the file does not exist."
 (dolist (fn '(dired-internal-do-deletions))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
+(defun mememacs/kill-shell-command ()
+  (interactive)
+  (kill-new
+   (with-temp-buffer
+     (shell-command
+      (read-shell-command
+       "kill cmd: ")
+      (current-buffer))
+     (buffer-string))))
+
 
 (provide 'functions-1)

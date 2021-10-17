@@ -278,4 +278,7 @@
 
 (setf bookmark-set-fringe-mark nil)
 
+(setf shell-file-name "/bin/bash")
+
+
 (provide 'main)
