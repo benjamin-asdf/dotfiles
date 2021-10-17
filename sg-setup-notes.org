@@ -1,0 +1,93 @@
+* manjaro
+** pros
+- less bloat
+** cons
+- not officially supported unity editor (works flawless either way)
+
+* install
+- git
+- git lfs
+- docker
+  pamac build docker
+- dotnet
+  pamac build dotnet-sdk-bin
+- mono
+  pamac build mono
+
+  if you do not use arch you will need to google and follow install
+  instructions
+
+* install unity editor
+- make ssh keys, add them to gitlab
+- clone gitlab idlegame repo
+
+- get unity hub
+  pamac buld unityhub
+
+** specific unity version
+- find the version you need
+#+begin_src shell
+    cd <repo-root>
+    cat IdleGame/ProjectSettings/ProjectVersion.txt | head -n 1 | cut  -d " " -f2
+#+end_src
+- go here https://unity3d.com/get-unity/download/archive
+- get the url from the "unity hub" button (e.g. right click "copy link
+  address"
+#+begin_src shell
+  unityhub <link>
+#+end_src
+- if unity hub mime type is setup correctly you should be able to
+  click (I just didn't bother with it because it's a 1 time click)
+
+- **Important** pull after you installed git lfs
+  (git pull should be sufficient)
+
+#+begin_src shell
+  cd `git rev-parse --show-toplevel`
+  git lfs fetch && git lfs pull
+#+end_src
+
+- you can make symlinks with regular `ln -s`
+
+
+* prefab merge tool
+[mergetool “unityyamlmerge”] trustExitCode = false cmd = /opt/unity/Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
+
+* uri scheme for connecting to twitch
+you need this if you want to connect to twitch with browser flow
+
+- script idlegame-auth-handler in your path
+
+#+begin_src shell
+#!/bin/sh
+[ "$1" = "-v" ] && echo idlegame-auth-handler version 0.1 && exit 0
+
+echo "$@" >> /tmp/auth-handler-res
+
+mkdir -p /tmp/cos_redirect/ && echo "$@" >> /tmp/cos_redirect/url.txt
+zenity --info --text "$@"
+#+end_src
+
+- install a .desktop file in `.local/share/applications`
+  (google and update this guide)
+- add an entry here ~/.config/mimeapps.list
+  somehting like
+  x-scheme-handler/clashofstreamers=handler-script.desktop
+- can poke Ben
+
+* editor
+choose
+- pycharm (recommended for beginners if you code python)
+- doom emacs (good for python, used by some people already, vim)
+- spacemacs (vim, similar to doom, more features but maybe bloated)
+- vscode (works out of the box)
+
+* troubleshoot
+** “connection interrupted” in your browser
+caused by docker
+maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
+
+* notes
+** at the time of writing I did not make airtest recording work
+honestly don't really know why you want it
+code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
