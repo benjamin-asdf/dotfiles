@@ -58,6 +58,9 @@
   "en" #'consult-compile-eror
   ;; flycheck
   ;; "ef" #'consult-flymake
+
+  ;; todo ripgrep
+  "/" #'consult-ripgrep
   )
  ;; (consult-grep)
 

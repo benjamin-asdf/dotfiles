@@ -17,9 +17,6 @@
 
 (defalias 'display-startup-echo-area-message (lambda ()))
 
-(setq visible-bell 1)
-
-
 ;;; In some cases, Emacs can still decide by itself to use graphical boxes.
 ;;; Force on using the minibuffer instead.
 (setq use-dialog-box nil)

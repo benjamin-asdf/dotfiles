@@ -56,8 +56,6 @@
   "jm" #'view-echo-area-messages
 
 
-  ;; todo ripgrep
-  "/" #'consult-grep
   "hc" #'describe-char
   "hm" #'describe-mode
   "hi" #'helm-info-emacs

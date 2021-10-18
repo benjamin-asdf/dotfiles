@@ -71,8 +71,7 @@
 (use-package no-littering)
 
 (use-package keychain-environment
-    :straight  (:host github
-                      :repo "tarsius/keychain-environment")
+    :straight  (:host github :repo "tarsius/keychain-environment")
     :init
     (keychain-refresh-environment)
     (auth-source-pass-enable))
@@ -637,8 +636,8 @@
     "'" #'vterm
     "p'" #'projectile-run-vterm))
 
-(use-package emacs-bash-completion
-  :straight (:host github :repo "szermatt/emacs-bash-completion")
+(use-package bash-completion
+  ;; :straight (:host github :repo "szermatt/emacs-bash-completion")
   :init
   (autoload 'bash-completion-dynamic-complete
     "bash-completion"
