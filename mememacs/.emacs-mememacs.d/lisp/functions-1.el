@@ -187,6 +187,20 @@ See `eval-last-sexp'."
 
 (mememacs/leader-def "jE" #'mememacs/jump-eshell)
 
+(mememacs/local-def
+  :states '(insert)
+  :keymaps '(eshell-mode-map)
+  "h" #'mememacs/eshell-hist)
+
+(defun mememacs/eshell-hist ()
+  (interactive)
+  (goto-char (point-max))
+  (insert
+   (completing-read
+    "hist: "
+    (ring-elements
+     eshell-history-ring))))
+
 (defun mememacs/magit-kill-origin-url (&optional arg)
   (interactive "p")
   (-->
@@ -403,5 +417,10 @@ where the file does not exist."
       (current-buffer))
      (buffer-string))))
 
+(general-def
+  "C-x k" (defun mememacs/kill-minibuff-contents ()
+	    (interactive)
+	    (kill-new (minibuffer-contents))
+	    (keyboard-quit)))
 
 (provide 'functions-1)
