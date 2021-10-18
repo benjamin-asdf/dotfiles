@@ -71,7 +71,7 @@ zenity --info --text "$@"
 - install a .desktop file in `.local/share/applications`
   (google and update this guide)
 - add an entry here ~/.config/mimeapps.list
-  somehting like
+  something like
   x-scheme-handler/clashofstreamers=handler-script.desktop
 - can poke Ben
 
@@ -82,12 +82,31 @@ choose
 - spacemacs (vim, similar to doom, more features but maybe bloated)
 - vscode (works out of the box)
 
+* other software
+- gnu stow for dotfile management
+- vim as fallback editor
+- qutebrowser for a keyboard driven browser
+- flameshot for screenshots
+- todo: simple screencast software
+- there is cli tools for creating jira tickets, might be a sick booster for testers
+  jirazzz
+
+
 * troubleshoot
 ** “connection interrupted” in your browser
 caused by docker
 maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
 
+* screencasts
+- I have scripts that use dmenu and ffmpeg
+- can also select a window area with `slop`
+- this works good for me
+- can add another script that uploads to aws s3 bucket
+- I didn't set this up yet
+
 * notes
 ** at the time of writing I did not make airtest recording work
 honestly don't really know why you want it
 code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
+
+** btw there is cli tools for creating jira tickets, might be a sick booster for testers
