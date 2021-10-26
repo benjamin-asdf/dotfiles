@@ -7,3 +7,5 @@
 /scripts/.local/bin/__pycache__/
 /mememacs/.emacs-mememacs.d/straight/
 /mememacs/.emacs-mememacs.d/local-before.el
+/mail/emacs-dummy-pkg/emacs-dummy-1-2-any.pkg.tar.xz
+/mail/emacs-dummy-pkg/pkg/
