@@ -31,6 +31,9 @@
 (defconst mindsape/heliotrope		 "#F689FF")
 (defconst mindsape/heliotrope-shade	 "#311b33")
 (defconst mindsape/purple	         "#8e41e0")
+(defconst mindsape/fruit-salad	         "#479b59")
+(defconst mindsape/sweet-pink	         "#Fe9aa1")
+(defconst mindsape/sundown	         "#Feaeb4")
 (defconst mindsape/mint-bright		 "#a1fe9a")
 (defconst mindsape/mint-bright-1	 "#abfea5")
 (defconst mindsape/mint-bright-2	 "#b6feb1")
@@ -142,7 +145,7 @@
 (set-face-attribute
  'region
  nil
- :foreground mindsape/blue-chalk
+ :foreground mindsape/sundown
  :box nil
  :background mindsape/log-cabin
  :underline nil)
@@ -161,7 +164,8 @@
 (set-face-attribute
  'minibuffer-prompt
  nil
- :foreground mindsape/purple
+ :foreground
+ mindsape/fruit-salad
  :bold t)
 
 

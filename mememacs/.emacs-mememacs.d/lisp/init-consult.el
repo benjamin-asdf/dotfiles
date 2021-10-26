@@ -22,7 +22,7 @@
   "M" #'consult-minor-mode-menu)
 
 (general-def
-  'vertico-map
+  'minibuffer-mode-map
   "M-h" #'consult-history
   "M-i" #'completion-at-point)
 
@@ -74,5 +74,11 @@
 (general-def
   :keymap vertico-map
   "M-y" #'consult-yank-pop)
+
+(consult-customize
+ consult-ripgrep consult-git-grep consult-grep
+ consult-bookmark consult-recent-file consult-xref
+ consult--source-file consult--source-project-file consult--source-bookmark
+ :preview-key (kbd "M-."))
 
 (provide 'init-consult)

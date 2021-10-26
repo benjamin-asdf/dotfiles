@@ -47,6 +47,9 @@ replace the expression with its result."
   (kbd "M-J") #'lispy-move-right
   (kbd "<M-return>") #'mememacs/lispy-insert
 
+
+  (kbd "C-k") #'lispy-kill-at-point
+
   (kbd "C-<return>") #'lispy-alt-line
 
   "P" #'special-lispy-eval-other-window
@@ -71,7 +74,6 @@ replace the expression with its result."
    additional-insert
    mark-toggle
    slurp/barf-lispy))
-
 
 ;; copied from lispyville.el
 ;; I do not want the substitute part because of evil-sourround
@@ -132,6 +134,7 @@ replace the expression with its result."
 
   ;; (kbd "/") #'lispy-occur
   ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
+
 
 
   (kbd "C-3") #'lispyville-up-list
@@ -230,15 +233,12 @@ replace the expression with its result."
 
 ;; todo swap prefix arg
 ;; (defadvice lispy-ace-paren ())
-
-
 ;; (defalias 'lispy--remember #'evil--jumps-push)
 
-
 (mememacs/local-def
-  ;; :state '(normal visual emacs insert)
   :keymaps '(lispy-mode-map)
-  "b" #'lispy-back)
+  "b" #'lispy-back
+  "," #'lispy-kill-at-point)
 
 (general-def
   :states '(normal visual emacs insert)

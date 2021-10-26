@@ -11,7 +11,7 @@
 
 (general-create-definer
   mememacs/local-def
-  :states '(normal visual emacs)
+  :states '(normal visual emacs insert motion)
   :prefix "C-,")
 
 (general-def
@@ -31,7 +31,6 @@
   "b." #'hydra-buffer/body
 
   "f" '(:ignore t :which-key "f..")
-  "fd" #'delete-file
   "fs" #'save-buffer
   "fS" #'save-some-buffers
 

@@ -18,9 +18,7 @@
   (kill-new (buffer-name)))
 
 (mememacs/leader-def
-  "by" #'mememacs/kill-buffer-name
-  "fe" #'mememacs/find-init-file)
-
+  "by" #'mememacs/kill-buffer-name)
 
 (defun mememacs/lispy-eval-line ()
   (interactive)
@@ -188,7 +186,7 @@ See `eval-last-sexp'."
 (mememacs/leader-def "jE" #'mememacs/jump-eshell)
 
 (mememacs/local-def
-  :states '(insert)
+  :states '(insert normal)
   :keymaps '(eshell-mode-map)
   "h" #'mememacs/eshell-hist)
 
@@ -244,18 +242,32 @@ See `eval-last-sexp'."
   #'mememacs/process-menu-switch-to-buffer)
 
 
-(defun mememacs/create-script (file)
-  (interactive "F")
+(defun mememacs/create-script* (file bang setup)
   (find-file file)
-  (insert "#!/bin/sh\n")
+  (insert bang)
   (save-buffer)
   (evil-insert-state)
   (set-file-modes file #o777)
-  (shell-script-mode))
+  (funcall setup))
+
+(defun mememacs/create-script (file)
+  (interactive "Fnew script: ")
+  (mememacs/create-script*
+   file
+   "#!/bin/sh\n"
+   #'shell-script-mode))
+
+(defun mememacs/create-bb-script (file)
+  (interactive "Fnew bb: ")
+  (mememacs/create-script*
+   file
+   "#!/usr/bin/env bb\n"
+   #'clojure-mode))
 
 (mememacs/comma-def
   :keymaps 'dired-mode-map
-  "ns" #'mememacs/create-script)
+  "ns" #'mememacs/create-script
+  "nS" #'mememacs/create-bb-script)
 
 
 (defun mememacs/toggle-debug-on-quit (arg)
@@ -300,7 +312,7 @@ See `eval-last-sexp'."
   ("d" #'kill-current-buffer)
   ("k" #'previous-buffer)
   ("j" #'previous-buffer)
-  ("b" #'helm-mini :exit t)
+  ("b" #'consult-buffer :exit t)
   ("p" #'projectile-find-dir :exit t)
   ("P" #'projectile-find-dir-other-window :exit t)
   ("s" #'helm-do-ag-buffers)
@@ -364,7 +376,6 @@ See `eval-last-sexp'."
 	   (call-interactively #'find-file)))
 
   "f" '(:ignore t :which-key "f..")
-  "fd" #'delete-file
   "fs" #'save-buffer
   "ff" #'consult-find
 
@@ -422,5 +433,10 @@ where the file does not exist."
 	    (interactive)
 	    (kill-new (minibuffer-contents))
 	    (keyboard-quit)))
+
+(general-def
+  :keymaps '(emacs-lisp-mode-map)
+  "C-c C-k" #'eval-buffer
+  "C-c C-c" #'eval-defun)
 
 (provide 'functions-1)
