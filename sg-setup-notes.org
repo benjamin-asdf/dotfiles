@@ -101,8 +101,44 @@ maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-def
 - I have scripts that use dmenu and ffmpeg
 - can also select a window area with `slop`
 - this works good for me
-- can add another script that uploads to aws s3 bucket
-- I didn't set this up yet
+
+* cos attachments s3 bucket share (sharex bucket) (WIP)
+
+- in ~/.aws/config
+#+begin_src conf
+[sharex]
+region = eu-central-1
+#+end_src
+
+- in ~/.aws/credentials
+#+begin_src conf
+[sharex]
+aws_access_key_id=UUUUUUUUUUUUUUUUUUUU
+aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
+#+end_src
+
+- install aws cli
+  pamac build aws-cli-v2
+
+- aws s3 help
+
+#+begin_src shell
+  name=$(basename "$1")
+  aws s3 cp --profile sharex "$1" s3://cos-dev-attachments/ShareX/benj/"$name"
+#+end_src
+
+- if somebody now figures out what the url to this piece is lkm
+- maybe there needs to be a setting to make the url public
+
+- this already works:
+
+aws s3 cp <bucket-id> <target-path> --profile sharex
+
+<bucket-id> looks like this
+s3://cos-dev-attachments/ShareX/<name>/<more/path>
+
+
+
 
 * notes
 ** at the time of writing I did not make airtest recording work

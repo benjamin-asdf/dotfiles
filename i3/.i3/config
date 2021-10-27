@@ -506,7 +506,7 @@ exec --no-startup-id keynav &:
 
 # assign [class="(?i)emacs"] 1
 # for_window [class="(?i)emacs"  title="Helm"] floating enable
-assign [class="qutebrowser"] 4
-assign [class="Nyxt"] 4
-assign [Class="(?i)Brave-browser"] 4
+assign [class="qutebrowser"] 6
+assign [class="Nyxt"] 6
+assign [Class="(?i)Brave-browser"] 6
 assign [Class="(?i)discor"] 2

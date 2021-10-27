@@ -1,0 +1,5 @@
+* install dummy package
+
+cd emacs-dummy-pkg
+makepkg
+sudo pacman -U emacs-dummy-1-2-any.pkg.tar.xz
