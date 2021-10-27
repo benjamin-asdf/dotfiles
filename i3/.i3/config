@@ -489,11 +489,9 @@ mode "$unity" {
 
 }
 
-
 exec --no-startup-id xset r rate 170 130
-exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3,altwin:menu_win
+exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
 exec --no-startup-id xcape -e 'Control_L=Escape'
-
 
 # figure out how to also bind app context to super and get used to it
 # exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3
