@@ -345,26 +345,13 @@
 (use-package wgrep)
 
 (use-package corfu
-  :after cider
   :init (corfu-global-mode)
   :config
+  (require 'patch-cider-orderless)
 
-  (defun mm/patch-orderless-style ()
-    (setq-local
-     orderless-style-dispatchers
-     '(orderless-prefix-dispatch)))
-
-  (defun mememacs/c-completion ()
-    (interactive)
-    (corfu-quit)
-    (let ((completion-in-region-function #'consult-completion-in-region)
-	  (minibuffer-setup-hook
-	   (if cider-mode
-	       (append
-		minibuffer-setup-hook
-		'(mm/patch-orderless-style))
-	     minibuffer-setup-hook)))
-      (completion-at-point)))
+  (add-hook
+   'cider-mode-hook
+   'mm/patch-orderless-style)
 
   (setf
    corfu-cycle t
@@ -372,8 +359,8 @@
    corfu-quit-at-boundary t
    corfu-quit-no-match t
    corfu-auto-prefix 2
-   corfu-auto-delay 0.18
-   orderless-style-dispatchers nil)
+   corfu-auto-delay 0.18)
+
   (general-def
     :states '(insert)
     :keymap 'corfu-map
@@ -381,6 +368,7 @@
     "C-f" #'end-of-buffer
     "C-l" #'corfu-insert
     "C-/" #'mememacs/c-completion)
+
   (general-def
     :states '(insert)
     "C-j"
@@ -472,8 +460,7 @@
 
 (use-package cider
   :config
-  (require 'init-cider)
-  (require 'patch-cider))
+  (require 'init-cider))
 
 (use-package flycheck
   :config
@@ -562,7 +549,6 @@
 	  (expand-file-name "custom.el" server-socket-dir)
 	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
 (load custom-file t)
-
 
 (use-package winner
   :config
