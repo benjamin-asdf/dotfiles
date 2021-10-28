@@ -78,24 +78,24 @@ zenity --info --text "$@"
 * editor
 choose
 - pycharm (recommended for beginners if you code python)
-- doom emacs (good for python, used by some people already, vim)
-- spacemacs (vim, similar to doom, more features but maybe bloated)
-- vscode (works out of the box)
+- doom emacs (good for python, used by some people already, vim bindings)
+- spacemacs (vim bindings, similar to doom, more features and more
+  users, less minimalistic)
+- vscode, intellij (works out of the box)
 
 * other software
 - gnu stow for dotfile management
 - vim as fallback editor
 - qutebrowser for a keyboard driven browser
 - flameshot for screenshots
-- todo: simple screencast software
+- todo: screencast software
 - there is cli tools for creating jira tickets, might be a sick booster for testers
   jirazzz
 
-
-* troubleshoot
-** “connection interrupted” in your browser
-caused by docker
-maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
+* tips
+- do not install program python packages on your system level,
+use pyenv for that (pycharm does it auto)
+- pamac bulid `python-package-name` for stuff you need on your system only
 
 * screencasts
 - I have scripts that use dmenu and ffmpeg
@@ -135,9 +135,13 @@ aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
 - or using `watch` on a directory etc.
 
 
+* troubleshoot
+** “connection interrupted” in your browser
+caused by docker
+maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
+
+
 * notes
 ** at the time of writing I did not make airtest recording work
 honestly don't really know why you want it
 code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
-
-** btw there is cli tools for creating jira tickets, might be a sick booster for testers
