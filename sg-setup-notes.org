@@ -39,6 +39,8 @@
 - if unity hub mime type is setup correctly you should be able to
   click (I just didn't bother with it because it's a 1 time click)
 
+** git lfs
+
 - **Important** pull after you installed git lfs
   (git pull should be sufficient)
 
@@ -47,11 +49,18 @@
   git lfs fetch && git lfs pull
 #+end_src
 
+** symlinks
+
 - you can make symlinks with regular `ln -s`
 
+** csc patch (without it you get compile errs)
 
-* prefab merge tool
-[mergetool “unityyamlmerge”] trustExitCode = false cmd = /opt/unity/Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
+- somebody should fix this script:
+`IdleGame/patch_csc_mac.sh`
+
+* prefab merge tool (only if you work with prefabs)
+
+[mergetool “unityyamlmerge”] trustExitCode = false cmd = <unity-install-path>Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
 
 * uri scheme for connecting to twitch
 you need this if you want to connect to twitch with browser flow
