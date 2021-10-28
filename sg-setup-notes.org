@@ -104,6 +104,9 @@ use pyenv for that (pycharm does it auto)
 
 * cos attachments s3 bucket share ("sharex" bucket)
 
+- install aws cli
+  pamac build aws-cli-v2
+
 - in ~/.aws/config
 #+begin_src conf
 [sharex]
@@ -116,9 +119,6 @@ region = eu-central-1
 aws_access_key_id=UUUUUUUUUUUUUUUUUUUU
 aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
 #+end_src
-
-- install aws cli
-  pamac build aws-cli-v2
 
 
 #+begin_src shell
