@@ -59,10 +59,12 @@
 
 (general-def 'embark-file-map "S" #'sudo-find-file)
 
-(defun mememacs-follow-shell-cmd (cmd)
+(defun mememacs-follow-shell-cmd (&optional cmd)
   "Follow CMD.
 If CMD is a symlink follow it."
-  (interactive "sFollow shell cmd:")
+  (interactive
+   (read-shell-command
+    "cmd: "))
   (find-file
    (string-trim
     (shell-command-to-string

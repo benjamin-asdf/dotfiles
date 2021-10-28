@@ -102,7 +102,7 @@ maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-def
 - can also select a window area with `slop`
 - this works good for me
 
-* cos attachments s3 bucket share (sharex bucket) (WIP)
+* cos attachments s3 bucket share ("sharex" bucket)
 
 - in ~/.aws/config
 #+begin_src conf
@@ -120,24 +120,19 @@ aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
 - install aws cli
   pamac build aws-cli-v2
 
-- aws s3 help
 
 #+begin_src shell
-  name=$(basename "$1")
-  aws s3 cp --profile sharex "$1" s3://cos-dev-attachments/ShareX/benj/"$name"
+   name=$(basename "$1")
+   aws s3 cp --profile sharex "$1" s3://<bucket-name>/ShareX/benj/"$name" \
+  --acl public-read \
+  && echo https://<bucket-name>.s3.eu-central-1.amazonaws.com/ShareX/benj/"%name"
+
 #+end_src
 
-- if somebody now figures out what the url to this piece is lkm
-- maybe there needs to be a setting to make the url public
+- use aws s3 help there is a lot of options
 
-- this already works:
-
-aws s3 cp <bucket-id> <target-path> --profile sharex
-
-<bucket-id> looks like this
-s3://cos-dev-attachments/ShareX/<name>/<more/path>
-
-
+- this could be done as part of the screencapture job
+- or using `watch` on a directory etc.
 
 
 * notes
