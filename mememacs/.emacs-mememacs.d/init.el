@@ -302,6 +302,13 @@
   :config
   (require 'init-consult))
 
+(use-package consult-flycheck
+  :config
+  (mememacs/local-def
+    :states '(normal)
+    :keymaps '(flycheck-mode-map)
+    "e," #'consult-flycheck))
+
 (use-package consult-dir
   :config
   (general-def
