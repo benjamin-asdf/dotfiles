@@ -241,9 +241,17 @@ replace the expression with its result."
 ;; (defadvice lispy-ace-paren ())
 ;; (defalias 'lispy--remember #'evil--jumps-push)
 
+(defun mm/lispyville-out-and-eval ()
+  (interactive)
+  (lispyville-escape nil)
+  (lispyville-end-of-defun)
+  (evil-insert 0)
+  (call-interactively #'special-lispy-eval))
+
 (mememacs/local-def
   :keymaps '(lispy-mode-map)
   "b" #'lispy-back
+  "l" #'mm/lispyville-out-and-eval
   "," #'lispy-kill-at-point)
 
 (general-def

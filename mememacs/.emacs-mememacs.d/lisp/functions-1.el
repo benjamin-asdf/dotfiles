@@ -383,7 +383,7 @@ where the file does not exist."
   "C-c C-c" #'eval-defun)
 
 (general-def
-  :keympas 'compilation-mode-map
+  :keympas '(compilation-mode-map)
   "M-<return>"
   (defun mm/send-y ()
     (interactive)
