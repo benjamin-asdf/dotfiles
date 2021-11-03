@@ -228,12 +228,12 @@
    'avy-goto-char-timer-face
    nil
    :box nil
-   :background mindsape/mint-bright)
+   :background mindsape/hit-pink)
 
   (set-face-attribute
    'avy-lead-face
    nil
-   :foreground mindsape/mint-bright
+   :foreground mindsape/hit-pink
    :background mindsape/woodsmoke
    :box t)
 

@@ -63,8 +63,9 @@
   "Follow CMD.
 If CMD is a symlink follow it."
   (interactive
-   (read-shell-command
-    "cmd: "))
+   (list
+    (read-shell-command
+     "cmd: ")))
   (find-file
    (string-trim
     (shell-command-to-string

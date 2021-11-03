@@ -96,6 +96,11 @@
   ;; "C-p"
   )
 
+(global-set-key
+  (kbd
+   "s-<backspace>")
+  #'evil-delete-whole-line)
+
 
 
 (provide 'init-general)

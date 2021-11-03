@@ -117,6 +117,7 @@ replace the expression with its result."
 
   (kbd "C-p") #'lispy-kill-at-point
 
+  (kbd "s-<backspace>") #'lispyville-delete-whole-line
 
   (kbd "M-L") #'lispy-move-right
   (kbd "C-x C-e") #'ambrevar/lispy-eval
@@ -132,6 +133,12 @@ replace the expression with its result."
   (kbd "gd") #'lispy-goto-symbol
   ;; (kbd "M-<backspace>") 'lispyville-delete-backward-word
 
+  (kbd "C-l") (lispyville-wrap-command lispy-forward special)
+  (kbd "C-l") (lispyville-wrap-command lispy-forward special)
+  (kbd "C-f") (lispyville-wrap-command lispy-flow special)
+
+  (kbd "C-m") (lispyville-wrap-command lispy-mark-symbol special)
+
   ;; (kbd "/") #'lispy-occur
   ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
 
@@ -139,7 +146,6 @@ replace the expression with its result."
 
   (kbd "C-3") #'lispyville-up-list
   "=" #'lispyville-prettify
-
 
   (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special))
 

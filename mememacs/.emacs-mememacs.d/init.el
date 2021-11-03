@@ -340,6 +340,10 @@
     'embark-symbol-map
     "h" #'helpful-symbol)
   (setq prefix-help-command #'embark-prefix-help-command)
+
+  (global-set-key
+   (kbd "H-h") #'embark-bindings)
+
   :config
   (require 'init-embark))
 
@@ -654,8 +658,9 @@
   :straight nil
 
   ;; should be added by emacs
-  ;; :load-path
+  :load-path
   ;; "/usr/share/emacs/site-lisp/mu4e/.."
+  "/usr/share/emacs/site-lisp/mu4e/"
 
   ;; else it syncs on startup
   :defer 60
@@ -665,7 +670,8 @@
   (setq mu4e-change-filenames-when-moving t)
 
   ;; Refresh mail using isync every 10 minutes
-  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-update-interval ;; (* 10 60)
+	nil)
   (setq mu4e-get-mail-command "mbsync -a")
   (setq mu4e-maildir "~/mail")
 

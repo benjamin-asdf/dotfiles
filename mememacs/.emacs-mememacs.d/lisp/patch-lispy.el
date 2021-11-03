@@ -110,15 +110,24 @@ backward through lists, which is useful to move into special.
       (setq lispy-old-outline-settings nil))))
 
 
+;; hippie
 
+(defun mememacs/string-chop-suffix-all (s suffix)
+  (if (s-ends-with? suffix s)
+      (mememacs/string-chop-suffix-all
+       (s-chop-suffix suffix s)
+       suffix)
+    s))
 
+(defun mememacs/patch-he-lispy (args)
+  (if lispy-mode
+      `(,(mememacs/string-chop-suffix-all
+	 (car args)
+	 ")")
+	,(cadr args))
+    args))
 
-
-
-
-
-
-
+(advice-add 'he-substitute-string :filter-args #'mememacs/patch-he-lispy)
 
 
 (provide 'patch-lispy)
