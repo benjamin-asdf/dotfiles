@@ -598,7 +598,6 @@
 ;;    'hippie-expand-try-functions-list
 ;;    #'yas-expand-from-trigger-key))
 
-
 ;; (use-package yasnippet-snippets
 ;;   :after yasnippet
 ;;   :config
