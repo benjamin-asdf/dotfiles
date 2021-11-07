@@ -1,6 +1,7 @@
-;; Lispy
+;; Lispy  -*- lexical-binding: t; -*-
 
 (require 'lispy)
+
 (defun ambrevar/lispy-eval (&optional replace)
   "Like `lispy-eval' but if called with a prefix argument,
 replace the expression with its result."
@@ -30,7 +31,6 @@ replace the expression with its result."
   (kbd "<backspace>") 'lispy-delete-backward
   (kbd "M-<backspace>") 'lispyville-delete-backward-word
   ";" 'lispy-comment
-  ;; ":" 'lispy-colon ; The colon is not always used to delimit keys.
   "(" 'lispy-parens
   ")" 'lispy-right-nostring
 
@@ -41,15 +41,10 @@ replace the expression with its result."
   (kbd "M-[") #'lispy-wrap-brackets
 
   (kbd "M-l") #'lispyville-next-opening
-
-  ;; can be revisited
   (kbd "M-K") #'lispy-move-left
   (kbd "M-J") #'lispy-move-right
   (kbd "<M-return>") #'mememacs/lispy-insert
-
-
   (kbd "C-k") #'lispy-kill-at-point
-
   (kbd "C-<return>") #'lispy-alt-line
 
   "P" #'special-lispy-eval-other-window
@@ -93,17 +88,10 @@ replace the expression with its result."
 
 (lispyville--define-key '(motion normal)
   "q" 'lispy-ace-paren
-  ;; "f" 'lispy-ace-paren
-  ;; "Q" 'lispy-ace-symbol
-  ;; "t" 'lispy-ace-char
   "Y" 'lispy-new-copy
   (kbd "S-<return>") 'lispy-eval-other-window
-  ;; "p" 'lispy-paste
 
   "D" 'lispy-kill)
-
-;; todo mc
-;; c-7
 
 (lispyville--define-key '(motion normal visual)
   (kbd "^") #'lispy-left
@@ -121,28 +109,20 @@ replace the expression with its result."
 
   (kbd "M-L") #'lispy-move-right
   (kbd "C-x C-e") #'ambrevar/lispy-eval
-  ;; (kbd "C-<return>") #'lispy-split
   (kbd "S-C-<return>") #'lispy-join
 
 
   (kbd "C-1") #'lispy-describe-inline
   (kbd "C-2") #'lispy-arglist-inline
 
-;;;;;;;;
   (kbd "C-4") #'lispy-x
   (kbd "gd") #'lispy-goto-symbol
-  ;; (kbd "M-<backspace>") 'lispyville-delete-backward-word
 
   (kbd "C-l") (lispyville-wrap-command lispy-forward special)
   (kbd "C-l") (lispyville-wrap-command lispy-forward special)
   (kbd "C-f") (lispyville-wrap-command lispy-flow special)
 
   (kbd "C-m") (lispyville-wrap-command lispy-mark-symbol special)
-
-  ;; (kbd "/") #'lispy-occur
-  ;; (kbd "M-;") #'lispy-comment ; This conflicts with `iedit-toggle-selection' default binding.
-
-
 
   (kbd "C-3") #'lispyville-up-list
   "=" #'lispyville-prettify
@@ -179,11 +159,6 @@ replace the expression with its result."
   (general-def 'evil-outer-text-objects-map
     "S" 'evil-a-sentence))
 
-;; press cis anywhere and be amazed!
-
-
-
-
 (with-eval-after-load 'lispy
   (require 'patch-lispy nil :noerror))
 
@@ -217,7 +192,6 @@ replace the expression with its result."
 
 
 (set-face-foreground 'lispy-face-hint "#FF00FF")
-
 (add-hook 'lispy-mode-hook 'lispyville-mode)
 
 
@@ -248,11 +222,25 @@ replace the expression with its result."
   (evil-insert 0)
   (call-interactively #'special-lispy-eval))
 
+(let ((mark-fn (lispyville-wrap-command lispy-mark-symbol special)))
+  (defun mm/lispy-goto-toplevel-form (&optional arg)
+    (interactive "P")
+    (lispyville-beginning-of-defun)
+    (call-interactively #'lispyville-escape)
+    (forward-char 1)
+    (lispyville-forward-sexp)
+    (lispyville-forward-sexp)
+    (if (not arg)
+	(funcall-interactively mark-fn)
+      (embark-act))))
+
 (mememacs/local-def
   :keymaps '(lispy-mode-map)
   "b" #'lispy-back
   "l" #'mm/lispyville-out-and-eval
-  "," #'lispy-kill-at-point)
+  "," #'lispy-kill-at-point
+  "g" (lispyville-wrap-command lispy-beginning-of-defun special)
+  "f" #'mm/lispy-goto-toplevel-form)
 
 (general-def
   :states '(normal visual emacs insert)
@@ -262,23 +250,12 @@ replace the expression with its result."
   "k" '(:ignore t :which-key "lispy")
   "kn" (lispyville-wrap-command lispyville-beginning-of-next-defun special)
   "kN" (lispyville-wrap-command lispy-beginning-of-defun special)
-  "kg" (lispyville-wrap-command lispy-beginning-of-defun special)
   "kf" (lispyville-wrap-command lispy-flow special)
   "kF" (lispyville-wrap-command lispyville-end-of-defun special)
   "kJ" (lispyville-wrap-command lispy-forward special)
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "km" (lispyville-wrap-command lispy-mark-symbol special)
-  "kw" (lispyville-wrap-command lispy-wrap-round special)
-
-  ;; "km" (lispyville-wrap-command lispy-mark-symbol special)
-  )
-
-;; todo  C-h should delete blank lines, if on blank line
-
-;; lispy show toplevel
-
-;; todo mode line
+  "kw" (lispyville-wrap-command lispy-wrap-round special))
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)
@@ -287,14 +264,7 @@ replace the expression with its result."
     (consult-line)
     (widen)))
 
-(defun rand-elm (lst)
-  (nth (random (length lst)) lst))
-
 (defalias #'lispy-occur #'mememacs/lispy-occur-consult)
-
-;; (add-hook
-;;  )
-;; mindsape/mint-bright-4
 
 (defun mememacs/lispy-set-faces ()
   (if
@@ -315,6 +285,5 @@ replace the expression with its result."
 
 (add-hook 'evil-insert-state-entry-hook #'mememacs/lispy-set-faces)
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
-
 
 (provide 'init-lispyville)

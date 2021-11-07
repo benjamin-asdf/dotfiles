@@ -75,6 +75,17 @@ If CMD is a symlink follow it."
   embark-general-map
   "f" #'mememacs-follow-shell-cmd)
 
+(defun mememacs/embark-call-symbol (&optional symbol)
+  "Insert a call to SYMBOl below the current toplevel form.
+Meant to be added to `embark-identifier-map`"
+  (interactive "s" (list (symbol-at-point)))
+  (lispyville-end-of-defun)
+  (forward-line 1)
+  (insert
+   (format "(%s)" symbol)))
+
+(general-def embark-identifier-map
+  "l" #'mememacs/embark-call-symbol)
 
 
 

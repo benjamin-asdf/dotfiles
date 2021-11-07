@@ -233,7 +233,8 @@ See `eval-last-sexp'."
   (interactive "P")
   (-->
    (cond ((eq major-mode 'dired-mode)
-	  (dired-copy-filename-as-kill)
+	  (dired-copy-filename-as-kill
+	   (when arg 0))
 	  (pop kill-ring))
 	 ((or arg (in major-mode 'eshell-mode))
 	  default-directory)
