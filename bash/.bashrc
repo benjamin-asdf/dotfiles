@@ -144,3 +144,12 @@ PATH=$PATH:$ANDROID_HOME/emulator
 PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
+
+
+
+_bb_tasks() {
+    COMPREPLY+=(`bb tasks |tail -n +3 |cut -f1 -d ' '`)
+}
+
+# complete files as well
+complete -f -F _bb_tasks bb

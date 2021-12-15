@@ -116,16 +116,12 @@
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
-  "r"
-  '(clojure-refactor-map
+  "r" '(clojure-refactor-map
     :which-key "refactor")
-  "m"
-  #'cider-macroexpand-1-inplace
-  "s"
-  '(:ignore t
+  "m" #'cider-macroexpand-1-inplace
+  "s" '(:ignore t
 	    :which-key "show etc")
-  "sl"
-  #'cider-inspect-last-result)
+  "sl" #'cider-inspect-last-result)
 
 (with-eval-after-load 'flycheck
   (mememacs/local-def

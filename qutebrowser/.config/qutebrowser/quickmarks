@@ -9,3 +9,4 @@ jib https://singularitygroup.atlassian.net/jira/software/c/projects/COS/issues/?
 jinb https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20%3D%20currentUser()%20AND%20resolution%20%3D%20Unresolved%20AND%20status%20!%3D%20CoderBacklog%20ORDER%20BY%20updated%20DESC
 jid https://singularitygroup.atlassian.net/browse/SG-243
 aw https://g4g.awsapps.com/start#/
+ark https://app.slack.com/client/T5LSMECHK/D01ERRCA6KD/thread/DSCJL5WLX-1634837890.013600

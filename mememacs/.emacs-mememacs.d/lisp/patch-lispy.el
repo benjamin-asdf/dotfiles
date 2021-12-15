@@ -111,14 +111,55 @@ backward through lists, which is useful to move into special.
 
 
 
+;; fix find-tag-maker-ring not defined
+
+(defun lispy-goto-symbol (symbol)
+  "Go to definition of SYMBOL.
+SYMBOL is a string."
+  (interactive (list (or (thing-at-point 'symbol t)
+                         (lispy--current-function))))
+  (lispy--remember)
+  (deactivate-mark)
+  (let ((narrowedp (buffer-narrowed-p)))
+    (when narrowedp
+      (widen))
+    (cond ((memq major-mode lispy-elisp-modes)
+           (lispy-goto-symbol-elisp symbol)
+           (when narrowedp
+             (lispy-narrow 1)))
+          (t
+           (let ((handler (cdr (assoc major-mode lispy-goto-symbol-alist)))
+                 lib)
+             (if (null handler)
+                 (error "no handler for %S in `lispy-goto-symbol-alist'" major-mode)
+               (when (setq lib (cadr handler))
+                 (require lib))
+               (funcall (car handler) symbol))))))
+  ;; in case it's hidden in an outline
+  (lispy--ensure-visible))
 
 
 
+;; hippie
 
+(defun mememacs/string-chop-suffix-all (s suffix)
+  (if (s-ends-with? suffix s)
+      (mememacs/string-chop-suffix-all
+       (s-chop-suffix suffix s)
+       suffix)
+    s))
 
+(defun mememacs/patch-he-lispy (args)
+  (if lispy-mode
+      `(,(thread-first
+	  (car args)
+	  (mememacs/string-chop-suffix-all ")")
+	  (mememacs/string-chop-suffix-all "]")
+	  (mememacs/string-chop-suffix-all "}"))
+	,(cadr args))
+    args))
 
-
-
+(advice-add 'he-substitute-string :filter-args #'mememacs/patch-he-lispy)
 
 
 (provide 'patch-lispy)

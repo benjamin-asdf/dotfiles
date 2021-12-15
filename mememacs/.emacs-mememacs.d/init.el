@@ -2,6 +2,7 @@
 ;;; https://gitlab.com/ambrevar/dotfiles
 ;;; see COPYING in the root of this repo
 
+;;; -*- lexical-binding: t; -*-
 
 ;;; Speed up init.
 ;;; Temporarily reduce garbage collection during startup. Inspect `gcs-done'.
@@ -71,8 +72,7 @@
 (use-package no-littering)
 
 (use-package keychain-environment
-    :straight  (:host github
-                      :repo "tarsius/keychain-environment")
+    :straight  (:host github :repo "tarsius/keychain-environment")
     :init
     (keychain-refresh-environment)
     (auth-source-pass-enable))
@@ -268,7 +268,10 @@
 
   (add-hook 'git-commit-mode-hook
 	    (lambda ()
-	      (visual-line-mode -1))))
+	      (visual-line-mode -1)))
+  (general-def
+    'magit-blob-mode-map
+    "n" nil))
 
 (use-package vertico
   :init
@@ -279,7 +282,8 @@
 (use-package orderless
   :init
   (setq
-   completion-styles '(orderless)
+   completion-styles
+   '(orderless)
    completion-category-defaults nil
    completion-category-overrides '((file (styles partial-completion)))))
 
@@ -287,7 +291,6 @@
   :after vertico
   :init
   (savehist-mode))
-
 
 (use-package consult
   :init (recentf-mode)
@@ -299,36 +302,50 @@
   :config
   (require 'init-consult))
 
+(use-package consult-flycheck
+  :config
+  (mememacs/local-def
+    :states '(normal)
+    :keymaps '(flycheck-mode-map)
+    "e," #'consult-flycheck))
+
+(use-package consult-dir
+  :config
+  (general-def
+    "C-x C-d"
+    #'consult-dir)
+
+  (mememacs/comma-def
+    "fd" #'consult-dir)
+
+  (general-def
+    'vertico-map
+    :prefix "C-,"
+    "d" #'consult-dir
+    "j" #'consult-dir-jump-file))
+
+;; (use-package consult-flycheck)
+
 (use-package marginalia
   :bind
   (:map minibuffer-local-map
-   ("M-A" . marginalia-cycle))
+	("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
 (use-package embark
   :ensure t
   :init
+  (general-def
+    'embark-symbol-map
+    "h" #'helpful-symbol)
   (setq prefix-help-command #'embark-prefix-help-command)
+
+  (global-set-key
+   (kbd "H-h") #'embark-bindings)
+
   :config
-
-  (general-def
-    :states '(normal insert motion emacs)
-    "C-." #'embark-act
-    "C-;" #'embark-dwim)
-
-  (general-def
-    :keymap vertico-map
-    "C-." #'embark-act
-    "C-;" #'embark-dwim)
-
-  (general-def :states '(normal motion emacs)
-    "C-h B" #'embark-bindings)
-  (add-to-list
-   'display-buffer-alist
-   '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-     nil
-     (window-parameters (mode-line-format . none)))))
+  (require 'init-embark))
 
 (use-package embark-consult
   :ensure t
@@ -339,27 +356,25 @@
 (use-package wgrep)
 
 (use-package corfu
-  :init
-  (corfu-global-mode)
+  :init (corfu-global-mode)
   :config
-  (setf corfu-cycle t
-	corfu-auto t
-	corfu-quit-at-boundary t
-	corfu-quit-no-match t
-	corfu-auto-prefix 2
-	corfu-auto-delay 0.18)
+  (require 'patch-cider-orderless)
 
-  (defun mememacs/c-completion ()
-    (interactive)
-    (corfu-quit)
-    (let ((completion-in-region-function #'consult-completion-in-region))
-      (completion-at-point)))
+  (add-hook
+   'cider-mode-hook
+   'mm/patch-orderless-style)
+
+  (setf
+   corfu-cycle t
+   corfu-auto t
+   corfu-quit-at-boundary t
+   corfu-quit-no-match t
+   corfu-auto-prefix 2
+   corfu-auto-delay 0.18)
 
   (general-def
     :states '(insert)
     :keymap 'corfu-map
-    "C-j" #'corfu-next
-    "C-k" #'corfu-previous
     "C-b" #'beginning-of-buffer
     "C-f" #'end-of-buffer
     "C-l" #'corfu-insert
@@ -367,7 +382,8 @@
 
   (general-def
     :states '(insert)
-    "C-j" #'completion-at-point))
+    "C-j"
+    #'completion-at-point))
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
@@ -413,17 +429,12 @@
   :config
   (add-hook
    'mememacs/escape-functions
-   (defun mm/mc-remmove ()
+   (defun mm/mc-remove ()
      (deactivate-mark)
      (mc/remove-fake-cursors))))
 
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
-
-(use-package which-key
-  :config
-  (which-key-mode)
-  (setf which-key-idle-delay 0.22))
 
 (use-package projectile
   :config
@@ -550,7 +561,6 @@
 	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
 (load custom-file t)
 
-
 (use-package winner
   :config
   (winner-mode)
@@ -575,24 +585,23 @@
 	 map)
      :which-key "apropos"))
 
-(use-package yasnippet
-  :defer 20
-  :config
-  (add-to-list
-   'yas-snippet-dirs
-   (concat mememacs/config-dir "snippets"))
-  (add-hook
-   'prog-mode-hook
-   #'yas-minor-mode-on)
-  (add-to-list
-   'hippie-expand-try-functions-list
-   #'yas-expand-from-trigger-key))
+;; (use-package yasnippet
+;;   :defer 20
+;;   :config
+;;   (add-to-list
+;;    'yas-snippet-dirs
+;;    (concat mememacs/config-dir "snippets"))
+;;   (add-hook
+;;    'prog-mode-hook
+;;    #'yas-minor-mode-on)
+;;   (add-to-list
+;;    'hippie-expand-try-functions-list
+;;    #'yas-expand-from-trigger-key))
 
-
-(use-package yasnippet-snippets
-  :after yasnippet
-  :config
-  (yasnippet-snippets-initialize))
+;; (use-package yasnippet-snippets
+;;   :after yasnippet
+;;   :config
+;;   (yasnippet-snippets-initialize))
 
 
 (with-eval-after-load
@@ -634,6 +643,49 @@
     "'" #'vterm
     "p'" #'projectile-run-vterm))
 
+(use-package bash-completion
+  ;; :straight (:host github :repo "szermatt/emacs-bash-completion")
+  :init
+  (autoload 'bash-completion-dynamic-complete
+    "bash-completion"
+    "BASH completion hook")
+  (add-hook 'shell-dynamic-complete-functions
+            'bash-completion-dynamic-complete))
+
+(use-package mu4e
+  :ensure nil
+  :straight nil
+
+  ;; should be added by emacs
+  :load-path
+  ;; "/usr/share/emacs/site-lisp/mu4e/.."
+  "/usr/share/emacs/site-lisp/mu4e/"
+
+  ;; else it syncs on startup
+  :defer 60
+  :config
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval ;; (* 10 60)
+	nil)
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/mail")
+
+  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
+  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (setq mu4e-refile-folder "/[Gmail]/All Mail")
+  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+
+  (setq mu4e-maildir-shortcuts
+        '(("/Inbox"             . ?i)
+          ("/[Gmail]/Sent Mail" . ?s)
+          ("/[Gmail]/Trash"     . ?t)
+          ("/[Gmail]/Drafts"    . ?d)
+          ("/[Gmail]/All Mail"  . ?a))))
+
 (require 'late-bindings)
 
 ;; elp
@@ -651,15 +703,13 @@
 
 ;; (general-def)
 
-;; (use-package jdee)
 
+;; (use-package jdee)
 
 ;; fix helm ag "command attempted to use minibuffer"
 
 ;; todo nyxt auto clone github page
-
-;; (use-package slime
+					;; (use-package slime
 ;;   (setq inferior-lisp-program "sbcl"))
-					; pprint
 
-;; (use-package mu4e)
+; pprint

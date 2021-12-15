@@ -31,11 +31,18 @@
 (defconst mindsape/heliotrope		 "#F689FF")
 (defconst mindsape/heliotrope-shade	 "#311b33")
 (defconst mindsape/purple	         "#8e41e0")
+(defconst mindsape/fruit-salad	         "#479b59")
+(defconst mindsape/sweet-pink	         "#Fe9aa1")
+(defconst mindsape/sundown	         "#Feaeb4")
 (defconst mindsape/mint-bright		 "#a1fe9a")
 (defconst mindsape/mint-bright-1	 "#abfea5")
 (defconst mindsape/mint-bright-2	 "#b6feb1")
 (defconst mindsape/mint-bright-3	 "#c0febc")
 (defconst mindsape/mint-bright-4	 "#d5ffd2")
+(defconst mindsape/mint-bright-4	 "#d5ffd2")
+(defconst mindsape/blue-chalk	         "#Fcd2ff")
+(defconst mindsape/lunar-green	         "#404c3f")
+(defconst mindsape/log-cabin	         "#131713")
 (defconst mindsape/mint-green		 "#96fe8f")
 (defconst mindsape/green-kelp		 "#1e331d"
   "A dark shade of `mindsape/mint-green`")
@@ -138,9 +145,9 @@
 (set-face-attribute
  'region
  nil
- :foreground nil
+ :foreground mindsape/sundown
  :box nil
- :background "black"
+ :background mindsape/log-cabin
  :underline nil)
 
 
@@ -157,7 +164,8 @@
 (set-face-attribute
  'minibuffer-prompt
  nil
- :foreground mindsape/purple
+ :foreground
+ mindsape/fruit-salad
  :bold t)
 
 
@@ -220,12 +228,12 @@
    'avy-goto-char-timer-face
    nil
    :box nil
-   :background mindsape/mint-bright)
+   :background mindsape/hit-pink)
 
   (set-face-attribute
    'avy-lead-face
    nil
-   :foreground mindsape/mint-bright
+   :foreground mindsape/hit-pink
    :background mindsape/woodsmoke
    :box t)
 

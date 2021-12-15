@@ -11,7 +11,7 @@
 
 (general-create-definer
   mememacs/local-def
-  :states '(normal visual emacs)
+  :states '(normal visual emacs insert motion)
   :prefix "C-,")
 
 (general-def
@@ -31,7 +31,6 @@
   "b." #'hydra-buffer/body
 
   "f" '(:ignore t :which-key "f..")
-  "fd" #'delete-file
   "fs" #'save-buffer
   "fS" #'save-some-buffers
 
@@ -56,8 +55,6 @@
   "jm" #'view-echo-area-messages
 
 
-  ;; todo ripgrep
-  "/" #'consult-grep
   "hc" #'describe-char
   "hm" #'describe-mode
   "hi" #'helm-info-emacs
@@ -98,6 +95,11 @@
   ;; "C-y" #'evil-paste-pop
   ;; "C-p"
   )
+
+(global-set-key
+  (kbd
+   "s-<backspace>")
+  #'evil-delete-whole-line)
 
 
 

@@ -177,4 +177,13 @@ export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # . "$GUIX_PROFILE/etc/profile"
 
+# bb comp
+
+_bb_tasks() {
+    local matches=(`bb tasks |tail -n +3 |cut -f1 -d ' '`)
+    compadd -a matches
+    _files # autocomplete filenames as well
+}
+compdef _bb_tasks bb
+
 eval `keychain -q --eval id_rsa`

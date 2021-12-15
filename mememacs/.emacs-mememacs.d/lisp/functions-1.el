@@ -5,6 +5,10 @@
 (defvar mememacs/config-dir
   (expand-file-name "~/.emacs-mememacs.d/"))
 
+(defun mememacs/native-compile-config ()
+  (interactive)
+  (native-compile-async (expand-file-name "lisp" mememacs/config-dir)))
+
 (defun mememacs/find-init-file ()
   "Open current init file."
   (interactive)
@@ -18,9 +22,7 @@
   (kill-new (buffer-name)))
 
 (mememacs/leader-def
-  "by" #'mememacs/kill-buffer-name
-  "fe" #'mememacs/find-init-file)
-
+  "by" #'mememacs/kill-buffer-name)
 
 (defun mememacs/lispy-eval-line ()
   (interactive)
@@ -43,21 +45,6 @@
 (defun mememacs/mkstr (obj)
   (with-output-to-string
     (print obj)))
-
-(defun mememacs/eval-and-set-test-fn (arg)
-  "Eval and bind defun to leader-tt. With ARG ask for key "
-  (interactive "P")
-  (general-define-key
-   :keymaps
-   '(normal insert visual emacs)
-   :prefix "," :global-prefix "C-SPC"
-   (concat
-    "t"
-    (if arg
-	(read-from-minibuffer
-	 "Test key bind: ")
-      "t"))
-   (eval-defun nil)))
 
 (defun mememacs/eval-last-sexp-dwim (arg)
   "Eval last sexp.
@@ -95,15 +82,9 @@ See `eval-last-sexp'."
 	 "d" #'eval-defun
 	 "b" #'eval-buffer
 	 "D" #'edebug-defun
-	 "e" #'mememacs/eval-last-sexp-dwim
-	 "o" #'mememacs/eval-and-set-test-fn)
+	 "e" #'mememacs/eval-last-sexp-dwim)
        map)
     :which-key "emacs lisp"))
-
-(defun mememacs/switch-to-message-buffer ()
-  ""
-  (interactive)
-  (switch-to-buffer "*Messages*"))
 
 (defun mememacs/ghetto-kill-and-open-buffer ()
   "Kill buffer and open again."
@@ -115,11 +96,8 @@ See `eval-last-sexp'."
     (goto-char p)))
 
 (mememacs/leader-def
-  "bm" #'mememacs/switch-to-message-buffer
   "bR" #'mememacs/ghetto-kill-and-open-buffer
   "br" #'revert-buffer)
-
-
 
 (defvar mememacs/escape-functions '())
 (defun mememacs/escape ()
@@ -140,38 +118,7 @@ See `eval-last-sexp'."
 
 (add-hook 'mememacs/escape-functions #'widen)
 
-
 
-
-(defun mm/toggle-when-unless ()
-  (interactive)
-  (skip-chars-backward "^(")
-  (forward-char -1)
-  (when-let* ((lst (sexp-at-point))
-	      (lst
-	       (cond
-		((eq (car-safe lst) 'when)
-		 (pop lst)
-		 `(unless ,(cadar lst) ,@(cdr lst)))
-		((eq (car-safe lst) 'unless)
-		 (pop lst)
-		 `(when (not ,(car lst)) ,@(cdr lst))))))
-    (delete-region
-     (point)
-     (save-excursion
-       (forward-list)))
-    (insert (mememacs/mkstr lst))))
-
-
-;; (defvar mememacs/lisp-map
-;;   (make-sparse-keymap "lisp"))
-
-;; (general-create-definer
-;;   mememacs/lisp-def
-;;   :keymaps '(normal insert visual emacs)
-;;   :prefix ",k"
-;;   :global-prefix "C-,k"
-;;   mememacs/lisp-map)
 
 (defun mememacs/jump-eshell ()
   (interactive)
@@ -186,6 +133,20 @@ See `eval-last-sexp'."
     (funcall cd-shell)))
 
 (mememacs/leader-def "jE" #'mememacs/jump-eshell)
+
+(defun mememacs/eshell-hist ()
+  (interactive)
+  (goto-char (point-max))
+  (insert
+   (completing-read
+    "hist: "
+    (ring-elements
+     eshell-history-ring))))
+
+(mememacs/local-def
+  :states '(insert normal)
+  :keymaps '(eshell-mode-map)
+  "h" #'mememacs/eshell-hist)
 
 (defun mememacs/magit-kill-origin-url (&optional arg)
   (interactive "p")
@@ -230,18 +191,32 @@ See `eval-last-sexp'."
   #'mememacs/process-menu-switch-to-buffer)
 
 
-(defun mememacs/create-script (file)
-  (interactive "F")
+(defun mememacs/create-script* (file bang setup)
   (find-file file)
-  (insert "#!/bin/sh\n")
+  (insert bang)
   (save-buffer)
   (evil-insert-state)
   (set-file-modes file #o777)
-  (shell-script-mode))
+  (funcall setup))
+
+(defun mememacs/create-script (file)
+  (interactive "Fnew script: ")
+  (mememacs/create-script*
+   file
+   "#!/bin/sh\n"
+   #'shell-script-mode))
+
+(defun mememacs/create-bb-script (file)
+  (interactive "Fnew bb: ")
+  (mememacs/create-script*
+   file
+   "#!/usr/bin/env bb\n"
+   #'clojure-mode))
 
 (mememacs/comma-def
   :keymaps 'dired-mode-map
-  "ns" #'mememacs/create-script)
+  "ns" #'mememacs/create-script
+  "nS" #'mememacs/create-bb-script)
 
 
 (defun mememacs/toggle-debug-on-quit (arg)
@@ -258,7 +233,8 @@ See `eval-last-sexp'."
   (interactive "P")
   (-->
    (cond ((eq major-mode 'dired-mode)
-	  (dired-copy-filename-as-kill)
+	  (dired-copy-filename-as-kill
+	   (when arg 0))
 	  (pop kill-ring))
 	 ((or arg (in major-mode 'eshell-mode))
 	  default-directory)
@@ -280,19 +256,17 @@ See `eval-last-sexp'."
   :states 'normal
   "fy" #'mememacs/copy-file-name-dwim)
 
-
 (defhydra hydra-buffer ()
   "buffer"
   ("d" #'kill-current-buffer)
   ("k" #'previous-buffer)
   ("j" #'previous-buffer)
-  ("b" #'helm-mini :exit t)
+  ("b" #'consult-buffer :exit t)
   ("p" #'projectile-find-dir :exit t)
   ("P" #'projectile-find-dir-other-window :exit t)
   ("s" #'helm-do-ag-buffers)
   ("a" #'mark-whole-buffer)
   ("y" #'mememacs/kill-buffer-name :exit t))
-
 
 (mememacs/comma-def
   :states '(normal motion)
@@ -335,7 +309,6 @@ See `eval-last-sexp'."
   ("o" #'outline-hydra/body "outline" :exit t)
   ("y" #'mm/kill-whole-buffer "kill-whole" :exit t))
 
-
 (mememacs/comma-def
   "jo" #'outline-hydra/body
   "jj" #'scroll-hydra/body
@@ -350,7 +323,6 @@ See `eval-last-sexp'."
 	   (call-interactively #'find-file)))
 
   "f" '(:ignore t :which-key "f..")
-  "fd" #'delete-file
   "fs" #'save-buffer
   "ff" #'consult-find
 
@@ -369,29 +341,57 @@ See `eval-last-sexp'."
 	(interactive)
 	(call-interactively (key-binding (kbd "C-c C-k"))))
 
-  ;; "x"
   "x"  `(,(key-binding (kbd "C-x")) :which-key "C-x")
 
   "c" `(,(key-binding (kbd "C-c") :which-key "C-c")))
-
 
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
 where the file does not exist."
   (interactive)
   (let ((bfs (cl-loop for b in (buffer-list)
-	      for f = (buffer-file-name b)
-	      when (and f (not (file-exists-p f)))
-	      collect b)))
+		      for f = (buffer-file-name b)
+		      when (and f (not (file-exists-p f)))
+		      collect b)))
     (when bfs
       (message
        "Kill %d buffers"
        (length bfs)))
     (mapc #'kill-buffer bfs)))
 
-
 (dolist (fn '(dired-internal-do-deletions))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
+(defun mememacs/kill-shell-command ()
+  (interactive)
+  (kill-new
+   (with-temp-buffer
+     (shell-command
+      (read-shell-command
+       "kill cmd: ")
+      (current-buffer))
+     (buffer-string))))
+
+(general-def
+  "C-x k" (defun mememacs/kill-minibuff-contents ()
+	    (interactive)
+	    (kill-new (minibuffer-contents))
+	    (keyboard-quit)))
+
+(general-def
+  :keymaps '(emacs-lisp-mode-map)
+  "C-c C-k" #'eval-buffer
+  "C-c C-c" #'eval-defun)
+
+(general-def
+  :keympas '(compilation-mode-map)
+  "M-<return>"
+  (defun mm/send-y ()
+    (interactive)
+    (when-let
+	((p
+	  (get-buffer-process
+	   (current-buffer))))
+      (process-send-string p "y\n"))))
 
 (provide 'functions-1)

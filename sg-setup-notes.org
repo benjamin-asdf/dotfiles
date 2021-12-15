@@ -1,0 +1,156 @@
+* manjaro
+** pros
+- less bloat
+** cons
+- not officially supported unity editor (works flawless either way)
+
+* install
+- git
+- git lfs
+- docker
+  pamac build docker
+- dotnet
+  pamac build dotnet-sdk-bin
+- mono
+  pamac build mono
+
+  if you do not use arch you will need to google and follow install
+  instructions
+
+* install unity editor
+- make ssh keys, add them to gitlab
+- clone gitlab idlegame repo
+
+- get unity hub
+  pamac buld unityhub
+
+** specific unity version
+- find the version you need
+#+begin_src shell
+    cd <repo-root>
+    cat IdleGame/ProjectSettings/ProjectVersion.txt | head -n 1 | cut  -d " " -f2
+#+end_src
+- go here https://unity3d.com/get-unity/download/archive
+- get the url from the "unity hub" button (e.g. right click "copy link
+  address"
+#+begin_src shell
+  unityhub <link>
+#+end_src
+- if unity hub mime type is setup correctly you should be able to
+  click (I just didn't bother with it because it's a 1 time click)
+
+** git lfs
+
+- **Important** pull after you installed git lfs
+  (git pull should be sufficient)
+
+#+begin_src shell
+  cd `git rev-parse --show-toplevel`
+  git lfs fetch && git lfs pull
+#+end_src
+
+** symlinks
+
+- you can make symlinks with regular `ln -s`
+
+** csc patch (without it you get compile errs)
+
+- somebody should fix this script:
+`IdleGame/patch_csc_mac.sh`
+
+* prefab merge tool (only if you work with prefabs)
+
+[mergetool “unityyamlmerge”] trustExitCode = false cmd = <unity-install-path>Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
+
+* uri scheme for connecting to twitch
+you need this if you want to connect to twitch with browser flow
+
+- script idlegame-auth-handler in your path
+
+#+begin_src shell
+#!/bin/sh
+[ "$1" = "-v" ] && echo idlegame-auth-handler version 0.1 && exit 0
+
+echo "$@" >> /tmp/auth-handler-res
+
+mkdir -p /tmp/cos_redirect/ && echo "$@" >> /tmp/cos_redirect/url.txt
+zenity --info --text "$@"
+#+end_src
+
+- install a .desktop file in `.local/share/applications`
+  (google and update this guide)
+- add an entry here ~/.config/mimeapps.list
+  something like
+  x-scheme-handler/clashofstreamers=handler-script.desktop
+- can poke Ben
+
+* editor
+choose
+- pycharm (recommended for beginners if you code python)
+- doom emacs (good for python, used by some people already, vim bindings)
+- spacemacs (vim bindings, similar to doom, more features and more
+  users, less minimalistic)
+- vscode, intellij (works out of the box)
+
+* other software
+- gnu stow for dotfile management
+- vim as fallback editor
+- qutebrowser for a keyboard driven browser
+- flameshot for screenshots
+- todo: screencast software
+- there is cli tools for creating jira tickets, might be a sick booster for testers
+  jirazzz
+
+* tips
+- do not install program python packages on your system level,
+use pyenv for that (pycharm does it auto)
+- pamac bulid `python-package-name` for stuff you need on your system only
+
+* screencasts
+- I have scripts that use dmenu and ffmpeg
+- can also select a window area with `slop`
+- this works good for me
+
+* cos attachments s3 bucket share ("sharex" bucket)
+
+- install aws cli
+  pamac build aws-cli-v2
+
+- in ~/.aws/config
+#+begin_src conf
+[sharex]
+region = eu-central-1
+#+end_src
+
+- in ~/.aws/credentials
+#+begin_src conf
+[sharex]
+aws_access_key_id=UUUUUUUUUUUUUUUUUUUU
+aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
+#+end_src
+
+
+#+begin_src shell
+   name=$(basename "$1")
+   aws s3 cp --profile sharex "$1" s3://<bucket-name>/ShareX/benj/"$name" \
+  --acl public-read \
+  && echo https://<bucket-name>.s3.eu-central-1.amazonaws.com/ShareX/benj/"%name"
+
+#+end_src
+
+- use aws s3 help there is a lot of options
+
+- this could be done as part of the screencapture job
+- or using `watch` on a directory etc.
+
+
+* troubleshoot
+** “connection interrupted” in your browser
+caused by docker
+maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
+
+
+* notes
+** at the time of writing I did not make airtest recording work
+honestly don't really know why you want it
+code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
