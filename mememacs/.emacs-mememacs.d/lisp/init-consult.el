@@ -26,6 +26,13 @@
   "M-h" #'consult-history
   "M-i" #'completion-at-point)
 
+(general-def
+  :prefix
+  "H-m"
+  "M" #'consult-register-store
+  "m" #'consult-register
+  "b" #'consult-bookmark)
+
 (mememacs/leader-def
   "SPC" #'execute-extended-command
   "bb" #'consult-buffer
@@ -40,6 +47,7 @@
   "jI" #'consult-imenu-multi
   ;; info
   ;; pass
+  "m" #'consult-global-mark
 
   "jL" #'consult-goto-line
   "jo" #'consult-org-heading
@@ -47,9 +55,6 @@
   ;; org-agenda
   "sb" #'consult-multi-occur
 
-  "mM" #'consult-register-store
-  "mm" #'consult-register
-  "mb" #'consult-bookmark
   ":" #'consult-complex-command
 
   "ha" #'consult-apropos
@@ -70,6 +75,10 @@
  ;; (consult-ripgrep)
  ;; (consult-buffer)
  ;; (consult-yank-from-kill-ring "fo")
+
+(general-def
+  "H-SPC" #'consult-line
+  "H-m ." (lambda () (interactive) (push-mark)))
 
 (general-def
   :keymap vertico-map

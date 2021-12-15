@@ -39,7 +39,8 @@
   :states '(normal motion)
   "gd" (lambda (&optional arg)
 	 (interactive "P")
-	 (cider-find-var (not arg))))
+	 (cider-find-var (not arg)))
+  "H-k" #'cider-load-buffer)
 
 
 (general-def
@@ -117,11 +118,17 @@
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
   "r" '(clojure-refactor-map
-    :which-key "refactor")
+	:which-key "refactor")
   "m" #'cider-macroexpand-1-inplace
   "s" '(:ignore t
-	    :which-key "show etc")
-  "sl" #'cider-inspect-last-result)
+		:which-key "show etc")
+  "sl" #'cider-inspect-last-result
+  "sd" #'cider-inspect-defun-at-point)
+
+(general-def
+  :states '(insert normal)
+  :keymaps '(cider-inspector-mode-map)
+  "d" #'cider-inspector-def-current-val)
 
 (with-eval-after-load 'flycheck
   (mememacs/local-def
@@ -159,34 +166,25 @@
   (let ((cider-clojure-cli-global-options "-A:build"))
     (cider)))
 
+
+;;  --- portal
+
+(defun cider-portal/open ()
+  (interactive)
+  (cider-nrepl-sync-request:eval
+   "(require 'portal.api) (portal.api/tap) (portal.api/open)"))
+
+(defun cider-portal/clear ()
+  (interactive)
+  (cider-nrepl-sync-request:eval "(portal.api/clear)"))
+
+(defun cider-portal/close ()
+  (interactive)
+  (cider-nrepl-sync-request:eval "(portal.api/close)"))
+
+(defun cider-portal/last-result ()
+  (interactive)
+  (cider-nrepl-sync-request:eval
+   "(tap> *1)"))
+
 (provide 'init-cider)
-
-
-
-;; (defun my-cider-eval-last-sexp-and-kill ()
-;;   "Evaluate the expression preceding point."
-;;   (interactive)
-;;   (cider-interactive-eval nil
-;; 			  (my-cider-eval-kill-handler)
-;;                           (cider-last-sexp 'bounds)
-;;                           (cider--nrepl-pr-request-map)))
-
-
-;; (defun my-cider-eval-kill-handler ()
-;;   (nrepl-make-response-handler
-;;    (current-buffer)
-;;    (lambda (buffer value)
-;;      (message "Copied %s as kill" value)
-;;      (kill-new value))
-;;    (lambda (_buffer out)
-;;      (cider-emit-interactive-eval-output out))
-;;    (lambda (_buffer err)
-;;      (cider-emit-interactive-eval-err-output err))
-;;    '()))
-
-
-
-;; (defadvice
-;;     cider--display-interactive-eval-result
-;;     (before my-cider-kill-result-adv (value &optional point) activate)
-;;   (kill-new value))

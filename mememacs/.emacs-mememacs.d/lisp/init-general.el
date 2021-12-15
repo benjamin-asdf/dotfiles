@@ -73,6 +73,9 @@
 
 (general-unbind evil-motion-state-map "SPC")
 
+(general-def
+  "H-<return>" #'save-buffer)
+
 
 ;; todo why is this overriden or whatever
 
@@ -100,6 +103,9 @@
   (kbd
    "s-<backspace>")
   #'evil-delete-whole-line)
+
+
+
 
 
 

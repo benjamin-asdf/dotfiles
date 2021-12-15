@@ -50,13 +50,21 @@
   "M-," #'vertico-quick-exit
   "M-s" #'vertico-quick-jump)
 
+(setq vertico-quick1
+      "adf"
+      vertico-quick2
+      "jkl")
+
 (mememacs/leader-def
   "bb" #'consult-buffer)
 
 (require 'vertico-repeat)
 
+
 (mememacs/comma-def
   "rl" #'vertico-repeat)
+
+(add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
 (when nil
   (defun mememacs/vertico-select-when-single (&rest args)
