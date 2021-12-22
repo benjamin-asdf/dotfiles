@@ -394,4 +394,9 @@ where the file does not exist."
 	   (current-buffer))))
       (process-send-string p "y\n"))))
 
+(defun mm/force-clear-buff ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
+
 (provide 'functions-1)

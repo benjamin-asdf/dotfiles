@@ -1,0 +1,5 @@
+#!/bin/sh
+
+
+/home/benj/cognitect/datomic-cli/datomic log list support-bot-ions-2
+# singularity-airstats

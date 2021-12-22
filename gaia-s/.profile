@@ -7,6 +7,7 @@ export BROWSER=/usr/bin/qutebrowser
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/go/bin"
+PATH="$PATH:$HOME/cognitect/datomic-cli/"
 
 export PATH
 

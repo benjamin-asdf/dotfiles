@@ -48,7 +48,12 @@ replace the expression with its result."
   (kbd "C-<return>") #'lispy-alt-line
 
   "P" #'special-lispy-eval-other-window
-  "p" #'special-lispy-paste)
+  "p" #'special-lispy-paste
+  (kbd "H-y")
+  (defun mm/lispy-comment-and-clone-dwim ()
+    (interactive)
+    (lispy-clone 1)
+    (lispy-comment 1)))
 
 (defun mm/lispy-delete-and-blanks (arg)
   (interactive "p")
@@ -93,6 +98,7 @@ replace the expression with its result."
 
   "D" 'lispy-kill)
 
+
 (lispyville--define-key '(motion normal visual)
   (kbd "^") #'lispy-left
   (kbd "M-h") (lispyville-wrap-command lispyville-previous-opening special)
@@ -127,7 +133,10 @@ replace the expression with its result."
   (kbd "C-3") #'lispyville-up-list
   "=" #'lispyville-prettify
 
-  (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special))
+  (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special)
+
+
+  )
 
 
 (with-eval-after-load 'targets
@@ -255,7 +264,14 @@ replace the expression with its result."
   "kJ" (lispyville-wrap-command lispy-forward special)
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "kw" (lispyville-wrap-command lispy-wrap-round special))
+  "kw" (lispyville-wrap-command lispy-wrap-round special)
+  )
+
+(general-def
+  :states '(normal visual emacs insert)
+  :keymaps '(lispy-mode-map lispyville-mode-map)
+  "C-e" (lispyville-wrap-command lispyville-end-of-defun special))
+
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)

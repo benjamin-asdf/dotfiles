@@ -1,0 +1,5 @@
+#!/bin/sh
+
+
+cd ~/repos/clojure
+clojure -Tnew scratch :name "$1"

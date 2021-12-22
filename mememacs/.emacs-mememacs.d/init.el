@@ -43,6 +43,7 @@
 
 
 (defvar mememacs/use-exwm nil)
+(defvar mememacs/guile-enabled nil)
 (defvar mememacs/enable-guix nil)
 
 (load
@@ -67,6 +68,9 @@
 ;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+
+(setq user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
 ;; Use no-littering to automatically set common paths to the new user-emacs-directory
 (use-package no-littering)
@@ -364,6 +368,13 @@
    'cider-mode-hook
    'mm/patch-orderless-style)
 
+  (dolist
+      (hook
+       '(eshell-mode-hook
+	 emacs-lisp-mode-hook
+	 shell-mode-hook))
+    (add-hook hook (lambda () (corfu-mode -1))))
+
   (setf
    corfu-cycle t
    corfu-auto t
@@ -378,12 +389,12 @@
     "C-b" #'beginning-of-buffer
     "C-f" #'end-of-buffer
     "C-l" #'corfu-insert
+    "C-n" #'corfu-next
     "C-/" #'mememacs/c-completion)
 
   (general-def
     :states '(insert)
-    "C-j"
-    #'completion-at-point))
+    "C-j" #'completion-at-point))
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
@@ -471,7 +482,15 @@
 
 (use-package cider
   :config
+  (setq clojure-toplevel-inside-comment-form t)
   (require 'init-cider))
+
+(use-package re-jump
+  :straight (:host github :repo "benjamin-asdf/re-jump.el")
+  :config
+  (mememacs/local-def
+    :keymaps mm/cider-mode-maps
+    "j" #'re-frame-jump-to-reg))
 
 (use-package flycheck
   :config
@@ -480,9 +499,11 @@
 (use-package flycheck-clj-kondo)
 
 ;; todo binds
-(use-package geiser)
+(use-package geiser
+  :when mememacs/guile-enabled)
 
 (use-package geiser-guile
+  :when mememacs/guile-enabled
   :config
   (setf geiser-scheme-implementation
 	'guile)
@@ -617,9 +638,9 @@
 (use-package org
   :defer t)
 
-(use-package org-jira
-  :defer t
-  :config (require 'init-org-jira))
+;; (use-package org-jira
+;;   :defer t
+;;   :config (require 'init-org-jira))
 
 (use-package org-roam
   :init (setq org-roam-v2-ack t)

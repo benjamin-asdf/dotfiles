@@ -10,3 +10,6 @@ jinb https://singularitygroup.atlassian.net/issues/?filter=10080&jql=assignee%20
 jid https://singularitygroup.atlassian.net/browse/SG-243
 aw https://g4g.awsapps.com/start#/
 ark https://app.slack.com/client/T5LSMECHK/D01ERRCA6KD/thread/DSCJL5WLX-1634837890.013600
+jia https://singularitygroup.atlassian.net/browse/SG-1932
+jio https://singularitygroup.atlassian.net/issues/?filter=10339&jql=assignee%20in%20(currentUser())%20and%20status%20not%20in%20(CoderBacklog%2C%20FINISHED%2C%20RIP)%20%20AND%20project%20not%20in%20(BenTests)
+aut https://singularitygroup.atlassian.net/jira/dashboards/10067

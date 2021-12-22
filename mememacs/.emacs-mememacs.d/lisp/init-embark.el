@@ -87,6 +87,9 @@ Meant to be added to `embark-identifier-map`"
 (general-def embark-identifier-map
   "l" #'mememacs/embark-call-symbol)
 
+(general-def embark-variable-map
+  "t" #'debug-on-variable-change
+  "T" #'cancel-debug-on-variable-change)
 
 
 (provide 'init-embark)

@@ -1,0 +1,3 @@
+[submodule "dot-clojure"]
+	path = dot-clojure
+	url = git@github.com:benjamin-asdf/dot-clojure.git
