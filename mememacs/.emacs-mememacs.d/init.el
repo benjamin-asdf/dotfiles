@@ -487,9 +487,7 @@
   (setf geiser-scheme-implementation
 	'guile)
   (setf geiser-guile-load-path
-	(list
-	 (expand-file-name
-	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
+	(list "/lib/guile")))
 
 (use-package
   avy

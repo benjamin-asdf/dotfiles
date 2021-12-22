@@ -499,8 +499,6 @@ exec --no-startup-id xcape -e 'Control_L=Escape'
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
 exec --no-startup-id flameshot &
 exec --no-startup-id unclutter &
-# TODO maybe we don't need it anymore because normy mode works so well
-exec --no-startup-id keynav &:
 
 # assign [class="(?i)emacs"] 1
 # for_window [class="(?i)emacs"  title="Helm"] floating enable
