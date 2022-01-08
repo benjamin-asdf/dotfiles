@@ -20,7 +20,6 @@
 
 (general-def
   :keymap vertico-map
-  "C-k" #'previous-line
   "M-k" #'backward-paragraph
   "M-j"  #'forward-paragraph
   "M-f" nil
@@ -46,9 +45,9 @@
 
 (general-def
   'vertico-map
+  "C-k" #'vertico-quick-exit
   "M-q" #'vertico-quick-insert
-  "M-," #'vertico-quick-exit
-  "M-s" #'vertico-quick-jump)
+  "M-a" #'vertico-quick-jump)
 
 (setq vertico-quick1
       "adf"

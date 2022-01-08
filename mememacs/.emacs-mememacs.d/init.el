@@ -43,7 +43,7 @@
 
 
 (defvar mememacs/use-exwm nil)
-(defvar mememacs/guile-enabled nil)
+(defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
 (load
@@ -343,6 +343,7 @@
   (general-def
     'embark-symbol-map
     "h" #'helpful-symbol)
+
   (setq prefix-help-command #'embark-prefix-help-command)
 
   (global-set-key
@@ -505,12 +506,11 @@
 (use-package geiser-guile
   :when mememacs/guile-enabled
   :config
-  (setf geiser-scheme-implementation
-	'guile)
-  (setf geiser-guile-load-path
-	(list
-	 (expand-file-name
-	  "~/.guix-profile/lib/guile/3.0/site-cache"))))
+  (setf
+   geiser-scheme-implementation 'guile
+   geiser-guile-binary "guile3"
+   geiser-guile-load-path
+   (list "/lib/guile/3.0")))
 
 (use-package
   avy

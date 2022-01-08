@@ -302,4 +302,13 @@ replace the expression with its result."
 (add-hook 'evil-insert-state-entry-hook #'mememacs/lispy-set-faces)
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
+(defun mm/lispy-advice-print-length (f r)
+  (let ((print-length 2000))
+    (funcall f r)))
+
+(advice-add
+ #'lispy--insert
+ :around
+ #'mm/lispy-advice-print-length)
+
 (provide 'init-lispyville)
