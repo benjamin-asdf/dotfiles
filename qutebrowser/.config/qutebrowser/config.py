@@ -37,6 +37,9 @@ config.bind(',e', ':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', 
 # config.bind(',v',':spawn vlc {url}', mode='normal')
 config.bind(',v', ':spawn mpv {url}', mode='normal')
 
+config.bind(',m', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
+config.bind(',p', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
+
 config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
 # config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
