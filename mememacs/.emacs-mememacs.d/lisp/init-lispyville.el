@@ -264,8 +264,7 @@ replace the expression with its result."
   "kJ" (lispyville-wrap-command lispy-forward special)
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "kw" (lispyville-wrap-command lispy-wrap-round special)
-  )
+  "kw" (lispyville-wrap-command lispy-wrap-round special))
 
 (general-def
   :states '(normal visual emacs insert)
@@ -303,7 +302,10 @@ replace the expression with its result."
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
 (defun mm/lispy-advice-print-length (f r)
-  (let ((print-length 2000))
+  "This is so you do not get ... all the time
+when formatting with lispy."
+  (let ((print-length 2000)
+	(print-level nil))
     (funcall f r)))
 
 (advice-add
