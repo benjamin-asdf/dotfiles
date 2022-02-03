@@ -386,7 +386,7 @@ where the file does not exist."
   "C-c C-c" #'eval-defun)
 
 (general-def
-  :keympas '(compilation-mode-map)
+  :keymaps '(compilation-mode-map)
   "M-<return>"
   (defun mm/send-y ()
     (interactive)
@@ -401,14 +401,16 @@ where the file does not exist."
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
-(defun mm/completing-read-commit-ms (insert
-  (s-trim
-   (completing-read
-    "Commit msg: "
-    (ring-elements log-edit-comment-ring)))))
+(defun mm/completing-read-commit-msg ()
+  (interactive)
+    (insert
+     (s-trim
+      (completing-read
+       "Commit msg: "
+       (ring-elements log-edit-comment-ring)))))
 
 (mememacs/local-def
-  :keympas '(git-commit-mode-map)
-  "i" '#mm/completing-read-commit-ms)
+  :keymaps '(git-commit-mode-map)
+  "i" #'mm/completing-read-commit-msg)
 
 (provide 'functions-1)
