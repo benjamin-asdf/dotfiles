@@ -33,7 +33,6 @@
      :body
      (json/decode keyword))))
 
-
 (when (= *file* (System/getProperty "babashka.file"))
   (let [tkt (ticket
              (str/upper-case

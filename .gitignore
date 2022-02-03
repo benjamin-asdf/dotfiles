@@ -9,3 +9,5 @@
 /mememacs/.emacs-mememacs.d/local-before.el
 /mail/emacs-dummy-pkg/emacs-dummy-1-2-any.pkg.tar.xz
 /mail/emacs-dummy-pkg/pkg/
+/bb/.local/bin/bb-scripts/.nrepl-port
+/scripts/.local/bin/scripts/.nrepl-port

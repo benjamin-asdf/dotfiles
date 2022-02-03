@@ -292,7 +292,7 @@ See `eval-last-sexp'."
   ("o" #'outline-show-all))
 
 (defhydra scroll-hydra
-  (:pre (set-cursor-color "Red") :post (set-cursor-color "White"))
+  (:pre (set-cursor-color "Red") :post (set-cursor-color mindsape/cursor-default))
   "scroll"
   ("j" (evil-scroll-down 20) "down")
   ("k" (evil-scroll-up 20) "up")
@@ -359,7 +359,9 @@ where the file does not exist."
        (length bfs)))
     (mapc #'kill-buffer bfs)))
 
-(dolist (fn '(dired-internal-do-deletions))
+(dolist (fn '(dired-internal-do-deletions
+	      dired-do-rename
+	      dired-do-rename-regexp))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
 (defun mememacs/kill-shell-command ()

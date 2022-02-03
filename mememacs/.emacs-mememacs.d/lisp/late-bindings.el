@@ -36,6 +36,11 @@
   :keymaps '(flyspell-mode-map)
   "sn" #'flyspell-hydra/evil-next-flyspell-error)
 
+(mememacs/local-def
+  :states '(normal visual emacs)
+  :keymaps '(global-map)
+  "r" #'revert-buffer)
+
 
 
 (provide 'late-bindings)

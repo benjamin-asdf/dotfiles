@@ -47,12 +47,13 @@
 (defconst mindsape/green-kelp		 "#1e331d"
   "A dark shade of `mindsape/mint-green`")
 (defconst mindsape/anakiwa		 "#8fcefe")
+(defconst mindsape/water		 "#C7E7FF")
 (defconst mindsape/horison		 "#5F89A9")
 (defconst mindsape/glacier		 "#6da2bc")
 (defconst mindsape/gimbled		 "#bcb66d")
 (defconst mindsape/hit-pink		 "#feb48f")
 (defconst mindsape/amethyst-smoke	 "#Ac98bf")
-
+(defconst mindsape/cursor-default        "NavajoWhite")
 
 (defun open-color-picker (beg end)
   (interactive "r")
@@ -68,9 +69,8 @@
 (set-face-attribute
 'cursor
  nil
- :foreground "white"
- :background "white"
-)
+ :foreground mindsape/cursor-default
+ :background mindsape/cursor-default)
 
 
 ;;; Programming
@@ -135,8 +135,14 @@
 (set-face-attribute
  'font-lock-builtin-face
  nil
- :foreground mindsape/anakiwa
- :overline mindsape/horison)
+ :bold t
+ :foreground
+ ;; "MediumPurple1"
+ mindsape/water
+ :overline "MediumPurple1"
+ )
+
+
 
 (set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
 

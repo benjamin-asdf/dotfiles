@@ -6,5 +6,5 @@
 
 config_version: 2
 settings:
-  tabs.show:
-    global: never
+  content.blocking.enabled:
+    global: true
