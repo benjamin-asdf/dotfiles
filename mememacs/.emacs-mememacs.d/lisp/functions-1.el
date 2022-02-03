@@ -401,4 +401,14 @@ where the file does not exist."
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
+(defun mm/completing-read-commit-ms (insert
+  (s-trim
+   (completing-read
+    "Commit msg: "
+    (ring-elements log-edit-comment-ring)))))
+
+(mememacs/local-def
+  :keympas '(git-commit-mode-map)
+  "i" '#mm/completing-read-commit-ms)
+
 (provide 'functions-1)
