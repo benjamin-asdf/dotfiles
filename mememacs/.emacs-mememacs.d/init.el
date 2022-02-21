@@ -244,13 +244,6 @@
     "hc" #'describe-char
     "hm" #'describe-mode))
 
-(use-package evil-goggles
-  :config
-  (setf
-   evil-goggles-enable-delete nil
-   evil-goggles-enable-change nil)
-  (evil-goggles-mode))
-
 (use-package magit
   :defer t
   :init
