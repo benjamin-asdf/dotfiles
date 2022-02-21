@@ -229,6 +229,7 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package helpful
+  :init (require 'patch-helpful)
   :config
   (mememacs/comma-def
     :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
