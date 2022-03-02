@@ -73,6 +73,14 @@
 	   nil)))
     ad-do-it))
 
+;; (with-eval-after-load 'lispy
+;;   (setf
+;;    cider-jack-in-dependencies
+;;    (delete-dups
+;;     (append
+;;      cider-jack-in-dependencies
+;;      (assoc-delete-all "nrepl" lispy-cider-jack-in-dependencies #'equal)))))
+
 ;; jet -------------------
 
 (defun jet-on-region (beg end)
@@ -81,18 +89,18 @@
     (with-current-buffer-window
 	"jet-edn"
 	nil nil
-	(clojure-mode)
-	(process-send-string
-	 (start-process
-	  "jet"
-	  (current-buffer)
-	  "jet"
-	  "--from"
-	  "json"
-	  "--pretty"
-	  "-k"
-	  "-")
-	 s))))
+      (clojure-mode)
+      (process-send-string
+       (start-process
+	"jet"
+	(current-buffer)
+	"jet"
+	"--from"
+	"json"
+	"--pretty"
+	"-k"
+	"-")
+       s))))
 
 (defun jet-send-query ()
   (interactive)

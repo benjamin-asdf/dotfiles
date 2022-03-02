@@ -37,6 +37,9 @@ config.bind(',e', ':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', 
 # config.bind(',v',':spawn vlc {url}', mode='normal')
 config.bind(',v', ':spawn mpv {url}', mode='normal')
 
+config.bind(',m', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
+config.bind(',p', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
+
 config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
 # config.bind(',p', 'spawn --userscript qute-pass --dmenu-invocation dmenu --password-only', mode='insert')
@@ -45,11 +48,14 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://searx.be/"
+c.url.default_page = "https://search.ononoki.org/"
 # c.url.default_page = "https://searx.fmac.xyz/"
 
+
+
+
 c.url.searchengines = {
-    'DEFAULT': 'https://searx.be/?q={}',  # 'DEFAULT': 'https://searx.fmac.xyz/?q={}',
+    'DEFAULT': 'https://search.ononoki.org/?q={}',  # 'DEFAULT': 'https://searx.fmac.xyz/?q={}',
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",

@@ -43,7 +43,7 @@
 
 
 (defvar mememacs/use-exwm nil)
-(defvar mememacs/guile-enabled nil)
+(defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
 (load
@@ -229,6 +229,7 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package helpful
+  :init (require 'patch-helpful)
   :config
   (mememacs/comma-def
     :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
@@ -243,13 +244,6 @@
     "hC" #'helpful-command
     "hc" #'describe-char
     "hm" #'describe-mode))
-
-(use-package evil-goggles
-  :config
-  (setf
-   evil-goggles-enable-delete nil
-   evil-goggles-enable-change nil)
-  (evil-goggles-mode))
 
 (use-package magit
   :defer t
@@ -343,6 +337,7 @@
   (general-def
     'embark-symbol-map
     "h" #'helpful-symbol)
+
   (setq prefix-help-command #'embark-prefix-help-command)
 
   (global-set-key
@@ -505,10 +500,11 @@
 (use-package geiser-guile
   :when mememacs/guile-enabled
   :config
-  (setf geiser-scheme-implementation
-	'guile)
-  (setf geiser-guile-load-path
-	(list "/lib/guile")))
+  (setf
+   geiser-scheme-implementation 'guile
+   geiser-guile-binary "guile3"
+   geiser-guile-load-path
+   (list "/lib/guile/3.0")))
 
 (use-package
   avy
@@ -704,6 +700,8 @@
           ("/[Gmail]/Trash"     . ?t)
           ("/[Gmail]/Drafts"    . ?d)
           ("/[Gmail]/All Mail"  . ?a))))
+
+(add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
 (require 'late-bindings)
 

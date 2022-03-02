@@ -105,8 +105,4 @@
   #'evil-delete-whole-line)
 
 
-
-
-
-
 (provide 'init-general)

@@ -5,9 +5,9 @@ export BROWSER=/usr/bin/qutebrowser
 
 # Adds `~/.local/bin/` and all subdirectories to $PATH
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
-PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/go/bin"
 PATH="$PATH:$HOME/cognitect/datomic-cli/"
+PATH="$PATH:$HOME/repos/clojure/bb-clis/bin/"
 
 export PATH
 
@@ -21,8 +21,6 @@ export ZDOTDIR="$HOME/.config/zsh/"
 # idlegame
 export COSDIR="$HOME/idlegame"
 export IDLEGAMEDIR="$COSDIR/IdleGame"
-
-alias gs='git status'
 
 export PASSWORD_STORE_DIR="$HOME/.local/.password-store"
 # less/man colors

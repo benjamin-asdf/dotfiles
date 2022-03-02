@@ -20,6 +20,7 @@ These configuration options are supported:
     * :completion-styles - Use completion styles (def: `completion-styles')
     * :require-match - Require matches when completing (def: nil)
     * :prompt - The prompt string shown in the minibuffer"
+  (barf-if-buffer-read-only)
   (cl-letf* ((config (alist-get #'consult-completion-in-region consult--read-config))
              ;; Overwrite both the local and global value of `completion-styles', such that the
              ;; `completing-read' minibuffer sees the overwritten value in any case. This is
@@ -85,7 +86,7 @@ These configuration options are supported:
                        ;; candidate function
                        (apply-partially #'run-hook-with-args-until-success
                                         'consult--completion-candidate-hook)
-                     (let ((enable-recursive-minibuffers t))
+                     (consult--local-let ((enable-recursive-minibuffers t))
                        (if (eq category 'file)
                            ;; We use read-file-name, since many completion UIs make it nicer to
                            ;; navigate the file system this way; and we insert the initial text

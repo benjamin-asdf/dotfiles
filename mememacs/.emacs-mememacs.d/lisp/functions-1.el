@@ -292,7 +292,7 @@ See `eval-last-sexp'."
   ("o" #'outline-show-all))
 
 (defhydra scroll-hydra
-  (:pre (set-cursor-color "Red") :post (set-cursor-color "White"))
+  (:pre (set-cursor-color "Red") :post (set-cursor-color mindsape/cursor-default))
   "scroll"
   ("j" (evil-scroll-down 20) "down")
   ("k" (evil-scroll-up 20) "up")
@@ -359,7 +359,9 @@ where the file does not exist."
        (length bfs)))
     (mapc #'kill-buffer bfs)))
 
-(dolist (fn '(dired-internal-do-deletions))
+(dolist (fn '(dired-internal-do-deletions
+	      dired-do-rename
+	      dired-do-rename-regexp))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
 (defun mememacs/kill-shell-command ()
@@ -384,7 +386,7 @@ where the file does not exist."
   "C-c C-c" #'eval-defun)
 
 (general-def
-  :keympas '(compilation-mode-map)
+  :keymaps '(compilation-mode-map)
   "M-<return>"
   (defun mm/send-y ()
     (interactive)
@@ -398,5 +400,17 @@ where the file does not exist."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
+
+(defun mm/completing-read-commit-msg ()
+  (interactive)
+    (insert
+     (s-trim
+      (completing-read
+       "Commit msg: "
+       (ring-elements log-edit-comment-ring)))))
+
+(mememacs/local-def
+  :keymaps '(git-commit-mode-map)
+  "i" #'mm/completing-read-commit-msg)
 
 (provide 'functions-1)

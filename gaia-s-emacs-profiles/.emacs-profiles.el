@@ -4,4 +4,6 @@
 		 (straight-p . t)))
  ("ambrevar" . ((user-emacs-directory . ".emacs-ambrevar.d")))
  ("doom" . ((user-emacs-directory . "~/.emacs-doom.d")
-            (env . (("DOOMDIR" . "~/.doom.d"))))))
+            (env . (("DOOMDIR" . "~/.doom.d")
+		    ("EMACSDIR" . "~/.emacs-doom.d")
+                    ("DOOMLOCALDIR" . "~/.emacs-doom.d"))))))

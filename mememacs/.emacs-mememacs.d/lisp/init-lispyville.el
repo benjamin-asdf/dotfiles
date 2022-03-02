@@ -204,22 +204,6 @@ replace the expression with its result."
 (add-hook 'lispy-mode-hook 'lispyville-mode)
 
 
-
-(with-eval-after-load 'evil-goggles
-  (setq evil-goggles--commands
-        (append evil-goggles--commands
-                '((lispyville-delete :face evil-goggles-delete-face :switch evil-goggles-enable-delete :advice evil-goggles--generic-blocking-advice)
-                  (lispyville-delete-line :face evil-goggles-delete-face :switch evil-goggles-enable-delete :advice evil-goggles--delete-line-advice)
-                  (lispyville-yank :face evil-goggles-yank-face :switch evil-goggles-enable-yank :advice evil-goggles--generic-async-advice)
-                  (lispyville-yank-line :face evil-goggles-yank-face :switch evil-goggles-enable-yank :advice evil-goggles--generic-async-advice)
-                  (lispyville-change :face evil-goggles-change-face :switch evil-goggles-enable-change :advice evil-goggles--generic-blocking-advice)
-                  (lispyville-change-line :face evil-goggles-change-face :switch evil-goggles-enable-change :advice evil-goggles--generic-blocking-advice)
-                  (lispyville-change-whole-line :face evil-goggles-change-face :switch evil-goggles-enable-change :advice evil-goggles--generic-blocking-advice)
-                  (lispyville-join :face evil-goggles-join-face :switch evil-goggles-enable-join :advice evil-goggles--join-advice)
-                  (lispy-fill :face evil-goggles-fill-and-move-face :switch evil-goggles-enable-fill-and-move :advice evil-goggles--generic-async-advice))))
-  (evil-goggles-mode))
-
-
 ;; todo swap prefix arg
 ;; (defadvice lispy-ace-paren ())
 ;; (defalias 'lispy--remember #'evil--jumps-push)
@@ -264,8 +248,7 @@ replace the expression with its result."
   "kJ" (lispyville-wrap-command lispy-forward special)
   "kj" (lispyville-wrap-command lispy-right special)
   "kh" (lispyville-wrap-command lispy-left special)
-  "kw" (lispyville-wrap-command lispy-wrap-round special)
-  )
+  "kw" (lispyville-wrap-command lispy-wrap-round special))
 
 (general-def
   :states '(normal visual emacs insert)
@@ -302,28 +285,16 @@ replace the expression with its result."
 (add-hook 'evil-insert-state-entry-hook #'mememacs/lispy-set-faces)
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
-
-(defun mm/chop-suffix-total (suffix s)
-  (if (s-ends-with? suffix s)
-      (mm/chop-suffix-total
-       suffix
-       (s-chop-suffix suffix s))
-    s))
-
-(defun mememacs/lispy-filter-he-str (args)
-  (print args)
-  (print
-   (if lispy-mode
-     `(,(mm/chop-suffix-total
-	 ")"
-	 (car args))
-       ,@(cdr args))
-     args)))
-
+(defun mm/lispy-advice-print-length (f r)
+  "This is so you do not get ... all the time
+when formatting with lispy."
+  (let ((print-length 2000)
+	(print-level nil))
+    (funcall f r)))
 
 (advice-add
- #'he-substitute-string
- :filter-args
- #'mememacs/lispy-filter-he-str)
+ #'lispy--insert
+ :around
+ #'mm/lispy-advice-print-length)
 
 (provide 'init-lispyville)
