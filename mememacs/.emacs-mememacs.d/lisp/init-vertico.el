@@ -47,7 +47,7 @@
 (general-def
   'vertico-map
   "M-q" #'vertico-quick-insert
-  "M-," #'vertico-quick-exit
+  "C-k" #'vertico-quick-exit
   "M-s" #'vertico-quick-jump)
 
 (setq vertico-quick1
