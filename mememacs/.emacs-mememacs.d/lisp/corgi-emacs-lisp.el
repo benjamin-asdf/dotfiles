@@ -36,11 +36,6 @@
                  (end-of-defun)
                  (point)))))
 
-(advice-add 'special-lispy-eval
-	    :filter-return
-	    (lambda (r)
-	      (corgi/eval-overlay r)))
-
 (defun mm/corgi-overlay (value)
   (when value
     (corgi/eval-overlay value (point))))
