@@ -464,6 +464,13 @@
     "p" 'projectile-command-map
     "pO" #'mememacs/projectile-todo))
 
+(use-package string-edit
+  :config
+  (mememacs/local-def
+    :states '(normal insert)
+    :keymaps '(prog-mode-map)
+    "e" #'string-edit-at-point))
+
 ;; TODO
 ;; add emacs-dir/backups to known projects
 
