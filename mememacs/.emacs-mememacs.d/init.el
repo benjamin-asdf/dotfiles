@@ -42,7 +42,7 @@
 ;;   (package-initialize))
 
 
-(defvar mememacs/use-exwm nil)
+(defvar mememacs/use-exwm t)
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
@@ -213,7 +213,7 @@
   :when mememacs/use-exwm
   :ensure nil
   :config
-  (require 'init-exwm))
+  (require 'init-exwm-1))
 
 (unless mememacs/use-exwm
   (general-def
