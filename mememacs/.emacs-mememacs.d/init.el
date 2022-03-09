@@ -420,12 +420,15 @@
    'mememacs/escape-functions
    #'macrostep-collapse-all))
 
+(use-package slime :config (setq inferior-lisp-program "sbcl"))
+
 (use-package lispy
   :ensure t
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
   (lisp-data-mode . lispy-mode)
+  (lisp-mode . lispy-mode)
   (emacs-lisp-mode . lispy-mode)
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
