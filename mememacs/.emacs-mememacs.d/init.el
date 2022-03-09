@@ -42,7 +42,7 @@
 ;;   (package-initialize))
 
 
-(defvar mememacs/use-exwm t)
+(defvar mememacs/use-exwm nil)
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 

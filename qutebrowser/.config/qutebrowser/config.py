@@ -51,9 +51,6 @@ c.tabs.show = "never"
 c.url.default_page = "https://search.ononoki.org/"
 # c.url.default_page = "https://searx.fmac.xyz/"
 
-
-
-
 c.url.searchengines = {
     'DEFAULT': 'https://search.ononoki.org/?q={}',  # 'DEFAULT': 'https://searx.fmac.xyz/?q={}',
     'duck'   : 'https://duckduckgo.com/?q={}',

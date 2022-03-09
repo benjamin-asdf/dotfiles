@@ -1,17 +1,31 @@
-
-
-
-
-
-
-
-
-
-
-
 (require 'exwm)
 (require 'ido)
 
+
+;;; System tray
+(require 'exwm-systemtray)
+(setq exwm-systemtray-height 16)
+(exwm-systemtray-enable)
+
+(setq exwm-input-prefix-keys
+      '(?\C-x
+	?\C-u
+	?\C-h
+	?\M-x
+	?\M-`
+	?\M-&
+	?\M-:
+	?\C-,
+	?\C-.
+	?\C-\M-j
+	?\C-\ ))
+
+  ;; Automatically send the mouse cursor to the selected workspace's display
+  (setq exwm-workspace-warp-cursor t)
+
+  ;; Window focus should follow the mouse pointer
+  (setq mouse-autoselect-window t
+        focus-follows-mouse t)
 
 (defun exwm-config-example ()
   "Default configuration of EXWM."
@@ -22,25 +36,37 @@
   (add-hook 'exwm-update-class-hook
             (lambda ()
               (exwm-workspace-rename-buffer exwm-class-name)))
+
   ;; Global keybindings.
-  (unless (get 'exwm-input-global-keys 'saved-value)
-    (setq exwm-input-global-keys
-          `(
-            ;; 's-r': Reset (to line-mode).
-            ([?\s-r] . exwm-reset)
-            ;; 's-w': Switch workspace.
-            ([?\s-w] . exwm-workspace-switch)
-            ;; 's-&': Launch application.
-            ([?\s-&] . (lambda (command)
-                         (interactive (list (read-shell-command "$ ")))
-                         (start-process-shell-command command nil command)))
-            ;; 's-N': Switch to certain workspace.
-            ,@(mapcar (lambda (i)
-                        `(,(kbd (format "s-%d" i)) .
-                          (lambda ()
-                            (interactive)
-                            (exwm-workspace-switch-create ,i))))
-                      (number-sequence 0 9)))))
+  (setq exwm-input-global-keys
+        `(
+          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+          ([?\s-r] . exwm-reset)
+
+          ;; Move between windows
+          ([s-left] . windmove-left)
+          ([s-right] . windmove-right)
+          ([s-up] . windmove-up)
+          ([s-down] . windmove-down)
+
+          ;; Launch applications via shell command
+          ([?\s-&] . (lambda (command)
+                       (interactive (list (read-shell-command "$ ")))
+                       (start-process-shell-command command nil command)))
+
+          ;; Switch workspace
+          ([?\s-w] . exwm-workspace-switch)
+          ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+
+          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "s-%d" i)) .
+                        (lambda ()
+                          (interactive)
+                          (exwm-workspace-switch-create ,i))))
+                    (number-sequence 0 9))))
+
+
   ;; Line-editing shortcuts
   (unless (get 'exwm-input-simulation-keys 'saved-value)
     (setq exwm-input-simulation-keys
@@ -54,6 +80,7 @@
             ([?\C-v] . [next])
             ([?\C-d] . [delete])
             ([?\C-k] . [S-end delete]))))
+
   ;; Enable EXWM
   (exwm-enable)
   ;; Configure Ido
@@ -101,5 +128,7 @@ You can find the original one at `exwm-config-ido-buffer-window-other-frame'."
     "s-l" #'windmove-right
     "s-k" #'windmove-up
     "s-j" #'windmove-down)
+
+(exwm-config-example)
 
 (provide 'init-exwm-1)
