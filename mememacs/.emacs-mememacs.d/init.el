@@ -474,7 +474,8 @@
   (mememacs/local-def
     :states '(normal insert)
     :keymaps '(prog-mode-map)
-    "e" #'string-edit-at-point))
+    "se" #'string-edit-at-point))
+
 
 ;; TODO
 ;; add emacs-dir/backups to known projects
