@@ -13,3 +13,9 @@ Load a file that re-defines swank and then calls it."
    "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 ;;
 (define-key *root-map* (kbd "C-s") "swank")
+
+(define-key *root-map* (kbd "k") "move-focus up")
+(define-key *root-map* (kbd "j") "move-focus down")
+(define-key *root-map* (kbd "l") "move-focus left")
+(define-key *root-map* (kbd "h") "move-focus right")
+(define-key *root-map* (kbd "d") "kill")
