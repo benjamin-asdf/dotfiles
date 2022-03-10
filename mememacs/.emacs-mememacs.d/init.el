@@ -42,7 +42,7 @@
 ;;   (package-initialize))
 
 
-(defvar mememacs/use-exwm t)
+(defvar mememacs/use-exwm nil)
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
@@ -420,12 +420,15 @@
    'mememacs/escape-functions
    #'macrostep-collapse-all))
 
+(use-package slime :config (setq inferior-lisp-program "sbcl"))
+
 (use-package lispy
   :ensure t
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
   (lisp-data-mode . lispy-mode)
+  (lisp-mode . lispy-mode)
   (emacs-lisp-mode . lispy-mode)
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
@@ -434,8 +437,8 @@
 (use-package lispyville
   :after lispy
   :config (require 'init-lispyville))
-
 ;; maybe remove evil-mc if works well
+
 (use-package multiple-cursors
   :config
   (add-hook
@@ -505,8 +508,8 @@
   (require 'init-flycheck))
 
 (use-package flycheck-clj-kondo)
-
 ;; todo binds
+
 (use-package geiser
   :when mememacs/guile-enabled)
 
@@ -581,12 +584,12 @@
 
 ;; pretty print
 ;; c-i and c-o should be more intuitive
-
 ;; Keep customization settings in a temporary file (thanks Ambrevar!)
 (setq custom-file
       (if (boundp 'server-socket-dir)
 	  (expand-file-name "custom.el" server-socket-dir)
 	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+
 (load custom-file t)
 
 (use-package winner
@@ -626,11 +629,11 @@
 ;;    'hippie-expand-try-functions-list
 ;;    #'yas-expand-from-trigger-key))
 
+
 ;; (use-package yasnippet-snippets
 ;;   :after yasnippet
 ;;   :config
 ;;   (yasnippet-snippets-initialize))
-
 
 (with-eval-after-load
     'sh-script
@@ -654,10 +657,10 @@
 (use-package org-roam
   :init (setq org-roam-v2-ack t)
   :config (require 'init-org-roam))
-
 (use-package markdown-mode)
 ;; try vc-backup
 ;; and then replace every other backup file system we have
+
 (use-package backup-each-save)
 
 (use-package restclient
@@ -716,6 +719,8 @@
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
+(require 'corgi-emacs-lisp)
+
 (require 'late-bindings)
 
 ;; elp
@@ -731,15 +736,13 @@
 
 ;; figure out where the code is for guix packages
 
-;; (general-def)
 
+;; (general-def)
 
 ;; (use-package jdee)
 
 ;; fix helm ag "command attempted to use minibuffer"
 
 ;; todo nyxt auto clone github page
-					;; (use-package slime
-;;   (setq inferior-lisp-program "sbcl"))
 
 ; pprint

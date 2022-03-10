@@ -29,24 +29,6 @@
 (exwm-systemtray-enable)
 (setq exwm-systemtray-height 16)
 
-(defun mm/xdotool (cmd)
-  (start-process-shell-command
-   "" "xdotool"
-   (concat
-    "xdotool" " " cmd)))
-
-(defhydra hydra-exwm ()
-  "exwm"
-  ("r" exwm-reset "reset")
-  ("d"
-   (mm/xdotool "click 1") "click")
-  ("j"
-   (mm/xdotool "click 5"))
-  ("k"
-   (mm/xdotool "click 4"))
-  ("w" 'evil-window-map "window")
-  ("TAB" evil-switch-to-windows-last-buffer "last"))
-
 
 ;; The following can only apply to EXWM buffers, else it could have unexpected effects.
 (push ?\s-  exwm-input-prefix-keys)
@@ -77,18 +59,6 @@
 (exwm-input-set-key (kbd "s-o") #'ambrevar/toggle-single-window)
 (exwm-input-set-key (kbd "s-O") #'exwm-layout-toggle-fullscreen)
 
-(with-eval-after-load 'helm
-  ;; Need `with-eval-after-load' here since 'helm-map is not defined in 'helm-config.
-  (ambrevar/define-keys helm-map
-                        "s-\\" 'helm-toggle-resplit-and-swap-windows)
-  (exwm-input-set-key (kbd "s-c") #'helm-resume)
-  (exwm-input-set-key (kbd "s-b") #'helm-mini)
-  (exwm-input-set-key (kbd "s-f") #'helm-find-files)
-  (exwm-input-set-key (kbd "s-F") #'helm-locate)
-  (when (fboundp 'ambrevar/helm-locate-meta)
-    (exwm-input-set-key (kbd "s-F") #'ambrevar/helm-locate-meta))
-  (exwm-input-set-key (kbd "s-g") 'ambrevar/helm-grep-git-or-ag)
-  (exwm-input-set-key (kbd "s-G") 'ambrevar/helm-grep-git-all-or-ag))
 
 (require 'functions)
 (exwm-input-set-key (kbd "s-<tab>") #'ambrevar/switch-to-last-buffer)
@@ -115,24 +85,6 @@
 (exwm-input-set-key (kbd "s-e") #'ambrevar/eww-switch-back)
 (exwm-input-set-key (kbd "s-E") #'eww)
 
-(when (fboundp 'helm-pass)
-  (defun ambrevar/helm-pass-for-page ()
-    "Default prompt to current exwm-title"
-    (interactive)
-    (require 'helm-pass)
-    (helm :sources 'helm-pass-source-pass
-          :input (cond
-                  ((derived-mode-p 'eww-mode)
-                   (let* ((url (replace-regexp-in-string ".*//\\([^/]*\\).*" "\\1" (eww-current-url)))
-                          (domain (split-string url "\\.")))
-                     (concat (nth (- (length domain) 2) domain) "." (nth (1- (length domain)) domain))))
-                  ((and (derived-mode-p 'exwm-mode) exwm-title)
-                   (let* ((url (car (last (split-string exwm-title " "))))
-                          (domain (split-string url "\\.")))
-                     (concat (nth (- (length domain) 2) domain) "." (nth (1- (length domain)) domain)))))
-          :buffer "*helm-pass*"))
-  (exwm-input-set-key (kbd "s-p") #'ambrevar/helm-pass-for-page))
-
 ;;; External application shortcuts.
 (defun ambrevar/exwm-start (command)
   (interactive (list (read-shell-command "$ ")))
@@ -140,27 +92,6 @@
 (exwm-input-set-key (kbd "s-&") #'ambrevar/exwm-start)
 (exwm-input-set-key (kbd "s-r") #'ambrevar/exwm-start)
 
-(use-package helm-exwm
-  :config
-  (add-to-list 'helm-source-names-using-follow "EXWM buffers")
-  (setq helm-exwm-emacs-buffers-source (helm-exwm-build-emacs-buffers-source))
-  (setq helm-exwm-source (helm-exwm-build-source))
-  (setq helm-mini-default-sources `(helm-exwm-emacs-buffers-source
-                                    helm-exwm-source
-                                    helm-source-recentf
-                                    ,(when (boundp 'helm-source-ls-git) 'helm-source-ls-git)
-                                    helm-source-bookmarks
-                                    helm-source-bookmark-set
-                                    helm-source-buffer-not-found))
-  (ambrevar/define-keys
-   helm-exwm-map
-   "M-d" 'helm-buffer-run-kill-persistent
-   "S-<return>" 'helm-buffer-switch-other-window)
-  ;; Launcher
-  (exwm-input-set-key (kbd "s-r") 'helm-run-external-command)
-  ;; Web browser
-  (exwm-input-set-key (kbd "s-w") #'helm-exwm-switch-browser)
-  (exwm-input-set-key (kbd "s-W") #'helm-exwm-switch-browser-other-window))
 
 ;;; Lock screen
 (defun ambrevar/exwm-start-lock () (interactive) (start-process "slock" nil "slock"))

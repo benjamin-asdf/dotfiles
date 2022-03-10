@@ -74,7 +74,8 @@
 (general-unbind evil-motion-state-map "SPC")
 
 (general-def
-  "H-<return>" #'save-buffer)
+  "H-<return>" #'save-buffer
+  "C-M-j" #'consult-buffer)
 
 
 ;; todo why is this overriden or whatever

@@ -20,7 +20,7 @@ xsetroot -cursor_name left_ptr
 #export CLUTTER_IM_MODULE=xim
 
 xset r rate 160 140
-setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
+setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
 xcape -e 'Control_L=Escape'
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
 flameshot &
