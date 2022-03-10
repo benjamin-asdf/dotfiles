@@ -61,7 +61,7 @@ c.url.searchengines = {
     "so"     : "http://stackoverflow.com/search?q={}",
     "ex"     : "https://examine.com/search/?q={}",
     "leo"    : "http://dict.leo.org/frde/index_de.html#/search={}",
-    "aur"    : "https://aur.archlinux.org/packages.php?O=0&K={}&do_Search=Go",
+    "aur"    : "https://aur.archlinux.org/packages?O=0&K={}",
     "yt"     : "http://www.youtube.com/results?search_query={}",
     "goo"    : "https://www.google.com/search?q={}",
     'gg'     : 'https://g4gsearch.com/ws/search/search?a=true&c=%7B%7D&e=true&m&p=1&q={}&s=_score&w=%5B%5D',

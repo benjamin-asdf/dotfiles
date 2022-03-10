@@ -45,7 +45,7 @@
       `(("." . ,(expand-file-name "~/backups/"))))
 
 ;;; Default mode
-(setq-default major-mode 'emacs-lisp-mode)
+(setq-default major-mode 'fundamental-mode)
 
 ;;; Disable suspend key since it is useless on Emacs server.
 (global-unset-key (kbd "C-z"))

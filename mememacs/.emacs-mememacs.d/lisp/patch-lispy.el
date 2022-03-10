@@ -142,29 +142,20 @@ SYMBOL is a string."
 
 ;; hippie
 
-(defun mememacs/string-chop-suffix (chars s)
-  "Like 'trim-right' for all `chars`."
-  (save-match-data
-    (declare (pure t)
-	     (side-effect-free t))
-    (if (string-match
-	 (format "[%s]+\\'" chars)
-	 s)
-	(replace-match "" t t s)
-      s)))
-
-(ignore
- (let ((s "foLoL(]({}]")
-       (chars "]L([{}"))
-   (mememacs/string-chop-suffix
-    chars
-    s)))
+(defun mememacs/string-chop-suffix-all (s suffix)
+  (if (s-ends-with? suffix s)
+      (mememacs/string-chop-suffix-all
+       (s-chop-suffix suffix s)
+       suffix)
+    s))
 
 (defun mememacs/patch-he-lispy (args)
   (if lispy-mode
-      `(,(mememacs/string-chop-suffix
-	  "]([{}"
-	  (car args))
+      `(,(thread-first
+	  (car args)
+	  (mememacs/string-chop-suffix-all ")")
+	  (mememacs/string-chop-suffix-all "]")
+	  (mememacs/string-chop-suffix-all "}"))
 	,(cadr args))
     args))
 

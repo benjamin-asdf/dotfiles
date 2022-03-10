@@ -95,9 +95,7 @@
   :states '(normal visual motion)
   "C-i" #'evil-jump-forward
   "C-o" #'mememacs/jump-back
-  ;; "C-y" #'evil-paste-pop
-  ;; "C-p"
-  )
+  "gr" #'revert-buffer)
 
 (global-set-key
   (kbd

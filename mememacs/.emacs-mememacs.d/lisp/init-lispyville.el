@@ -199,7 +199,6 @@ replace the expression with its result."
                  '(sly-mrepl-mode lispy-goto-symbol-lisp le-lisp))
     (setq lispy-use-sly t)))
 
-
 (set-face-foreground 'lispy-face-hint "#FF00FF")
 (add-hook 'lispy-mode-hook 'lispyville-mode)
 
@@ -229,6 +228,7 @@ replace the expression with its result."
 
 (mememacs/local-def
   :keymaps '(lispy-mode-map)
+  "RET" #'ambrevar/lispy-eval
   "b" #'lispy-back
   "l" #'mm/lispyville-out-and-eval
   "," #'lispy-kill-at-point
