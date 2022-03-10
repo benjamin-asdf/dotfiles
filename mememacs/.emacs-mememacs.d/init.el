@@ -42,7 +42,7 @@
 ;;   (package-initialize))
 
 
-(defvar mememacs/use-exwm nil)
+(defvar mememacs/use-exwm t)
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
@@ -94,6 +94,11 @@
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll nil)
   (setq evil-want-C-i-jump nil)
+  (setq
+   evil-move-cursor-back nil
+   evil-move-beyond-eol t
+   evil-want-fine-undo t)
+
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
@@ -208,7 +213,7 @@
   :when mememacs/use-exwm
   :ensure nil
   :config
-  (require 'init-exwm))
+  (require 'init-exwm-1))
 
 (unless mememacs/use-exwm
   (general-def
@@ -463,6 +468,13 @@
   (mememacs/leader-def
     "p" 'projectile-command-map
     "pO" #'mememacs/projectile-todo))
+
+(use-package string-edit
+  :config
+  (mememacs/local-def
+    :states '(normal insert)
+    :keymaps '(prog-mode-map)
+    "e" #'string-edit-at-point))
 
 ;; TODO
 ;; add emacs-dir/backups to known projects

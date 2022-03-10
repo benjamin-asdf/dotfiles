@@ -466,10 +466,32 @@ mode "$mode_gaps_outer" {
 }
 
 
-exec --no-startup-id xset r rate 170 130
-exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
-exec --no-startup-id xcape -e 'Control_L=Escape'
+# unity stuff
+exec --no-startup-id ~/repos/python/i3-unity-fix/i3unityfix/i3unityfix.py &
 
+no_focus [class="(?i)unity-editor"]
+assign [class="(?i)unity-editor"] 5
+assign [title="IdeaPlayground"] 2
+assign [title="RiderPlayground - Class1.cs"] 2
+
+set $unity unity: r: refresh, o: open prefab, l: cliked, p: playmode, g: proj-files
+bindsym $mod+u mode "$unity"
+
+mode "$unity" {
+        bindsym r      exec bunel default refresh ; mode default
+        bindsym o      exec bunel-open ; mode default
+        bindsym l      exec bunel default jump-to-last-thing-clicked ; mode default
+        bindsym p      exec bunel default playmode ; mode default
+        bindsym g      exec bunel default generate-proj-files ; mode default
+        bindsym a      exec bunel default playmode-air ; mode default
+        bindsym Escape mode "default"
+        bindsym Return mode "default"
+
+}
+
+exec --no-startup-id xset r rate 160 140
+exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
+exec --no-startup-id xcape -e 'Control_L=Escape'
 
 # figure out how to also bind app context to super and get used to it
 # exec --no-startup-id setxkbmap -layout us -option ctrl:swapcaps,nodeadkeys,nbsp:level3
@@ -477,10 +499,10 @@ exec --no-startup-id xcape -e 'Control_L=Escape'
 exec --no-startup-id redshift -l 55.7:12.6 -t 2200:1600 -m randr
 exec --no-startup-id flameshot &
 exec --no-startup-id unclutter &
-# TODO maybe we don't need it anymore because normy mode works so well
-exec --no-startup-id keynav &:
 
-assign [class="qutebrowser"] 4
-assign [class="Nyxt"] 4
-assign [Class="(?i)Brave-browser"] 4
+# assign [class="(?i)emacs"] 1
+# for_window [class="(?i)emacs"  title="Helm"] floating enable
+assign [class="qutebrowser"] 6
+assign [class="Nyxt"] 6
+assign [Class="(?i)Brave-browser"] 6
 assign [Class="(?i)discor"] 2
