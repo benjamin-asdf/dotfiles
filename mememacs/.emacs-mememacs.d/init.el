@@ -420,7 +420,10 @@
    'mememacs/escape-functions
    #'macrostep-collapse-all))
 
-(use-package slime :config (setq inferior-lisp-program "sbcl"))
+(use-package
+  slime
+  :config (setq inferior-lisp-program
+		"sbcl"))
 
 (use-package lispy
   :ensure t
