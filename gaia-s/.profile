@@ -11,6 +11,8 @@ PATH="$PATH:$HOME/repos/clojure/bb-clis/bin/"
 
 export PATH
 
+export SBCL_HOME=/usr/lib/sbcl/
+
 export ALTERNATE_EDITOR="vim"
 export EDITOR="emacsclient"
 export VISUAL="emacsclient"
