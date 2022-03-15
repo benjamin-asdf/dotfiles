@@ -9,5 +9,6 @@ xcape -e 'Control_L=Escape'
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
 flameshot &
 unclutter &
+dunst &
 
 /home/benj/repos/lisp/stumpwm/stumpwm
