@@ -30,6 +30,7 @@ Load a file that re-defines swank and then calls it."
 (define-key *top-map* (kbd "s-e") "emacs")
 (define-key *top-map* (kbd "s-m") "mode-line")
 (define-key *top-map* (kbd "s-i") "pull-from-windowlist")
+(define-key *top-map* (kbd "s-g") '*groups-map*)
 
 (defcommand flameshot-gui () ()
   (run-shell-command "flameshot gui"))
@@ -44,12 +45,11 @@ Load a file that re-defines swank and then calls it."
   (run-shell-command "best-lock.sh"))
 (define-key *top-map* (kbd "s-9")  "lock")
 
-
 (Load-module "cpu")
 
 (setf
  *screen-mode-line-format*
- "[^B%n^b] %W %C")
+ "[^B%n^b] %C")
 
 (load-module "pass")
 (define-key *top-map* (kbd "s-a") "pass-copy")
@@ -82,9 +82,7 @@ Load a file that re-defines swank and then calls it."
 
 (defmacro comment (&rest body))
 
-
-
-
+;; windowlist then go thought the same class wouuld be nice
 
 
 
