@@ -666,11 +666,6 @@
 
 (use-package backup-each-save)
 
-(use-package restclient
-  :defer t
-  :config
-  (require 'patch-restclient))
-
 (use-package vterm
   :config
   (mememacs/leader-def
