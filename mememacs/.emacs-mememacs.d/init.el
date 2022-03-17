@@ -422,8 +422,13 @@
 
 (use-package
   slime
-  :config (setq inferior-lisp-program
-		"sbcl"))
+  :config
+  (setq inferior-lisp-program
+	"sbcl")
+  (defun mm/add-slime-filename-cap ()
+    (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
+  :hook
+  (prog-mode . mm/add-slime-filename-cap))
 
 (use-package lispy
   :ensure t
