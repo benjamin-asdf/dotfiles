@@ -45,7 +45,7 @@ Load a file that re-defines swank and then calls it."
   (run-shell-command "best-lock.sh"))
 (define-key *top-map* (kbd "s-9")  "lock")
 
-(Load-module "cpu")
+(load-module "cpu")
 
 (setf
  *screen-mode-line-format*
@@ -80,12 +80,37 @@ Load a file that re-defines swank and then calls it."
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:class "Unity-editor") *deny-map-request*)
 
+(defcommand (pull-from-windowlist-curr-class tile-group)
+    (&optional (fmt *window-format*)) (:rest)
+  "Like `pull-from-windowlist` but only select
+windows of the same class as the current window."
+  (let* ((curr-class (window-class (current-window)))
+	(windows (remove-if-not
+		  (lambda (w)
+		    (equal curr-class
+			   (window-class w)))
+		  (group-windows (current-group))))
+	(pulled-window (select-window-from-menu
+			windows
+                        fmt)))
+    (when pulled-window
+      (pull-window pulled-window))))
+
+(define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
+
+
 (defmacro comment (&rest body))
 
 ;; windowlist then go thought the same class wouuld be nice
+;; also window list fitler same class
 
 
+;; window hook or sth to put qutebro
+
+;; I don't want to hit tab if there is only 1 thing in the
+;; selection list
 
 (comment
- (setf *debug-level* 1)
+ (screen-windows (current-screen))
+ (etf *debug-level* 1)
  (redirect-all-output (data-dir-file "output" "log")))

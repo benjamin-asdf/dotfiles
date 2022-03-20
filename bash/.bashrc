@@ -138,14 +138,11 @@ ex ()
 
 eval `keychain -q --eval id_rsa`
 
-
 export ANDROID_HOME=$HOME/Android/Sdk
 PATH=$PATH:$ANDROID_HOME/emulator
 PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
-
-
 
 _bb_tasks() {
     COMPREPLY+=(`bb tasks |tail -n +3 |cut -f1 -d ' '`)
