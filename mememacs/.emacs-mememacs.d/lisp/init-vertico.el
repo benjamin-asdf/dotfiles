@@ -61,7 +61,8 @@
 
 
 (mememacs/comma-def
-  "rl" #'vertico-repeat)
+  "rl" #'vertico-repeat-last
+  "rL" #'vertico-repeat-select)
 
 (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
