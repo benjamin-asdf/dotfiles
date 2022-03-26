@@ -37,8 +37,9 @@
                  (point)))))
 
 (defun mm/corgi-overlay (value)
-  (when value
-    (corgi/eval-overlay value (point))))
+  (when lispy-mode
+    (when value
+      (corgi/eval-overlay value (point)))))
 
 (advice-add 'lispy-eval :filter-return #'mm/corgi-overlay)
 

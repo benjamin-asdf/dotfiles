@@ -46,19 +46,18 @@ Load a file that re-defines swank and then calls it."
 (define-key *top-map* (kbd "s-9")  "lock")
 
 (load-module "cpu")
-
 (setf
  *screen-mode-line-format*
  "[^B%n^b] %C")
 
 (load-module "pass")
-(define-key *top-map* (kbd "s-a") "pass-copy")
 
+(define-key *top-map* (kbd "s-a") "pass-copy")
 (defcommand kill-unclutter () ()
   (run-shell-command "pkill unclutter"))
+
 (defcommand start-unclutter () ()
   (run-shell-command "unclutter &"))
-
 (define-interactive-keymap
     normie-mode
     (:on-enter #'kill-unclutter
@@ -76,9 +75,9 @@ Load a file that re-defines swank and then calls it."
 
 (define-key *top-map* (kbd "s-;") "normie-mode")
 
-
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:class "Unity-editor") *deny-map-request*)
+
 
 (defcommand (pull-from-windowlist-curr-class tile-group)
     (&optional (fmt *window-format*)) (:rest)
@@ -98,7 +97,6 @@ windows of the same class as the current window."
 
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 
-
 (defmacro comment (&rest body))
 
 ;; windowlist then go thought the same class wouuld be nice
@@ -112,5 +110,6 @@ windows of the same class as the current window."
 
 (comment
  (screen-windows (current-screen))
+ (setf *deny-raise-request* nil *deny-map-request* nil)
  (etf *debug-level* 1)
  (redirect-all-output (data-dir-file "output" "log")))

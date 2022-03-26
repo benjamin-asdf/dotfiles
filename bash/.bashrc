@@ -144,9 +144,16 @@ PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
 
-_bb_tasks() {
-    COMPREPLY+=(`bb tasks |tail -n +3 |cut -f1 -d ' '`)
-}
 
-# complete files as well
-complete -f -F _bb_tasks bb
+# babashka tasks completer
+
+_bb_complete() {
+    BB_TASKS=$(bb tasks|bb -io '(->> *input* (drop 2) (map #(-> % (str/split #" ") first)))')
+    BB_HELP=$(bb help|bb -io '(->> *input* (map #(->> % (re-find #"^  ([-a-z]+)") second)) (filter some?))')
+    COMPREPLY=($(compgen -W "$BB_TASKS $BB_HELP" -- "${COMP_WORDS[$COMP_CWORD]}"))
+}
+complete -f -F _bb_complete bb # autocomplete filenames as well
+
+
+
+alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
