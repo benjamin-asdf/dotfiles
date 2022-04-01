@@ -14,3 +14,4 @@ jia https://singularitygroup.atlassian.net/browse/SG-1932
 jio https://singularitygroup.atlassian.net/issues/?filter=10339&jql=assignee%20in%20(currentUser())%20and%20status%20not%20in%20(CoderBacklog%2C%20FINISHED%2C%20RIP)%20%20AND%20project%20not%20in%20(BenTests)
 aut https://singularitygroup.atlassian.net/jira/dashboards/10067
 assm https://gitlab.botogames.com/Fedor/idlegame/-/merge_requests?scope=all&state=opened&author_username=Benj
+jnot https://start.atlassian.com/notifications
