@@ -501,7 +501,6 @@
 
 (use-package cider
   :config
-  (setq clojure-toplevel-inside-comment-form t)
   (require 'init-cider))
 
 (use-package re-jump

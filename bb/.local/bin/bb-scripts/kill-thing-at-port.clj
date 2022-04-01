@@ -5,11 +5,13 @@
 
 (shell/sh
    "kill"
-   (str/trim
-    (:out
-     (shell/sh
-      "lsof"
-      (str "-i:" (first *command-line-args*))
-      "-n"
-      "-P"
-      "-t"))))
+   (str/join
+    " "
+    (str/split-lines
+     (:out
+      (shell/sh
+       "lsof"
+       (str "-i:" (first *command-line-args*))
+       "-n"
+       "-P"
+       "-t")))))

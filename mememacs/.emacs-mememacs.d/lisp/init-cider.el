@@ -1,6 +1,7 @@
 
 (setq cider-repl-display-help-banner nil
-      cider-repl-require-ns-on-set t)
+      cider-repl-require-ns-on-set t
+      clojure-toplevel-inside-comment-form t)
 
 (add-hook
  'mememacs/escape-functions
@@ -37,7 +38,6 @@
 
   "l" '(cider-doc-map :which-key "cider doc")
   "h," #'cider-drink-a-sip
-  ;; "c"
   "k" #'cider-load-buffer
   "hh" #'cider-clojuredocs)
 
