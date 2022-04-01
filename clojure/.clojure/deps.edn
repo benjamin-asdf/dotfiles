@@ -1,0 +1,166 @@
+;; The deps.edn file describes the information needed to build a classpath.
+;;
+;; When using the `clojure` or `clj` script, there are several deps.edn files
+;; that are combined:
+;; - install-level
+;; - user level (this file)
+;; - project level (current directory when invoked)
+;;
+;; For all attributes other than :paths, these config files are merged left to right.
+;; Only the last :paths is kept and others are dropped.
+
+{
+ ;; Paths
+ ;;   Directories in the current project to include in the classpath
+
+ ;; :paths ["src"]
+
+ ;; External dependencies
+
+ :deps {org.clojure/clojure {:mvn/version "1.11.0"}}
+
+ ;; :deps
+
+ ;; {com.billpiel/sayid {:mvn/version "0.1.0"}}
+
+
+ ;; Aliases
+ ;;   resolve-deps aliases (-R) affect dependency resolution, options:
+ ;;     :extra-deps - specifies extra deps to add to :deps
+ ;;     :override-deps - specifies a coordinate to use instead of that in :deps
+ ;;     :default-deps - specifies a coordinate to use for a lib if one isn't found
+ ;;   make-classpath aliases (-C) affect the classpath generation, options:
+ ;;     :extra-paths - vector of additional paths to add to the classpath
+ ;;     :classpath-overrides - map of lib to path that overrides the result of resolving deps
+
+ :aliases {
+           ;; :deps {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.11.922"}}}
+           ;; :test {:extra-paths ["test"]}
+
+           ;; clojure -M:env/dev
+           :env/dev
+           {:extra-paths ["dev"]}
+
+           ;; alpha state software as API has not been finalized however the code works reliably
+           ;; Latest commit on add-lib3 branch, don't update with :project/outdated
+           ;; Set logging implementation to no-operation
+           :lib/hotload
+           {:extra-deps {org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha"
+                                                       :git/sha     "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}
+                         org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}}
+
+
+           :new {:extra-deps {com.github.seancorfield/clj-new {:git/tag "v0.4.9"}}
+                 :exec-fn clj-new/create
+                 :exec-args {:template "app"}}
+
+           :new-app
+           {:extra-deps
+            {org.rssys/apptemplate {:git/tag "0.1.0"
+                                    :git/sha "9e5d0e2"
+                                    :git/url "https://github.com/redstarssystems/apptemplate.git"}}
+            ;; :main-opts ["-Tnew" "create"]
+            }
+
+           ;; find-deps - fuzzy search Maven & Clojars and add deps to deps.edn
+           ;; https://github.com/hagmonk/find-deps
+           ;; clojure -M:search/libraries http-kit  # fuzzy search for dependency
+           ;; clojure -M:search/libraries http-kit ring compojure # multiple deps
+           ;; clojure -M:search/libraries --format:merge http-kit # merge dep into deps.edn file
+           :search/libraries
+           {:extra-deps
+            {find-deps/find-deps
+             {:git/url "https://github.com/hagmonk/find-deps"
+              :sha     "9bf23a52cb0a8190c9c2c7ad1d796da802f8ce7a"}}
+            :main-opts ["-m" "find-deps.core"]}
+
+           :search/unused-vars
+           ;; Carve - search through code for unused vars and remove them
+           ;; clojure -M:search/unused-vars --opts '{:paths ["src" "test"]}'
+           {:extra-deps {borkdude/carve
+                         {:git/url "https://github.com/borkdude/carve"
+                          :sha     "df552797a198b6701fb2d92390fce7c59205ea77"}}
+            :main-opts  ["-m" "carve.main"]}
+
+
+           ;; Portal
+           ;; Navigate data - edn, json, transit
+           ;; https://github.com/djblue/portal
+
+           :inspect/portal-cli
+           {:extra-deps {djblue/portal {:mvn/version "0.21.2"}}}
+
+           :inspect/portal-web
+           {:extra-deps {djblue/portal             {:mvn/version "0.21.2"}
+                         org.clojure/clojurescript {:mvn/version "1.10.844"}}
+            :main-opts  ["-m" "cljs.main"]}
+
+           :inspect/portal-node
+           {:extra-deps {djblue/portal             {:mvn/version "0.21.2"}
+                         org.clojure/clojurescript {:mvn/version "1.10.844"}}
+            :main-opts  ["-m" "cljs.main" "-re" "node"]}
+
+
+           ;; REBL Data browser - TO DEPRECATE
+           ;; https://github.com/practicalli/clojure-deps-edn#cognitect-rebl
+           ;; http://practicalli.github.io/clojure/alternative-tools/clojure-tools/cognitect-rebl.html
+           ;; Requires Clojure 1.10 or greater
+           ;; Requires Cognitect dev-tools https://cognitect.com/dev-tools/index.html
+           ;; :inspect/rebl-java8   (Oracle JDK 8 only)
+           ;; :inspect/rebl         (Any JDK 11 distribution - tested with OpenJDK)
+
+           :inspect/rebl
+           {:extra-deps {com.cognitect/rebl          {:mvn/version "0.9.241"}
+                         org.clojure/core.async      {:mvn/version "1.3.618"}
+                         org.openjfx/javafx-fxml     {:mvn/version "11.0.1"}
+                         org.openjfx/javafx-controls {:mvn/version "11.0.1"}
+                         org.openjfx/javafx-swing    {:mvn/version "11.0.1"}
+                         org.openjfx/javafx-base     {:mvn/version "11.0.1"}
+                         org.openjfx/javafx-web      {:mvn/version "11.0.1"}
+                         ;; deps for file datafication (REBL 0.9.149 or later)
+                         org.clojure/data.csv        {:mvn/version "1.0.0"}
+                         org.clojure/data.json       {:mvn/version "2.4.0"}
+                         org.yaml/snakeyaml          {:mvn/version "1.28"}}
+            :main-opts  ["-m" "cognitect.rebl"]}
+
+           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+           ;; Test runners
+
+           ;; Cognitect test-runner
+           ;; https://github.com/cognitect-labs/test-runner
+           ;; clojure -X:test/cognitect
+           :test/cognitect
+           {:extra-paths ["test"]
+            :extra-deps  {io.github.cognitect-labs/test-runner
+                          {:git/tag "v0.5.0" :git/sha "b3fd0d2"}}
+            :main-opts   ["-m" "cognitect.test-runner"]
+            :exec-fn cognitect.test-runner.api/test}
+
+
+           :ion-dev
+           {:deps {org.clojure/clojure #:mvn{:version "1.10.3"},
+                   com.datomic/ion-dev {:mvn/version "1.0.298"}}
+            :main-opts ["-m" "datomic.ion.dev"]}
+
+
+           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+           ;; Linting/ static analysis
+
+           ;; clj-kondo - comprehensive and fast linter
+           ;; https://github.com/borkdude/clj-kondo/
+           :lint/clj-kondo
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2022.02.09"}}
+            :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
+
+
+           }
+
+ ;; Provider attributes
+
+ ;; :mvn/repos {
+ ;;   "central" {:url "https://repo1.maven.org/maven2/"}
+ ;;   "clojars" {:url "https://repo.clojars.org/"}
+ ;; }
+
+ :mvn/repos
+ {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}}
