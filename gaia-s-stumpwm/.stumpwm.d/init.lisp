@@ -38,8 +38,13 @@ Load a file that re-defines swank and then calls it."
 
 (defcommand browser () ()
   (run-or-raise "qutebrowser" '(:class "qutebrowser")))
-;; make a group
+
+;; todo make a group
 (define-key *top-map* (kbd "s-u") "browser")
+
+(defcommand slack () ()
+  (run-or-raise "slack" '(:class "Slack")))
+(define-key *top-map* (kbd "s-s") "slack")
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
@@ -51,13 +56,13 @@ Load a file that re-defines swank and then calls it."
  "[^B%n^b] %C")
 
 (load-module "pass")
-
 (define-key *top-map* (kbd "s-a") "pass-copy")
+
 (defcommand kill-unclutter () ()
   (run-shell-command "pkill unclutter"))
-
 (defcommand start-unclutter () ()
   (run-shell-command "unclutter &"))
+
 (define-interactive-keymap
     normie-mode
     (:on-enter #'kill-unclutter
@@ -111,5 +116,5 @@ windows of the same class as the current window."
 (comment
  (screen-windows (current-screen))
  (setf *deny-raise-request* nil *deny-map-request* nil)
- (etf *debug-level* 1)
+ (setf *debug-level* 1)
  (redirect-all-output (data-dir-file "output" "log")))
