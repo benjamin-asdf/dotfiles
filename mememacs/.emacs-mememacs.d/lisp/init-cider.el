@@ -8,6 +8,13 @@
    (when (in major-mode 'cider-mode 'cider-repl-mode)
      (cider-macroexpand-undo))))
 
+(add-hook
+ 'cider-connected-hook
+ (lambda ()
+   (message
+    (funcall
+     cider-connection-message-fn))))
+
 (defun mememacs/cider-macroexpand-at-place ()
   (interactive)
   (lispy-forward 1)
@@ -31,8 +38,9 @@
   "l" '(cider-doc-map :which-key "cider doc")
   "h," #'cider-drink-a-sip
   ;; "c"
-
+  "k" #'cider-load-buffer
   "hh" #'cider-clojuredocs)
+
 
 (general-def
   :keymaps mm/cider-mode-maps

@@ -21,7 +21,7 @@ These configuration options are supported:
     * :require-match - Require matches when completing (def: nil)
     * :prompt - The prompt string shown in the minibuffer"
   (barf-if-buffer-read-only)
-  (cl-letf* ((config (alist-get #'consult-completion-in-region consult--read-config))
+  (cl-letf* ((config (consult--customize-get #'consult-completion-in-region))
              ;; Overwrite both the local and global value of `completion-styles', such that the
              ;; `completing-read' minibuffer sees the overwritten value in any case. This is
              ;; necessary if `completion-styles' is buffer-local.
@@ -35,6 +35,7 @@ These configuration options are supported:
                               (plist-get config :preview-key)
                             consult-preview-key))
              (initial (buffer-substring-no-properties start end))
+	     (initial (concat initial " "))
              (metadata (completion-metadata initial collection predicate))
              (threshold (or (plist-get config :cycle-threshold) (completion--cycle-threshold metadata)))
              (all (completion-all-completions initial collection predicate (length initial)))
@@ -50,8 +51,8 @@ These configuration options are supported:
                 completion-extra-properties)))
     ;; error if `threshold' is t or the improper list `all' is too short
     (if (and threshold
-	     (or (not (consp (ignore-errors (nthcdr threshold all))))
-		 (and completion-cycling completion-all-sorted-completions)))
+             (or (not (consp (ignore-errors (nthcdr threshold all))))
+                 (and completion-cycling completion-all-sorted-completions)))
         (completion--in-region start end collection predicate)
       (let* ((limit (car (completion-boundaries initial collection predicate "")))
              (category (completion-metadata-get metadata 'category))
@@ -107,11 +108,11 @@ These configuration options are supported:
                                                 (with-current-buffer buffer
                                                   (apply collection args)))
                                             collection)
-                                          predicate require-match (concat initial " "))))))))))
+                                          predicate require-match initial)))))))))
         (if completion
             (progn
-              (delete-region start end)
-              (insert (substring-no-properties completion))
+              ;; completion--replace removes properties!
+              (completion--replace start end (setq completion (concat completion)))
               (when-let (exit (plist-get completion-extra-properties :exit-function))
                 (funcall exit completion
                          ;; If completion is finished and cannot be further completed,
@@ -121,8 +122,5 @@ These configuration options are supported:
               t)
           (message "No completion")
           nil)))))
-
-
-
 
 (provide 'patch-consult)
