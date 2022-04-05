@@ -24,12 +24,6 @@
 ;;; Timeout before echoing the prefix of an unfinished keystroke.
 (setq echo-keystrokes 0.5)
 
-;;; Remember last cursor position.
-(save-place-mode)
-;;; When the daemon is killed abruptly, places are not saved. Adding this hook
-;;; allows to save places at a strategic moment.
-(add-hook 'before-save-hook 'save-place-kill-emacs-hook)
-
 ;;; Recent files.
 (setq recentf-max-saved-items 40)
 
@@ -57,30 +51,7 @@
 ;;; Enable all disabled commands.
 (setq disabled-command-function nil)
 
-;;; Print buffer size in mode line.
-(size-indication-mode 1)
-
-;;; Display defun in mode line.
 ;; (which-function-mode)
-
-;;; No need when we have a status bar.
-;; (display-time)
-;; (setq display-time-day-and-date t
-;;       display-time-24hr-format t
-;;       display-time-default-load-average nil)
-
-;;; Just like time, no need when we have a status bar.
-;; (display-battery-mode)
-;;; TODO: Battery status (%b) does not work properly.
-;; (setq battery-mode-line-format "[%p%%%b %t]")
-
-;;; Emacs-nox does not display a fringe after the linum: Setting linum-format in
-;;; linum-before-numbering-hook is not the right approach as it will change the
-;;; type of linum-format in the middle. See linum-update-window.
-;;; See http://stackoverflow.com/questions/3626632/right-align-line-numbers-with-linum-mode
-;;; and http://stackoverflow.com/questions/3626632/right-align-line-numbers-with-linum-mode.
-;;; The complexity is not worth the benefit.
-
 
 ;;; Kill whole line including \n.
 (setq kill-whole-line t)
@@ -117,23 +88,6 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;; (setq sentence-end-double-space nil)
 
-
-;;; Windmove mode
-;;; By default, it allows easy window switching with Shift+arrows. I like to
-;;; stick to the home-row, but to avoid shadowing other binding I exceptionaly use
-;;; 'super' (normally reserved to the WM).
-;; (when (fboundp 'windmove-default-keybindings)
-;;   (ambrevar/global-set-keys
-;;    "s-h" 'windmove-left
-;;    "s-j" 'windmove-down
-;;    "s-k" 'windmove-up
-;;    "s-l" 'windmove-right))
-;; (ambrevar/global-set-keys
-;;  "s-o" 'delete-other-windows
-;;  ;; "s-w" 'other-window
-;;  "s-d" 'delete-window)
-
-
 ;; shr
 (setq shr-width (string-to-number (or (getenv "MANWIDTH") "80")))
 
@@ -145,12 +99,8 @@
 (setq show-paren-when-point-inside-paren t)
 (setq show-paren-style 'parenthesis)
 
-
 ;;; Electric Pairs to auto-complete () [] {} "" etc. It works on regions.
 (electric-pair-mode)
-
-;;; Spawn terminal shortcut: WM's binding is s+<return>.
-(global-set-key (kbd "C-x M-<return>") 'spawn-terminal)
 
 
 ;;; Compilation bindings and conveniences.
@@ -272,10 +222,7 @@
 
 ;; todo enforece /n prog mode
 
-
 (setf bookmark-set-fringe-mark nil)
-
 (setf shell-file-name "/bin/bash")
-
 
 (provide 'main)

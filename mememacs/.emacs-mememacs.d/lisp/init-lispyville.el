@@ -18,6 +18,7 @@ replace the expression with its result."
     (lispy-meta-return)))
 
 (setf
+ lispy-eval-display-style 'overlay
  lispyville-motions-put-into-special t
  lispyville-commands-put-into-special t
  lispy-no-permanent-semantic t
