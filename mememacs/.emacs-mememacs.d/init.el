@@ -491,10 +491,6 @@
     :keymaps '(prog-mode-map)
     "se" #'string-edit-at-point))
 
-
-;; TODO
-;; add emacs-dir/backups to known projects
-
 (use-package ace-window
   :config
   (setq aw-keys '(?k ?j ?h ?n ?i ?a ?s ?d ?l ?e ?r ?t)
@@ -519,7 +515,6 @@
   (require 'init-flycheck))
 
 (use-package flycheck-clj-kondo)
-;; todo binds
 
 (use-package geiser
   :when mememacs/guile-enabled)
@@ -546,17 +541,11 @@
   (add-hook
    'mememacs/escape-functions
    (defun mm/so-remove-all ()
-       (call-interactively #'symbol-overlay-remove-all)))
+     (call-interactively #'symbol-overlay-remove-all)))
 
   (mememacs/leader-def
     "so" '(:ignore t :which-key "symbol overlay")
-    "soo" #'symbol-overlay-put
-    "son" #'symbol-overlay-switch-forward
-    "sop" #'symbol-overlay-switch-backward
-    "som" #'symbol-overlay-mode
-    "soh" (defun show-symbol-overlay-map ()
-	    (interactive)
-	    (which-key-show-keymap 'symbol-overlay-map)))
+    "soo" #'symbol-overlay-put)
 
   (general-def
     'symbol-overlay-map
@@ -627,25 +616,6 @@
 	 map)
      :which-key "apropos"))
 
-;; (use-package yasnippet
-;;   :defer 20
-;;   :config
-;;   (add-to-list
-;;    'yas-snippet-dirs
-;;    (concat mememacs/config-dir "snippets"))
-;;   (add-hook
-;;    'prog-mode-hook
-;;    #'yas-minor-mode-on)
-;;   (add-to-list
-;;    'hippie-expand-try-functions-list
-;;    #'yas-expand-from-trigger-key))
-
-
-;; (use-package yasnippet-snippets
-;;   :after yasnippet
-;;   :config
-;;   (yasnippet-snippets-initialize))
-
 (with-eval-after-load
     'sh-script
   (mememacs/comma-def
@@ -661,15 +631,13 @@
 (use-package org
   :defer t)
 
-
 (use-package org-roam
   :init (setq org-roam-v2-ack t)
   :config (require 'init-org-roam))
 (use-package markdown-mode)
-;; try vc-backup
-;; and then replace every other backup file system we have
 
-(use-package backup-each-save)
+(use-package backup-each-save
+  :hook after-save)
 
 (use-package vterm
   :config
@@ -684,7 +652,7 @@
     "bash-completion"
     "BASH completion hook")
   (add-hook 'shell-dynamic-complete-functions
-            'bash-completion-dynamic-complete))
+            #'bash-completion-dynamic-complete))
 
 (use-package mu4e
   :ensure nil
@@ -733,17 +701,6 @@
 
 ;; (use-package org-projectile)
 
-;; todo company remove icons
-
 ;; figure out where the code is for guix packages
-
-
-;; (general-def)
-
-;; (use-package jdee)
-
-;; fix helm ag "command attempted to use minibuffer"
-
-;; todo nyxt auto clone github page
 
 ; pprint
