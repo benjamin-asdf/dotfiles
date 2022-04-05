@@ -1,7 +1,10 @@
 
 (setq cider-repl-display-help-banner nil
       cider-repl-require-ns-on-set t
-      clojure-toplevel-inside-comment-form t)
+      clojure-toplevel-inside-comment-form t
+
+      cider-clojure-cli-aliases
+      "lib/hotload")
 
 (add-hook
  'mememacs/escape-functions
