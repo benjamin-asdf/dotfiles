@@ -86,7 +86,11 @@
 (use-package undo-tree
   :ensure t
   :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (setf undo-tree-auto-save-history nil)
+  (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
+  (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
+  (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook))
 
 (use-package evil
   :init
@@ -657,9 +661,6 @@
 (use-package org
   :defer t)
 
-;; (use-package org-jira
-;;   :defer t
-;;   :config (require 'init-org-jira))
 
 (use-package org-roam
   :init (setq org-roam-v2-ack t)
@@ -720,8 +721,6 @@
           ("/[Gmail]/All Mail"  . ?a))))
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
-
-(require 'corgi-emacs-lisp)
 
 (require 'late-bindings)
 
