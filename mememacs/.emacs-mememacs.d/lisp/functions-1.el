@@ -16,10 +16,11 @@
    (expand-file-name
     (concat mememacs/config-dir "init.el"))))
 
-
 (defun mememacs/kill-buffer-name ()
   (interactive)
-  (kill-new (buffer-name)))
+  (let ((s (buffer-name)))
+    (kill-new s)
+    (message "%s"s)))
 
 (mememacs/leader-def
   "by" #'mememacs/kill-buffer-name)

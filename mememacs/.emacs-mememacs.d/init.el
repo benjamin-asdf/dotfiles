@@ -147,6 +147,8 @@
    'mememacs/escape-functions
    #'evil-mc-undo-all-cursors)
 
+
+
   (general-def
     :states '(normal visual motion)
     :keymaps '(evil-mc-key-map)
@@ -184,10 +186,10 @@
   (add-hook
    'mememacs/escape-functions
    (defun mm/maybe-delete-mc-cursors ()
-       (when (and
-	      evil-mc-cursor-state
-	      (eq evil-state 'normal))
-	 (evil-mc-undo-all-cursors)))))
+     (when (and
+	    evil-mc-cursor-state
+	    (eq evil-state 'normal))
+       (evil-mc-undo-all-cursors)))))
 
 (use-package debug
   :ensure nil
@@ -515,6 +517,13 @@
   (require 'init-flycheck))
 
 (use-package flycheck-clj-kondo)
+
+(use-package macrostep-geiser
+  :after cider-mode
+  :after geiser-mode
+  :config
+  (add-hook 'cider-mode-hook #'macrostep-geiser-setup)
+  (add-hook 'geiser-mode #'macrostep-geiser-setup))
 
 (use-package geiser
   :when mememacs/guile-enabled)

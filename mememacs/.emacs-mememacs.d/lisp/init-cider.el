@@ -19,11 +19,6 @@
     (funcall
      cider-connection-message-fn))))
 
-(defun mememacs/cider-macroexpand-at-place ()
-  (interactive)
-  (lispy-forward 1)
-  (forward-line 1)
-  (cider-macroexpand-1))
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -34,7 +29,7 @@
 (mememacs/comma-def
   :keymaps
   '(clojure-mode-map cider-repl-mode clojurescript-mode)
-  "m" #'mememacs/cider-macroexpand-at-place
+  "m" #'macrostep-expand
 
   "e" '(cider-eval-commands-map
 	:which-key "eval")
