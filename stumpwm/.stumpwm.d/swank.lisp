@@ -4,7 +4,7 @@
 ;; Load swank
 ;; (ql:quickload :swank)
 
-(load "/home/benj/dotfiles/mememacs/.emacs-mememacs.d/straight/repos/slime/swank-loader.lisp")
+(load "~/.emacs-mememacs.d/straight/repos/slime/swank-loader.lisp")
 
 (swank-loader:init)
 
