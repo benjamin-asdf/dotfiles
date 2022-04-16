@@ -2,14 +2,6 @@
 
 (require 'lispy)
 
-(defun ambrevar/lispy-eval (&optional replace)
-  "Like `lispy-eval' but if called with a prefix argument,
-replace the expression with its result."
-  (interactive "P")
-  (if replace
-      (lispy-eval-and-replace)
-    (call-interactively #'lispy-eval)))
-
 (defun mememacs/lispy-insert ()
   "Call `lispy-space' with prefix arg 4 if special, `lispy-meta-return' otherwise"
   (interactive)
@@ -115,7 +107,6 @@ replace the expression with its result."
   (kbd "s-<backspace>") #'lispyville-delete-whole-line
 
   (kbd "M-L") #'lispy-move-right
-  (kbd "C-x C-e") #'ambrevar/lispy-eval
   (kbd "S-C-<return>") #'lispy-join
 
 
@@ -229,7 +220,6 @@ replace the expression with its result."
 
 (mememacs/local-def
   :keymaps '(lispy-mode-map)
-  "RET" #'ambrevar/lispy-eval
   "b" #'lispy-back
   "l" #'mm/lispyville-out-and-eval
   "," #'lispy-kill-at-point

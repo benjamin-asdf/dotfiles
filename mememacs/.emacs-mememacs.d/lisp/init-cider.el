@@ -2,7 +2,7 @@
 (setq cider-repl-display-help-banner nil
       cider-repl-require-ns-on-set t
       clojure-toplevel-inside-comment-form t
-
+      cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-clojure-cli-aliases
       "lib/hotload")
 
@@ -87,46 +87,21 @@
 ;;      cider-jack-in-dependencies
 ;;      (assoc-delete-all "nrepl" lispy-cider-jack-in-dependencies #'equal)))))
 
-;; jet -------------------
-
-(defun jet-on-region (beg end)
-  (interactive "r")
-  (let ((s (buffer-substring beg end)))
-    (with-current-buffer-window
-	"jet-edn"
-	nil nil
-      (clojure-mode)
-      (process-send-string
-       (start-process
-	"jet"
-	(current-buffer)
-	"jet"
-	"--from"
-	"json"
-	"--pretty"
-	"-k"
-	"-")
-       s))))
-
-(defun jet-send-query ()
-  (interactive)
-  (let ((in-file (buffer-file-name)))
-    (pop-to-buffer
-     (process-buffer
-      (start-process-shell-command
-       "jet"
-       (get-buffer-create "jet")
-       (format
-	"jet -k -i json < %s -q '%s'"
-	in-file
-	(with-current-buffer
-	    (get-buffer-create "jet-query")
-	  (clojure-mode)
-	  (pop-to-buffer
-	   (current-buffer))
-	  (buffer-string))))))))
-
 ;; --------------------------------------------
+
+(defun lein-deps-to-deps (beg end)
+  (interactive "r")
+  (let ((end (save-excursion
+	       (goto-char end)
+	       (point-marker))))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward
+	      "\\[\\(.+?\\)\\s-\\(\".+?\"\\)\\]"
+	      end
+	      t)
+	(replace-match
+	 "\\1 {:mvn/version \\2}")))))
 
 
 (mememacs/local-def
@@ -157,28 +132,10 @@
 ;; so we do not use lispy clojure at all
 
 
-(defun mememacs/bb-server ()
-  (interactive)
-  (start-process
-   "*bb-server*"
-   "*bb-server*"
-   "bb"
-   "nrepl-server"
-   "1667"))
-
-
-(defun mememacs/bb-cider ()
-  (interactive)
-  (cider-connect '(:host "localhost" :port 1667)))
-
-
 ;; ---- functions
 
 
-(defun mememacs/cider-A-build ()
-  (interactive)
-  (let ((cider-clojure-cli-global-options "-A:build"))
-    (cider)))
+
 
 
 ;;  --- portal

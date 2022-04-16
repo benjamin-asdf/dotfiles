@@ -17,7 +17,7 @@
 
  ;; External dependencies
 
- :deps {org.clojure/clojure {:mvn/version "1.11.0"}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}}
 
  ;; :deps
 
@@ -50,7 +50,8 @@
                          org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}}
 
 
-           :new {:extra-deps {com.github.seancorfield/clj-new {:git/tag "v0.4.9"}}
+           :new {:extra-deps {com.github.seancorfield/clj-new {:git/sha "57671a5a673082f624b1655b8e3bc4fdefa5cc73"
+                                                               :git/url "https://github.com/seancorfield/clj-new.git"}}
                  :exec-fn clj-new/create
                  :exec-args {:template "app"}}
 

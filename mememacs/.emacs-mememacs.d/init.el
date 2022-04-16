@@ -265,7 +265,7 @@
     "gs" #'magit-status
     "gl" #'magit-log
     "gd" #'magit-diff
-    "gC" #'magit-clone
+    "gc" #'magit-clone
     "gu" #'magit-fetch
     "gU" #'magit-pull)
 
@@ -518,15 +518,13 @@
 
 (use-package flycheck-clj-kondo)
 
+(use-package geiser
+  :when mememacs/guile-enabled)
+
 (use-package macrostep-geiser
-  :after cider-mode
-  :after geiser-mode
   :config
   (add-hook 'cider-mode-hook #'macrostep-geiser-setup)
   (add-hook 'geiser-mode #'macrostep-geiser-setup))
-
-(use-package geiser
-  :when mememacs/guile-enabled)
 
 (use-package geiser-guile
   :when mememacs/guile-enabled
