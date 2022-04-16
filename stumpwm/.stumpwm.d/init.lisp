@@ -51,10 +51,7 @@ Load a file that re-defines swank and then calls it."
   (run-or-pull "emacs" '(:class "Emacs")))
 (define-key *top-map* (kbd "s-E") "pull-emacs")
 
-(defcommand lock () ()
-  (run-shell-command "best-lock.sh"))
 (define-key *top-map* (kbd "s-9")  "lock")
-
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
 
@@ -65,11 +62,14 @@ Load a file that re-defines swank and then calls it."
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
-(load-module
- "cpu")
-(etf
+(load-module "cpu")
+
+(setf
  *screen-mode-line-format*
  "[^B%n^b] %C")
+
+(defcommand lock () ()
+  (run-shell-command "best-lock.sh"))
 
 (load-module "pass")
 (define-key *top-map* (kbd "s-a") "pass-copy")
@@ -99,9 +99,7 @@ Load a file that re-defines swank and then calls it."
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:class "Unity-editor") *deny-map-request*)
 
-(defun select-windows-with-class ()
-
-  )
+(defun select-windows-with-class ())
 
 
 (defcommand (pull-from-windowlist-curr-class tile-group)
@@ -143,4 +141,8 @@ windows of the same class as the current window."
  (screen-windows (current-screen))
  (setf *deny-raise-request* nil *deny-map-request* nil)
  (setf *debug-level* 1)
- (redirect-all-output (data-dir-file "output" "log")))
+ (redirect-all-output (data-dir-file "output" "log"))
+ (setf *load-path* nil)
+ (init-load-path "/home/benj/.stumpwm.d/modules/")
+ (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
+ (list-modules))
