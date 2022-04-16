@@ -48,11 +48,10 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://search.ononoki.org/"
-# c.url.default_page = "https://searx.fmac.xyz/"
+c.url.default_page = "https://paulgo.io/"
 
 c.url.searchengines = {
-    'DEFAULT': 'https://search.ononoki.org/?q={}',  # 'DEFAULT': 'https://searx.fmac.xyz/?q={}',
+    'DEFAULT': 'https://paulgo.io/?q={}',
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",
