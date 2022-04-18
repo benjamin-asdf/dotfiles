@@ -62,6 +62,8 @@ Load a file that re-defines swank and then calls it."
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
+ (setf *load-path* nil)
+ (init-load-path "/home/benj/.stumpwm.d/modules/")
 (load-module "cpu")
 
 (setf
@@ -142,7 +144,5 @@ windows of the same class as the current window."
  (setf *deny-raise-request* nil *deny-map-request* nil)
  (setf *debug-level* 1)
  (redirect-all-output (data-dir-file "output" "log"))
- (setf *load-path* nil)
- (init-load-path "/home/benj/.stumpwm.d/modules/")
  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
  (list-modules))

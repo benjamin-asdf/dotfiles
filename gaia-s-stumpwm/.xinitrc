@@ -1,6 +1,6 @@
 # Set default cursor.
 source ~/.profile
-xsetroot -cursor_name left_ptr
+setroot -cursor_name left_ptr
 xset r rate 140 155
 
 xautolock -time 4 -locker best-lock.sh &

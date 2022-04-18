@@ -49,11 +49,12 @@
   git lfs fetch && git lfs pull
 #+end_src
 
-** symlinks
+** unity project symlinks (for 2 unities)
 
 - you can make symlinks with regular `ln -s`
+- script: ./unity/.local/bin/unity/make-unity-link.sh
 
-** csc patch (without it you get compile errs)
+* csc patch (without it you get compile errs)
 
 - somebody should fix this script:
 `IdleGame/patch_csc_mac.sh`
@@ -154,3 +155,4 @@ maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-def
 ** at the time of writing I did not make airtest recording work
 honestly don't really know why you want it
 code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
+* unity/.local/bin/unity/make-unity-link.sh
