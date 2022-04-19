@@ -1,0 +1,109 @@
+* intro
+** best commands
+
+M-x (space space)
+consult-buffer (space b b )
+consult-line (space s s)
+projectile-find-file (space p f)
+
+knowing the completion framework (vertico) gives huge leverage
+
+Highlights:
+
+- type words seperated with spaces, it will build a regext that
+  combines the words (orderless style)
+- I instantly see somebody is a noob when they start typing whole long
+  words, just put something, space, put something space,
+  and filter down from what you already see in the selection
+- use M-n and M-p for history
+- use M-y to yank from kill-ring (all stuff you yanked, copied earlier)
+- use C-k to instant select a conditate
+- M-ret do delete a word
+
+
+doom uses vertico and conuslt aswell so by getting to know this you
+can grow your power as well.
+They probably have documentation.
+
+
+magit-status (, g s)
+magit is a whole little world in itself, every key is bound to git commands
+you can press l H for example to get the current reflog.
+
+because space is shadowed in some modes I also bind C-spc to everything
+and , usuall also works
+
+so in a magit-log buffer you can press `C-spc s s` to search lines.
+
+dired-jump (spc j d)
+and consult-dir (, f d)
+
+there is tutorials on using dired, can link you if you don't find it
+
+Highlights:
+- `-` to go up a parent
+- ret on a dir to go down
+- remember spc s s works
+- m to mark a file
+- after you marked a file, a bunch of commands will act on the marked files
+- R to move, D to delete, M to change mode
+- ! to make shell command
+- advanced: embark-act on a file
+
+** config, binds
+
+use , f e to jump to the memecs init file
+I either define the binds inline,
+else there is general binds in these files:
+late-bindings.el
+init-general.el
+
+help map (, h)
+
+for discovering stuff
+
+after prefix key, press C-h to get the commands in the keymap
+
+embark-binding (C-h B) to get all bindings in the current context, this time you filter for the binds instead of the command name
+
+describe-mode
+helpful-key
+
+also with M-x you get the keybinds next to the commands
+there is also  describe-variable
+
+Just jump to the code
+find-library
+or
+find-function
+
+packages usually define all their configurable stuff at the top
+of the file with `defcustom`
+
+also for discovering, search for apropos
+apropos-user-option - then say for example "magit", you  get all the
+defcustoms for magit for example
+there is for example apropos-value, it will search all variables for the
+regex you put
+
+** deeper
+
+know thy vim
+
+do not be afraid of the backtrace buffer use toggle-debug-on-error
+
+1 groth area of my config is multi cursors
+I might try to check how spacemacs and doom do it
+the thing is I want this to work well together with my lispy setup in lisp modes
+
+The most important packages are
+vertico (+ marginalia)
+consult
+embark
+
+checking their readme's is useful
+
+there is yt vids on magit, dired and such things
+https://www.youtube.com/watch?v=j-k-lkilbEs
+this guy is aligned with my style (e.g. vim binds):
+https://www.youtube.com/c/SystemCrafters/playlists

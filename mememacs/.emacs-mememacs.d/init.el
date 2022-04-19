@@ -610,18 +610,17 @@
 (general-def
     :states '(normal motion)
     ",da"
-    `(,(let ((map (make-sparse-keymap "apropos")))
-	 (general-def map
-	   "v" #'apropos-variable
-	   "V" #'apropos-value
-	   "l" #'apropos-library
-	   "L" #'apropos-local-value
-	   "d" #'apropos-documentation
-	   "D" #'apropos-documentation-property
-	   "f" #'apropos-command
-	   "u" #'apropos-user-option)
-	 map)
-     :which-key "apropos"))
+    (let ((map (make-sparse-keymap "apropos")))
+       (general-def map
+	 "v" #'apropos-variable
+	 "V" #'apropos-value
+	 "l" #'apropos-library
+	 "L" #'apropos-local-value
+	 "d" #'apropos-documentation
+	 "D" #'apropos-documentation-property
+	 "f" #'apropos-command
+	 "u" #'apropos-user-option)
+       map))
 
 (with-eval-after-load
     'sh-script
