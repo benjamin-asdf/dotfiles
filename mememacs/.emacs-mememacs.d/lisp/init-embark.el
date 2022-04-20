@@ -57,7 +57,19 @@
                (concat "/sudo:root@localhost:" file))))
 
 
-(general-def 'embark-file-map "S" #'sudo-find-file)
+(defun mememacs/dragon (file)
+  (interactive "FDragon drag and drop: ")
+  (start-process-shell-command
+   "dragon"
+   (get-buffer-create "*dragon*")
+   (concat
+    "dragon-drag-and-drop "
+    (expand-file-name file))))
+
+(general-def
+  'embark-file-map
+  "S" #'sudo-find-file
+  ">" #'mememacs/dragon)
 
 (defun mememacs-follow-shell-cmd (&optional cmd)
   "Follow CMD.

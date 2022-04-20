@@ -12,9 +12,9 @@ Highlights:
 
 - type words seperated with spaces, it will build a regext that
   combines the words (orderless style)
-- I instantly see somebody is a noob when they start typing whole long
-  words, just put something, space, put something space,
-  and filter down from what you already see in the selection
+- don't type  long words. Put something, space, put something space,
+  and filter down from what you already see in the selection.
+  Once you get it, it's absolute water
 - use M-n and M-p for history
 - use M-y to yank from kill-ring (all stuff you yanked, copied earlier)
 - use C-k to instant select a conditate
@@ -92,9 +92,8 @@ know thy vim
 
 do not be afraid of the backtrace buffer use toggle-debug-on-error
 
-1 groth area of my config is multi cursors
-I might try to check how spacemacs and doom do it
-the thing is I want this to work well together with my lispy setup in lisp modes
+1 groth area of my config is better multi cursors
+At the moment `g n` using evil-mc
 
 The most important packages are
 vertico (+ marginalia)

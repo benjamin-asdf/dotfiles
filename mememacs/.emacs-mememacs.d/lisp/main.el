@@ -17,6 +17,11 @@
 
 (defalias 'display-startup-echo-area-message (lambda ()))
 
+
+(setq frame-inhibit-implied-resize t)
+(setq ad-redefinition-action 'accept)
+(setq initial-major-mode 'fundamental-mode)
+
 ;;; In some cases, Emacs can still decide by itself to use graphical boxes.
 ;;; Force on using the minibuffer instead.
 (setq use-dialog-box nil)
