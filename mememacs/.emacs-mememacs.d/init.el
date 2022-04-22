@@ -147,8 +147,6 @@
    'mememacs/escape-functions
    #'evil-mc-undo-all-cursors)
 
-
-
   (general-def
     :states '(normal visual motion)
     :keymaps '(evil-mc-key-map)

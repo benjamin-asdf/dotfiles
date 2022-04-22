@@ -22,8 +22,15 @@
     (kill-new s)
     (message "%s"s)))
 
+;; http://stackoverflow.com/a/10216338/4869
+(defun mm/kill-whole-buffer ()
+  "Copy entire buffer to clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
 (mememacs/leader-def
-  "by" #'mememacs/kill-buffer-name)
+  "by" #'mememacs/kill-buffer-name
+  "bY" #'mm/kill-whole-buffer)
 
 (defun mememacs/lispy-eval-line ()
   (interactive)
@@ -274,10 +281,8 @@ See `eval-last-sexp'."
   "b" #'hydra-buffer/body
   "w" #'evil-window-map)
 
-(defun mm/kill-whole-buffer ()
-  (interactive)
-  (kill-new (buffer-substring-no-properties (point-min) (point-max)))
-  (message "killed whole buffer contents"))
+
+
 
 (defhydra outline-hydra ()
   ("c" #'counsel-outline :exit t)
@@ -413,5 +418,40 @@ where the file does not exist."
 (mememacs/local-def
   :keymaps '(git-commit-mode-map)
   "i" #'mm/completing-read-commit-msg)
+
+
+;; from https://www.emacswiki.org/emacs/CopyingWholeLines
+(defun mm/duplicate-line-or-region (&optional n)
+  "Duplicate current line, or region if active.
+With argument N, make N copies.
+With negative N, comment out original line and use the absolute value."
+  (interactive "*p")
+  (let ((use-region (use-region-p)))
+    (save-excursion
+      (let ((text (if use-region
+		      (buffer-substring
+		       (region-beginning)
+		       (region-end))
+		    (prog1
+			(thing-at-point 'line)
+		      (end-of-line)
+		      ;; Go to beginning of next line, or make a new one
+		      (when (< 0 (forward-line 1))
+			  (newline))))))
+	(dotimes (i (abs (or n 1)))
+	  (insert text))))
+    (unless use-region
+      (let ((pos (-
+		  (point)
+		  (line-beginning-position))))
+	(when (> 0 n)
+	    (comment-region
+	     (line-beginning-position)
+	     (line-end-position)))
+	(forward-line 1)
+	(forward-char pos)))))
+
+(mememacs/leader-def
+  "xL" #'mm/duplicate-line-or-region)
 
 (provide 'functions-1)

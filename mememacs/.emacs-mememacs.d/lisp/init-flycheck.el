@@ -24,10 +24,9 @@
   flycheck-command-map
   "f" #'flycheck-mode)
 
-
 (mememacs/local-def
   :keymaps
-  '(sh-mode-map)
+  '(sh-mode-map sql-mode-map)
   "e" flycheck-command-map)
 
 (provide 'init-flycheck)
