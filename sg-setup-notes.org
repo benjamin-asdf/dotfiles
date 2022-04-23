@@ -68,6 +68,8 @@ with 1 arg, the "Data" dir in your unity install. For example `/opt/unity/2019.4
 probably something like /home/your-user/unityhub/2019.4.16f1/Editor/Data
 if you have some default install.
 
+Hint: check in unityhub for installs to get your install path.
+
 
 * prefab merge tool (only if you work with prefabs)
 
