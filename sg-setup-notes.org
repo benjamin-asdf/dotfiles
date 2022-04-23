@@ -49,15 +49,25 @@
   git lfs fetch && git lfs pull
 #+end_src
 
-** unity project symlinks (for 2 unities)
+** unity project symlinks (if you want 2 unities)
 
 - you can make symlinks with regular `ln -s`
 - script: ./unity/.local/bin/unity/make-unity-link.sh
 
-* csc patch (without it you get compile errs)
 
-- somebody should fix this script:
-`IdleGame/patch_csc_mac.sh`
+* IMPROTANT csc patch (without it you get compile errs)
+
+!! without this you cannot compile unity !!
+
+use
+
+`IdleGame/patch_csc_linux.sh`
+
+with 1 arg, the "Data" dir in your unity install. For example `/opt/unity/2019.4.16f1/Editor/Data`
+
+probably something like /home/your-user/unityhub/2019.4.16f1/Editor/Data
+if you have some default install.
+
 
 * prefab merge tool (only if you work with prefabs)
 
