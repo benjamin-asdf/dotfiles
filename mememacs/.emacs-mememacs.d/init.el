@@ -104,6 +104,7 @@
    evil-move-cursor-back nil
    evil-move-beyond-eol t
    evil-want-fine-undo t)
+  (customize-set-variable 'evil-respect-visual-line-mode t)
 
   :config
   (evil-mode 1)
@@ -111,8 +112,7 @@
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
 
   (custom-set-variables
-   '(evil-undo-system
-     'undo-tree))
+   '(evil-undo-system 'undo-tree))
 
   (define-key evil-normal-state-map "U" #'evil-redo)
 
@@ -240,7 +240,6 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package helpful
-  :init (require 'patch-helpful)
   :config
   (mememacs/comma-def
     :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
@@ -635,7 +634,24 @@
 	(shell-command)))))
 
 (use-package org
-  :defer t)
+  :defer t
+  :config
+  (mememacs/local-def
+    :keymaps '(org-mode-map)
+    :states '(normal visual motion)
+    "t"
+    #'org-todo)
+  (add-hook
+   'org-mode-hook
+   (lambda ()
+     (setq-local
+      electric-pair-inhibit-predicate
+      `(lambda
+	 (c)
+	 (if (char-equal c ?<)
+	     t
+	   (,electric-pair-inhibit-predicate
+	    c)))))))
 
 (use-package org-roam
   :init (setq org-roam-v2-ack t)

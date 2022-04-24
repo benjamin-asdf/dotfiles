@@ -62,8 +62,9 @@ See `eval-last-sexp'."
 (general-def
   :states '(normal motion)
   "," nil
-  ",e" '(:ignore t :which-key "eval")
-  ",d" '(:ignore t :which-key "devel")
+  ",e" '(:ignore t)
+  ",d" '(:ignore t)
+  ",ed" #'eval-defun
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dr" #'trace-function
