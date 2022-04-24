@@ -6,18 +6,11 @@
 ;;; To find the variable associated to a currently used color, place the cursor
 ;;; on it and call `describe-face'. Or browse the `list-faces-display'.
 
-
-;; (use-package gruvbox-theme
-;;   :config
-;;   (load-theme 'gruvbox t))
-
 ;; need to set mode line as well
 ;; and tap seperator
 
 ;; https://imagecolorpicker.com/
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
-
-;; todo regex builder faces
 
 (defconst mindsape/woodsmoke		 "#17161e")
 (defconst mindsape/woodsmoke-tint-1	 "#2e2d35")
@@ -313,14 +306,11 @@
 (dolist (hook '(prog-mode-hook text-mode-hook))
   (add-hook hook 'ambrevar/fontify-comment-tag))
 
-
 ;;; Font size
 (when (fboundp 'tool-bar-mode)
   ;; (set-face-attribute 'default nil :height 100)
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12")))
 
-
-(setq-default truncate-lines t)
 (global-visual-line-mode)
 
 (provide 'visual)

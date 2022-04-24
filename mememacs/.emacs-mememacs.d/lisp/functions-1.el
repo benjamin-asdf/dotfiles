@@ -1,9 +1,4 @@
-;;; Functions-1
-
-;;; -*- lexical-binding: t; -*-
-
-(defvar mememacs/config-dir
-  (expand-file-name "~/.emacs-mememacs.d/"))
+;;; Functions-1  -*- lexical-binding: t; -*-
 
 (defun mememacs/native-compile-config ()
   (interactive)
@@ -13,8 +8,7 @@
   "Open current init file."
   (interactive)
   (find-file
-   (expand-file-name
-    (concat mememacs/config-dir "init.el"))))
+   (expand-file-name "init.el" mememacs/config-dir)))
 
 (defun mememacs/kill-buffer-name ()
   (interactive)
@@ -50,10 +44,6 @@
 	(kill-buffer-and-window)))
   (message ""))
 
-(defun mememacs/mkstr (obj)
-  (with-output-to-string
-    (print obj)))
-
 (defun mememacs/eval-last-sexp-dwim (arg)
   "Eval last sexp.
 If it is a quoted symbol, eval symbol value instead.
@@ -62,7 +52,9 @@ See `eval-last-sexp'."
   (let ((s (sexp-at-point)))
     (if (eq 'quote (car-safe s))
 	(with-temp-buffer
-	  (insert (mememacs/mkstr (cadr s)))
+	  (insert
+	   (with-output-to-string
+	     (print (cadr s))))
 	  (goto-char (point-max))
 	  (eval-last-sexp arg))
       (eval-last-sexp arg))))
@@ -94,17 +86,7 @@ See `eval-last-sexp'."
        map)
     :which-key "emacs lisp"))
 
-(defun mememacs/ghetto-kill-and-open-buffer ()
-  "Kill buffer and open again."
-  (interactive)
-  (when-let ((p (point))
-	     (f (buffer-file-name)))
-    (kill-this-buffer)
-    (find-file f)
-    (goto-char p)))
-
 (mememacs/leader-def
-  "bR" #'mememacs/ghetto-kill-and-open-buffer
   "br" #'revert-buffer)
 
 (defvar mememacs/escape-functions '())
@@ -198,7 +180,6 @@ See `eval-last-sexp'."
   "b"
   #'mememacs/process-menu-switch-to-buffer)
 
-
 (defun mememacs/create-script* (file bang setup)
   (find-file file)
   (insert bang)
@@ -225,7 +206,6 @@ See `eval-last-sexp'."
   :keymaps 'dired-mode-map
   "ns" #'mememacs/create-script
   "nS" #'mememacs/create-bb-script)
-
 
 (defun mememacs/toggle-debug-on-quit (arg)
   (interactive "P")
@@ -281,9 +261,6 @@ See `eval-last-sexp'."
   "b" #'hydra-buffer/body
   "w" #'evil-window-map)
 
-
-
-
 (defhydra outline-hydra ()
   ("c" #'counsel-outline :exit t)
   ("J" #'outline-forward-same-level)
@@ -323,21 +300,9 @@ See `eval-last-sexp'."
   "jK" #'scroll-hydra/lambda-K)
 
 (mememacs/comma-def
-  "fr" (defun mm/find-in-repos ()
-	 (interactive)
-	 (let ((default-directory "~/repos/"))
-	   (call-interactively #'find-file)))
-
-  "f" '(:ignore t :which-key "f..")
+  "f" '(:ignore t)
   "fs" #'save-buffer
   "ff" #'consult-find
-
-  "fh" (defun dired-jump-home ()
-	 (interactive)
-	 (dired-goto-file "~/")
-	 (let ((default-directory "~/")
-	       (buffer-file-name nil))
-	   (dired-jump)))
 
   "," (defun call-C-c-C-c ()
 	(interactive)
@@ -347,9 +312,9 @@ See `eval-last-sexp'."
 	(interactive)
 	(call-interactively (key-binding (kbd "C-c C-k"))))
 
-  "x"  `(,(key-binding (kbd "C-x")) :which-key "C-x")
+  "x"  `(,(key-binding (kbd "C-x")))
 
-  "c" `(,(key-binding (kbd "C-c") :which-key "C-c")))
+  "c" `(,(key-binding (kbd "C-c"))))
 
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
@@ -380,11 +345,16 @@ where the file does not exist."
       (current-buffer))
      (buffer-string))))
 
+
+
 (general-def
-  "C-x k" (defun mememacs/kill-minibuff-contents ()
-	    (interactive)
-	    (kill-new (minibuffer-contents))
-	    (keyboard-quit)))
+  "C-x k"
+  (defun mememacs/kill-minibuff-contents ()
+    (interactive)
+    (kill-new
+     (minibuffer-contents))
+    (keyboard-quit)))
+
 
 (general-def
   :keymaps '(emacs-lisp-mode-map)
