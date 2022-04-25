@@ -64,7 +64,6 @@ See `eval-last-sexp'."
   "," nil
   ",e" '(:ignore t)
   ",d" '(:ignore t)
-  ",ed" #'eval-defun
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry
   ",dr" #'trace-function
@@ -72,20 +71,6 @@ See `eval-last-sexp'."
   ",dq" #'toggle-debug-on-quit
   ",dx" #'mememacs/cancel-debugs)
 
-(mememacs/comma-def
-  :keymaps '(emacs-lisp-mode-map
-	     lisp-interaction-mode-map)
-  "e"
-  `(,(let ((map (make-sparse-keymap "emacs-lisp")))
-       (general-def
-	 map
-	 "l" #'mememacs/lispy-eval-line
-	 "d" #'eval-defun
-	 "b" #'eval-buffer
-	 "D" #'edebug-defun
-	 "e" #'mememacs/eval-last-sexp-dwim)
-       map)
-    :which-key "emacs lisp"))
 
 (mememacs/leader-def
   "br" #'revert-buffer)

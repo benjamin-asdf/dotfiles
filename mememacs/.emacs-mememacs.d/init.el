@@ -233,6 +233,7 @@
 (require 'main)
 (require 'visual)
 (require 'functions-1)
+(require 'init-emacs-lisp)
 
 
 
@@ -241,9 +242,6 @@
 
 (use-package helpful
   :config
-  (mememacs/comma-def
-    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
-    "hh" #'helpful-at-point)
   (mememacs/leader-def "hk" #'helpful-key)
   (mememacs/comma-def
     :states '(normal visual motion)
@@ -432,8 +430,13 @@
 	"sbcl")
   (defun mm/add-slime-filename-cap ()
     (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
+  (defun mm/slime-simple-c-a-p ()
+    (setf
+     completion-at-point-functions
+     slime-completion-at-point-functions))
   :hook
-  (prog-mode . mm/add-slime-filename-cap))
+  (prog-mode . mm/add-slime-filename-cap)
+  (slime-mode . mm/slime-simple-c-a-p))
 
 (use-package lispy
   :ensure t
