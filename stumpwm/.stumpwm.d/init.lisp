@@ -55,20 +55,50 @@ Load a file that re-defines swank and then calls it."
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
 
+(defcommand
+    start-recording
+    ()
+    ()
+  (run-shell-command "video-selected")
+  (message "Started recording"))
+
+(defcommand
+    stop-recording
+    ()
+    ()
+  (run-shell-command
+   "stop-recording")
+  (message "stoppped recording"))
+
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
+    (stumpwm:define-key m (kbd "r") "start-recording")
+    (stumpwm:define-key m (kbd "R") "stop-recording")
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
- (setf *load-path* nil)
- (init-load-path "/home/benj/.stumpwm.d/modules/")
+(setf *load-path* nil)
+(init-load-path "/home/benj/.stumpwm.d/modules/")
 (load-module "cpu")
+(load-module "mem")
+(setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
+(defun rec-modeline (ml)
+  (declare (ignore ml))
+  (if (probe-file
+       "/tmp/recordingpid")
+      "RECORDING"
+      ""))
+(add-screen-mode-line-formatter
+ #\R
+ 'rec-modeline)
 (setf
- *screen-mode-line-format*
- "[^B%n^b] %C")
+  *screen-mode-line-format*
+  "[^B%n^b] %C    %M  %R")
+
+
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
@@ -148,18 +178,21 @@ windows of the same class as the current window."
  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
  (list-modules)
  (setf *honor-window-moves* nil)
+ (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
+   (when *honor-window-moves*
+     (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
+     (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
+            (pos  (if (eq relative-to :parent)
+                      (list
+                       (+ (xlib:drawable-x (window-parent window)) x)
+                       (+ (xlib:drawable-y (window-parent window)) y))
+                      (list (first pointer-pos) (second pointer-pos))))
+            (frame (apply #'find-frame group pos)))
+       (when frame
+         (pull-window window frame)))))
 
-(defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
-  (when *honor-window-moves*
-    (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
-    (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
-           (pos  (if (eq relative-to :parent)
-                     (list
-                      (+ (xlib:drawable-x (window-parent window)) x)
-                      (+ (xlib:drawable-y (window-parent window)) y))
-                     (list (first pointer-pos) (second pointer-pos))))
-           (frame (apply #'find-frame group pos)))
-      (when frame
-        (pull-window window frame)))))
+
+
+
 
  )
