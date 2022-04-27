@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -f /tmp/recordingpid ] && (kill "$(cat /tmp/recordingpid)" && rm -f /tmp/recordingpid)  && exit 0
+
 slop -f "%x %y %w %h" > /tmp/slop
 read -r X Y W H < /tmp/slop
 rm /tmp/slop

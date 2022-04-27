@@ -14,8 +14,9 @@
  lispyville-motions-put-into-special t
  lispyville-commands-put-into-special t
  lispy-no-permanent-semantic t
- ;; lispy-occur-backend 'helm
- ;; todo patch `lispy--occur-update-input'
+  lispy-completion-method 'deafult
+  ;; todo lispy occur
+  ;; or figure out consult line narrowing
  lispy-occur-backend 'ivy
  lispy-teleport-global t
  lispy-x-default-verbosity 1)
@@ -50,7 +51,9 @@
 
 (defun mm/lispy-delete-and-blanks (arg)
   (interactive "p")
-  (delete-blank-lines)
+  (save-excursion
+    (forward-char -1)
+    (delete-blank-lines))
   (lispy-delete-backward arg))
 
 (lispyville-set-key-theme
@@ -83,13 +86,13 @@
   [remap evil-change-whole-line] #'lispyville-change-whole-line
   [remap evil-join] #'lispyville-join)
 
-
 (lispyville--define-key '(motion normal)
   "q" 'lispy-ace-paren
   "Y" 'lispy-new-copy
   (kbd "S-<return>") 'lispy-eval-other-window
 
   "D" 'lispy-kill)
+
 
 
 (lispyville--define-key '(motion normal visual)
@@ -222,30 +225,16 @@
   :keymaps '(lispy-mode-map)
   "b" #'lispy-back
   "l" #'mm/lispyville-out-and-eval
+  "L" (lispyville-wrap-command lispyville-end-of-defun special)
   "," #'lispy-kill-at-point
   "g" (lispyville-wrap-command lispy-beginning-of-defun special)
+  "G" (lispyville-wrap-command lispyville-end-of-defun special)
   "f" #'mm/lispy-goto-toplevel-form)
 
 (general-def
   :states '(normal visual emacs insert)
   :keymaps '(lispy-mode-map lispyville-mode-map)
-  :prefix "SPC"
-  :global-prefix "C-SPC"
-  "k" '(:ignore t :which-key "lispy")
-  "kn" (lispyville-wrap-command lispyville-beginning-of-next-defun special)
-  "kN" (lispyville-wrap-command lispy-beginning-of-defun special)
-  "kf" (lispyville-wrap-command lispy-flow special)
-  "kF" (lispyville-wrap-command lispyville-end-of-defun special)
-  "kJ" (lispyville-wrap-command lispy-forward special)
-  "kj" (lispyville-wrap-command lispy-right special)
-  "kh" (lispyville-wrap-command lispy-left special)
-  "kw" (lispyville-wrap-command lispy-wrap-round special))
-
-(general-def
-  :states '(normal visual emacs insert)
-  :keymaps '(lispy-mode-map lispyville-mode-map)
   "C-e" (lispyville-wrap-command lispyville-end-of-defun special))
-
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)
@@ -277,7 +266,7 @@
 (add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
 (defun mm/lispy-advice-print-length (f r)
-  "This is so you do not get ... all the time
+  "This is so you do not get '...' all the time
 when formatting with lispy."
   (let ((print-length 2000)
 	(print-level nil))

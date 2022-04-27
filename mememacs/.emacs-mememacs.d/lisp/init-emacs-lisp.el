@@ -1,20 +1,14 @@
 ;;;  -*- lexical-binding: t; -*-
 
 (mememacs/comma-def
-  :keymaps '(emacs-lisp-mode-map
-	     lisp-interaction-mode-map)
-  "e"
-  `(,(let ((map (make-sparse-keymap "emacs-lisp")))
-       (general-def
-	 map
-	 "l" #'mememacs/lispy-eval-line
-	 "d" #'eval-defun
-	 "b" #'eval-buffer
-	 "D" #'edebug-defun
-	 "e" #'mememacs/eval-last-sexp-dwim)
-       map)
-    :which-key "emacs lisp"))
-
+  :keymaps
+  '(emacs-lisp-mode-map
+    lisp-interaction-mode-map)
+  "e" nil
+  "el" #'mememacs/lispy-eval-line
+  "ed" #'eval-defun
+  "eb" #'eval-buffer
+  "ee" #'mememacs/eval-last-sexp-dwim)
 
 (general-def
   :states '(normal)

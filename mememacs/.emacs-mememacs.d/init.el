@@ -104,7 +104,6 @@
    evil-move-cursor-back nil
    evil-move-beyond-eol t
    evil-want-fine-undo t)
-  (customize-set-variable 'evil-respect-visual-line-mode t)
 
   :config
   (evil-mode 1)
@@ -563,7 +562,8 @@
 (use-package persistent-scratch
   :config
   (persistent-scratch-setup-default)
-  (with-current-buffer "*scratch*"
+  (with-current-buffer
+      (get-buffer-create "*scratch*")
     (persistent-scratch-mode)))
 
 (use-package link-hint

@@ -56,25 +56,21 @@ Load a file that re-defines swank and then calls it."
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
 
 (defcommand
-    start-recording
+    start-or-stop-recording
     ()
     ()
-  (run-shell-command "video-selected")
-  (message "Started recording"))
-
-(defcommand
-    stop-recording
-    ()
-    ()
+  (message
+   (if (probe-file
+	"/tmp/recordingpid")
+       "stop recording"
+       "select for recording"))
   (run-shell-command
-   "stop-recording")
-  (message "stoppped recording"))
+   "video-selected"))
 
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
-    (stumpwm:define-key m (kbd "r") "start-recording")
-    (stumpwm:define-key m (kbd "R") "stop-recording")
+    (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
@@ -96,9 +92,7 @@ Load a file that re-defines swank and then calls it."
  'rec-modeline)
 (setf
   *screen-mode-line-format*
-  "[^B%n^b] %C    %M  %R")
-
-
+  "[^B%n^b] %C | %M  %R")
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))

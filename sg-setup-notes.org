@@ -154,14 +154,11 @@ aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
 - use aws s3 help there is a lot of options
 
 - this could be done as part of the screencapture job
-- or using `watch` on a directory etc.
-
 
 * troubleshoot
 ** “connection interrupted” in your browser
 caused by docker
 maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
-
 
 * notes
 ** at the time of writing I did not make airtest recording work

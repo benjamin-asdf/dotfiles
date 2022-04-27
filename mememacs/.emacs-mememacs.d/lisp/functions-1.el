@@ -142,7 +142,8 @@ See `eval-last-sexp'."
 (defun scratch ()
   (interactive)
   (let ((current-mode major-mode))
-    (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
+    (pop-to-buffer
+     (get-buffer-create "*scratch*"))
     (goto-char (point-min))
     (when (looking-at ";")
       (forward-line 4)
