@@ -72,18 +72,18 @@ These configuration options are supported:
                            (cond
                             ;; Transform absolute file names
                             ((file-name-absolute-p initial)
-                             (lambda (_inp cand)
+                             (lambda (_narrow _inp cand)
                                (substitute-in-file-name cand)))
                             ;; Ensure that ./ prefix is kept for the shell (#356)
                             ((string-match-p "\\`\\.\\.?/" initial)
-                             (lambda (_inp cand)
+                             (lambda (_narrow _inp cand)
                                (setq cand (file-relative-name (substitute-in-file-name cand)))
                                (if (string-match-p "\\`\\.\\.?/" cand) cand (concat "./" cand))))
                             ;; Simplify relative file names
                             (t
-                             (lambda (_inp cand)
+                             (lambda (_narrow _inp cand)
                                (file-relative-name (substitute-in-file-name cand)))))
-                         (lambda (_inp cand) cand))
+                         (lambda (_narrow _inp cand) cand))
                        ;; candidate function
                        (apply-partially #'run-hook-with-args-until-success
                                         'consult--completion-candidate-hook)
