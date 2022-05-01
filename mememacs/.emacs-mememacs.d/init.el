@@ -465,27 +465,10 @@
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
 
-(use-package projectile
+(use-package project
+  :straight nil
   :config
-  (projectile-mode)
-
-  (let ((cmd "fd --hidden --exclude=.git --type=f . --print0"))
-    (setf
-     projectile-indexing-method 'alien
-     projectile-git-command cmd
-     projectile-generic-command cmd
-     projectile-completion-system 'default))
-
-  (defun mememacs/projectile-todo ()
-    (interactive)
-    (-some->>
-	(projectile-project-root)
-      (expand-file-name "")
-      (find-file "TODOs.org")))
-
-  (mememacs/leader-def
-    "p" 'projectile-command-map
-    "pO" #'mememacs/projectile-todo))
+  (require 'init-project))
 
 (use-package string-edit
   :config
