@@ -12,19 +12,10 @@
    (when (in major-mode 'cider-mode 'cider-repl-mode)
      (cider-macroexpand-undo))))
 
-(add-hook
- 'cider-connected-hook
- (lambda ()
-   (message
-    (funcall
-     cider-connection-message-fn))))
-
-
 (defvar mm/cider-mode-maps
   '(cider-mode-map
     cider-repl-mode-mapl
     cider-macroexpansion-mode-map))
-
 
 (mememacs/comma-def
   :keymaps
@@ -38,7 +29,6 @@
   "h," #'cider-drink-a-sip
   "k" #'cider-load-buffer
   "hh" #'cider-clojuredocs)
-
 
 (general-def
   :keymaps mm/cider-mode-maps
@@ -78,14 +68,6 @@
 	  (cider-pprint-eval-last-sexp
 	   nil)))
     ad-do-it))
-
-;; (with-eval-after-load 'lispy
-;;   (setf
-;;    cider-jack-in-dependencies
-;;    (delete-dups
-;;     (append
-;;      cider-jack-in-dependencies
-;;      (assoc-delete-all "nrepl" lispy-cider-jack-in-dependencies #'equal)))))
 
 ;; --------------------------------------------
 
@@ -128,13 +110,19 @@
 	     map)
 	  :which-key "flycheck")))
 
-;; todo convert all lispy eval and stuff to cider
-;; so we do not use lispy clojure at all
+
+;; patch for nbb
+
+(cider-register-cljs-repl-type 'nbb "(+ 1 2 3)")
+
+(defun mm/cider-connected-hook ()
+  (when (eq 'nbb cider-cljs-repl-type)
+    (setq-local cider-show-error-buffer nil)
+    (cider-set-repl-type 'cljs)))
+(add-hook 'cider-connected-hook #'mm/cider-connected-hook)
 
 
 ;; ---- functions
-
-
 
 
 
