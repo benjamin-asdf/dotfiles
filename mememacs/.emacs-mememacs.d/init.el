@@ -470,7 +470,8 @@
   :config
   (require 'init-project))
 
-(use-package string-edit
+;; fixme
+(use-package string-edit-at-point
   :config
   (mememacs/local-def
     :states '(normal insert)
