@@ -3,6 +3,7 @@
  ("spacemacs" . ((user-emacs-directory . "~/.emacs-spacemacs.d")
 		 (straight-p . t)))
  ("ambrevar" . ((user-emacs-directory . ".emacs-ambrevar.d")))
+ ("corgi" . ((user-emacs-directory . "/home/benj/repos/corgi/sample-config")))
  ("doom" . ((user-emacs-directory . "~/.emacs-doom.d")
             (env . (("DOOMDIR" . "~/.doom.d")
 		    ("EMACSDIR" . "~/.emacs-doom.d")
