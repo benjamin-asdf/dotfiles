@@ -1,4 +1,4 @@
 #!/bin/sh
 
 [ -n "$IDLEGAMEDIR" ] && rm -rf "$IDLEGAMEDIR/Temp/*"
-spawn-idlegame-konsole.sh idlegame-client "$IDLEGAMEDIR"
+xterm -T "unity-idlegame" -e /opt/unity/2019.4.16f1/Editor/Unity -forcefree -buildTarget standalone -projectPath ~/idlegame/IdleGame/
