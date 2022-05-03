@@ -15,26 +15,6 @@ SAVEHIST=10000
 # =============================== completions ================================
 # before compinit
 
-# nuke
-_nuke_zsh_complete()
-{
-    local completions=("$(nuke :complete "$words")")
-    reply=( "${(ps:\n:)completions}" )
-}
-compctl -K _nuke_zsh_complete nuke
-
-
-# dotnet
-# zsh parameter completion for the dotnet CLI
-_dotnet_zsh_complete()
-{
-    local completions=("$(dotnet complete "$words")")
-
-    reply=( "${(ps:\n:)completions}" )
-}
-
-compctl -K _dotnet_zsh_complete dotnet
-
 # fzf
 fpath=(/usr/share/fzf/completion.zsh $fpath)
 
