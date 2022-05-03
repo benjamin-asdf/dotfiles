@@ -237,9 +237,6 @@ See `eval-last-sexp'."
   ("k" #'previous-buffer)
   ("j" #'previous-buffer)
   ("b" #'consult-buffer :exit t)
-  ("p" #'projectile-find-dir :exit t)
-  ("P" #'projectile-find-dir-other-window :exit t)
-  ("s" #'helm-do-ag-buffers)
   ("a" #'mark-whole-buffer)
   ("y" #'mememacs/kill-buffer-name :exit t))
 
@@ -299,9 +296,10 @@ See `eval-last-sexp'."
 	(interactive)
 	(call-interactively (key-binding (kbd "C-c C-k"))))
 
-  "x"  `(,(key-binding (kbd "C-x")))
+  "x" (key-binding (kbd "C-x"))
+  "c" (key-binding (kbd "C-c")))
 
-  "c" `(,(key-binding (kbd "C-c"))))
+
 
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,

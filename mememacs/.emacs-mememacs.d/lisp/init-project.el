@@ -27,7 +27,7 @@
 	   "\0"
 	   t)))))))
 
-(general-def "s-\\" #'mememacs/fd-find-file)
+(general-def "H-\\" #'mememacs/fd-find-file)
 
 (add-to-list
  'project-switch-commands

@@ -7,9 +7,12 @@
 ;;; Speed up init.
 ;;; Temporarily reduce garbage collection during startup. Inspect `gcs-done'.
 (defun ambrevar/reset-gc-cons-threshold ()
-  (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))))
-(setq gc-cons-threshold (* 64 1024 1024))
+  (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
+      gc-cons-percentage 0.1))
+(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+      gc-cons-percentage 0.6)
 (add-hook 'after-init-hook 'ambrevar/reset-gc-cons-threshold)
+
 ;;; Temporarily disable the file name handler.
 (setq default-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
@@ -20,27 +23,7 @@
 ;;; Avoid the "loaded old bytecode instead of newer source" pitfall.
 (setq load-prefer-newer t)
 
-;;; Store additional config in a 'lisp' subfolder and add it to the load path so
-;;; that `require' can find the files.
-;;; This must be done before moving `user-emacs-directory'.
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
-
-
-;; (when (require 'package nil t)
-;;   ;; TODO: MELPA's https sometimes return
-;;   ;;   emacs melpa invalid: certificate host does not match hostname
-;;   ;; Try the following:
-;;   ;;   (setq tls-checktrust nil)
-;;   ;; Different Emacs version have different byte code.  If a versioned ELPA
-;;   ;; directory is found, use it.
-;;   (let ((versioned-dir (format "elpa-%s.%s" emacs-major-version emacs-minor-version)))
-;;     (when (member versioned-dir (directory-files (expand-file-name ".." package-user-dir)))
-;;       (setq package-user-dir (expand-file-name (concat "../" versioned-dir) package-user-dir))))
-;;   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")))
-;;   (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/"))
-;;   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;;   (package-initialize))
-
 
 (defvar mememacs/use-exwm nil)
 (defvar mememacs/guile-enabled t)
@@ -53,7 +36,6 @@
 
 (require 'use-package)
 (setf
- ;; straight-vc-git-default-protocol 'ssh
  straight-vc-git-default-protocol 'https
  straight-use-package-by-default t
  use-package-verbose t
@@ -64,13 +46,10 @@
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
-
 (defconst mememacs/config-dir user-emacs-directory)
 
-;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
-
 
 (setq user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
@@ -96,11 +75,11 @@
 
 (use-package evil
   :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll nil)
-  (setq evil-want-C-i-jump nil)
   (setq
+   evil-want-integration t
+   evil-want-keybinding nil
+   evil-want-C-u-scroll nil
+   evil-want-C-i-jump nil
    evil-move-cursor-back nil
    evil-move-beyond-eol t
    evil-want-fine-undo t)
@@ -299,7 +278,17 @@
 
 (use-package consult
   :init (recentf-mode)
-  (setq completion-in-region-function #'consult-completion-in-region)
+  ;; I would to this but corfu mode is setting it
+  ;; (setq completion-in-region-function #'consult-completion-in-region)
+  (defun mm/consult-completion ()
+    (interactive)
+    (let ((completion-in-region-function #'consult-completion-in-region))
+      (completion-at-point)))
+
+  (general-def
+    :states '(insert)
+    "C-j" #'mm/consult-completion)
+
   (advice-add
    #'completing-read-multiple
    :override #'consult-completing-read-multiple)
@@ -362,7 +351,7 @@
 (use-package wgrep)
 
 (use-package corfu
-  :init (corfu-global-mode)
+  :init (global-corfu-mode)
   :config
   (require 'patch-cider-orderless)
 
@@ -392,11 +381,8 @@
     "C-f" #'end-of-buffer
     "C-l" #'corfu-insert
     "C-n" #'corfu-next
-    "C-/" #'mememacs/c-completion)
-
-  (general-def
-    :states '(insert)
-    "C-j" #'completion-at-point))
+    "C-p" #'corfu-previous
+    "C-/" #'mememacs/c-completion))
 
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
@@ -470,13 +456,13 @@
   :config
   (require 'init-project))
 
-;; fixme
-(use-package string-edit-at-point
-  :config
-  (mememacs/local-def
-    :states '(normal insert)
-    :keymaps '(prog-mode-map)
-    "se" #'string-edit-at-point))
+;; fixme figure out if emacs string-edit
+;; can cover the use
+(require 'string-edit-at-point)
+(mememacs/local-def
+  :states '(normal insert)
+  :keymaps '(prog-mode-map)
+  "se" #'string-edit-at-point)
 
 (use-package ace-window
   :config
@@ -526,7 +512,9 @@
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
     "jw" #'avy-goto-word-1
-    "jl" #'avy-goto-line))
+    "jl" #'avy-goto-line
+    "cl" #'avy-copy-line
+    "cr" #'avy-copy-region))
 
 (use-package symbol-overlay
   :config
@@ -648,11 +636,7 @@
 (use-package backup-each-save
   :hook after-save)
 
-(use-package vterm
-  :config
-  (mememacs/leader-def
-    "'" #'vterm
-    "p'" #'projectile-run-vterm))
+(use-package vterm)
 
 (use-package bash-completion
   ;; :straight (:host github :repo "szermatt/emacs-bash-completion")
@@ -707,8 +691,6 @@
 ;; epl results
 
 ;; todo org
-
-;; (use-package org-projectile)
 
 ;; figure out where the code is for guix packages
 

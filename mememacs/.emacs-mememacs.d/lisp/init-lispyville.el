@@ -277,4 +277,7 @@ when formatting with lispy."
  :around
  #'mm/lispy-advice-print-length)
 
+(add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
+
+
 (provide 'init-lispyville)

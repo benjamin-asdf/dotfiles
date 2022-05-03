@@ -64,7 +64,9 @@
    (get-buffer-create "*dragon*")
    (concat
     "dragon-drag-and-drop "
-    (expand-file-name file))))
+    (expand-file-name file)
+    " "
+    "--and-exit")))
 
 (general-def
   'embark-file-map
@@ -74,14 +76,14 @@
 (defun mememacs-follow-shell-cmd (&optional cmd)
   "Follow CMD.
 If CMD is a symlink follow it."
-  (interactive
-   (list
-    (read-shell-command
-     "cmd: ")))
-  (find-file
-   (string-trim
-    (shell-command-to-string
-     (concat "which " cmd)))))
+  (interactive (list
+		(read-shell-command "cmd: ")))
+  ;;fixme abort minibuffers..
+  (pop-to-buffer
+   (find-file-noselect
+    (string-trim
+     (shell-command-to-string
+      (concat "which " cmd))))) )
 
 (general-def
   embark-general-map
@@ -102,6 +104,5 @@ Meant to be added to `embark-identifier-map`"
 (general-def embark-variable-map
   "t" #'debug-on-variable-change
   "T" #'cancel-debug-on-variable-change)
-
 
 (provide 'init-embark)

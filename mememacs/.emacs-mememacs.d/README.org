@@ -4,7 +4,7 @@
 M-x (space space)
 consult-buffer (space b b )
 consult-line (space s s)
-projectile-find-file (space p f)
+project-find-file (space p f)
 
 knowing the completion framework (vertico) gives huge leverage
 

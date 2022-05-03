@@ -1,9 +1,5 @@
 (require 'patch-consult)
 
-(general-def
-   :states '(insert)
-   "C-j" #'company-manual-begin)
-
 (mememacs/local-def
   "SPC" #'consult-mode-command)
 (mememacs/comma-def
