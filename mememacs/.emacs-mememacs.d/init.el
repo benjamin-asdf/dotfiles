@@ -458,11 +458,11 @@
 
 ;; fixme figure out if emacs string-edit
 ;; can cover the use
-(require 'string-edit-at-point)
-(mememacs/local-def
-  :states '(normal insert)
-  :keymaps '(prog-mode-map)
-  "se" #'string-edit-at-point)
+(when (require 'string-edit-at-point nil t)
+  (mememacs/local-def
+    :states '(normal insert)
+    :keymaps '(prog-mode-map)
+    "se" #'string-edit-at-point))
 
 (use-package ace-window
   :config
