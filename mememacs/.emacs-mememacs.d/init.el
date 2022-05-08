@@ -636,7 +636,9 @@
 (use-package backup-each-save
   :hook after-save)
 
-(use-package vterm)
+(use-package vterm
+  :config
+  (mememacs/leader-def "'" #'vterm))
 
 (use-package bash-completion
   ;; :straight (:host github :repo "szermatt/emacs-bash-completion")

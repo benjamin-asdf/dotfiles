@@ -1,5 +1,7 @@
 (require 'patch-consult)
 
+(setq-default completion-in-region-function #'consult-completion-in-region)
+
 (mememacs/local-def
   "SPC" #'consult-mode-command)
 (mememacs/comma-def

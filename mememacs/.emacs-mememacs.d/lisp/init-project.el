@@ -32,5 +32,8 @@
 (add-to-list
  'project-switch-commands
  '(project-dired "Dired"))
+(add-to-list
+ 'project-switch-commands
+ '(magit-status "Magit" "M"))
 
 (provide 'init-project)

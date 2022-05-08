@@ -73,18 +73,11 @@
 
 (defun lein-deps-to-deps (beg end)
   (interactive "r")
-  (let ((end (save-excursion
-	       (goto-char end)
-	       (point-marker))))
-    (save-excursion
-      (goto-char beg)
-      (while (re-search-forward
-	      "\\[\\(.+?\\)\\s-\\(\".+?\"\\)\\]"
-	      end
-	      t)
-	(replace-match
-	 "\\1 {:mvn/version \\2}")))))
-
+  (replace-regexp-in-region
+   "\\[\\(.+?\\)\\s-\\(\".+?\"\\)\\]"
+   "\\1 {:mvn/version \\2}"
+   beg
+   end))
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
