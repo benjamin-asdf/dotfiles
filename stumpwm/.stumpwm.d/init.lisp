@@ -40,8 +40,12 @@ Load a file that re-defines swank and then calls it."
 (defcommand browser () ()
   (run-or-raise "qutebrowser" '(:class "qutebrowser")))
 
-;; todo make a group
+(defcommand nyxt () ()
+  (run-or-raise "nyxt" '(:class "Nyxt")))
+
+;; todo make a group?
 (define-key *top-map* (kbd "s-u") "browser")
+(define-key *top-map* (kbd "s-n") "nyxt")
 
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
@@ -76,7 +80,7 @@ Load a file that re-defines swank and then calls it."
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
 (setf *load-path* nil)
-(init-load-path "/home/benj/.stumpwm.d/modules/")
+(init-load-path "~/.stumpwm.d/modules/")
 (load-module "cpu")
 (load-module "mem")
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
