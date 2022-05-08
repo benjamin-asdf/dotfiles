@@ -46,14 +46,12 @@
 (defconst mindsape/gimbled		 "#bcb66d")
 (defconst mindsape/hit-pink		 "#feb48f")
 (defconst mindsape/amethyst-smoke	 "#Ac98bf")
+(defconst mindsape/lilly "#B8a0af")
+(defconst mindsape/summer-green "#a0b8a9")
 (defconst mindsape/cursor-default        "NavajoWhite")
 
-(defun open-color-picker (beg end)
-  (interactive "r")
-  (browse-url
-   (concat "https://imagecolorpicker.com/color-code/" (buffer-substring-no-properties end beg))))
-
-;; (defconst mindscape)
+;; (ignore-errors
+;;   (set-frame-font "Iosevka Fixed SS14-15"))
 
 ;; (set-face-foreground 'default "#d1abac")
 (set-face-background 'default mindsape/woodsmoke)
@@ -276,6 +274,24 @@
 (setq-default visible-cursor nil)
 (set-cursor-color mindsape/mint-bright-1)
 (blink-cursor-mode -1)
+
+
+(set-face-attribute
+ 'lazy-highlight
+ nil
+ :background mindsape/woodsmoke
+ :foreground
+ "green"
+ :height 1.1
+ :weight 'ultra-bold)
+
+(with-eval-after-load
+    'isearch
+  (set-face-attribute
+   'isearch
+   nil
+   :background mindsape/lilly
+   :foreground "black"))
 
 (with-eval-after-load
     'cider
