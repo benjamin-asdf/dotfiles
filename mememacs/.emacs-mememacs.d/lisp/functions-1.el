@@ -137,22 +137,42 @@ See `eval-last-sexp'."
      (message  "Kill %s" it)
      (kill-new it))))
 
-;; thanks john https://github.com/jwiegley/dot-emacs.git
+(defvar mememacs/scratch-dir "~/scratch")
+(defvar mememacs/last-scratch nil)
+(defun mememacs/new-scratch-name (suffix)
+  (unless (file-exists-p mememacs/scratch-dir)
+    (make-directory mememacs/scratch-dir))
+  (expand-file-name
+   (format
+    "scratch-%d.%s"
+    (-
+     (length
+      (directory-files
+       mememacs/scratch-dir))
+     2)
+    suffix)
+   mememacs/scratch-dir))
 
-(defun scratch ()
-  (interactive)
-  (let ((current-mode major-mode))
-    (pop-to-buffer
-     (get-buffer-create "*scratch*"))
-    (goto-char (point-min))
-    (when (looking-at ";")
-      (forward-line 4)
-      (delete-region (point-min) (point)))
-    (goto-char (point-max))
-    (when (memq current-mode '(emacs-lisp-mode))
-      (funcall current-mode))))
+(defun mm/scratch (create-new suffix)
+  (pop-to-buffer
+   (if (or create-new
+	   (not mememacs/last-scratch))
+       (find-file-noselect
+	(mememacs/new-scratch-name suffix))
+     mememacs/last-scratch)))
 
-(mememacs/leader-def "bs" #'scratch)
+;; todo connect to background bb
+(defun mm/scratch-clj (&optional arg)
+  (interactive "p")
+  (mm/scratch arg "clj"))
+
+(defun mm/scratch-elisp (&optional arg)
+  (interactive "p")
+  (mm/scratch arg "el"))
+
+(mememacs/leader-def
+  "bs" #'mm/scratch-elisp
+  "bS" #'mm/scratch-clj)
 
 (defun mememacs/process-menu-switch-to-buffer ()
   (interactive)

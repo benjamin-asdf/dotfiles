@@ -531,13 +531,6 @@
     'symbol-overlay-map
     "h" nil))
 
-(use-package persistent-scratch
-  :config
-  (persistent-scratch-setup-default)
-  (with-current-buffer
-      (get-buffer-create "*scratch*")
-    (persistent-scratch-mode)))
-
 (use-package link-hint
   :config
   (mememacs/leader-def
