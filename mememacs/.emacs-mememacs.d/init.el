@@ -186,7 +186,7 @@
 	(remove 'lispy evil-collection-mode-list))
   (evil-collection-init)
   (general-def
-    :states 'normal
+    :states '(normal visual emacs)
     :keymaps '(dired-mode-map
 	       Info-mode-map
 	       Man-mode-map
