@@ -129,11 +129,6 @@
 (defun ambrevar/compile-last-command ()
   (interactive)
   (compile compile-command))
-(ambrevar/define-keys prog-mode-map
-                      "C-<f6>" 'compile
-                      ;; Do not use `recompile' since we want to change the compilation folder for the current buffer.
-                      "<f6>" 'ambrevar/compile-last-command)
-
 
 ;;; Comint mode
 (setq comint-prompt-read-only t)
