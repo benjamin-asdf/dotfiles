@@ -17,6 +17,13 @@
     cider-repl-mode-mapl
     cider-macroexpansion-mode-map))
 
+(when
+    (require 'neil "~/repos/clojure/neil/neil.el" 'no-err)
+  (mememacs/comma-def
+    :keymaps
+    '(clojure-mode-map cider-repl-mode clojurescript-mode)
+    "n" #'neil-find-clojure-package))
+
 (mememacs/comma-def
   :keymaps
   '(clojure-mode-map cider-repl-mode clojurescript-mode)
