@@ -6,7 +6,9 @@
   "p."
   (defun mm/project-list-file ()
     (interactive)
-    (find-file project-list-file)))
+    (find-file project-list-file))
+  "pf" #'consult-project-extra-find
+  "po" #'consult-project-extra-find-other-window)
 
 (defun mememacs/fd-find-file ()
   (interactive)
@@ -29,11 +31,12 @@
 
 (general-def "H-\\" #'mememacs/fd-find-file)
 
-(add-to-list
- 'project-switch-commands
- '(project-dired "Dired"))
-(add-to-list
- 'project-switch-commands
- '(magit-status "Magit" "M"))
+(setq project-switch-commands
+      '((magit-status "Magit" "M")
+	(project-dired "Dired")
+	(consult-project-extra-find "Find file" "F")
+	(project-find-regexp "Find regexp")
+	(project-find-dir "Find directory")
+	(project-eshell "Eshell")))
 
 (provide 'init-project)

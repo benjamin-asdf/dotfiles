@@ -184,12 +184,6 @@
       (concat "mememacs %b"
 	      (unless (daemonp) " [serverless]")))
 
-;;; Initial scratch buffer message.
-(require 'functions) ; For `ambrevar/fortune-scratch-message'.
-(let ((fortune (ambrevar/fortune-scratch-message)))
-  (when fortune
-    (setq initial-scratch-message fortune)))
-
 ;;; Support for Emacs pinentry.
 ;;; Required for eshell/sudo and everything relying on GPG queries.
 (setq epa-pinentry-mode 'loopback) ; This will fail if gpg>=2.1 is not available.

@@ -25,19 +25,6 @@
 ;;   (interactive "r")
 ;;   ...
 
-(defun ambrevar/call-process-to-string (program &rest args)
-  "Call PROGRAM with ARGS and return output."
-  (with-output-to-string
-    (with-current-buffer standard-output
-      (apply 'call-process program nil t nil args))))
-
-(defun ambrevar/define-keys (map key def &rest bindings)
-  "Like `define-key' but allow for defining several bindings at once.
-`KEY' must be acceptable for `kbd'."
-  (while key
-    (define-key map (kbd key) def)
-    (setq key (pop bindings)
-          def (pop bindings))))
 
 (defun ambrevar/escape-region (&optional regex to-string)
   "Escape double-quotes and backslashes.
@@ -86,59 +73,7 @@ selectively."
   (whitespace-mode 'toggle))
 (global-set-key (kbd "<f9>") 'flyspell-and-whitespace-mode)
 
-;;; From https://www.reddit.com/r/emacs/comments/70bn7v/what_do_you_have_emacs_show_when_it_starts_up/.
-;;; Supply a random fortune cookie as the *scratch* message.
-(defun ambrevar/fortune-scratch-message ()
-  (interactive)
-  (let ((fortune
-         (when (executable-find "fortune")
-           (with-temp-buffer
-             (shell-command "fortune" t)
-             (while (not (eobp))
-               (insert ";; ")
-               (forward-line))
-             (delete-trailing-whitespace (point-min) (point-max))
-             (concat (buffer-string) "\n")))))
-    (if (called-interactively-p 'any)
-        (insert fortune)
-      fortune)))
 
-(defun ambrevar/global-set-keys (key def &rest bindings)
-  "Like `global-set-key' but allow for defining several bindings at once.
-`KEY' must be acceptable for `kbd'."
-  (while key
-    (global-set-key (kbd key) def)
-    (setq key (pop bindings)
-          def (pop bindings))))
-
-(defun ambrevar/insert-and-indent (text)
-  "Insert indented TEXT at point."
-  (interactive "s Text: ")
-  (let ((oldpoint  (point)))
-    (insert text)
-    (indent-region oldpoint (point))
-    (newline-and-indent)))
-
-(defun ambrevar/local-set-keys (key def &rest bindings)
-  "Like `local-set-key' but allow for defining several bindings at once.
-`KEY' must be acceptable for `kbd'."
-  (while key
-    (local-set-key (kbd key) def)
-    (setq key (pop bindings)
-          def (pop bindings))))
-
-(defun ambrevar/reset-fill-column ()
-  "Reset `fill-column' to its default value."
-  (setq fill-column (default-value 'fill-column)))
-
-(defun ambrevar/shell-last-command ()
-  "Run last shell command."
-  (interactive)
-  (let ((last (car shell-command-history)))
-    (if last
-        (shell-command last)
-      (error "Shell command history is empty"))))
-(global-set-key (kbd "C-M-!") 'shell-last-command)
 
 (defun ambrevar/skeleton-make-markers ()
   "Save last skeleton markers in a list.
@@ -348,14 +283,6 @@ This does not affect .csv files."
 (defun ambrevar/turn-off-prettify-before-save ()
   "Unconditionally remove the `ambrevar/prettify' function to `before-save-hook'."
   (remove-hook 'before-save-hook 'ambrevar/prettify t))
-
-(defun ambrevar/turn-off-indent-tabs ()
-  "Unconditionally turn off tab indentation."
-  (setq indent-tabs-mode nil))
-
-(defun ambrevar/turn-on-indent-tabs ()
-  "Unconditionally turn on tab indentation."
-  (setq indent-tabs-mode t))
 
 (defun ambrevar/turn-off-line-number-mode ()
   "Unconditionally turn off `line-number-mode' fur the current buffer.."
