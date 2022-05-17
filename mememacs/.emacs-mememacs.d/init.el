@@ -1,4 +1,4 @@
-;;; borrowed with love from
+;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
 ;;; see COPYING in the root of this repo
 
@@ -25,7 +25,6 @@
 
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
-(defvar mememacs/use-exwm nil)
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
@@ -152,9 +151,7 @@
     :states '(normal visual)
     "gn" #'hydra-evil-mc/body)
 
-  (mememacs/leader-def
-    "gn"
-    '(evil-mc-key-map :which-key "mc"))
+  (mememacs/leader-def "gn" '(evil-mc-key-map))
 
   (defun mememacs/disable-evil-mc-mode ()
     (evil-mc-mode -1))
@@ -193,18 +190,11 @@
 	       help-mode-map)
     "SPC" nil))
 
-(use-package exwm
-  :when mememacs/use-exwm
-  :ensure nil
-  :config
-  (require 'init-exwm-1))
-
-(unless mememacs/use-exwm
-  (general-def
-    "s-h" #'windmove-left
-    "s-l" #'windmove-right
-    "s-k" #'windmove-up
-    "s-j" #'windmove-down))
+(general-def
+  "s-h" #'windmove-left
+  "s-l" #'windmove-right
+  "s-k" #'windmove-up
+  "s-j" #'windmove-down)
 
 (require 'functions)
 (require 'utils)
@@ -278,16 +268,8 @@
 
 (use-package consult
   :init (recentf-mode)
-  ;; I would to this but corfu mode is setting it
-  ;; (setq completion-in-region-function #'consult-completion-in-region)
-  (defun mm/consult-completion ()
-    (interactive)
-    (let ((completion-in-region-function #'consult-completion-in-region))
-      (completion-at-point)))
-
-  (general-def
-    :states '(insert)
-    "C-j" #'mm/consult-completion)
+  (setq completion-in-region-function #'consult-completion-in-region)
+  (general-def :states '(insert) "C-j" #'completion-at-point)
 
   (advice-add
    #'completing-read-multiple
@@ -350,40 +332,6 @@
 
 (use-package wgrep)
 
-(use-package corfu
-  :init (global-corfu-mode)
-  :config
-  (require 'patch-cider-orderless)
-
-  (add-hook
-   'cider-mode-hook
-   'mm/patch-orderless-style)
-
-  (dolist
-      (hook
-       '(eshell-mode-hook
-	 emacs-lisp-mode-hook
-	 shell-mode-hook))
-    (add-hook hook (lambda () (corfu-mode -1))))
-
-  (setf
-   corfu-cycle t
-   corfu-auto t
-   corfu-quit-at-boundary t
-   corfu-quit-no-match t
-   corfu-auto-prefix 2
-   corfu-auto-delay 0.18)
-
-  (general-def
-    :states '(insert)
-    :keymap 'corfu-map
-    "C-b" #'beginning-of-buffer
-    "C-f" #'end-of-buffer
-    "C-l" #'corfu-insert
-    "C-n" #'corfu-next
-    "C-p" #'corfu-previous
-    "C-/" #'mememacs/c-completion))
-
 (use-package mood-line
   :straight (:host github :repo "benjamin-asdf/mood-line")
   :config
@@ -408,11 +356,9 @@
    'mememacs/escape-functions
    #'macrostep-collapse-all))
 
-(use-package
-  slime
+(use-package slime
   :config
-  (setq inferior-lisp-program
-	"sbcl")
+  (setq inferior-lisp-program "sbcl")
   (defun mm/add-slime-filename-cap ()
     (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
   (defun mm/slime-simple-c-a-p ()
@@ -451,8 +397,12 @@
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
 
-(use-package project
-  :straight nil
+
+(use-package project :straight nil)
+
+(use-package consult-project-extra
+  :after project
+  :straight (consult-project-extra :type git :host github :repo "Qkessler/consult-project-extra")
   :config
   (require 'init-project))
 
@@ -474,7 +424,8 @@
 
 (use-package cider
   :config
-  (require 'init-cider))
+  (require 'init-cider)
+  (require 'patch-cider-orderless))
 
 (use-package re-jump
   :straight (:host github :repo "benjamin-asdf/re-jump.el")
@@ -644,6 +595,7 @@
 
 (use-package mu4e
   :ensure nil
+  :when nil
   :straight nil
 
   ;; should be added by emacs

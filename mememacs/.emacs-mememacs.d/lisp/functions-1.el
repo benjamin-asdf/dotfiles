@@ -429,4 +429,54 @@ With negative N, comment out original line and use the absolute value."
 (mememacs/leader-def
   "xL" #'mm/duplicate-line-or-region)
 
+
+;; string edit
+
+(declare
+ (se/string-position-at-point)
+
+(defun se/current-quotes-char ()
+  "The char that is the current quote delimiter, or nil if not in a string."
+  (let ((delimiter (nth 3 (syntax-ppss))))
+    (cond ((stringp delimiter) delimiter)
+          ;; `syntax-ppss' can return t meaning 'a generic string delimiter'.
+          (delimiter ?\"))))
+
+(defalias 'se/point-inside-string-p 'se/current-quotes-char)
+
+(defun se/move-point-backward-out-of-string ()
+  "Move point backward until it exits the current quoted string."
+  (while (se/point-inside-string-p) (backward-char)))
+
+(defun se/string-position-at-point ()
+  (let (beg)
+    (save-excursion
+      (se/move-point-backward-out-of-string)
+      (setq beg (point))
+      (forward-sexp 1)
+      (cons beg (point)))))
+
+
+
+ (defun mm/string-edit-at-point ()
+   (interactive)
+   (let*
+       ((bounds (se/string-position-at-point))
+	(bounds (list (1+ (car bounds))
+		      (1- (cdr bounds)))))
+     (string-edit
+      "String edit: "
+      (buffer-substring
+       (car bounds)
+       (cadr bounds))
+      (lambda (s)
+	(apply #'delete-region bounds)
+	(goto-char (car bounds))
+	(insert s))
+      :abort-callback
+      #'ignore))))
+
+
+
+
 (provide 'functions-1)
