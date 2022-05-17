@@ -572,9 +572,6 @@
 	   (,electric-pair-inhibit-predicate
 	    c)))))))
 
-(use-package org-roam
-  :init (setq org-roam-v2-ack t)
-  :config (require 'init-org-roam))
 (use-package markdown-mode)
 
 (use-package backup-each-save
@@ -585,7 +582,6 @@
   (mememacs/leader-def "'" #'vterm))
 
 (use-package bash-completion
-  ;; :straight (:host github :repo "szermatt/emacs-bash-completion")
   :init
   (autoload 'bash-completion-dynamic-complete
     "bash-completion"

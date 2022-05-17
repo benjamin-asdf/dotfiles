@@ -477,6 +477,13 @@ With negative N, comment out original line and use the absolute value."
       #'ignore))))
 
 
+(defun mm/find-logseq-content ()
+  (interactive)
+  (let ((default-directory "~/logseq-content/"))
+    (call-interactively
+     #'consult-project-extra-find)))
+
+(mememacs/comma-def "oo" #'mm/find-logseq-content)
 
 
 (provide 'functions-1)
