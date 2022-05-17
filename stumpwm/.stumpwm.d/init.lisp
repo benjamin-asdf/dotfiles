@@ -166,31 +166,29 @@ windows of the same class as the current window."
 
 ;; 1-2 things for make vid
 
-(comment
- (setf *urgent-window-hook* nil)
- (load-module "screenshot")
- (screen-windows (current-screen))
- (setf *deny-raise-request* nil *deny-map-request* nil)
- (setf *debug-level* 0)
- (redirect-all-output (data-dir-file "output" "log"))
- (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
- (list-modules)
- (setf *honor-window-moves* nil)
- (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
-   (when *honor-window-moves*
-     (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
-     (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
-            (pos  (if (eq relative-to :parent)
-                      (list
-                       (+ (xlib:drawable-x (window-parent window)) x)
-                       (+ (xlib:drawable-y (window-parent window)) y))
-                      (list (first pointer-pos) (second pointer-pos))))
-            (frame (apply #'find-frame group pos)))
-       (when frame
-         (pull-window window frame)))))
+ (comment
+  (setf *urgent-window-hook* nil)
+  (load-module "screenshot")
+  (screen-windows (current-screen))
+  (setf *deny-raise-request* nil *deny-map-request* nil)
+  (setf *debug-level* 0)
+  (redirect-all-output (data-dir-file "output" "log"))
+  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
+  (list-modules)
+  (setf *honor-window-moves* nil)
+  (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
+    (when *honor-window-moves*
+      (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
+      (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
+             (pos  (if (eq relative-to :parent)
+                       (list
+			(+ (xlib:drawable-x (window-parent window)) x)
+			(+ (xlib:drawable-y (window-parent window)) y))
+                       (list (first pointer-pos) (second pointer-pos))))
+             (frame (apply #'find-frame group pos)))
+	(when frame
+          (pull-window window frame)))))
 
 
 
-
-
- )
+  )
