@@ -167,6 +167,8 @@
   (require 'patch-lispy nil :noerror))
 
 (defun mm/add-lispy-to-incompatible-minor-modes ()
+  (unless (boundp 'evil-mc-incompatible-minor-modes)
+    (evil-mc-define-vars))
   (setf
    evil-mc-incompatible-minor-modes
    (delete-dups
