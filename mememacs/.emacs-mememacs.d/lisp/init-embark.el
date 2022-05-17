@@ -11,6 +11,9 @@
 (general-def :states '(normal motion emacs)
   "C-h B" #'embark-bindings)
 
+(mememacs/leader-def
+  "hM" #'embark-bindings-in-keymap)
+
 (add-to-list
  'display-buffer-alist
  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"

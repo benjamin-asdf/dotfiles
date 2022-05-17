@@ -312,13 +312,22 @@
   ;; cider-reader-conditional-face
   )
 
+(with-eval-after-load
+    'markdown-mode
+    (set-face-attribute
+     'markdown-code-face
+     nil
+     :inherit 'default
+     :background mindsape/lunar-green))
+
+
 (defun ambrevar/fontify-comment-tag ()
   (font-lock-add-keywords
    nil
    ;; See https://en.wikipedia.org/wiki/Comment_(computer_programming)#Tags.
    (mapcar
     (lambda (keyword) `(,(concat "\\<\\(" keyword "\\):") 1 font-lock-warning-face prepend))
-    '("FIXME\\(([^)]+)\\)?" "HACK" "OPTIMIZE\\(([^)]+)\\)?" "REVIEW\\(([^)]+)\\)?" "TODO\\(([^)]+)\\)?" "UNDONE" "UX" "WARNING" "XXX"))))
+    '("FIXME\\(([^)]+)\\)?" "HACK" "KLUDGE" "OPTIMIZE\\(([^)]+)\\)?" "REVIEW\\(([^)]+)\\)?" "TODO\\(([^)]+)\\)?" "UNDONE" "UX" "WARNING" "XXX"))))
 (dolist (hook '(prog-mode-hook text-mode-hook))
   (add-hook hook 'ambrevar/fontify-comment-tag))
 

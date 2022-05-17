@@ -2,14 +2,21 @@
 
 (setq-default completion-in-region-function #'consult-completion-in-region)
 
+(general-def
+  isearch-mode-map
+  "H-/" #'consult-line)
+
+
 (mememacs/local-def
   "SPC" #'consult-mode-command)
+
+
 (mememacs/comma-def
   "ss" #'consult-line
   "sS" #'consult-line-multi
+
   "sk" #'consult-keep-lines
-  "si" #'consult-isearch
-  ;; "so" #'consult-oc
+
   "sf" #'consult-focus-lines
   "g/" #'consult-git-grep
 
@@ -35,7 +42,11 @@
   "SPC" #'execute-extended-command
   "bb" #'consult-buffer
   "bB" #'consult-buffer-other-window
-  "s" '(:ignore t :which-key "search")
+
+  "sk" #'consult-keep-lines
+
+  "sf" #'consult-focus-lines
+
   "ss" #'consult-line
   "sS" #'consult-line-multi
   "ff" #'find-file
@@ -65,14 +76,6 @@
   ;; todo ripgrep
   "/" #'consult-ripgrep
   )
- ;; (consult-grep)
-
-
- ;; (consult-imenu)
-
- ;; (consult-ripgrep)
- ;; (consult-buffer)
- ;; (consult-yank-from-kill-ring "fo")
 
 (general-def
   "H-SPC" #'consult-line
