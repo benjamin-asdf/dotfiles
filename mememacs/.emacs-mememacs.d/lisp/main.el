@@ -15,8 +15,9 @@
 (setq
  inhibit-startup-message t)
 
-(defalias 'display-startup-echo-area-message (lambda ()))
+(setf initial-scratch-message "")
 
+(defalias 'display-startup-echo-area-message (lambda ()))
 
 (setq frame-inhibit-implied-resize t)
 (setq ad-redefinition-action 'accept)
@@ -30,7 +31,7 @@
 (setq echo-keystrokes 0.5)
 
 ;;; Recent files.
-(setq recentf-max-saved-items 40)
+((setf initial-scratch-message "")setq recentf-max-saved-items 40)
 
 ;;; Save M-: history.
 (savehist-mode)
@@ -78,9 +79,6 @@
 ;; (add-hook 'find-file-hook 'ambrevar/turn-on-prettify-before-save)
 (add-hook 'find-file-hook 'ambrevar/turn-on-delete-trailing-whitespace)
 
-
-;;; Hippie expand
-(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;;; Abbreviation is like snippets: annoying at times, especially in
 ;;; prog-mode.  They are useful in text mode to avoid the sprawling of
@@ -136,7 +134,6 @@
 ;;; Buffer names.
 (setq uniquify-buffer-name-style 'forward)
 
-
 ;;; Disable prompt (but leave warning) on git symlink.
 (setq vc-follow-symlinks t)
 
@@ -148,14 +145,6 @@
 
 ;;; Move mouse away.
 ;; (mouse-avoidance-mode 'banish)
-
-
-;; on gaia-s we do not need it really
-;; (setf mouse-avoidance-mode 'animate)
-;(if (eq window-system 'x) (mouse-avoidance-set-pointer-shape (nth (random 4) (list x-pointer-man x-pointer-spider x-pointer-gobbler x-pointer-gumby))))
-
-;;; That binding is not very useful and gets in the way of C-<mouse-1>.
-(global-unset-key (kbd "C-<down-mouse-1>"))
 
 ;;; Sort
 (setq sort-fold-case t)
@@ -171,9 +160,6 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain
       ediff-split-window-function 'split-window-horizontally)
 
-;;; Trash
-(setq delete-by-moving-to-trash t)
-
 ;;; Frame title
 (setq frame-title-format
       (concat "mememacs %b"
@@ -186,7 +172,6 @@
   (pinentry-start))
 
 (setq woman-fill-column fill-column)
-
 
 ;; scrolling etc
 (setq jit-lock-defer-time 0)
@@ -202,19 +187,15 @@
 
 (setf browse-url-generic-program (or (getenv "BROWSER") "nyxt"))
 
-(global-visual-line-mode)
-
 (add-hook
  'after-save-hook
  (defun check-parens-when-prog-mode ()
-   (when (derived-mode-p 'prog-mode)))
- (check-parens))
+   (when (derived-mode-p 'prog-mode)
+     (check-parens))))
 
 ;; dired
 (setf dired-dwim-target t
       delete-by-moving-to-trash nil)
-
-;; todo enforece /n prog mode
 
 (setf bookmark-set-fringe-mark nil)
 (setf shell-file-name "/bin/bash")

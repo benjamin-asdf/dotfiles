@@ -1,19 +1,15 @@
 ;; Some of this code is from https://gitlab.com/ambrevar/dotfiles.
-;; see LICENCE for copying
+; see LICENCE for copying
 
 (in-package :nyxt-user)
 
-(define-configuration
-    browser
-    ((default-modes
-      (append
-       '(dark-mode
-	 vi-normal-mode
-	 my-mode)
-       %slot-default%))))
+(defmethod customize-instance ((buffer web-buffer) &key)
+  (nyxt/vi-mode:vi-normal-mode :buffer buffer)
+  (nyxt/style-mode:dark-mode :buffer buffer))
 
-(default-modes
- )
+
+;; (define-configuration nyxt/blocker-mode:blocker-mode
+;;   ((nyxt/blocker-mode:hostlists (append (list *my-blocked-hosts*) %slot-default%))))
 
 
 ;; (define-configuration buffer
@@ -43,12 +39,6 @@
 ;;     (ignore-errors (uiop:run-program
 ;;                     (list "emacsclient" "--eval" s-exps-string)))))
 
-;; (define-command trello-card-dispath (&optional (buffer (current-buffer)))
-;;   "Call trello card dispatch on emacsclient.
-;; See documentation of `team-trello' package in emacs."
-;;   (eval-in-emacs
-;;    `(team-trello-card-dispatch
-;;      ,(url buffer))))
 
 ;; (define-key *my-keymap* ", e" 'trello-card-dispath)
 

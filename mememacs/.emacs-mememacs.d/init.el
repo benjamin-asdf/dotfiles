@@ -22,8 +22,9 @@
 
 ;;; Avoid the "loaded old bytecode instead of newer source" pitfall.
 (setq load-prefer-newer t)
-
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+
+(setf byte-compile-warnings nil)
 
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
@@ -499,7 +500,9 @@
    "Gp" '(guix-packages-by-name :which-key "search packages")
    "GP" '(guix-pull :which-key "pull")))
 
-(use-package hippie-exp)
+(use-package hippie-exp
+  :config
+  (general-def "M-/" #'hippie-expand))
 
 (use-package flycheck-clj-kondo
   :after cider)

@@ -18,7 +18,7 @@
 (defun cider-complete-at-point ()
   "Complete the symbol at point."
   (when-let* ((bounds (bounds-of-thing-at-point 'symbol)))
-    (when (cider-connected-p)
+    (when (and (cider-connected-p) (not (cider-in-string-p)))
       (list (car bounds) (cdr bounds)
             (completion-table-dynamic
              (let ((res))

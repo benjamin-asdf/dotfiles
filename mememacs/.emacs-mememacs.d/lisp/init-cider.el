@@ -22,7 +22,7 @@
   (mememacs/comma-def
     :keymaps
     '(clojure-mode-map cider-repl-mode clojurescript-mode)
-    "n" #'neil-find-clojure-package))
+    "nn" #'neil-find-clojure-package))
 
 (mememacs/comma-def
   :keymaps
