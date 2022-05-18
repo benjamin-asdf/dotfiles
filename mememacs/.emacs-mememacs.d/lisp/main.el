@@ -31,7 +31,7 @@
 (setq echo-keystrokes 0.5)
 
 ;;; Recent files.
-((setf initial-scratch-message "")setq recentf-max-saved-items 40)
+(setq recentf-max-saved-items 40)
 
 ;;; Save M-: history.
 (savehist-mode)
