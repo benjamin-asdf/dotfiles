@@ -141,7 +141,7 @@ Meant to be added to `embark-identifier-map`"
 
 (embark-define-keymap mm/embark-consult-grep-map
   "For consult grep"
-  :parent embarkgeneral-map
+  :parent embark-general-map
   ("w" mm/kill-consult-grep-dwim)
   ("k" #'embark-copy-as-kill))
 
