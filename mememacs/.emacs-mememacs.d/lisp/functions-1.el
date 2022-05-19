@@ -59,6 +59,18 @@ See `eval-last-sexp'."
 	  (eval-last-sexp arg))
       (eval-last-sexp arg))))
 
+(defun mm/identifier-unquote (s)
+  ""
+  (let ((sexp (car (read-from-string s))))
+    (if (eq 'quote (car-safe sexp))
+	(with-temp-buffer
+	  (insert
+	   (with-output-to-string
+	     (print (cadr sexp))))
+	  (s-trim
+	   (buffer-string)))
+      s)))
+
 (general-def
   :states '(normal motion)
   "," nil
@@ -350,16 +362,14 @@ where the file does not exist."
       (current-buffer))
      (buffer-string))))
 
-
-
 (general-def
   "C-x k"
   (defun mememacs/kill-minibuff-contents ()
     (interactive)
-    (kill-new
-     (minibuffer-contents))
-    (keyboard-quit)))
-
+    (let ((s (minibuffer-contents)))
+      (kill-new s))
+    (keyboard-quit)
+    (message "%s" s)))
 
 (general-def
   :keymaps '(emacs-lisp-mode-map)

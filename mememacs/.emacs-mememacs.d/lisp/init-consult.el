@@ -6,10 +6,8 @@
   isearch-mode-map
   "H-/" #'consult-line)
 
-
 (mememacs/local-def
   "SPC" #'consult-mode-command)
-
 
 (mememacs/comma-def
   "ss" #'consult-line

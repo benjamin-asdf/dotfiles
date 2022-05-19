@@ -19,6 +19,7 @@
   ;; or figure out consult line narrowing
  lispy-occur-backend 'ivy
  lispy-teleport-global t
+ lispy-avy-keys mememacs/avy-keys
  lispy-x-default-verbosity 1)
 
 (lispyville--define-key 'insert
@@ -119,8 +120,7 @@
   (kbd "C-4") #'lispy-x
   (kbd "gd") #'lispy-goto-symbol
 
-  (kbd "C-l") (lispyville-wrap-command lispy-forward special)
-  (kbd "C-l") (lispyville-wrap-command lispy-forward special)
+  ;; (kbd "C-l") (lispyville-wrap-command lispy-forward special)
   (kbd "C-f") (lispyville-wrap-command lispy-flow special)
 
   (kbd "C-m") (lispyville-wrap-command lispy-mark-symbol special)
@@ -128,10 +128,7 @@
   (kbd "C-3") #'lispyville-up-list
   "=" #'lispyville-prettify
 
-  (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special)
-
-
-  )
+  (kbd "M-m") (lispyville-wrap-command lispy-mark-symbol special))
 
 
 (with-eval-after-load 'targets
@@ -211,8 +208,13 @@
   (evil-insert 0)
   (call-interactively #'special-lispy-eval))
 
+(defun mm/lispyville-forward-and-eval (&optional arg)
+  (interactive "p")
+  (lispy-forward 1)
+  (lispy-eval arg))
+
 (let ((mark-fn (lispyville-wrap-command lispy-mark-symbol special)))
-  (defun mm/lispy-goto-toplevel-form (&optional arg)
+  (defun mm/lispy-goto-toplevel-form ()
     (interactive "P")
     (lispyville-beginning-of-defun)
     (call-interactively #'lispyville-escape)
@@ -222,6 +224,20 @@
     (if (not arg)
 	(funcall-interactively mark-fn)
       (embark-act))))
+
+(defun mm/lispy-forward-atom-and-mark (&optional arg)
+  (interactive "p")
+  (deactivate-mark)
+  (lispyville-forward-atom-end arg)
+  (lispy-mark))
+
+(defun mm/lispy-backward-atom-and-mark (&optional arg)
+  (interactive "p")
+  (deactivate-mark)
+  (lispyville-backward-atom-begin arg)
+  (lispy-mark))
+
+;; (advice-add 'lispy-parens-down)
 
 (mememacs/local-def
   :keymaps '(lispy-mode-map)
@@ -236,7 +252,10 @@
 (general-def
   :states '(normal visual emacs insert)
   :keymaps '(lispy-mode-map lispyville-mode-map)
-  "C-e" (lispyville-wrap-command lispyville-end-of-defun special))
+  "C-e" (lispyville-wrap-command lispyville-end-of-defun special)
+  "C-l" #'mm/lispyville-forward-and-eval
+  "M-n" #'mm/lispy-forward-atom-and-mark
+  "M-p" #'mm/lispy-backward-atom-and-mark)
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)

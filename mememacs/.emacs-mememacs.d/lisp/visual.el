@@ -24,6 +24,8 @@
 (defconst mindsape/heliotrope		 "#F689FF")
 (defconst mindsape/heliotrope-shade	 "#311b33")
 (defconst mindsape/purple	         "#8e41e0")
+(defconst mindsape/metiorite	         "#3c2488")
+(defconst mindsape/wasabi	         "#708824")
 (defconst mindsape/fruit-salad	         "#479b59")
 (defconst mindsape/sweet-pink	         "#Fe9aa1")
 (defconst mindsape/sundown	         "#Feaeb4")
@@ -102,7 +104,7 @@
  :box nil
  :background mindsape/woodsmoke
  :bold t
- :foreground "green")
+ :foreground mindsape/mint-bright)
 
 ;; (set-face-attribute nil :box t)
 
@@ -275,7 +277,6 @@
 (set-cursor-color mindsape/mint-bright-1)
 (blink-cursor-mode -1)
 
-
 (set-face-attribute
  'lazy-highlight
  nil
@@ -312,13 +313,25 @@
   ;; cider-reader-conditional-face
   )
 
+(set-face-attribute
+ 'success
+ nil
+ :foreground mindsape/mint-bright-2)
+
 (with-eval-after-load
     'markdown-mode
-    (set-face-attribute
-     'markdown-code-face
-     nil
-     :inherit 'default
-     :background mindsape/lunar-green))
+  (set-face-attribute
+   'markdown-code-face
+   nil
+   :inherit 'default
+   :background mindsape/lunar-green))
+
+(with-eval-after-load
+    'embark
+  (set-face-attribute
+   'embark-target
+   nil
+   :inherit 'lazy-highlight))
 
 
 (defun ambrevar/fontify-comment-tag ()

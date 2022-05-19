@@ -14,6 +14,25 @@
 (mememacs/leader-def
   "hM" #'embark-bindings-in-keymap)
 
+(defun mm/embark-eval-identifier-dwim (identifier)
+  (let ((s (mm/identifier-unquote
+	    identifier)))
+    (cond ((memq
+	    major-mode
+	    lispy-clojure-modes)
+	   (cider-interactive-eval
+	    s
+	    nil
+	    (list
+	     (- (point) (length identifier))
+	     (point))
+	    (cider--nrepl-pr-request-map)))
+	  (t (lispy--eval s)))))
+
+(general-def
+  embark-identifier-map
+  "e" #'mm/embark-eval-identifier-dwim)
+
 (add-to-list
  'display-buffer-alist
  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -107,5 +126,28 @@ Meant to be added to `embark-identifier-map`"
 (general-def embark-variable-map
   "t" #'debug-on-variable-change
   "T" #'cancel-debug-on-variable-change)
+
+(defun ensure-list (e) (if (listp e) e `(,e)))
+(defun mm/embark-kill-displayed (strings)
+  ""
+  (embark-copy-as-kill
+   (mapcar
+    #'s-trim
+    (mapcar
+     #'vertico--display-string
+     (ensure-list strings)))))
+
+(general-def embark-general-map "C-k" #'mm/embark-kill-displayed)
+
+(embark-define-keymap mm/embark-consult-grep-map
+  "For consult grep"
+  :parent embarkgeneral-map
+  ("w" mm/kill-consult-grep-dwim)
+  ("k" #'embark-copy-as-kill))
+
+(defun mm/kill-consult-grep-dwim (s) (kill-new (replace-regexp-in-string ".+?\s+\\(.*\\)" "\\1" s)))
+
+(add-to-list 'embark-keymap-alist '(consult-grep mm/embark-consult-grep-map))
+
 
 (provide 'init-embark)

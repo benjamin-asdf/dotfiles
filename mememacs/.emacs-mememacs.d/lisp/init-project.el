@@ -35,8 +35,10 @@
       '((magit-status "Magit" "M")
 	(project-dired "Dired")
 	(consult-project-extra-find "Find file" "F")
-	(project-find-regexp "Find regexp")
+	(consult-ripgrep "Find regexp" "/")
+	(consult-git-grep "Git grep" "g")
 	(project-find-dir "Find directory")
+	(mememacs/fd-find-file "Fd file" "\\")
 	(project-eshell "Eshell")))
 
 (provide 'init-project)

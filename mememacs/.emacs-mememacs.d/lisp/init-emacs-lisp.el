@@ -7,7 +7,6 @@
   "e" nil
   "el" #'mememacs/lispy-eval-line
   "ed" #'eval-defun
-  "eb" #'eval-buffer
   "ee" #'mememacs/eval-last-sexp-dwim)
 
 (general-def

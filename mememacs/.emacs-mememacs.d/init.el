@@ -53,6 +53,8 @@
 
 (setq user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
+(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l))
+
 ;; Use no-littering to automatically set common paths to the new user-emacs-directory
 (use-package no-littering)
 
@@ -227,14 +229,13 @@
   :init
 
   (mememacs/comma-def
-    "g" '(:ignore t :which-key "git")
+    "g" '(:ignore t)
     "gs" #'magit-status
     "gl" #'magit-log
     "gd" #'magit-diff
     "gc" #'magit-clone
     "gu" #'magit-fetch
     "gU" #'magit-pull)
-
 
   :config
   (setq auto-revert-mode-text "")
@@ -244,9 +245,7 @@
   (add-hook 'git-commit-mode-hook
 	    (lambda ()
 	      (visual-line-mode -1)))
-  (general-def
-    'magit-blob-mode-map
-    "n" nil))
+  (general-def 'magit-blob-mode-map "n" nil))
 
 (use-package vertico
   :init
@@ -417,7 +416,7 @@
 
 (use-package ace-window
   :config
-  (setq aw-keys '(?k ?j ?h ?n ?i ?a ?s ?d ?l ?e ?r ?t)
+  (setq aw-keys mememacs/avy-keys
 	aw-background nil)
   (general-def 'evil-window-map
       "w" #'ace-window
@@ -458,9 +457,10 @@
    geiser-guile-load-path
    (list "/lib/guile/3.0")))
 
-(use-package
-  avy
-  :config (setf avy-timeout-seconds 0.18)
+(use-package avy
+  :config
+  (setf avy-timeout-seconds 0.18
+	avy-keys mememacs/avy-keys)
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
     "jw" #'avy-goto-word-1
