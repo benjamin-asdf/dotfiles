@@ -225,18 +225,6 @@
 	(funcall-interactively mark-fn)
       (embark-act))))
 
-(defun mm/lispy-forward-atom-and-mark (&optional arg)
-  (interactive "p")
-  (deactivate-mark)
-  (lispyville-forward-atom-end arg)
-  (lispy-mark))
-
-(defun mm/lispy-backward-atom-and-mark (&optional arg)
-  (interactive "p")
-  (deactivate-mark)
-  (lispyville-backward-atom-begin arg)
-  (lispy-mark))
-
 ;; (advice-add 'lispy-parens-down)
 
 (mememacs/local-def
@@ -253,9 +241,7 @@
   :states '(normal visual emacs insert)
   :keymaps '(lispy-mode-map lispyville-mode-map)
   "C-e" (lispyville-wrap-command lispyville-end-of-defun special)
-  "C-l" #'mm/lispyville-forward-and-eval
-  "M-n" #'mm/lispy-forward-atom-and-mark
-  "M-p" #'mm/lispy-backward-atom-and-mark)
+  "C-l" #'mm/lispyville-forward-and-eval)
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)
