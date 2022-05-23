@@ -316,7 +316,7 @@
 (set-face-attribute
  'success
  nil
- :foreground mindsape/mint-bright-2)
+ :foreground mindsape/mint-bright)
 
 (with-eval-after-load
     'markdown-mode
