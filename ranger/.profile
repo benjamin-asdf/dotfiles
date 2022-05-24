@@ -1,5 +1,6 @@
 
 export BROWSER=/usr/bin/qutebrowser
+export SBCL_HOME=/usr/lib/sbcl/
 
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 

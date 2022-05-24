@@ -21,3 +21,4 @@ unclutter &
 dunst &
 
 /home/benj/repos/stumpwm/stumpwm
+#stumpwm
