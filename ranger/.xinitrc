@@ -20,8 +20,5 @@ flameshot &
 unclutter &
 dunst &
 
-
-
-/usr/bin/stumpwm
-
-# /home/benj/repos/lisp/stumpwm/stumpwm
+/home/benj/repos/stumpwm/stumpwm
+#stumpwm
