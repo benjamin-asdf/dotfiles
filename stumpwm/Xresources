@@ -6,21 +6,21 @@ Xft.autohint:  false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-XTerm*background:        #222D31
-XTerm*foreground:        #d8d8d8
-XTerm*pointerColor:      #1ABB9B
 XTerm*faceName:          Fixed
 XTerm*faceSize:          17
 XTerm*reverseVideo:      on
 XTerm*selectToClipboard: true
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes: erase ^?
 
-*background:                      #222D31
-*foreground:                      #d8d8d8
+*foreground: #17161e
+*background: #faf7f7
+*pointerColor:   	          #d5ffd2
 *fading:                          8
 *fadeColor:                       black
-*cursorColor:                     #1ABB9B
-*pointerColorBackground:          #2B2C2B
-*pointerColorForeground:          #16A085
+*cursorColor:                     #c0febc
+*pointerColorBackground:          #c0febc
+*pointerColorForeground:          #c0febc
 
 !! black dark/light
 *color0:                          #222D31
@@ -68,7 +68,7 @@ URxvt.depth:                      32
 URxvt.background:                 [100]#222D31
 URxvt*scrollBar:                  false
 URxvt*mouseWheelScrollPage:       false
-URxvt*cursorBlink:                true
+URxvt*cursorBlink:                false
 URxvt*background:                 black
 URxvt*foreground:                 grey
 URxvt*saveLines:                  5000
