@@ -29,7 +29,7 @@
 	   "\0"
 	   t)))))))
 
-(general-def #'"C-\\" mememacs/fd-find-file)
+(general-def "C-\\" #'mememacs/fd-find-file)
 
 (setq project-switch-commands
       '((magit-status "Magit" "M")

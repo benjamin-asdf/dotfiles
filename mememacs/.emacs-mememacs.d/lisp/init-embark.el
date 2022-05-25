@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (general-def
   :states '(normal insert motion emacs)
   "C-." #'embark-act
@@ -39,22 +40,21 @@
    nil
    (window-parameters (mode-line-format . none))))
 
-(eval-when-compile
-  (defmacro my/embark-ace-action (fn)
-    `(defun
-	 ,(intern
-	   (concat
-	    "my/embark-ace-"
-	    (symbol-name fn))) ()
-       (interactive)
-       (with-demoted-errors
-	   "%s"
-	 (require 'ace-window)
-	 (let ((aw-dispatch-always t))
-	   (aw-switch-to-window
-	    (aw-select nil))
-	   (call-interactively
-	    (symbol-function ',fn)))))))
+(defmacro my/embark-ace-action (fn)
+  `(defun
+       ,(intern
+	 (concat
+	  "my/embark-ace-"
+	  (symbol-name fn))) ()
+     (interactive)
+     (with-demoted-errors
+	 "%s"
+       (require 'ace-window)
+       (let ((aw-dispatch-always t))
+	 (aw-switch-to-window
+	  (aw-select nil))
+	 (call-interactively
+	  (symbol-function ',fn))))))
 
 (define-key embark-file-map (kbd "o")
    (my/embark-ace-action

@@ -34,7 +34,6 @@
 (defconst mindsape/mint-bright-2	 "#b6feb1")
 (defconst mindsape/mint-bright-3	 "#c0febc")
 (defconst mindsape/mint-bright-4	 "#d5ffd2")
-(defconst mindsape/mint-bright-4	 "#d5ffd2")
 (defconst mindsape/blue-chalk	         "#Fcd2ff")
 (defconst mindsape/lunar-green	         "#404c3f")
 (defconst mindsape/log-cabin	         "#131713")

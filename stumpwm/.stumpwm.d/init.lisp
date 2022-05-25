@@ -9,7 +9,7 @@ Load a file that re-defines swank and then calls it."
   (load
    "~/.stumpwm.d/swank.lisp")
   (echo-string
-   (current-screen)
+  (current-screen)
    "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 
 (define-key *root-map* (kbd "C-s") "swank")
