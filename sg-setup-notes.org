@@ -80,6 +80,8 @@ you need this if you want to connect to twitch with browser flow
 
 - script idlegame-auth-handler in your path
 
+> *Important* make sure idlegame-auth-handler is executable
+
 #+begin_src shell
 #!/bin/sh
 [ "$1" = "-v" ] && echo idlegame-auth-handler version 0.1 && exit 0
@@ -90,12 +92,51 @@ mkdir -p /tmp/cos_redirect/ && echo "$@" >> /tmp/cos_redirect/url.txt
 zenity --info --text "$@"
 #+end_src
 
-- install a .desktop file in `.local/share/applications`
-  (google and update this guide)
+#+begin_src
+idlegame-auth-handler foo
+#+end_src
+
+this should show a window saying foo
+
+
+- install a .desktop file in `~/.local/share/applications`
+
+#+begin_src shell
+  echo "" > ~/.local/share/applications/cos-handler.desktop
+  $EDITOR ~/.local/share/applications/cos-handler.desktop
+#+end_src
+
+insert this content:
+
+#+begin_src Conf[Desktop]
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+NoDisplay=true
+Exec=idlegame-auth-handler %u
+Name=idlegame auth handler
+#+end_src
+
 - add an entry here ~/.config/mimeapps.list
-  something like
-  x-scheme-handler/clashofstreamers=handler-script.desktop
-- can poke Ben
+
+#+begin_src
+x-scheme-handler/clashofstreamers=cos-handler.desktop
+#+end_src
+
+I added this line to the bottom of [Default Applications].
+Probably does not matter where.
+
+The mimeapps list makes xdg-open look up the desktop file, which says
+what program to run.
+
+If it works this should call our script with the url as data.
+
+#+begin_src shell
+  xdg-open clashofstreamers://fooo
+#+end_src
+
+It then pops a little dialog window with zentiy.
 
 * editor
 choose
@@ -104,6 +145,10 @@ choose
 - spacemacs (vim bindings, similar to doom, more features and more
   users, less minimalistic)
 - vscode, intellij (works out of the box)
+- https://github.com/SystemCrafters/rational-emacs similar style to
+  doom but more bare bones to default emacs (which is good)
+- mememacs - ascend with me into space. A config not made to be among
+  the stars, but to touch them. By being simple, powerful and focused.
 
 * other software
 - gnu stow for dotfile management
@@ -165,3 +210,28 @@ maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-def
 honestly don't really know why you want it
 code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
 * unity/.local/bin/unity/make-unity-link.sh
+
+* xsessions
+https://wiki.archlinux.org/title/Display_manager#Session_configuration
+
+/usr/share/xsessions/
+
+#+begin_quote
+To add/remove entries to your display manager's session list; create/remove the .desktop files in /usr/share/xsessions/ as desired.
+#+end_quote
+
+For context your display manager is the login screen.
+
+ctrl + alt + f1...f8 : switch to another tty
+7 is usually the "graphical one"
+
+You can also switch to another tty and start your window manager from
+there (for trying out).
+You login and it starts xterm, then you can startx (if not already
+running somewhere).
+
+what I do is I use this:
+https://aur.archlinux.org/packages/xinit-xsession
+
+and I start stumpwm in my ~/.xinitrc
+This way the only thing I need to worry about is ~/.xinitrc.
