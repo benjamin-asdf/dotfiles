@@ -364,7 +364,8 @@
   (defun mm/slime-simple-c-a-p ()
     (setf
      completion-at-point-functions
-     slime-completion-at-point-functions))
+     '(slime-filename-completion
+       slime-simple-completion-at-point)))
   :hook
   (prog-mode . mm/add-slime-filename-cap)
   (slime-mode . mm/slime-simple-c-a-p))

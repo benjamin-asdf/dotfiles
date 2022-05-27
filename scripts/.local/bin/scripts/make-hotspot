@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# ip link
+# to find the name of your connection
+# I needed to plug into another usb 
+# also rebooted once with it attached. Not sure how the driver module whatever stuff works
+# https://wiki.archlinux.org/title/Network_configuration/Wireless
+# ip link set wlp0s20f0u14 up
+
+# just check man nmcli for the hotspot
+nmcli -s dev wifi hotspot con-name BenHotspot
+
+# connection down or device down to stop the hotspot.

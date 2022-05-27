@@ -495,5 +495,13 @@ With negative N, comment out original line and use the absolute value."
 
 (mememacs/comma-def "oo" #'mm/find-logseq-content)
 
+(defun mm/copy-word-above ()
+  (interactive)
+  (insert
+   (save-excursion
+     (evil-previous-line 1)
+     (thing-at-point 'evil-WORD))))
+
+(general-def :states '(insert) "C-w" #'mm/copy-word-above)
 
 (provide 'functions-1)

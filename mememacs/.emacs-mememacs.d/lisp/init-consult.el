@@ -52,8 +52,7 @@
 
   "ji" #'consult-imenu
   "jI" #'consult-imenu-multi
-  ;; info
-  ;; pass
+  ;; info?
   "m" #'consult-global-mark
 
   "jL" #'consult-goto-line
@@ -71,17 +70,15 @@
   ;; flycheck
   ;; "ef" #'consult-flymake
 
-  ;; todo ripgrep
-  "/" #'consult-ripgrep
-  )
+  "/" #'consult-ripgrep)
 
 (general-def
   "H-SPC" #'consult-line
   "H-m ." (lambda () (interactive) (push-mark)))
 
 (general-def
-  :keymap vertico-map
-  "M-y" #'consult-yank-pop)
+  "M-y" #'yank-pop
+  [remap yank-pop] #'consult-yank-pop)
 
 (consult-customize
  consult-ripgrep consult-git-grep consult-grep
