@@ -235,3 +235,13 @@ https://aur.archlinux.org/packages/xinit-xsession
 
 and I start stumpwm in my ~/.xinitrc
 This way the only thing I need to worry about is ~/.xinitrc.
+
+It is easy to make a mistake and your window manager wont start.
+Do not panic.
+Go to another tty and fix the files with a terminal editor.
+Common mistakes
+- some path is wrong and the program does not exist
+- you accidentally do not start a window manager
+- you have a script that starts you window manager and it is not executable
+Follow the documentation of the wm you like to try + the above linked
+arch wiki page.
