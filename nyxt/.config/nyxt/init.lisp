@@ -5,7 +5,31 @@
 
 (defmethod customize-instance ((buffer web-buffer) &key)
   (nyxt/vi-mode:vi-normal-mode :buffer buffer)
-  (nyxt/style-mode:dark-mode :buffer buffer))
+  (nyxt/style-mode:dark-mode :buffer buffer)
+  (push
+   (make-instance
+    'search-engine
+    :shortcut "s"
+    :search-url "https://paulgo.io/?q=~a"
+    :fallback-url (quri:uri "https://paulgo.io/")
+    :completion-function
+    (make-search-completion-function
+     :base-url "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a"
+     :processing-function
+     #'identity
+     ;; #'(lambda (results)
+     ;; 	 (alex:when-let*
+     ;; 	     ((results results)
+     ;; 	      (results (decode-json results)))
+     ;; 	   (mapcar
+     ;; 	    #'list
+     ;; 	    (second results)
+     ;; 	    (fourth results))))
+     ))
+   (search-engines buffer)))
+
+
+
 
 
 ;; (define-configuration nyxt/blocker-mode:blocker-mode
