@@ -206,25 +206,9 @@ use pyenv for that (pycharm does it auto)
 
 ** 1 script to upload to s3
 
-#+begin_src shell
-#!/bin/sh
-AWS_ACCESS_KEY_ID="$(pass cos-attch-s3-key-id)"
-export AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY="$(pass cos-attch-s3-access-key)"
-export AWS_SECRET_ACCESS_KEY
-export AWS_DEFAULT_REGION=us-east-1
-
-name=$(basename "$1")
-bucket_name="$(pass cos-attch-bucket-name)"
-content_type="$(mimetype --brief "$1")" # I guess this not needed
-
-aws s3 cp "$1" s3://$bucket_name/ShareX/ben/"$name" --acl "public-read" --content-type "$content_type" \
-    && echo https://s3.eu-central-1.amazonaws.com/$bucket_name/ShareX/ben/"$name"
-
-#+end_src
+   [[file:scripts/.local/bin/scripts/s3-cos-attch-upload::export AWS_ACCESS_KEY_ID][upload-file]]
 
    check
-   [[file:scripts/.local/bin/scripts/s3-cos-attch-upload::export AWS_ACCESS_KEY_ID][upload-file]]
    [[file:scripts/.local/bin/scripts/cos-s3-upload-latest][file:scripts/.local/bin/scripts/cos-s3-upload-latest]]
 
    I want things slow and deliberate so I only upload with a second
