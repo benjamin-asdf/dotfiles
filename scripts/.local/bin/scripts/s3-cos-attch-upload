@@ -1,0 +1,17 @@
+#!/bin/sh
+
+AWS_ACCESS_KEY_ID="$(pass cos-attch-s3-key-id)"
+export AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY="$(pass cos-attch-s3-access-key)"
+export AWS_SECRET_ACCESS_KEY
+export AWS_DEFAULT_REGION=us-east-1
+
+name=$(basename "$1")
+bucket_name="$(pass cos-attch-bucket-name)"
+content_type="$(mimetype --brief "$1")"
+url=https://s3.eu-central-1.amazonaws.com/$bucket_name/ShareX/ben/"$name"
+
+aws s3 cp "$1" s3://$bucket_name/ShareX/ben/"$name" --acl "public-read" --content-type "$content_type" \
+    && echo $url | xclip -selection clipboard
+
+

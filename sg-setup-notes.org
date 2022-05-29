@@ -49,10 +49,31 @@
   git lfs fetch && git lfs pull
 #+end_src
 
+** open unity with style (ditch unity hub for the most part)
+
+
+#+begin_src shell
+  sudo ln -s <unity-install-path>/Editor/Unity /usr/bin/unity-editor
+#+end_src
+
+make a script
+
+#+begin_src shell
+  #!/bin/sh
+  unity-editor -forcefree -buildTarget standalone -projectPath <project-path>
+#+end_src
+
+project-path is the directory with the sln file.
+
+Now you do not need to click in the hub ever again like some normie.
+Also see [[file:unity/.local/bin/unity/unity-open][file:unity/.local/bin/unity/unity-open]]
+
+
 ** unity project symlinks (if you want 2 unities)
 
-- you can make symlinks with regular `ln -s`
-- script: ./unity/.local/bin/unity/make-unity-link.sh
+#+begin_src shell
+  man ln
+#+end_src
 
 
 * IMPROTANT csc patch (without it you get compile errs)
@@ -70,10 +91,6 @@ if you have some default install.
 
 Hint: check in unityhub for installs to get your install path.
 
-
-* prefab merge tool (only if you work with prefabs)
-
-[mergetool “unityyamlmerge”] trustExitCode = false cmd = <unity-install-path>Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
 
 * uri scheme for connecting to twitch
 you need this if you want to connect to twitch with browser flow
@@ -115,7 +132,11 @@ Version=1.0
 Type=Application
 NoDisplay=true
 Exec=idlegame-auth-handler %u
+TryExec=idlegame-auth-handler
 Name=idlegame auth handler
+Terminal=false
+StartupNotify=false
+MimeType=x-scheme-handler/clashofstreamers
 #+end_src
 
 - add an entry here ~/.config/mimeapps.list
@@ -136,7 +157,16 @@ If it works this should call our script with the url as data.
   xdg-open clashofstreamers://fooo
 #+end_src
 
+
 It then pops a little dialog window with zentiy.
+
+** troubleshoot
+
+you might need to run
+#+begin_src
+update-desktop-database $HOME/.local/share/applications
+#+end_src
+
 
 * editor
 choose
@@ -174,6 +204,44 @@ use pyenv for that (pycharm does it auto)
 - install aws cli
   pamac build aws-cli-v2
 
+** 1 script to upload to s3
+
+#+begin_src shell
+#!/bin/sh
+AWS_ACCESS_KEY_ID="$(pass cos-attch-s3-key-id)"
+export AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY="$(pass cos-attch-s3-access-key)"
+export AWS_SECRET_ACCESS_KEY
+export AWS_DEFAULT_REGION=us-east-1
+
+name=$(basename "$1")
+bucket_name="$(pass cos-attch-bucket-name)"
+content_type="$(mimetype --brief "$1")" # I guess this not needed
+
+aws s3 cp "$1" s3://$bucket_name/ShareX/ben/"$name" --acl "public-read" --content-type "$content_type" \
+    && echo https://s3.eu-central-1.amazonaws.com/$bucket_name/ShareX/ben/"$name"
+
+#+end_src
+
+   check
+   [[file:scripts/.local/bin/scripts/s3-cos-attch-upload::export AWS_ACCESS_KEY_ID][upload-file]]
+   [[file:scripts/.local/bin/scripts/cos-s3-upload-latest][file:scripts/.local/bin/scripts/cos-s3-upload-latest]]
+
+   I want things slow and deliberate so I only upload with a second
+   keybind, instead of screen capturing and uploading.
+
+** screen capture
+
+[[file:scripts/.local/bin/scripts/video-selected][file:scripts/.local/bin/scripts/video-selected]]
+
+depends on a package slop-git
+modify to your desire.
+I use /tmp/recordingpid to show "recording" in my wms modeline.
+
+** aws profile
+you can pass --profile to the aws cli.
+Less secure because you have permanent tokens on a plain file on your system.
+
 - in ~/.aws/config
 #+begin_src conf
 [sharex]
@@ -187,20 +255,14 @@ aws_access_key_id=UUUUUUUUUUUUUUUUUUUU
 aws_secret_access_key=uuuuUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
 #+end_src
 
-
-#+begin_src shell
-   name=$(basename "$1")
-   aws s3 cp --profile sharex "$1" s3://<bucket-name>/ShareX/benj/"$name" \
-  --acl public-read \
-  && echo https://<bucket-name>.s3.eu-central-1.amazonaws.com/ShareX/benj/"%name"
-
-#+end_src
-
-- use aws s3 help there is a lot of options
-
-- this could be done as part of the screencapture job
-
 * troubleshoot
+
+** unity hub closes instant
+- invoke unity hub via the command line to get the errors
+  (general tip anyway)
+- There is some bug when it tries to update,
+  update or reinstall with pacman (or pamac)
+
 ** “connection interrupted” in your browser
 caused by docker
 maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-default-bridge-docker0-network-for-docker-engine-to-a-different-subnet
@@ -209,7 +271,12 @@ maybe this helps https://success.mirantis.com/article/how-do-i-configure-the-def
 ** at the time of writing I did not make airtest recording work
 honestly don't really know why you want it
 code your airtest with the repl running instead to have instant feedback, ask Ben to set it up
-* unity/.local/bin/unity/make-unity-link.sh
+
+
+* prefab merge tool (only if you work with prefabs)
+
+[mergetool “unityyamlmerge”] trustExitCode = false cmd = <unity-install-path>Unity-2019.2.8f1/Editor/Data/Tools/UnityYAMLMerge merge -h -p “$BASE” “$REMOTE” “$LOCAL” “$MERGED”
+
 
 * xsessions
 https://wiki.archlinux.org/title/Display_manager#Session_configuration

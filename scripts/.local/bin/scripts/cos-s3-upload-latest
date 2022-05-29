@@ -1,0 +1,4 @@
+#!/bin/sh
+
+file_to_upload="$HOME/Pictures/$(ls -Art "$HOME/Pictures/." | tail -n 1)"
+s3-cos-attch-upload "$file_to_upload"
