@@ -84,7 +84,12 @@
    "\\[\\(.+?\\)\\s-\\(\".+?\"\\)\\]"
    "\\1 {:mvn/version \\2}"
    beg
-   end))
+   end)
+  (save-excursion
+    (goto-char (point-min))
+    (replace-regexp-in-region
+     "[^/]\\(\\<\\w+\\>\\) {:mvn/version \\(.+\\)}"
+     "\\1/\\1 {:mvn/version \\2}")))
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
