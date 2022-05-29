@@ -1,0 +1,3 @@
+#!/bin/sh
+
+$BROWSER https://polygonscan.com/address/"$1"
