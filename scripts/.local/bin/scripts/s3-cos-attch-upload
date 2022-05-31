@@ -11,5 +11,5 @@ bucket_name="$(pass cos-attch-bucket-name)"
 content_type="$(mimetype --brief "$1")"
 url=https://s3.eu-central-1.amazonaws.com/$bucket_name/ShareX/ben/"$name"
 
-aws s3 cp "$1" s3://$bucket_name/ShareX/ben/"$name" --acl "public-read" --content-type "$content_type" \
-    && echo $url | xclip -selection clipboard
+aws s3 cp "$1" s3://$bucket_name/ShareX/ben/"$name" --acl "public-read" --content-type "$content_type"  \
+    && echo $url

@@ -11,25 +11,29 @@
    orderless-style-dispatchers
    '(orderless-prefix-dispatch)))
 
-
-;; FIXME: why..
-;; completion in region somehow ends up calling cider with blank prefix
-;; still in the dark why
-(defun cider-complete-at-point ()
-  "Complete the symbol at point."
-  (when-let* ((bounds (bounds-of-thing-at-point 'symbol)))
-    (when (and (cider-connected-p) (not (cider-in-string-p)))
-      (list (car bounds) (cdr bounds)
-            (completion-table-dynamic
-             (let ((res))
-               (lambda (prefix)
-                 (or res
-                     (setf res
-                           (cider-complete prefix))))))
-            :annotation-function #'cider-annotate-symbol))))
-
-
 (add-hook 'cider-mode-hook #'mm/patch-orderless-style)
+
+(defun mm/cider-complete-at-point ()
+  "Complete the symbol at point."
+  (when (and (cider-connected-p)
+	     (not (cider-in-string-p)))
+    (when-let*
+	((bounds
+	  (bounds-of-thing-at-point
+	   'symbol))
+	 (beg (car bounds))
+	 (end (cdr bounds))
+	 (completion
+	  (cider-complete
+	   (buffer-substring beg end))))
+      (list
+       beg
+       end
+       (completion-table-dynamic
+	(lambda (_) completion))
+       :annotation-function #'cider-annotate-symbol))))
+
+(advice-add 'cider-complete-at-point :override #'mm/cider-complete-at-point)
 
 (provide 'patch-cider-orderless)
 

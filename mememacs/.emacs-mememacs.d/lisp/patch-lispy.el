@@ -103,35 +103,42 @@ backward through lists, which is useful to move into special.
                (setq-local outline-regexp (substring lispy-outline 1))))
         (when (called-interactively-p 'any)
           (mapc #'lispy-raise-minor-mode
-                (cons 'lispy-mode lispy-known-verbs))))
+                (cons 'lispy-mode lispy-known-verbs)))
+        (font-lock-add-keywords major-mode lispy-font-lock-keywords))
     (when lispy-old-outline-settings
       (setq outline-regexp (car lispy-old-outline-settings))
       (setq outline-level (cdr lispy-old-outline-settings))
-      (setq lispy-old-outline-settings nil))))
+      (setq lispy-old-outline-settings nil))
+    (font-lock-remove-keywords major-mode lispy-font-lock-keywords)))
 
 
 
 
 ;; hippie
 
-(defun mememacs/string-chop-suffix-all (s suffix)
-  (if (s-ends-with? suffix s)
-      (mememacs/string-chop-suffix-all
-       (s-chop-suffix suffix s)
-       suffix)
-    s))
+(defun mm/he-substitute-string (str &optional trans-case)
+  (let ((trans-case (and trans-case
+			 case-replace
+			 case-fold-search))
+	(newpos (point-marker))
+	(subst ()))
+    (goto-char he-string-beg)
+    (setq subst (if trans-case (he-transfer-case he-search-string str) str))
+    (setq he-tried-table (cons subst he-tried-table))
+    (if lispy-mode
+	(lispy-delete 1)
+      (delete-region
+       (point)
+       he-string-end))
+    (insert subst)
+    (goto-char newpos)
+    (when lispy-mode
+      (special-lispy-different)
+      (when (looking-at-p "\\w")
+	(insert " ")
+	(forward-char -1)
+	(evil-insert-state 1)))))
 
-(defun mememacs/patch-he-lispy (args)
-  (if lispy-mode
-      `(,(thread-first
-	  (car args)
-	  (mememacs/string-chop-suffix-all ")")
-	  (mememacs/string-chop-suffix-all "]")
-	  (mememacs/string-chop-suffix-all "}"))
-	,(cadr args))
-    args))
-
-(advice-add 'he-substitute-string :filter-args #'mememacs/patch-he-lispy)
-
+(advice-add 'he-substitute-string :override #'mm/he-substitute-string)
 
 (provide 'patch-lispy)
