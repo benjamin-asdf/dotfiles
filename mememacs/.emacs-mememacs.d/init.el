@@ -547,7 +547,7 @@
 (with-eval-after-load
     'sh-script
   (mememacs/comma-def
-    :keymaps '(shell-script-mode)
+    :keymaps '(sh-mode-map)
     "1"
     (defun mememacs/execute-script ()
       (interactive)
