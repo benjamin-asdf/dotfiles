@@ -133,6 +133,8 @@ Load a file that re-defines swank and then calls it."
 
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:class "Unity-editor") *deny-map-request*)
+(push '(:class "Importing") *deny-raise-request*)
+(push '(:class "Importing") *deny-map-request*)
 
 (defun select-windows-with-class ())
 
