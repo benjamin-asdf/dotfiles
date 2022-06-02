@@ -583,7 +583,11 @@
 
 (use-package vterm
   :config
-  (mememacs/leader-def "'" #'vterm))
+  (mememacs/leader-def "'" #'vterm)
+  (general-def "s-<return>" (defun mm/vterm-ARG () (interactive)
+			      (vterm 1))))
+
+
 
 (use-package bash-completion
   :init
