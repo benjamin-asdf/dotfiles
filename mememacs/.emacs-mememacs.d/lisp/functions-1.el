@@ -149,8 +149,22 @@ See `eval-last-sexp'."
      (message  "Kill %s" it)
      (kill-new it))))
 
-(defvar mememacs/scratch-dir "~/scratch")
-(defvar mememacs/last-scratch nil)
+(defvar mememacs/scratch-dir (expand-file-name "~/scratch"))
+(defun mememacs/latest-scratch (suffix)
+  (expand-file-name
+   (car
+    (--filter
+     (and (s-ends-with? suffix it)
+	  (not (s-matches? "#" it)))
+     (process-lines
+      "ls"
+      "-A"
+      "-t"
+      mememacs/scratch-dir)))
+   mememacs/scratch-dir))
+
+(declare (mememacs/latest-scratch "el"))
+
 (defun mememacs/new-scratch-name (suffix)
   (unless (file-exists-p mememacs/scratch-dir)
     (make-directory mememacs/scratch-dir))
@@ -167,19 +181,19 @@ See `eval-last-sexp'."
 
 (defun mm/scratch (create-new suffix)
   (pop-to-buffer
-   (if (or create-new
-	   (not mememacs/last-scratch))
-       (find-file-noselect
-	(mememacs/new-scratch-name suffix))
-     mememacs/last-scratch)))
+   (let ((latest (mememacs/latest-scratch suffix)))
+     (find-file-noselect
+      (if (or create-new (not latest))
+	  (mememacs/new-scratch-name suffix)
+	(mememacs/latest-scratch suffix))))))
 
 ;; todo connect to background bb
 (defun mm/scratch-clj (&optional arg)
-  (interactive "p")
+  (interactive "P")
   (mm/scratch arg "clj"))
 
 (defun mm/scratch-elisp (&optional arg)
-  (interactive "p")
+  (interactive "P")
   (mm/scratch arg "el"))
 
 (mememacs/leader-def

@@ -44,6 +44,4 @@
 ;; I press this button accidentally all the time
 (general-def 'help-map "h" nil)
 
-
-
 (provide 'late-bindings)

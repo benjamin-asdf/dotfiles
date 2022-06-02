@@ -286,5 +286,6 @@ when formatting with lispy."
 
 (add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
 
+(require 'lispy-eval-markers)
 
 (provide 'init-lispyville)

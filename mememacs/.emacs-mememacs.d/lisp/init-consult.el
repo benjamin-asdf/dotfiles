@@ -87,4 +87,11 @@
  consult--source-project-recent-file
  :preview-key (kbd "M-."))
 
+(defun mm/dired-find-file-after-consult (old-fn pos)
+  (funcall old-fn pos)
+  (when (and pos (eq major-mode 'dired-mode))
+    (call-interactively #'dired-find-file)))
+
+(advice-add 'consult--jump :around  #'mm/dired-find-file-after-consult)
+
 (provide 'init-consult)
