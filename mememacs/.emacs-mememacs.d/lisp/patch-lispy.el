@@ -112,32 +112,33 @@ backward through lists, which is useful to move into special.
     (font-lock-remove-keywords major-mode lispy-font-lock-keywords)))
 
 
-
-
 ;; hippie
 
 (defun mm/he-substitute-string (str &optional trans-case)
   (let ((trans-case (and trans-case
-			 case-replace
-			 case-fold-search))
-	(newpos (point-marker))
-	(subst ()))
+                         case-replace
+                         case-fold-search))
+        (newpos (point-marker))
+        (subst ()))
     (goto-char he-string-beg)
     (setq subst (if trans-case (he-transfer-case he-search-string str) str))
     (setq he-tried-table (cons subst he-tried-table))
-    (if lispy-mode
-	(lispy-delete 1)
-      (delete-region
-       (point)
-       he-string-end))
-    (insert subst)
-    (goto-char newpos)
-    (when lispy-mode
-      (special-lispy-different)
-      (when (looking-at-p "\\w")
-	(insert " ")
-	(forward-char -1)
-	(evil-insert-state 1)))))
+    (let ((lispy-delete-at-paren
+           (when
+               lispy-mode
+             (eq (char-after) ?\())))
+      (if
+          lispy-delete-at-paren
+          (lispy-delete 1)
+        (delete-region (point) he-string-end))
+      (insert subst)
+      (goto-char newpos)
+      (when lispy-delete-at-paren
+        (special-lispy-different)
+        (when (looking-at-p "\\w")
+          (insert " ")
+          (forward-char -1)
+          (evil-insert-state 1))))))
 
 (advice-add 'he-substitute-string :override #'mm/he-substitute-string)
 
