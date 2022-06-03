@@ -3,30 +3,50 @@
 
 (in-package :nyxt-user)
 
+
+;; (load "~/.emacs-mememacs.d/straight/repos/slime/swank-loader.lisp")
+
+;; (swank-loader:init)
+;; *swank-port*
+
+;; (define-command start-swank-2 (&optional (swank-port *swank-port*))
+;;   "Start a Swank server that can be connected to, for instance, in
+;; Emacs via SLIME.
+
+;; Warning: This allows Nyxt to be controlled remotely, that is, to
+;; execute arbitrary code with the privileges of the user running Nyxt.
+;; Make sure you understand the security risks associated with this
+;; before running this command."
+;;   (swank:create-server :port swank-port :dont-close t)
+;;   (echo "Swank server started at port ~a" swank-port))
+
+
+
 (defmethod customize-instance ((buffer web-buffer) &key)
   (nyxt/vi-mode:vi-normal-mode :buffer buffer)
   (nyxt/style-mode:dark-mode :buffer buffer)
-  (push
-   (make-instance
-    'search-engine
-    :shortcut "s"
-    :search-url "https://paulgo.io/?q=~a"
-    :fallback-url (quri:uri "https://paulgo.io/")
-    :completion-function
-    (make-search-completion-function
-     :base-url "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a"
-     :processing-function
-     #'identity
-     ;; #'(lambda (results)
-     ;; 	 (alex:when-let*
-     ;; 	     ((results results)
-     ;; 	      (results (decode-json results)))
-     ;; 	   (mapcar
-     ;; 	    #'list
-     ;; 	    (second results)
-     ;; 	    (fourth results))))
-     ))
-   (search-engines buffer)))
+  ;; (push
+  ;;  (make-instance
+  ;;   'search-engine
+  ;;   :shortcut "s"
+  ;;   :search-url "https://paulgo.io/?q=~a"
+  ;;   :fallback-url (quri:uri "https://paulgo.io/")
+  ;;   :completion-function
+  ;;   (make-search-completion-function
+  ;;    :base-url "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a"
+  ;;    :processing-function
+  ;;    #'identity
+  ;;    ;; #'(lambda (results)
+  ;;    ;; 	 (alex:when-let*
+  ;;    ;; 	     ((results results)
+  ;;    ;; 	      (results (decode-json results)))
+  ;;    ;; 	   (mapcar
+  ;;    ;; 	    #'list
+  ;;    ;; 	    (second results)
+  ;;    ;; 	    (fourth results))))
+  ;;    ))
+  ;;  (search-engines buffer))
+  )
 
 
 
