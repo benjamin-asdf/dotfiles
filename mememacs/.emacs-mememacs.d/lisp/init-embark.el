@@ -12,6 +12,8 @@
 (general-def :states '(normal motion emacs)
   "C-h B" #'embark-bindings)
 
+(declare (describe-keymap 'vertico-map))
+
 (mememacs/leader-def
   "hM" #'embark-bindings-in-keymap)
 
@@ -149,5 +151,12 @@ Meant to be added to `embark-identifier-map`"
 
 (add-to-list 'embark-keymap-alist '(consult-grep mm/embark-consult-grep-map))
 
+
+(defun mm/jump-vterm (d)
+  (interactive "D")
+  (let ((default-directory d))
+    (vterm 'new)))
+
+(general-def embark-file-map "'" #'mm/jump-vterm)
 
 (provide 'init-embark)
