@@ -151,19 +151,23 @@ See `eval-last-sexp'."
 
 (defvar mememacs/scratch-dir (expand-file-name "~/scratch"))
 (defun mememacs/latest-scratch (suffix)
-  (expand-file-name
-   (car
-    (--filter
-     (and (s-ends-with? suffix it)
-	  (not (s-matches? "#" it)))
-     (process-lines
-      "ls"
-      "-A"
-      "-t"
-      mememacs/scratch-dir)))
-   mememacs/scratch-dir))
+  (when-let
+      ((f
+	(car (--filter
+	      (and (s-ends-with? suffix it)
+		   (not (s-matches? "#" it)))
+	      (process-lines
+	       "ls"
+	       "-A"
+	       "-t"
+	       mememacs/scratch-dir)))))
+    (expand-file-name
+     f
+     mememacs/scratch-dir)))
 
-(declare (mememacs/latest-scratch "el"))
+(declare
+	 (mememacs/latest-scratch "el")
+	 (mememacs/latest-scratch "clj"))
 
 (defun mememacs/new-scratch-name (suffix)
   (unless (file-exists-p mememacs/scratch-dir)

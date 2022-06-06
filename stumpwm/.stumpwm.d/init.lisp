@@ -203,11 +203,14 @@ windows of the same class as the current window."
 
 
  (load-module "wifi")
-
-
  (setf
   *screen-mode-line-format*
   "[^B%n^b] %C | %M  %R %I")
+ (load-module "battery-portable")
+
+ (setf
+  *screen-mode-line-format*
+  "[^B%n^b] %C | %M  %R %B")
 
 
  )

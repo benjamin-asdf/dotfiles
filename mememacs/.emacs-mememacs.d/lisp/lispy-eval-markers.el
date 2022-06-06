@@ -1,7 +1,5 @@
 ;;; lispy-eval-markers.el --- Remember last lispy eval markers
 
-
-
 ;;; Commentary:
 ;;
 
