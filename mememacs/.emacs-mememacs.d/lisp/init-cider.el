@@ -151,4 +151,11 @@
   (cider-nrepl-sync-request:eval
    "(tap> *1)"))
 
+(defun mm/cider-barf-unless-connected (&rest _)
+  (unless (cider-connected-p)
+    (user-error "Cider not connected")))
+
+(advice-add 'cider-interactive-eval :before #'mm/cider-barf-unless-connected)
+
+
 (provide 'init-cider)
