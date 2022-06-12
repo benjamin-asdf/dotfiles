@@ -185,12 +185,16 @@ See `eval-last-sexp'."
  (mememacs/latest-scratch "clj"))
 
 (defun mm/scratch (create-new suffix)
-  (pop-to-buffer
-   (let ((latest (mememacs/latest-scratch suffix)))
-     (find-file-noselect
-      (if (or create-new (not latest))
-	  (mememacs/new-scratch-name suffix)
-	(mememacs/latest-scratch suffix))))))
+  (let* ((latest (mememacs/latest-scratch suffix))
+	 (buff
+	  (find-file-noselect
+	   (if (or create-new (not latest))
+	       (mememacs/new-scratch-name suffix)
+	     (mememacs/latest-scratch suffix)))))
+    (pop-to-buffer buff)
+    (when (eq major-mode 'emacs-lisp-mode)
+      (elisp-enable-lexical-binding))
+    buff))
 
 ;; todo connect to background bb
 (defun mm/scratch-clj (&optional arg)

@@ -126,10 +126,42 @@
     (cider-set-repl-type 'cljs)))
 (add-hook 'cider-connected-hook #'mm/cider-connected-hook)
 
+;; thank you corgi
 
-;; ---- functions
+(defun corgi/cider-jack-in-babashka (&optional force)
+  "Start a utility CIDER REPL backed by Babashka, not related to a
+specific project."
+  (interactive)
+  (when-let ((cur (get-buffer "*babashka-scratch*")))
+    (if (or force (y-or-n-p "Kill current bb scratch? "))
+	(kill-buffer cur)
+	(user-error "There is already a bb scratch.")))
+  (let ((project-dir "~/scratch/"))
+    (nrepl-start-server-process
+     project-dir
+     "bb --nrepl-server 0"
+     (lambda (server-buffer)
+       (cider-nrepl-connect
+        (list :repl-buffer server-buffer
+              :repl-type 'clj
+              :host (plist-get nrepl-endpoint :host)
+              :port (plist-get nrepl-endpoint :port)
+              :project-dir project-dir
+              :session-name "babashka"
+              :repl-init-function (lambda ()
+                                    (setq-local cljr-suppress-no-project-warning t
+                                                cljr-suppress-middleware-warnings t)
+                                    (rename-buffer "*babashka-scratch*"))))))))
 
 
+
+(defun mememacs/babashka-scratch (&optional arg)
+  (interactive)
+  (with-current-buffer
+      (mm/scratch arg "clj")
+    (corgi/cider-jack-in-babashka)))
+
+(mememacs/leader-def "cb" #'mememacs/babashka-scratch)
 
 ;;  --- portal
 
