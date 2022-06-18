@@ -200,4 +200,6 @@
 (setf bookmark-set-fringe-mark nil)
 (setf shell-file-name "/bin/bash")
 
+(advice-add 'json-pretty-print :before (lambda (&rest _) (read-only-mode -1)))
+
 (provide 'main)

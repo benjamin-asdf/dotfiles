@@ -159,4 +159,6 @@ Meant to be added to `embark-identifier-map`"
 
 (general-def embark-file-map "'" #'mm/jump-vterm)
 
+(general-def embark-identifier-map "m" #'lispyville-wrap-lispy-mark-symbol-special)
+
 (provide 'init-embark)

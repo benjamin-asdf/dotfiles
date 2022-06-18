@@ -9,60 +9,53 @@
 ;; (swank-loader:init)
 ;; *swank-port*
 
+(defmethod customize-instance ((buffer web-buffer) &key)
+  (nyxt/vi-mode:vi-normal-mode :buffer buffer)
+  (nyxt/style-mode:dark-mode :buffer buffer)
+  (let ((searx-search
+	  (make-instance
+	   'search-engine
+	   :shortcut "s"
+	   :search-url "https://paulgo.io/?q=~a"
+	   :fallback-url (quri:uri "https://paulgo.io/")
+	   :completion-function
+	   (make-search-completion-function
+	    :base-url "https://paulgo.io/?format=json&q=~a"
+	    :processing-function
+	    #'(lambda (results)
+		(when results
+		  (mapcar
+		   (lambda (hash-table)
+		     (first
+		      (alexandria:hash-table-values
+		       hash-table)))
+		   (decode-json results))))))))
+    (setf
+     (search-engines buffer)
+     (append (search-engines buffer) '(searx-search)))))
+
 ;; (define-command start-swank-2 (&optional (swank-port *swank-port*))
 ;;   "Start a Swank server that can be connected to, for instance, in
 ;; Emacs via SLIME.
+
 
 ;; Warning: This allows Nyxt to be controlled remotely, that is, to
 ;; execute arbitrary code with the privileges of the user running Nyxt.
 ;; Make sure you understand the security risks associated with this
 ;; before running this command."
+
+
 ;;   (swank:create-server :port swank-port :dont-close t)
 ;;   (echo "Swank server started at port ~a" swank-port))
 
 
-
-(defmethod customize-instance ((buffer web-buffer) &key)
-  (nyxt/vi-mode:vi-normal-mode :buffer buffer)
-  (nyxt/style-mode:dark-mode :buffer buffer)
-  ;; (push
-  ;;  (make-instance
-  ;;   'search-engine
-  ;;   :shortcut "s"
-  ;;   :search-url "https://paulgo.io/?q=~a"
-  ;;   :fallback-url (quri:uri "https://paulgo.io/")
-  ;;   :completion-function
-  ;;   (make-search-completion-function
-  ;;    :base-url "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a"
-  ;;    :processing-function
-  ;;    #'identity
-  ;;    ;; #'(lambda (results)
-  ;;    ;; 	 (alex:when-let*
-  ;;    ;; 	     ((results results)
-  ;;    ;; 	      (results (decode-json results)))
-  ;;    ;; 	   (mapcar
-  ;;    ;; 	    #'list
-  ;;    ;; 	    (second results)
-  ;;    ;; 	    (fourth results))))
-  ;;    ))
-  ;;  (search-engines buffer))
-  )
-
-
+;; (defvar *my-keymap* (make-keymap "my-map")
+;;   "Keymap for `my-mode'.")
 
 
 
 ;; (define-configuration nyxt/blocker-mode:blocker-mode
 ;;   ((nyxt/blocker-mode:hostlists (append (list *my-blocked-hosts*) %slot-default%))))
-
-
-;; (define-configuration buffer
-;;   ((default-modes (append '(nyxt::vi-normal-mode) %slot-default%))))
-;; (define-configuration prompt-buffer
-;;   ((default-modes (append '(nyxt::vi-insert-mode) %slot-default%))))
-
-;; (defvar *my-keymap* (make-keymap "my-map")
-;;   "Keymap for `my-mode'.")
 
 ;; (define-mode my-mode ()
 ;;   "Dummy mode for the custom key bindings in `*my-keymap*'."

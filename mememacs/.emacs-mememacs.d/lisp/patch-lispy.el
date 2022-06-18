@@ -104,7 +104,10 @@ backward through lists, which is useful to move into special.
         (when (called-interactively-p 'any)
           (mapc #'lispy-raise-minor-mode
                 (cons 'lispy-mode lispy-known-verbs)))
-        (font-lock-add-keywords major-mode lispy-font-lock-keywords))
+	;; outline syntax is unusual in clojure code
+	;; also I would need to change the fonts, green blocks are to heavy.
+        ;; (font-lock-add-keywords major-mode lispy-font-lock-keywords)
+	)
     (when lispy-old-outline-settings
       (setq outline-regexp (car lispy-old-outline-settings))
       (setq outline-level (cdr lispy-old-outline-settings))
@@ -126,7 +129,7 @@ backward through lists, which is useful to move into special.
     (let ((lispy-delete-at-paren
            (when
                lispy-mode
-             (eq (char-after) ?\())))
+             (memq (char-after) '(?\( ?\[ ?\{)))))
       (if
           lispy-delete-at-paren
           (lispy-delete 1)
