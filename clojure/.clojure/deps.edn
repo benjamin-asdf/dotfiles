@@ -89,15 +89,15 @@
            ;; https://github.com/djblue/portal
 
            :inspect/portal-cli
-           {:extra-deps {djblue/portal {:mvn/version "0.21.2"}}}
+           {:extra-deps {djblue/portal {:mvn/version "0.26.0"}}}
 
            :inspect/portal-web
-           {:extra-deps {djblue/portal             {:mvn/version "0.21.2"}
+           {:extra-deps {djblue/portal             {:mvn/version "0.26.0"}
                          org.clojure/clojurescript {:mvn/version "1.10.844"}}
             :main-opts  ["-m" "cljs.main"]}
 
            :inspect/portal-node
-           {:extra-deps {djblue/portal             {:mvn/version "0.21.2"}
+           {:extra-deps {djblue/portal             {:mvn/version "0.26.0"}
                          org.clojure/clojurescript {:mvn/version "1.10.844"}}
             :main-opts  ["-m" "cljs.main" "-re" "node"]}
 

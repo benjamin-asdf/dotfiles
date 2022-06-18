@@ -156,6 +156,8 @@
     (user-error "Cider not connected")))
 
 (advice-add 'cider-interactive-eval :before #'mm/cider-barf-unless-connected)
+(advice-add 'cider-load-buffer :before #'mm/cider-barf-unless-connected)
+
 
 
 (provide 'init-cider)

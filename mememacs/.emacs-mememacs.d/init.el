@@ -271,9 +271,6 @@
   (setq completion-in-region-function #'consult-completion-in-region)
   (general-def :states '(insert) "C-j" #'completion-at-point)
 
-  (advice-add
-   #'completing-read-multiple
-   :override #'consult-completing-read-multiple)
 
   :config
   (require 'init-consult))
@@ -398,8 +395,7 @@
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
 
-
-(use-package project :straight nil)
+(require 'project nil t)
 
 (use-package consult-project-extra
   :after project

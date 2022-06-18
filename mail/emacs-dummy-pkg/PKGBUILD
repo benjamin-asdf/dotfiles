@@ -6,9 +6,10 @@ pkgdesc="Declare emacs as installed"
 url='no'
 arch=('any')
 license=('LGPL')
-depends=()
+depends=( 'm17n-db' 'm17n-lib' 'libotf')
 optdepends=()
 makedepends=()
+
 replaces=()
 conflicts=('emacs')
 provides=('emacs')

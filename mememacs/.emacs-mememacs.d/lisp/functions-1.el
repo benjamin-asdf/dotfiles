@@ -165,23 +165,24 @@ See `eval-last-sexp'."
      f
      mememacs/scratch-dir)))
 
-(declare
-	 (mememacs/latest-scratch "el")
-	 (mememacs/latest-scratch "clj"))
-
 (defun mememacs/new-scratch-name (suffix)
   (unless (file-exists-p mememacs/scratch-dir)
     (make-directory mememacs/scratch-dir))
   (expand-file-name
    (format
     "scratch-%d.%s"
-    (-
-     (length
-      (directory-files
-       mememacs/scratch-dir))
-     2)
+    (length
+     (directory-files
+      mememacs/scratch-dir
+      t
+      (format "%s.\$" suffix)))
     suffix)
    mememacs/scratch-dir))
+
+(declare
+ (mememacs/new-scratch-name "el")
+ (mememacs/latest-scratch "el")
+ (mememacs/latest-scratch "clj"))
 
 (defun mm/scratch (create-new suffix)
   (pop-to-buffer
