@@ -13,6 +13,9 @@
    (point-marker)))
 
 (advice-add 'lispy-eval :before #'mm/remember-lispy-eval-point)
+(advice-add 'cider-eval-last-sexp :before #'mm/remember-lispy-eval-point)
+(advice-add 'cider-pprint-eval-last-sexp :before #'mm/remember-lispy-eval-point)
+
 
 (defun mm/lispy-eval-mark-last-or-consult (&optional arg)
   "Jump to last `lispy-eval` marker.

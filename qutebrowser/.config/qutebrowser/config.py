@@ -62,7 +62,9 @@ c.url.searchengines = {
     "goo"    : "https://www.google.com/search?q={}",
     'gg'     : 'https://g4gsearch.com/ws/search/search?a=true&c=%7B%7D&e=true&m&p=1&q={}&s=_score&w=%5B%5D',
     'wi'     : 'https://en.wikipedia.org/wiki/{}',
-    "clja"   : 'https://clojars.org/search?q={}'
+    "clja"   : 'https://clojars.org/search?q={}',
+
+    "gsm"    : 'https://www.gsmarena.com/res.php3?sSearch={}'
 
     # 'un'     : 'https://docs.unity3d.com/ScriptReference/30_search.html?q={}',
     # 'glab'   : 'https://gitlab.botogames.com/search?search={}',
