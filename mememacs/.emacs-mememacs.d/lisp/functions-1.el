@@ -166,16 +166,18 @@ See `eval-last-sexp'."
      mememacs/scratch-dir)))
 
 (defun mememacs/new-scratch-name (suffix)
-  (unless (file-exists-p mememacs/scratch-dir)
-    (make-directory mememacs/scratch-dir))
+  (unless (file-exists-p
+	   mememacs/scratch-dir)
+    (make-directory
+     mememacs/scratch-dir))
   (expand-file-name
    (format
     "scratch-%d.%s"
-    (length
-     (directory-files
-      mememacs/scratch-dir
-      t
-      (format "%s.\$" suffix)))
+    (1+ (length
+	 (directory-files
+	  mememacs/scratch-dir
+	  t
+	  (format ".%s$" suffix))))
     suffix)
    mememacs/scratch-dir))
 
