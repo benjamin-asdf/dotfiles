@@ -24,7 +24,7 @@
 (setq load-prefer-newer t)
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
-(setf byte-compile-warnings nil)
+(setf native-comp-async-report-warnings-errors 'silent)
 
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
