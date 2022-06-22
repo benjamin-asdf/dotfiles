@@ -85,6 +85,7 @@
  consult-bookmark consult-recent-file consult-xref
  consult--source-bookmark consult--source-recent-file
  consult--source-project-recent-file
+ consult-buffer
  :preview-key (kbd "M-."))
 
 (defun mm/dired-find-file-after-consult (old-fn pos)

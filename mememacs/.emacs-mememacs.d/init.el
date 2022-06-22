@@ -204,6 +204,7 @@
 (require 'main)
 (require 'visual)
 (require 'functions-1)
+(setf initial-buffer-choice (mememacs/latest-scratch "el"))
 (require 'init-emacs-lisp)
 
 
