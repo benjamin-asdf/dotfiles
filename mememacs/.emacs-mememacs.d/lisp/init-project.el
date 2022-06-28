@@ -34,7 +34,7 @@
 (setq project-switch-commands
       '((magit-status "Magit" "M")
 	(project-dired "Dired")
-	(consult-project-extra-find "Find file" "F")
+	(project-find-file "Find file" "f")
 	(consult-ripgrep "Find regexp" "/")
 	(consult-git-grep "Git grep" "g")
 	(project-find-dir "Find directory")

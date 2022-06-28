@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 
 (setq cider-repl-display-help-banner nil
       cider-repl-require-ns-on-set t
@@ -55,11 +56,10 @@
   (if (memq
        major-mode
        lispy-clojure-modes)
-      (save-excursion
-	(goto-char (cdr (lispy--bounds-dwim)))
-	(if (eq arg 1)
-	    (cider-eval-last-sexp nil)
-	  (cider-eval-last-sexp t)))
+    (if (eq arg 1)
+	(cider-eval-last-sexp nil)
+      (progn (lispy-newline-and-indent-plain)
+	     (cider-eval-last-sexp t)))
     ad-do-it))
 
 (defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)
@@ -190,6 +190,25 @@ specific project."
 (advice-add 'cider-interactive-eval :before #'mm/cider-barf-unless-connected)
 (advice-add 'cider-load-buffer :before #'mm/cider-barf-unless-connected)
 
+
+;; ---
+
+(defun mm/cider-jack-in-with-an-alias-from-deps ()
+  (interactive)
+  (if-let* ((root (project-root (project-current t)))
+	    (_ (file-exists-p (expand-file-name "deps.edn" root))))
+      (let* ((default-directory root)
+	     (my-alias
+	      (completing-read
+	       "Cider jack in with alias: "
+	       (read-from-string
+		(shell-command-to-string
+		 (format "bb -e '%s'" (princ '(->> (slurp "\"deps.edn\"") read-string :aliases keys (map name))))))))
+	     (cider-clojure-cli-aliases
+	      (concat
+	       cider-clojure-cli-aliases ":" my-alias)))
+	(call-interactively #'cider-jack-in-clj))
+    (user-error "no deps.edn file in project")))
 
 
 (provide 'init-cider)

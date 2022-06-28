@@ -240,8 +240,8 @@
 (general-def
   :states '(normal visual emacs insert)
   :keymaps '(lispy-mode-map lispyville-mode-map)
-  "C-e" (lispyville-wrap-command lispyville-end-of-defun special)
-  "C-l" #'mm/lispyville-forward-and-eval)
+  "C-l" (lispyville-wrap-command lispyville-end-of-defun special)
+  "C-e" #'mm/lispyville-forward-and-eval)
 
 (defun mememacs/lispy-occur-consult ()
   (interactive)

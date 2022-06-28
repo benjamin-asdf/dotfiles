@@ -19,6 +19,10 @@ c.session.lazy_restore = True
 
 c.content.blocking.method = "both"
 
+
+config.bind('ye', ':spawn emacsclient --eval "(kill-new \\"{url}\\")"', mode='normal')
+config.bind(',r', ':spawn emacsclient --eval "(github-pull-readme \\"{url}\\")"', mode='normal')
+
 config.bind('tb', 'config-cycle statusbar.hide true false')
 config.bind("tt", 'config-cycle tabs.show never always')
 config.bind('<Ctrl-Shift-j>', 'tab-next')
@@ -33,7 +37,6 @@ config.bind(',,', 'mode-enter normal', mode='passthrough')
 config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
 
 config.bind('<Escape>', 'mode-enter normal')
-config.bind(',e', ':spawn ec --eval "(team-trello-card-dispatch \\"{url}\\")"', mode='normal')
 # config.bind(',v',':spawn vlc {url}', mode='normal')
 config.bind(',v', ':spawn mpv {url}', mode='normal')
 
@@ -73,6 +76,6 @@ c.url.searchengines = {
 }
 
 
-c.editor.command = ['ec', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
+c.editor.command = ['emacsclient', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
 
 config.load_autoconfig(False)

@@ -506,14 +506,21 @@ With negative N, comment out original line and use the absolute value."
       :abort-callback
       #'ignore))))
 
-
 (defun mm/find-logseq-content ()
   (interactive)
-  (let ((default-directory "~/logseq-content/"))
+  (let ((default-directory mm/logseq-content-dir))
     (call-interactively
      #'consult-project-extra-find)))
 
-(mememacs/comma-def "oo" #'mm/find-logseq-content)
+(defun mm/find-logseq-latest-journal ()
+  (interactive)
+  (let ((default-directory
+	 (expand-file-name "journals/" mm/logseq-content-dir)))
+    (find-file (car (process-lines "ls" "-A" "-t")))))
+
+(mememacs/comma-def
+  "oo" #'mm/find-logseq-content
+  "ol" #'mm/find-logseq-latest-journal)
 
 (defun mm/copy-word-above ()
   (interactive)
@@ -523,5 +530,12 @@ With negative N, comment out original line and use the absolute value."
      (thing-at-point 'evil-WORD))))
 
 (general-def :states '(insert) "C-w" #'mm/copy-word-above)
+
+(defun github-pull-readme (&optional url)
+  (interactive (list (read-from-kill-ring "find github readme: ")))
+  (find-file-other-window
+   (string-trim
+    (shell-command-to-string
+     (concat "github-readme.clj " url)))))
 
 (provide 'functions-1)

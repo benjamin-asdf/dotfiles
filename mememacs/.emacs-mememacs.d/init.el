@@ -35,23 +35,25 @@
 (straight-use-package 'use-package)
 
 (require 'use-package)
+
 (setf
  straight-vc-git-default-protocol 'https
  straight-use-package-by-default t
  use-package-verbose t
  use-package-always-demand t)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (defconst mememacs/config-dir user-emacs-directory)
 
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
 
-(setq user-mail-address "Benjamin.Schwerdtner@gmail.com")
+(defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
+(defvar mm/logseq-content-dir "~/logseq-content/")
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l))
 

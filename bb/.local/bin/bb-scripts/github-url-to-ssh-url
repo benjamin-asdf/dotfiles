@@ -1,0 +1,11 @@
+#!/usr/bin/env bb
+
+(defn parse-github-url [s]
+  (let [[_ owner repo] (re-find #"https://github.com/(.+?)/(.+?)$" s)]
+    {:owner owner :repo repo}))
+
+(->>
+ (parse-github-url (first *command-line-args*))
+ ((fn [{:keys [owner repo]}]
+    (str "git@github.com:" owner "/" repo  ".git")))
+ print)

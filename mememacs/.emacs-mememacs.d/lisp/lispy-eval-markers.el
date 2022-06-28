@@ -5,7 +5,7 @@
 
 ;;; Code:
 
-(defvar mm/lispy-eval-marker-hist (make-ring 5))
+(defvar mm/lispy-eval-marker-hist (make-ring 15))
 
 (defun mm/remember-lispy-eval-point (&rest _)
   (ring-insert
@@ -19,16 +19,18 @@
 
 (defun mm/lispy-eval-mark-last-or-consult (&optional arg)
   "Jump to last `lispy-eval` marker.
-With prefix ARG select with consult from the last few markers."
+This pops the marker from the ring.
+With prefix ARG select with consult from the last markers."
   (interactive "P")
-  (let ((elms
+  (when (ring-empty-p mm/lispy-eval-marker-hist)
+    (user-error "No lispy eval marks"))
+  (if arg
+      (progn
+	(consult-mark
 	 (ring-elements
-	  mm/lispy-eval-marker-hist)))
-    (unless elms (user-error "No lispy eval marks"))
-    (if arg
-	(consult-mark elms)
-      (consult--jump (car elms))))
-  (evil-insert-state))
+	  mm/lispy-eval-marker-hist))
+	(evil-insert-state))
+    (consult--jump (ring-remove mm/lispy-eval-marker-hist))))
 
 (general-def
   'lispy-mode-map
