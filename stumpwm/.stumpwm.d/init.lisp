@@ -1,6 +1,6 @@
 (in-package :stumpwm)
 
-(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
+(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
 
 (defcommand swank () ()
   "Turn on the swank server the first time.
