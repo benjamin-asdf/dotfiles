@@ -127,8 +127,6 @@ Load a file that re-defines swank and then calls it."
 (define-key *top-map* (kbd "s-;") "normie-mode")
 
 
-
-
 (push '(:class "Unity-editor") *deny-map-request*)
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:title "(Importing)") *deny-map-request*)
@@ -214,10 +212,6 @@ windows of the same class as the current window."
 
 
   (mapcar #'window-title (group-windows (current-group)))
-
-
-
-
 
 
 

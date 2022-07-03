@@ -57,7 +57,6 @@
 
   "hc" #'describe-char
   "hm" #'describe-mode
-  "hi" #'helm-info-emacs
 
   "x" '(:ignore t :which-key "text")
   "xi" #'indent-region

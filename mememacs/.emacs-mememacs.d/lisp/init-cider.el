@@ -74,7 +74,11 @@
 	     nil)
 	  (cider-pprint-eval-last-sexp
 	   nil)))
-    ad-do-it))
+    (if arg
+	ad-do-it)))
+
+
+
 
 ;; --------------------------------------------
 
@@ -209,6 +213,20 @@ specific project."
 	       cider-clojure-cli-aliases ":" my-alias)))
 	(call-interactively #'cider-jack-in-clj))
     (user-error "no deps.edn file in project")))
+
+
+(defun clerk-show ()
+  (interactive)
+  (save-buffer)
+  (when-let
+      ((filename
+        (buffer-file-name)))
+    (cider-interactive-eval
+     (concat "(nextjournal.clerk/show! \"" filename "\")"))))
+
+(mememacs/local-def
+  :keymaps mm/cider-mode-maps
+  "c" #'clerk-show)
 
 
 (provide 'init-cider)

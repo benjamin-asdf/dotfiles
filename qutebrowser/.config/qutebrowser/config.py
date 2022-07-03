@@ -40,8 +40,6 @@ config.bind('<Escape>', 'mode-enter normal')
 # config.bind(',v',':spawn vlc {url}', mode='normal')
 config.bind(',v', ':spawn mpv {url}', mode='normal')
 
-config.bind(',m', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
-config.bind(',p', ':insert-text Benjamin.Schwerdtner@gmail.com' , mode='normal')
 
 config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
@@ -51,10 +49,10 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://paulgo.io/"
+c.url.default_page = "https://searx.tiekoetter.com/"
 
 c.url.searchengines = {
-    'DEFAULT': 'https://paulgo.io/?q={}',
+    'DEFAULT': 'https://searx.tiekoetter.com/?q={}',
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",

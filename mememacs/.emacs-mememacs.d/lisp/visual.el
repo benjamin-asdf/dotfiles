@@ -271,6 +271,8 @@
 ;;    ;; :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)
 ;;    ))
 
+(set-face-attribute 'fixed-pitch nil  :family "Monospace")
+
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)
 (set-cursor-color mindsape/mint-bright-1)

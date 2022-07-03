@@ -1,0 +1,4 @@
+#!/bin/sh
+
+adb -d push "$1" "/storage/self/primary/misc-downloads/"
+

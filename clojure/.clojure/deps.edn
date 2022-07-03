@@ -50,7 +50,7 @@
                          org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}}
 
 
-           :new {:extra-deps {com.github.seancorfield/clj-new {:git/sha "b788ba1fa39e8f9586b22deafa8b8189faedc002"
+           :new {:extra-deps {com.github.seancorfield/clj-new {:git/sha "e9081e54502167f168d13cd68532447fb5e8b466"
                                                                :git/url "https://github.com/seancorfield/clj-new.git"}}
                  :exec-fn clj-new/create
                  :exec-args {:template "app"}}
