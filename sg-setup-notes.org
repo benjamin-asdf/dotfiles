@@ -194,32 +194,6 @@ choose
 use pyenv for that (pycharm does it auto)
 - pamac bulid `python-package-name` for stuff you need on your system only
 
-* screencasts
-- walkthrough use my script:
-
-[[file:scripts/.local/bin/scripts/video-selected]]
-
-- depends on `slop`
-#+begin_src
-pamac build slop-git
-#+end_src
-
-- bind `video-selected` to a keybind, probably with your wm (eg. KDE plasma)
-- hello I selected (see vid) (showcase)
-- just check the script
-- it remembers the pid of the process it starts
-- it kills the current video process, so you can call the same script
-  to stop recording
-- else it asks you to select something
-  [[https://s3.eu-central-1.amazonaws.com/cos-dev-attachments/ShareX/ben/6219cca7-6358-45ac-877a-7e4c9aa6b153-box-220708-1137-33.mp4]]
-
-- call `s3-cos-attch-upload` on the file
-- you can of course make a version that does that auto
-- if you know how to do it, you can add a marker to your wm modeline,
-  as long as /tmp/recordingpid exists, you are recording
- [[file:stumpwm/.stumpwm.d/init.lisp]]
-
-
 
 * cos attachments s3 bucket share ("sharex" bucket)
 
@@ -233,16 +207,34 @@ pamac build slop-git
    check
    [[file:scripts/.local/bin/scripts/cos-s3-upload-latest][file:scripts/.local/bin/scripts/cos-s3-upload-latest]]
 
-   I want things slow and deliberate so I only upload with a second
-   keybind, instead of screen capturing and uploading.
-
 ** screen capture
 
 [[file:scripts/.local/bin/scripts/video-selected][file:scripts/.local/bin/scripts/video-selected]]
 
-depends on a package slop-git
+- depends on `slop`
+#+begin_src
+pamac build slop-git
+#+end_src
+
 modify to your desire.
-I use /tmp/recordingpid to show "recording" in my wms modeline.
+
+
+** walkthrough make video selected (screen capture)
+
+- bind `video-selected` to a keybind, probably with your wm (eg. KDE plasma)
+- hello I selected (see vid) (showcase)
+- second invoke of the script finishes the current recording
+  [[https://s3.eu-central-1.amazonaws.com/cos-dev-attachments/ShareX/ben/6219cca7-6358-45ac-877a-7e4c9aa6b153-box-220708-1137-33.mp4]]
+
+- call `s3-cos-attch-upload` on the file
+- you can of course make a version that does that auto
+- if you desire similar screencaptures
+  search for `dmenurecord`
+
+- I use /tmp/recordingpid to show "recording" in my wms modeline.
+  as long as /tmp/recordingpid exists, you are recording
+  example: [[file:stumpwm/.stumpwm.d/init.lisp]]
+
 
 ** aws profile
 you can pass --profile to the aws cli.
