@@ -86,17 +86,15 @@ Load a file that re-defines swank and then calls it."
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
 (defun rec-modeline (ml)
-  (declare (ignore ml))
+  (declare ml)
   (if (probe-file
        "/tmp/recordingpid")
       "RECORDING"
       ""))
-(add-screen-mode-line-formatter
- #\R
- 'rec-modeline)
-(setf
-  *screen-mode-line-format*
-  "[^B%n^b] %C | %M  %R")
+
+(add-screen-mode-line-formatter #\R 'rec-modeline)
+
+(setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R")
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
@@ -108,7 +106,6 @@ Load a file that re-defines swank and then calls it."
   (run-shell-command "pkill unclutter"))
 (defcommand start-unclutter () ()
   (run-shell-command "unclutter &"))
-
 
 (define-interactive-keymap
     normie-mode
@@ -126,16 +123,12 @@ Load a file that re-defines swank and then calls it."
   ((kbd "c") "ratclick 3"))
 (define-key *top-map* (kbd "s-;") "normie-mode")
 
-
 (push '(:class "Unity-editor") *deny-map-request*)
 (push '(:class "Unity-editor") *deny-raise-request*)
 (push '(:title "(Importing)") *deny-map-request*)
 (push '(:title "(Importing)") *deny-raise-request*)
 (push '(:title "Importing") *deny-map-request*)
 (push '(:title "Importing") *deny-raise-request*)
-
-(defun select-windows-with-class ())
-
 
 (defcommand (pull-from-windowlist-curr-class tile-group)
     (&optional (fmt *window-format*)) (:rest)
@@ -169,13 +162,10 @@ windows of the same class as the current window."
 ;; replace flameshot maybe
 ;; no drawing stuff though
 
-;; 1-2 things for make vid
-
 (comment
 
   (current-window)
   (message "foo                                       fofoo")
-
   (setf *urgent-window-hook* nil)
   (load-module "screenshot")
   (screen-windows (current-screen))
@@ -198,8 +188,6 @@ windows of the same class as the current window."
 	(when frame
           (pull-window window frame)))))
 
-
-
   (load-module "wifi")
   (setf
    *screen-mode-line-format*
@@ -210,10 +198,4 @@ windows of the same class as the current window."
    *screen-mode-line-format*
    "[^B%n^b] %C | %M  %R %B")
 
-
-  (mapcar #'window-title (group-windows (current-group)))
-
-
-
-
-  )
+  (mapcar #'window-title (group-windows (current-group))))
