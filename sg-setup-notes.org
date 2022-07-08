@@ -195,9 +195,31 @@ use pyenv for that (pycharm does it auto)
 - pamac bulid `python-package-name` for stuff you need on your system only
 
 * screencasts
-- I have scripts that use dmenu and ffmpeg
-- can also select a window area with `slop`
-- this works good for me
+- walkthrough use my script:
+
+[[file:scripts/.local/bin/scripts/video-selected]]
+
+- depends on `slop`
+#+begin_src
+pamac build slop-git
+#+end_src
+
+- bind `video-selected` to a keybind, probably with your wm (eg. KDE plasma)
+- hello I selected (see vid) (showcase)
+- just check the script
+- it remembers the pid of the process it starts
+- it kills the current video process, so you can call the same script
+  to stop recording
+- else it asks you to select something
+  [[https://s3.eu-central-1.amazonaws.com/cos-dev-attachments/ShareX/ben/6219cca7-6358-45ac-877a-7e4c9aa6b153-box-220708-1137-33.mp4]]
+
+- call `s3-cos-attch-upload` on the file
+- you can of course make a version that does that auto
+- if you know how to do it, you can add a marker to your wm modeline,
+  as long as /tmp/recordingpid exists, you are recording
+ [[file:stumpwm/.stumpwm.d/init.lisp]]
+
+
 
 * cos attachments s3 bucket share ("sharex" bucket)
 
