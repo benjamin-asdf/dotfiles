@@ -2,16 +2,11 @@
 
 (setq cider-repl-display-help-banner nil
       cider-repl-require-ns-on-set t
+      cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow"
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-clojure-cli-aliases
       "lib/hotload")
-
-(add-hook
- 'mememacs/escape-functions
- (defun mm/cider-macroexpand-undo ()
-   (when (in major-mode 'cider-mode 'cider-repl-mode)
-     (cider-macroexpand-undo))))
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -30,10 +25,9 @@
   '(clojure-mode-map cider-repl-mode clojurescript-mode)
   "m" #'macrostep-expand
 
-  "e" '(cider-eval-commands-map
-	:which-key "eval")
+  "e" 'cider-eval-commands-map
 
-  "l" '(cider-doc-map :which-key "cider doc")
+  "l" 'cider-doc-map
   "h," #'cider-drink-a-sip
   "k" #'cider-load-buffer
   "hh" #'cider-clojuredocs)
@@ -45,7 +39,6 @@
 	 (interactive "P")
 	 (cider-find-var (not arg)))
   "H-k" #'cider-load-buffer)
-
 
 (general-def
   'cider-eval-commands-map
@@ -76,8 +69,6 @@
 	   nil)))
     (if arg
 	ad-do-it)))
-
-
 
 
 ;; --------------------------------------------
