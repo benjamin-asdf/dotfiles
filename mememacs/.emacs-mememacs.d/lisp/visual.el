@@ -272,6 +272,7 @@
 ;;    ))
 
 (set-face-attribute 'fixed-pitch nil  :family "Monospace")
+(set-face-attribute 'fixed-pitch-serif nil  :family "Monospace")
 
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)

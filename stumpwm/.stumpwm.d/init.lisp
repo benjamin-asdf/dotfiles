@@ -86,7 +86,6 @@ Load a file that re-defines swank and then calls it."
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
 (defun rec-modeline (ml)
-  (declare ml)
   (if (probe-file
        "/tmp/recordingpid")
       "RECORDING"
