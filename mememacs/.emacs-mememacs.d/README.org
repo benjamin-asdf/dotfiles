@@ -52,7 +52,7 @@ Highlights:
 
 ** config, binds
 
-use , f e to jump to the memecs init file
+use , f e to jump to the mememacs init file
 I either define the binds inline,
 else there is general binds in these files:
 late-bindings.el
