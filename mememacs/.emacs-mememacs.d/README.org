@@ -10,7 +10,7 @@ knowing the completion framework (vertico) gives huge leverage
 
 Highlights:
 
-- type words seperated with spaces, it will build a regext that
+- type words seperated with spaces, it will build a regex that
   combines the words (orderless style)
 - don't type  long words. Put something, space, put something space,
   and filter down from what you already see in the selection.
