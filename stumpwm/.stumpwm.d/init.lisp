@@ -129,16 +129,18 @@ Load a file that re-defines swank and then calls it."
 (push '(:title "Importing") *deny-map-request*)
 (push '(:title "Importing") *deny-raise-request*)
 
+(defun class-windows (class group)
+  (remove-if-not
+   (lambda (w)
+     (equal class (window-class w)))
+   (group-windows group)))
+
 (defcommand (pull-from-windowlist-curr-class tile-group)
     (&optional (fmt *window-format*)) (:rest)
   "Like `pull-from-windowlist` but only select
 windows of the same class as the current window."
   (let* ((curr-class (window-class (current-window)))
-	 (windows (remove-if-not
-		   (lambda (w)
-		     (equal curr-class
-			    (window-class w)))
-		   (group-windows (current-group))))
+	 (windows (window-class curr-class (current-group)))
 	 (pulled-window (select-window-from-menu
 			 windows
                          fmt)))
@@ -146,6 +148,17 @@ windows of the same class as the current window."
       (pull-window pulled-window))))
 
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
+
+(defcommand (create-group-from-curr-class-windows tile-group) () ()
+  "Create a group and put all current class windows there."
+  (let* ((class (window-class (current-window)))
+	 (windows (class-windows class (current-group)))
+	 (group (add-group (current-screen) class)))
+    (mapc (lambda (w) (move-window-to-group w group)) windows)
+    (switch-to-group group)))
+
+(define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
+(define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
 
 (defmacro comment (&rest body))
 
@@ -163,38 +176,43 @@ windows of the same class as the current window."
 
 (comment
 
-  (current-window)
-  (message "foo                                       fofoo")
-  (setf *urgent-window-hook* nil)
-  (load-module "screenshot")
-  (screen-windows (current-screen))
-  (setf *deny-raise-request* nil *deny-map-request* nil)
-  (setf *debug-level* 0)
-  (redirect-all-output (data-dir-file "output" "log"))
-  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
-  (list-modules)
-  (setf *honor-window-moves* nil)
-  (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
-    (when *honor-window-moves*
-      (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
-      (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
-             (pos  (if (eq relative-to :parent)
-		       (list
-			(+ (xlib:drawable-x (window-parent window)) x)
-			(+ (xlib:drawable-y (window-parent window)) y))
-		       (list (first pointer-pos) (second pointer-pos))))
-             (frame (apply #'find-frame group pos)))
-	(when frame
-          (pull-window window frame)))))
+  *groups-map*
 
-  (load-module "wifi")
-  (setf
-   *screen-mode-line-format*
-   "[^B%n^b] %C | %M  %R %I")
-  (load-module "battery-portable")
+ (create-group-from-curr-class-windows)
+ (group-indicate-focus (current-group))
+ (group-sync-all-heads (current-group))
 
-  (setf
-   *screen-mode-line-format*
-   "[^B%n^b] %C | %M  %R %B")
+ (message "foo                                       fofoo")
+ (setf *urgent-window-hook* nil)
+ (load-module "screenshot")
+ (screen-windows (current-screen))
+ (setf *deny-raise-request* nil *deny-map-request* nil)
+ (setf *debug-level* 0)
+ (redirect-all-output (data-dir-file "output" "log"))
+ (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
+ (list-modules)
+ (setf *honor-window-moves* nil)
+ (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
+   (when *honor-window-moves*
+     (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
+     (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
+            (pos  (if (eq relative-to :parent)
+		      (list
+		       (+ (xlib:drawable-x (window-parent window)) x)
+		       (+ (xlib:drawable-y (window-parent window)) y))
+		      (list (first pointer-pos) (second pointer-pos))))
+            (frame (apply #'find-frame group pos)))
+       (when frame
+         (pull-window window frame)))))
 
-  (mapcar #'window-title (group-windows (current-group))))
+ (load-module "wifi")
+ (setf
+  *screen-mode-line-format*
+  "[^B%n^b] %C | %M  %R %I")
+ (load-module "battery-portable")
+
+ (setf
+  *screen-mode-line-format*
+  "[^B%n^b] %C | %M  %R %B")
+
+ (mapcar #'window-title (group-windows (current-group))))
