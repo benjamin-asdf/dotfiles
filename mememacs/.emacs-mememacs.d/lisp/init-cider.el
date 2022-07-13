@@ -45,6 +45,17 @@
   "L" #'cider-eval-sexp-at-point
   "l" #'mememacs/lispy-eval-line)
 
+(defun mm/cider-emit-into-popup-buffer (out)
+  (cider-emit-into-popup-buffer
+   (cider-popup-buffer
+    "*mm-lispy-result*"
+    nil
+    major-mode
+    'ancillary)
+   (ansi-color-apply out)
+   nil
+   t))
+
 (defadvice lispy-eval (around cider-lispy-eval (&optional arg) activate)
   (if (memq
        major-mode
@@ -53,7 +64,9 @@
 	(cider-eval-last-sexp nil)
       (progn (lispy-newline-and-indent-plain)
 	     (cider-eval-last-sexp t)))
-    ad-do-it))
+    (if (eq arg 4)
+	(lispy-eval-and-insert)
+      ad-do-it)))
 
 (defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)
   (if (memq
@@ -68,8 +81,8 @@
 	  (cider-pprint-eval-last-sexp
 	   nil)))
     (if arg
-	ad-do-it)))
-
+	ad-do-it
+      (mm/cider-emit-into-popup-buffer (lispy--eval-dwim)))))
 
 ;; --------------------------------------------
 
