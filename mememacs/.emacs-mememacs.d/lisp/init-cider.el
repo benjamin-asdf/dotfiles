@@ -65,7 +65,7 @@
       (progn (lispy-newline-and-indent-plain)
 	     (cider-eval-last-sexp t)))
     (if (eq arg 4)
-	(lispy-eval-and-insert)
+	(lispy-eval-and-insert 'insert)
       ad-do-it)))
 
 (defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)

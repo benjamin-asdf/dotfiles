@@ -10,7 +10,8 @@ export GDK_CORE_DEVICE_EVENTS=1
 
 # Set default cursor.
 setroot -cursor_name left_ptr
-xset r rate 140 220
+# The  first  specifies  the  delay before autorepeat starts and the second specfies the repeat rate.
+xset r rate 120 240
 
 xautolock -time 4 -locker best-lock.sh &
 setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
