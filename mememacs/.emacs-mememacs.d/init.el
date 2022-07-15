@@ -350,7 +350,8 @@
 (use-package macrostep
   :config
   (mememacs/comma-def
-    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
+    :keymaps
+    '(emacs-lisp-mode-map lisp-interaction-mode-map lisp-mode-map)
     "m" #'macrostep-expand)
   (add-hook
    'mememacs/escape-functions
@@ -358,7 +359,9 @@
 
 (use-package slime
   :config
-  (setq inferior-lisp-program "sbcl")
+  (setq inferior-lisp-program "sbcl"
+	slime-contribs
+	'(slime-fancy slime-macrostep))
   (defun mm/add-slime-filename-cap ()
     (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
   (defun mm/slime-simple-c-a-p ()
@@ -461,6 +464,7 @@
   :config
   (setf avy-timeout-seconds 0.18
 	avy-keys mememacs/avy-keys)
+  (add-to-list 'avy-ignored-modes 'cider-repl-mode)
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
     "jw" #'avy-goto-word-1
@@ -583,8 +587,9 @@
 (use-package vterm
   :config
   (mememacs/leader-def "'" #'vterm)
-  (general-def "s-<return>" (defun mm/vterm-ARG () (interactive)
-			      (vterm 1))))
+  (general-def "s-<return>"
+    (defun mm/vterm-ARG () (interactive)
+	   (vterm 1))))
 
 (use-package bash-completion
   :init
