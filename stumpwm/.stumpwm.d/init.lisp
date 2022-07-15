@@ -140,14 +140,13 @@ Load a file that re-defines swank and then calls it."
   "Like `pull-from-windowlist` but only select
 windows of the same class as the current window."
   (let* ((curr-class (window-class (current-window)))
-	 (windows (window-class curr-class (current-group)))
+	 (windows (class-windows curr-class (current-group)))
 	 (pulled-window (select-window-from-menu
 			 windows
                          fmt)))
     (when pulled-window
       (pull-window pulled-window))))
 
-(define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 
 (defcommand (create-group-from-curr-class-windows tile-group) () ()
   "Create a group and put all current class windows there."
@@ -215,4 +214,5 @@ windows of the same class as the current window."
   *screen-mode-line-format*
   "[^B%n^b] %C | %M  %R %B")
 
- (mapcar #'window-title (group-windows (current-group))))
+  (+ 1 2)
+  (mapcar #'window-title (group-windows (current-group))))
