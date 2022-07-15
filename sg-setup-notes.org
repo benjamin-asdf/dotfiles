@@ -10,8 +10,7 @@
 - docker
   pamac build docker
 - dotnet
-  pamac build dotnet-sdk-bin
-  pamca build dotnet-sdk-3.1
+  pamac build dotnet-sdk-3.1-bin
   > we need 3.1 sdk for cos stuff
 - mono
   pamac build mono
@@ -19,12 +18,21 @@
   if you do not use arch you will need to google and follow install
   instructions
 
+#+begin_src shell
+  dotnet --list-sdks
+#+end_src
+
+you want 3.1 sdk
+
+`3.1.420 [/usr/share/dotnet/sdk]`
+
+
 * install unity editor
 - make ssh keys, add them to gitlab
 - clone gitlab idlegame repo
 
 - get unity hub
-  pamac buld unityhub
+  pamac build unityhub
 
 ** specific unity version
 - find the version you need
