@@ -11,6 +11,8 @@
   pamac build docker
 - dotnet
   pamac build dotnet-sdk-bin
+  pamca build dotnet-sdk-3.1
+  > we need 3.1 sdk for cos stuff
 - mono
   pamac build mono
 
