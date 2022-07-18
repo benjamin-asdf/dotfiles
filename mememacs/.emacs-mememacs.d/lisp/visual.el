@@ -12,7 +12,9 @@
 ;; https://imagecolorpicker.com/
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
+
 (defconst mindsape/woodsmoke		 "#17161e")
+(defconst mindsape/woodsmoke-shade       "#121218")
 (defconst mindsape/woodsmoke-tint-1	 "#2e2d35")
 (defconst mindsape/scarpa-flow		 "#5d5c62")
 (defconst mindsape/scorpion		 "#625d5c")
@@ -335,6 +337,13 @@
    nil
    :inherit 'lazy-highlight))
 
+(with-eval-after-load
+    'org-faces
+  (set-face-attribute
+   'org-block
+   nil
+   :background mindsape/woodsmoke-shade
+   :inherit nil))
 
 (defun ambrevar/fontify-comment-tag ()
   (font-lock-add-keywords
