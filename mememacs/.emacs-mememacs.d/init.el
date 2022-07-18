@@ -53,7 +53,6 @@
       url-history-file (expand-file-name "url/history" user-emacs-directory))
 
 (defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
-(defvar mm/logseq-content-dir "~/logseq-content/")
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?n ?m ?b))
 
@@ -559,25 +558,8 @@
 	(expand-file-name)
 	(shell-command)))))
 
-(use-package org
-  :defer t
-  :config
-  (mememacs/local-def
-    :keymaps '(org-mode-map)
-    :states '(normal visual motion)
-    "t"
-    #'org-todo)
-  (add-hook
-   'org-mode-hook
-   (lambda ()
-     (setq-local
-      electric-pair-inhibit-predicate
-      `(lambda
-	 (c)
-	 (if (char-equal c ?<)
-	     t
-	   (,electric-pair-inhibit-predicate
-	    c)))))))
+(use-package org :defer t :config (require 'init-org))
+(use-package denote :after org :config (require 'init-denote))
 
 (use-package markdown-mode)
 
@@ -589,7 +571,7 @@
   (mememacs/leader-def "'" #'vterm)
   (general-def "s-<return>"
     (defun mm/vterm-ARG () (interactive)
-	   (vterm 1))))
+	   (vterm t))))
 
 (use-package bash-completion
   :init

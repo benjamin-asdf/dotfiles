@@ -65,7 +65,7 @@
       (progn (lispy-newline-and-indent-plain)
 	     (cider-eval-last-sexp t)))
     (if (eq arg 4)
-	(lispy-eval-and-insert 'insert)
+      (lispy-eval-and-insert 'insert)
       ad-do-it)))
 
 (defadvice lispy-eval-and-insert (around cider-lispy-eval (&optional arg) activate)
@@ -228,6 +228,26 @@ specific project."
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
   "c" #'clerk-show)
+
+
+
+
+;; I think this functionality is ultra silly
+;; as if I run out of buffers to create
+(defun mm/cleanup-cider-repls-and-do-not-reuse (&rest _)
+  (let ((repls (seq-filter
+		(lambda (b)
+		  (with-current-buffer
+		      b
+		    (and (derived-mode-p
+			  'cider-repl-mode)
+			 (not (process-live-p
+			       (get-buffer-process b))))))
+		(buffer-list))))
+    (mapc #'kill-buffer repls)
+    '()))
+
+(advice-add #'cider--choose-reusable-repl-buffer :override #'mm/cleanup-cider-repls-and-do-not-reuse)
 
 
 (provide 'init-cider)
