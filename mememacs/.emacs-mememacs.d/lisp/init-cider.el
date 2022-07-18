@@ -101,11 +101,9 @@
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
-  "r" '(clojure-refactor-map
-	:which-key "refactor")
+  "r" '(clojure-refactor-map)
   "m" #'cider-macroexpand-1-inplace
-  "s" '(:ignore t
-		:which-key "show etc")
+  "s" '(:ignore t)
   "sl" #'cider-inspect-last-result
   "sd" #'cider-inspect-defun-at-point)
 
@@ -120,8 +118,7 @@
 
     "e" `(,(let ((map flycheck-command-map))
 	     (define-key map "N" #'cider-jump-to-compilation-error)
-	     map)
-	  :which-key "flycheck")))
+	     map))))
 
 
 ;; patch for nbb

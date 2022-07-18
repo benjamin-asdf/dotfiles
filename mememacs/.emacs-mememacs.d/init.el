@@ -480,7 +480,7 @@
      (call-interactively #'symbol-overlay-remove-all)))
 
   (mememacs/leader-def
-    "so" '(:ignore t :which-key "symbol overlay")
+    "so" '(:ignore t)
     "soo" #'symbol-overlay-put)
 
   (general-def
@@ -497,12 +497,12 @@
   :defer t
   :init
   (mememacs/leader-def
-   "G"  '(:ignore t :which-key "Guix")
-   "Gg" '(guix :which-key "Guix")
-   "Gi" '(guix-installed-user-packages :which-key "user packages")
-   "GI" '(guix-installed-system-packages :which-key "system packages")
-   "Gp" '(guix-packages-by-name :which-key "search packages")
-   "GP" '(guix-pull :which-key "pull")))
+   "G"  '(:ignore t)
+   "Gg" #'guix
+   "Gi" #'guix-installed-user-packages
+   "GI" #'guix-installed-system-packages
+   "Gp" #'guix-packages-by-name
+   "GP" #'guix-pull))
 
 (use-package hippie-exp
   :config

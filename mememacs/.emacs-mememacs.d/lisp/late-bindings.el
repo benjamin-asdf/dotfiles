@@ -1,14 +1,14 @@
 (mememacs/comma-def
-  "n" '(:ignore t :which-key "n..")
+  "n" '(:ignore t)
   "nw" #'widen
   "nd" #'narrow-to-defun
   "nr" #'narrow-to-region
   "np" #'narrow-to-page
 
-  "a" '(:ignore t :which-key "a..")
+  "a" '(:ignore t)
   "al" #'list-processes
   "at" #'helm-timers
-  "s" '(:ignore t : which-key "s..")
+  "s" '(:ignore t)
   "ss" #'consult-line
   "sS" #'consult-line-multi
 
@@ -19,12 +19,7 @@
 
   "rp" (defun mm/evil-paste-clipboard ()
 	 (interactive)
-	 (evil-paste-from-register ?*))
-
-  ;; "x" '(ctl-x-map :which-key "c-x-map")
-
-  )
-
+	 (evil-paste-from-register ?*)))
 
 (defhydra flyspell-hydra ()
   ("j" #'evil-next-flyspell-error)

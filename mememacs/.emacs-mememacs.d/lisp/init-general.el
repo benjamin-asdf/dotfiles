@@ -24,19 +24,19 @@
   "n" '(:ignore t)
   "nn" #'display-line-numbers-mode
 
-  "b" '(:ignore t :which-key "b..")
+  "b" '(:ignore t )
   "bd" #'kill-current-buffer
   "be" #'erase-buffer
   "bw" #'toggle-read-only
   "b." #'hydra-buffer/body
 
-  "f" '(:ignore t :which-key "f..")
+  "f" '(:ignore t )
   "fs" #'save-buffer
   "fS" #'save-some-buffers
 
   "u" #'undo-tree-visualize
 
-  "w" '(evil-window-map :which-key "window")
+  "w" evil-window-map
 
 
   "j" '(:ignore t)
@@ -49,7 +49,7 @@
   "jv" #'find-variable
   "jV" #'find-variable-other-window
   "jb" #'bookmark-jump
-  "je" '(:ignore t :which-key "emacs")
+  "je" '(:ignore t )
   "jel" #'find-library
   ;; "jel" #'lisp-find-map
   "jm" #'view-echo-area-messages
@@ -58,17 +58,15 @@
   "hc" #'describe-char
   "hm" #'describe-mode
 
-  "x" '(:ignore t :which-key "text")
+  "x" '(:ignore t )
   "xi" #'indent-region
   "xt" '(:ignore t)
   "xtw" #'transpose-words
 
-  "p" '(:ignore t :which-key "procs..")
+  "p" '(:ignore t )
   "pa" #'list-processes
 
-  (kbd "<tab>") #'ambrevar/switch-to-last-buffer
-
-  )
+  (kbd "<tab>") #'ambrevar/switch-to-last-buffer)
 
 (general-unbind evil-motion-state-map "SPC")
 
