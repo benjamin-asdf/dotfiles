@@ -122,12 +122,28 @@ Load a file that re-defines swank and then calls it."
   ((kbd "c") "ratclick 3"))
 (define-key *top-map* (kbd "s-;") "normie-mode")
 
-(push '(:class "Unity-editor") *deny-map-request*)
-(push '(:class "Unity-editor") *deny-raise-request*)
-(push '(:title "(Importing)") *deny-map-request*)
-(push '(:title "(Importing)") *deny-raise-request*)
-(push '(:title "Importing") *deny-map-request*)
-(push '(:title "Importing") *deny-raise-request*)
+;; seriosly how shit can a piece of software be
+;; popping windows 10 times and then not fixing the fucking class
+;; 0 regards for the user, just money money
+(let ((lst
+	'((:class "Unity-editor")
+	  (:class "Unity-editor")
+	  (:title "(Importing)")
+	  (:title "(Importing)")
+	  (:title "Importing")
+	  (:title "Importing")
+	  (:title "Importing (iteration 2)")
+	  (:title "Importing (iteration 2)")
+	  (:title "Importing (iteration 3)")
+	  (:title "Importing (iteration 3)")
+	  (:title "Importing (iteration 4)")
+	  (:title "Importing (iteration 4)")
+	  (:title "Importing (iteration 5)")
+	  (:title "Importing (iteration 5)")
+	  (:title "Importing (iteration 6)")
+	  (:title "Importing (iteration 6)"))))
+  (setf *deny-map-request* (append *deny-map-request* lst))
+  (setf *deny-raise-request* (append *deny-raise-request* lst)))
 
 (defun class-windows (class group)
   (remove-if-not
@@ -175,7 +191,7 @@ windows of the same class as the current window."
 
 (comment
 
-  *groups-map*
+ *groups-map*
 
  (create-group-from-curr-class-windows)
  (group-indicate-focus (current-group))
@@ -214,5 +230,15 @@ windows of the same class as the current window."
   *screen-mode-line-format*
   "[^B%n^b] %C | %M  %R %B")
 
-  (+ 1 2)
-  (mapcar #'window-title (group-windows (current-group))))
+ (mapcar #'window-title (group-windows (current-group)))
+
+ (mapcar
+  (lambda (w)
+    `(:id ,(window-id w) :title ,(window-title w)))
+  (group-windows (current-group)))
+
+ (pull-window (window-by-id 23073195))
+
+
+
+ )
