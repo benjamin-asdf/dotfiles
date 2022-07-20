@@ -122,31 +122,25 @@ Load a file that re-defines swank and then calls it."
   ((kbd "c") "ratclick 3"))
 (define-key *top-map* (kbd "s-;") "normie-mode")
 
-;; seriosly how shit can a piece of software be
-;; popping windows 10 times and then not fixing the fucking class
+;; seriosly popping windows 10 times and then not fixing the fucking class
 ;; 0 regards for the user, just money money splash screens
 (let ((lst
 	'((:class "Unity-editor")
-	  (:class "Unity-editor")
-	  (:title "(Importing)")
 	  (:title "(Importing)")
 	  (:title "Importing")
-	  (:title "Importing")
-	  (:title "Importing (iteration 2)")
+	  (:title "Hold on...")
 	  (:title "Importing (iteration 2)")
 	  (:title "Importing (iteration 3)")
-	  (:title "Importing (iteration 3)")
-	  (:title "Importing (iteration 4)")
 	  (:title "Importing (iteration 4)")
 	  (:title "Importing (iteration 5)")
-	  (:title "Importing (iteration 5)")
-	  (:title "Importing (iteration 6)")
 	  (:title "Importing (iteration 6)"))))
   (setf *deny-map-request* (append *deny-map-request* lst))
   (setf *deny-raise-request* (append *deny-raise-request* lst)))
 
+
 (defun class-windows (class group)
   (remove-if-not
+
    (lambda (w)
      (equal class (window-class w)))
    (group-windows group)))
