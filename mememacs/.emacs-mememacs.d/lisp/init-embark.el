@@ -97,21 +97,29 @@
   "S" #'sudo-find-file
   ">" #'mememacs/dragon)
 
-(defun mememacs-follow-shell-cmd (&optional cmd)
-  "Follow CMD.
-If CMD is a symlink follow it."
+(defun mememacs-find-file-dwim (&optional f)
+  "Follow F.
+F can be a program name, a file, or a file relative to the project root. "
   (interactive (list
 		(read-shell-command "cmd: ")))
-  ;;fixme abort minibuffers..
+
+  ;; fix abort the minibuff...
+
   (pop-to-buffer
    (find-file-noselect
-    (string-trim
-     (shell-command-to-string
-      (concat "which " cmd))))) )
+   (or
+    (when (file-exists-p f) f)
+    (let ((f (string-trim
+	      (shell-command-to-string
+	       (concat "which " f)))))
+      (when (file-exists-p f) f))
+    (let ((f (expand-file-name f (project-root (project-current)))))
+      (when (file-exists-p f) f))
+    (user-error "%s is neither a file, nor anything I can follow" f)))))
 
 (general-def
   embark-general-map
-  "f" #'mememacs-follow-shell-cmd)
+  "f" #'mememacs-find-file-dwim)
 
 (defun mememacs/embark-call-symbol (&optional symbol)
   "Insert a call to SYMBOl below the current toplevel form.

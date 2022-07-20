@@ -5,8 +5,8 @@
       cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow"
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
-      cider-clojure-cli-aliases
-      "lib/hotload")
+      cider-eldoc-display-context-dependent-info t
+      cider-clojure-cli-aliases "lib/hotload")
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -101,9 +101,9 @@
 
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
-  "r" '(clojure-refactor-map)
+  "r" 'clojure-refactor-map
   "m" #'cider-macroexpand-1-inplace
-  "s" '(:ignore t)
+  "s" nil
   "sl" #'cider-inspect-last-result
   "sd" #'cider-inspect-defun-at-point)
 
@@ -115,10 +115,10 @@
 (with-eval-after-load 'flycheck
   (mememacs/local-def
     :keymaps mm/cider-mode-maps
-
-    "e" `(,(let ((map flycheck-command-map))
-	     (define-key map "N" #'cider-jump-to-compilation-error)
-	     map))))
+    "e"
+    (let ((map flycheck-command-map))
+      (define-key map "N" #'cider-jump-to-compilation-error)
+      map)))
 
 
 ;; patch for nbb
