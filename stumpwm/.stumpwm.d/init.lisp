@@ -124,7 +124,7 @@ Load a file that re-defines swank and then calls it."
 
 ;; seriosly how shit can a piece of software be
 ;; popping windows 10 times and then not fixing the fucking class
-;; 0 regards for the user, just money money
+;; 0 regards for the user, just money money splash screens
 (let ((lst
 	'((:class "Unity-editor")
 	  (:class "Unity-editor")
