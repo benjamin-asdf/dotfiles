@@ -198,6 +198,13 @@ specific project."
 
 ;; ---
 
+(defun mm/bb (form)
+  (car (read-from-string
+	(shell-command-to-string
+	 (format
+	  "bb -e '%s'"
+	  (princ form))))))
+
 (defun mm/cider-jack-in-with-an-alias-from-deps ()
   (interactive)
   (if-let* ((root (project-root (project-current t)))
@@ -249,5 +256,21 @@ specific project."
 
 (advice-add #'cider--choose-reusable-repl-buffer :override #'mm/cleanup-cider-repls-and-do-not-reuse)
 
+(defun mm/cider-connect-arcadia ()
+  (interactive)
+  (let ((port
+	 (or
+	  (when-let*
+	      ((d (project-root (project-current)))
+	       (default-directory d)
+	       (f (expand-file-name "configuration.edn"))
+	       (f (when (file-exists-p f) f)))
+	    (mm/bb `(-> (slurp ,(format "\"%s\"" f)) read-string :nrepl)))
+	  3722)))
+    (cider-connect-clj `(:host "localhost" :port ,port))))
+
+(use-package gdscript-mode
+  :config
+  (setf gdscript-godot-executable "godot-mono" gdscript-docs-use-eww nil))
 
 (provide 'init-cider)

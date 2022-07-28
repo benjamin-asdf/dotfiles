@@ -49,7 +49,7 @@
 	 (if-let
 	     ((f (mm/denote-current-journal)))
 	     (find-file (expand-file-name f))
-	     (mm/denote-journal)))
+	   (mm/denote-journal)))
   "od" #'denote
   "oT" (defun mm/denote-todo () (interactive) (denote "todo"))
   "oc" #'org-capture
@@ -57,7 +57,6 @@
 	 (interactive)
 	 (let ((default-directory denote-directory))
 	   (call-interactively #'consult-project-extra-find))))
-
 
 (mememacs/comma-def
   org-mode-map

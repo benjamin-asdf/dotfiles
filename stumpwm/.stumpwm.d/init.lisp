@@ -75,6 +75,11 @@ Load a file that re-defines swank and then calls it."
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
+    (stumpwm:define-key m (kbd "c")
+      (symbol-name
+       (command-name
+	(defcommand dunst-close-all () ()
+	  (run-shell-command "dunstctl close-all")))))
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
