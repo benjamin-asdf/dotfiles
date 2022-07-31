@@ -53,7 +53,7 @@ bindkey -v '^?' backward-delete-char
 # M-. emacs style
 bindkey -v '^[.' insert-last-word
 
-source "$HOME/.config/zsh/check-this.sh"
+source "$HOME/.config/zsh/prompt.sh"
 
 # Edit line in emacs with ctrl-e:
 autoload edit-command-line; zle -N edit-command-line
