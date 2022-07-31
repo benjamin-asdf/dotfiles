@@ -20,7 +20,7 @@
     (mm/stumpwm-eval
      '(mapcar
        (lambda (w)
-	 `(:id ,(window-id w) :title ,(window-title w)))
+	 `(:id ,(window-id w) :title ,(window-title w) :class ,(window-class w)))
        (group-windows (current-group)))))))
 
 (defun mm/stumpwm-window-display->id (s)

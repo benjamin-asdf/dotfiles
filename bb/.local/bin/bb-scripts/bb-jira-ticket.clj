@@ -1,9 +1,7 @@
 #!/usr/bin/env bb
 
-(require
- '[clojure.string :as str])
-(require
- '[clojure.java.shell :as shell])
+(require '[clojure.string :as str])
+(require '[clojure.java.shell :as shell])
 (require '[cheshire.core :as json])
 (require '[babashka.curl :as curl])
 
@@ -23,8 +21,13 @@
    :headers {"Content-Type" "application/json"}
    :basic-auth [(:username config) (:token config)]})
 
+(defn ticket-id [s]
+    (if (str/starts-with? s "https")
+      (last (str/split s #"/"))
+      s))
+
 (defn
-  ticket
+  ticket-1
   [id]
   (let [opts (req
               (str "/rest/api/3/issue/" id))]
@@ -32,6 +35,8 @@
      (curl/get (:url opts) opts)
      :body
      (json/decode keyword))))
+
+(def ticket (comp ticket-1 ticket-id))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [tkt (ticket
@@ -42,3 +47,11 @@
          (second *command-line-args*)]
         (spit out (prn-str tkt))
         (clojure.pprint/pprint tkt))))
+
+
+(comment
+
+  (def s "https://singularitygroup.atlassian.net/browse/SG-12438")
+  (ticket s)
+
+  )
