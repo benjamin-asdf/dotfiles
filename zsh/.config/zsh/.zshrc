@@ -88,7 +88,7 @@ eval `keychain -q --eval id_rsa`
 case $TERM in
     xterm*)
       preexec () {
-        print -Pn "\e]0;xterm - $*%m\a"
+        print -Pn "\e]0;xterm - $* %~\a"
       }
     ;;
 esac
