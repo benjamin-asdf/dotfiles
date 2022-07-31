@@ -81,3 +81,14 @@ _bb_tasks() {
 compdef _bb_tasks bb
 
 eval `keychain -q --eval id_rsa`
+
+# set the window title to last command
+# https://tldp.org/HOWTO/Xterm-Title-4.html
+
+case $TERM in
+    xterm*)
+      preexec () {
+        print -Pn "\e]0;xterm - $*%m\a"
+      }
+    ;;
+esac
