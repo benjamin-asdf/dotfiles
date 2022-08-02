@@ -408,9 +408,10 @@
   :config
   (require 'init-project))
 
-;; fixme figure out if emacs string-edit
-;; can cover the use
-(when (require 'string-edit-at-point nil t)
+;; https://github.com/magnars/string-edit.el/issues/19
+(use-package string-edit-at-point
+  :straight (:host github :repo "benjamin-asdf/string-edit.el")
+  :config
   (mememacs/local-def
     :states '(normal insert)
     :keymaps '(prog-mode-map)
