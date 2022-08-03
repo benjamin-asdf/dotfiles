@@ -580,7 +580,16 @@
     "bash-completion"
     "BASH completion hook")
   (add-hook 'shell-dynamic-complete-functions
-            #'bash-completion-dynamic-complete))
+            #'bash-completion-dynamic-complete)
+  :config
+  (defun bash-completion-eshell-capf ()
+    (bash-completion-dynamic-complete-nocomint
+     (save-excursion (eshell-bol) (point))
+     (point) t))
+  (add-hook
+   'sh-mode-hook
+   (defun mm/add-bash-completion ()
+     (add-hook 'completion-at-point-functions #'bash-completion-eshell-capf nil t))))
 
 (use-package mu4e
   :ensure nil
