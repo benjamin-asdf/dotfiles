@@ -2,6 +2,7 @@
 
 (setf denote-file-type 'org
       denote-infer-keywords t
+      denote-dired-rename-expert t
       denote-known-keywords
       '("mind"
 	"code"

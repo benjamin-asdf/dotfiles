@@ -20,10 +20,15 @@
   "M-P" #'org-shiftmetaup
   "M-N" #'org-shiftmetadown)
 
+(general-def
+  'org-mode-map
+  "H-<return>" #'org-edit-src-exit)
+
 (mememacs/local-def
   'org-mode-map
   "h" #'org-shiftmetaleft
-  "l" #'org-shiftmetaright)
+  "l" #'org-shiftmetaright
+  "e" #'org-edit-src-code)
 
 (mememacs/comma-def
   "ol" #'org-store-link)
