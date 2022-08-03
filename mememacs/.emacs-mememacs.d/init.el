@@ -422,8 +422,8 @@
   (setq aw-keys mememacs/avy-keys
 	aw-background nil)
   (general-def 'evil-window-map
-      "w" #'ace-window
-      "D" #'ace-delete-window))
+    "w" #'ace-window
+    "D" #'ace-delete-window))
 
 (use-package cider
   :config
