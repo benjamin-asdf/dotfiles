@@ -24,8 +24,10 @@
 	 (beg (car bounds))
 	 (end (cdr bounds))
 	 (completion
-	  (cider-complete
-	   (buffer-substring beg end))))
+	  (append
+	   (cider-complete
+	    (buffer-substring beg end))
+	   (get-text-property (point) 'cider-locals))))
       (list
        beg
        end
