@@ -16,7 +16,6 @@
       denote-directory "~/notes/")
 
 (when (require 'org-capture nil t)
-  (require 'denote-org-capture)
   (add-to-list
    'org-capture-templates
    '("n" "Denote new"
