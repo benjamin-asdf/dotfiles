@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# see man xclip
+# echo "foo" | clipboard
+
+xclip -selection clipboard
