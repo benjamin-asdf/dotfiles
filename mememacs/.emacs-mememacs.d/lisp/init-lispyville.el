@@ -89,11 +89,10 @@
 
 (lispyville--define-key '(motion normal)
   "q" 'lispy-ace-paren
+  "Q" 'lispy-ace-char
   "Y" 'lispy-new-copy
   (kbd "S-<return>") 'lispy-eval-other-window
-
   "D" 'lispy-kill)
-
 
 
 (lispyville--define-key '(motion normal visual)
@@ -235,7 +234,12 @@
   "," #'lispy-kill-at-point
   "g" (lispyville-wrap-command lispy-beginning-of-defun special)
   "G" (lispyville-wrap-command lispyville-end-of-defun special)
-  "f" #'mm/lispy-goto-toplevel-form)
+  "f" #'mm/lispy-goto-toplevel-form
+  )
+
+(mememacs/comma-def
+  :keymaps '(lispy-mode-map)
+  "js" #'lispy-ace-symbol)
 
 (general-def
   :states '(normal visual emacs insert)
@@ -279,12 +283,16 @@ when formatting with lispy."
 	(print-level nil))
     (funcall f r)))
 
-(advice-add
- #'lispy--insert
- :around
- #'mm/lispy-advice-print-length)
+(advice-add #'lispy--insert :around #'mm/lispy-advice-print-length)
 
 (add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
+
+;; --------------------------------------------
+
+(add-hook 'clojure-mode-hook
+	  (defun mm/lipsy-set-clojure-thread-macro ()
+	    (setq-local lispy-thread-last-macro "->>")))
+
 
 (require 'lispy-eval-markers)
 
