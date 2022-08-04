@@ -228,22 +228,25 @@ pamac build slop-git
 
 modify to your desire.
 
-
 ** walkthrough make video selected (screen capture)
 
-- bind `video-selected` to a keybind, probably with your wm (eg. KDE plasma)
+- bind `video-selected` to a keybind, probably with your wm (eg. KDE
+  plasma) (just in i3 config of course)
 - hello I selected (see vid) (showcase)
 - second invoke of the script finishes the current recording
   [[https://s3.eu-central-1.amazonaws.com/cos-dev-attachments/ShareX/ben/6219cca7-6358-45ac-877a-7e4c9aa6b153-box-220708-1137-33.mp4]]
 
-- call `s3-cos-attch-upload` on the file
+- invoke the script `s3-cos-attch-upload` on the file
 - you can of course make a version that does that auto
-- if you desire similar screencaptures
-  search for `dmenurecord`
 
 - I use /tmp/recordingpid to show "recording" in my wms modeline.
   as long as /tmp/recordingpid exists, you are recording
-  example: [[file:stumpwm/.stumpwm.d/init.lisp]]
+
+  actually I think you want some kind of feedback like this
+
+  `killall ffmpeg` also works to kill anything running
+
+
 
 
 ** aws profile
