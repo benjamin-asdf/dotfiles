@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# The  first  specifies  the  delay before autorepeat starts and the second specfies the repeat rate.
+xset r rate 120 240

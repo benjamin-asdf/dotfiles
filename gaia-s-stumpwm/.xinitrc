@@ -1,12 +1,10 @@
 source ~/.profile
 
-
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
 #wmname LG3D
 export GDK_CORE_DEVICE_EVENTS=1
-
 
 # Set default cursor.
 setroot -cursor_name left_ptr
