@@ -15,7 +15,8 @@
 	"biology")
       denote-directory "~/notes/")
 
-(when (require 'org-capture nil t)
+(with-eval-after-load
+    'org-capture
   (add-to-list
    'org-capture-templates
    '("n" "Denote new"

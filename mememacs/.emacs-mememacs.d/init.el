@@ -562,7 +562,14 @@
 (use-package org :defer t :config (require 'init-org))
 (use-package denote
   :straight (:host github :repo "protesilaos/denote")
-  :after org :config (require 'init-denote))
+  :defer t
+  :init
+  (mememacs/comma-def "oj"
+    (defun mm/denote-load ()
+      (interactive)
+      (require 'org)
+      (require 'init-denote)
+      (mm/find-today-journal))))
 
 (use-package markdown-mode)
 
