@@ -205,6 +205,7 @@
 (require 'main)
 (require 'visual)
 (require 'functions-1)
+(require 'mememacs-stumpwm)
 (setf initial-buffer-choice (mememacs/latest-scratch "el"))
 (require 'init-emacs-lisp)
 
