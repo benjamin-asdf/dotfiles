@@ -1,3 +1,4 @@
 #!/bin/sh
 
-click-pid | xargs kill -USR2
+
+xprop | awk '/PID/ {print $3}' | xargs kill -USR2
