@@ -138,8 +138,7 @@
 
 
            :ion-dev
-           {:deps {org.clojure/clojure #:mvn{:version "1.10.3"}
-                   com.datomic/ion-dev {:mvn/version "1.0.306"}}
+           {:deps {com.datomic/ion-dev {:mvn/version "1.0.304"}}
             :main-opts ["-m" "datomic.ion.dev"]}
 
 
