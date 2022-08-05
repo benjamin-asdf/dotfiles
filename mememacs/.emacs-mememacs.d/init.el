@@ -639,7 +639,7 @@
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
-(require 'late-bindings)
+(require 'keybinds)
 
 ;; elp
 ;; memory-use-counts
