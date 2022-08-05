@@ -560,7 +560,9 @@
 	(shell-command)))))
 
 (use-package org :defer t :config (require 'init-org))
-(use-package denote :after org :config (require 'init-denote))
+(use-package denote
+  :straight (:host github :repo "protesilaos/denote")
+  :after org :config (require 'init-denote))
 
 (use-package markdown-mode)
 
