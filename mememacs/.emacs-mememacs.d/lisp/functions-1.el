@@ -188,7 +188,7 @@ See `eval-last-sexp'."
 	   (if (or create-new (not latest))
 	       (mememacs/new-scratch-name suffix)
 	     (mememacs/latest-scratch suffix)))))
-    (pop-to-buffer buff)
+    (pop-to-buffer-same-window buff)
     (when (eq major-mode 'emacs-lisp-mode)
       (elisp-enable-lexical-binding))
     buff))
