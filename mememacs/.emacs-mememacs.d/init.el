@@ -54,7 +54,7 @@
 
 (defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
-(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?n ?m ?b))
+(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?m ?b))
 
 ;; Use no-littering to automatically set common paths to the new user-emacs-directory
 (use-package no-littering)
