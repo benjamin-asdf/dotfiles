@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (setq cider-repl-display-help-banner nil
+      cider-repl-display-in-current-window t
       cider-babashka-parameters "nrepl-server 0"
       cider-repl-require-ns-on-set t
       cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow"
