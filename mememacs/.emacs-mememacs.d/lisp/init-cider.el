@@ -265,14 +265,19 @@ specific project."
 	  (when-let*
 	      ((d (project-root (project-current)))
 	       (default-directory d)
-	       (f (expand-file-name "configuration.edn"))
+	       (f (or (expand-file-name "configuration.edn")
+		      (expand-file-name "arcadia-configuration.edn")
+		      (expand-file-name "Assets/configuration.edn")))
 	       (f (when (file-exists-p f) f)))
 	    (mm/bb `(-> (slurp ,(format "\"%s\"" f)) read-string :nrepl)))
 	  3722)))
     (cider-connect-clj `(:host "localhost" :port ,port))))
 
 (use-package gdscript-mode
+  :when nil
   :config
-  (setf gdscript-godot-executable "godot-mono" gdscript-docs-use-eww nil))
+  (setf
+   gdscript-godot-executable "godot-mono"
+   gdscript-docs-use-eww nil))
 
 (provide 'init-cider)

@@ -10,7 +10,7 @@
 		'stumpwm-init-file))
   (require 'le-lisp)
   (with-current-buffer
-      (find-file-noselect stumpwm-init-file)
+     (find-file-noselect stumpwm-init-file)
     (lispy--eval-lisp
      (format "%s" (princ form)))))
 

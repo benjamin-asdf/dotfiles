@@ -205,7 +205,7 @@
 (require 'main)
 (require 'visual)
 (require 'functions-1)
-(require 'mememacs-stumpwm)
+;(require 'mememacs-stumpwm)
 (setf initial-buffer-choice (mememacs/latest-scratch "el"))
 (require 'init-emacs-lisp)
 
@@ -410,9 +410,13 @@
   (require 'init-project))
 
 ;; https://github.com/magnars/string-edit.el/issues/19
-(use-package string-edit-at-point
-  :straight (:host github :repo "benjamin-asdf/string-edit.el")
-  :config
+(when
+    (require
+     'string-edit-at-point
+     (expand-file-name
+      mememacs/config-dir
+      "straight/repos/string-edit.el/string-edit.el")
+     t)
   (mememacs/local-def
     :states '(normal insert)
     :keymaps '(prog-mode-map)
