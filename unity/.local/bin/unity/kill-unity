@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+# don't even try 15 on unity
+# doesn't behave
+pgrep Unity | xargs kill -9 

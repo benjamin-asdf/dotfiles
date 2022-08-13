@@ -1,0 +1,3 @@
+#!/bin/sh
+
+unity-editor -projectPath .
