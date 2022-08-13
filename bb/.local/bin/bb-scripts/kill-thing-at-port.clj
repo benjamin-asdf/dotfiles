@@ -16,3 +16,10 @@
     "-n"
     "-P"
     "-t"))))
+
+(comment
+
+(shell/sh "lsof" (str "-i:" 40800) "-n" "-P" "-t")
+
+
+  )

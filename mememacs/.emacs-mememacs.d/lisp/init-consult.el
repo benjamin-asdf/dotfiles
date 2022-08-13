@@ -95,4 +95,15 @@
 
 (advice-add 'consult--jump :around  #'mm/dired-find-file-after-consult)
 
+
+(defun mm/consult-grep-dir-prompt-advice (args)
+  (pcase args
+    (`(,s (4)) `(,s ,default-directory))
+    (_ args)))
+
+(declare (mm/consult-grep-dir-prompt-advice '("f" (4)))
+	 (mm/consult-grep-dir-prompt-advice '("f" (1))))
+
+(advice-add #'consult--directory-prompt :filter-args #'mm/consult-grep-dir-prompt-advice)
+
 (provide 'init-consult)

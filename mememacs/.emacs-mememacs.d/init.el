@@ -404,9 +404,8 @@
 (when
     (require
      'string-edit-at-point
-     (expand-file-name
-      mememacs/config-dir
-      "straight/repos/string-edit.el/string-edit.el")
+     (expand-file-name "straight/repos/string-edit.el/string-edit.el"
+		       mememacs/config-dir)
      t)
   (mememacs/local-def
     :states '(normal insert)

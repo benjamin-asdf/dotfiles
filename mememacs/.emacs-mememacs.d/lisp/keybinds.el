@@ -51,9 +51,6 @@
   "H-<return>" #'save-buffer
   "C-M-j" #'consult-buffer)
 
-
-;; todo why is this overriden or whatever
-
 (defun mememacs/jump-back ()
   (interactive)
   (if (in major-mode 'clojure-mode)

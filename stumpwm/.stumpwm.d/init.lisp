@@ -71,10 +71,16 @@ Load a file that re-defines swank and then calls it."
   (run-shell-command
    "video-selected"))
 
+(defcommand emacs-kill-xselection () ()
+  (run-shell-command "ec-kill-xselection"))
+
+;; (defun def-shell-command-cmd (s))
+
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
+    (stumpwm:define-key m (kbd "y") "emacs-kill-xselection")
     (stumpwm:define-key m (kbd "c")
       (symbol-name
        (command-name
@@ -174,14 +180,15 @@ windows of the same class as the current window."
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 (define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
 
+
+(setf *default-selections* '(:clipboard))
+
 (defmacro comment (&rest body))
 
 ;; windowlist then go thought the same class wouuld be nice
 ;; also window list fitler same class
 
-
 ;; window hook or sth to put qutebro
-
 ;; I don't want to hit tab if there is only 1 thing in the
 ;; selection list
 
@@ -237,7 +244,5 @@ windows of the same class as the current window."
   (group-windows (current-group)))
 
  (pull-window (window-by-id 23073195))
-
-
 
  )
