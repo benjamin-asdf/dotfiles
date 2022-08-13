@@ -7,7 +7,6 @@ use Proc::ProcessTable;
 my $processesFound = 0;
 my $table = Proc::ProcessTable->new;
 my $rss_allowed = 4_294_967_296 * 1.6;
-# my @heavy_procs = ("/opt/rider/JetBrains");
 
 for my $process (@{$table->table}) {
         # skip root processes
@@ -18,15 +17,23 @@ for my $process (@{$table->table}) {
         my $rss_max = $rss_allowed;
 
         # skip any using less than 4 GiB, double the allowed rss for rider
-         $rss_max *= 2 if ($cmd =~ /^\/opt\/rider\/JetBrains/);
+        $rss_max *= 2 if ($cmd =~ /^\/opt\/rider\/JetBrains/);
+        # $rss_max *= 2.4 if ($cmd =~ /code_patcher_unix.sh$/);
+	if ($cmd =~ /-projectPath.+IdleGame/) {
+            $rss_max =  18253611008;
+	    # print  "10g for idlegame", $process->pid,  $cmd, "\n";
+	}
         # print "proc: ", $cmd, "rss_allowed: ", $rss_max, "\n";
+
+
+	# print $cmd
 
         next if $process->rss < $rss_max;
 
-        # # document the slaughter
-		    $processesFound = $processesFound + 1;
+        # document the slaughter
+        $processesFound = $processesFound + 1;
 
-        print  "Killing process: pid=", $process->pid, " uid=", $process->uid, " rss=", $process->rss, " fname=", $process->fname, " cmndline=", $cmd, "raw cmd=", $process->cmdline, "\n";
+        print "Killing process: pid=", $process->pid, " uid=", $process->uid, " rss=", $process->rss, " fname=", $process->fname, " cmndline=", $cmd, "raw cmd=", $process->cmdline, "\n";
 
         # try first to terminate process politely
         kill 15, $process->pid;

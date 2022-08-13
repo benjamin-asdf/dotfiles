@@ -1,0 +1,3 @@
+#!/bin/sh
+
+for pid in /proc/[0-9]*; do printf "PID %6d has %4d FDs\n" $(basename $pid) $(ls $pid/fd | wc -l); done
