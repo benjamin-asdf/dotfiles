@@ -1,4 +1,7 @@
 #!/bin/sh
 
 [ -n "$IDLEGAMEDIR" ] && rm -rf "$IDLEGAMEDIR/Temp/*"
-xterm -T "unity-idlegame" -e /opt/unity/2019.4.16f1/Editor/Unity -forcefree -buildTarget standalone -projectPath ~/idlegame/IdleGame/
+
+ulimit -n 4096
+
+nice -n 2 /opt/unity/2019.4.16f1/Editor/Unity -forcefree -buildTarget standalone -projectPath ~/idlegame/IdleGame/
