@@ -7,6 +7,7 @@ set scs
 set ignorecase
 set ideajoin
 set gdefault
+set commentary
 
 
 " "https://github.com/AlexPl292/IdeaVim-EasyMotion TODO
@@ -128,4 +129,3 @@ nnoremap <leader>ep :action GotoPreviousError<CR>
 
 nnoremap gcc :vsc Edit.ToggleComment<CR>
 vnoremap gc :vsc Edit.ToggleComment<CR><Esc><Esc>
-
