@@ -338,15 +338,6 @@
   (setf mood-line-show-cursor-point t)
   (mood-line-mode))
 
-;; TODO
-;; (nconc package-selected-packages '(exwm helm-exwm))
-;; (nconc package-selected-packages '(pulseaudio-control))
-
-(with-eval-after-load 'pulseaudio-control
-  ;; REVIEW: Upstream should set path dynamically.
-  ;; https://github.com/flexibeast/pulseaudio-control/issues/7
-  (setq pulseaudio-control-pactl-path (executable-find "pactl")))
-
 (use-package macrostep
   :config
   (mememacs/comma-def
