@@ -392,12 +392,7 @@
 (use-package targets
   :straight (:host github :repo "noctuid/targets.el"))
 
-(require 'project nil t)
-
-(use-package consult-project-extra
-  :after project
-  :straight (consult-project-extra :type git :host github :repo "Qkessler/consult-project-extra")
-  :config
+(when (require 'project nil t)
   (require 'init-project))
 
 ;; https://github.com/magnars/string-edit.el/issues/19
