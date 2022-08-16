@@ -19,4 +19,6 @@
 
 # xlock -startCmd "xrate-slow && ssh-add -D" -endCmd xrate-fast
 
-xlock -startCmd "xrate-slow" -endCmd "xrate-fast"
+# xlock -startCmd "xrate-slow" -endCmd "xrate-fast"
+
+i3lock

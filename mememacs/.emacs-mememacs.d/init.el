@@ -569,7 +569,11 @@
 (use-package markdown-mode)
 
 (use-package backup-each-save
-  :hook after-save)
+  :hook after-save
+  :config
+ ;; the builtin backups are quite cute compared to
+  ;; `backup-each-save`
+  (setf make-backup-files nil))
 
 (use-package vterm
   :config
