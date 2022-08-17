@@ -446,9 +446,9 @@
   :config
   (setf
    geiser-scheme-implementation 'guile
-   geiser-guile-binary "guile3"
+   geiser-guile-binary "guile"
    geiser-guile-load-path
-   (list "/lib/guile/3.0")))
+   (list "/lib/guile/2.2/")))
 
 (use-package avy
   :config
