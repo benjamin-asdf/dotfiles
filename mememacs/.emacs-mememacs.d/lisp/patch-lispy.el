@@ -126,10 +126,49 @@ backward through lists, which is useful to move into special.
     (goto-char he-string-beg)
     (setq subst (if trans-case (he-transfer-case he-search-string str) str))
     (setq he-tried-table (cons subst he-tried-table))
-    (let ((lispy-delete-at-paren
-           (when
-               lispy-mode
-             (memq (char-after) '(?\( ?\[ ?\{)))))
+    (let*
+	((lispy-delete-at-paren
+          (when
+              lispy-mode
+            (memq (char-after) '(?\( ?\[ ?\{))))
+	 ;; keep the hurr when you do (subst hurr)
+	 (lispy-only-subst-operator
+	  (when lispy-delete-at-paren
+	    (<
+	     1
+	     (let ((bounds (lispy--bounds-dwim)))
+	       (save-excursion
+		 (goto-char (car bounds))
+		 (let ((symbol-count 0))
+		   (while
+		       (re-search-forward
+			"[([{ ]\\(?:\\sw\\|\\s_\\|[\"'`#~,@]\\)"
+			(cdr bounds)
+			t)
+		     (setf symbol-count (1+ symbol-count)))
+		   symbol-count))))))
+	 (subst
+	  (if lispy-only-subst-operator
+	      (let* ((current-bounds (lispy--bounds-dwim))
+		     (current (buffer-substring
+			       (car current-bounds)
+			       (cdr current-bounds)))
+		     (new-atom
+		      (with-temp-buffer
+			(insert subst)
+			(goto-char (point-min))
+			(re-search-forward "[([{ ]\\(?:\\sw\\|\\s_\\|[\"'`#~,@]\\)")
+			(let ((b (lispyville--bounds-atom)))
+			  (buffer-substring (car b) (cdr b))))))
+		(with-temp-buffer
+		  (insert current)
+		  (goto-char (point-min))
+		  (re-search-forward "[([{ ]\\(?:\\sw\\|\\s_\\|[\"'`#~,@]\\)")
+		  (let ((b (lispyville--bounds-atom)))
+		    (delete-region (car b) (cdr b))
+		    (insert new-atom))
+		  (buffer-string)))
+	    subst)))
       (if
           lispy-delete-at-paren
           (lispy-delete 1)
