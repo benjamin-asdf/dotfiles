@@ -269,6 +269,18 @@
   :init
   (savehist-mode))
 
+(use-package dired
+  :straight nil
+  :ensure nil
+  :config
+  (general-def
+    dired-mode-map
+    :states '(normal emacs)
+    "h" #'dired-up-directory
+    "l" #'dired-find-file
+    "L" #'dired-find-file-other-window)
+  (setf dired-listing-switches "-alh"))
+
 (use-package consult
   :init (recentf-mode)
   (setq completion-in-region-function #'consult-completion-in-region)
@@ -439,7 +451,7 @@
 (use-package macrostep-geiser
   :config
   (add-hook 'cider-mode-hook #'macrostep-geiser-setup)
-  (add-hook 'geiser-mode #'macrostep-geiser-setup))
+  (add-hook 'geiser-mode-hook #'macrostep-geiser-setup))
 
 (use-package geiser-guile
   :when mememacs/guile-enabled
