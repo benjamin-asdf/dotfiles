@@ -21,4 +21,6 @@
 
 # xlock -startCmd "xrate-slow" -endCmd "xrate-fast"
 
-i3lock
+xrate-slow
+i3lock -n
+xrate-fast

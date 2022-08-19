@@ -245,8 +245,4 @@ windows of the same class as the current window."
     `(:id ,(window-id w) :title ,(window-title w)))
   (group-windows (current-group)))
 
- (pull-window (window-by-id 23073195))
-
-
-
- )
+ (pull-window (window-by-id 23073195)))
