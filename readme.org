@@ -1,13 +1,17 @@
-* I took a lot of stuff from https://gitlab.com/ambrevar/dotfiles
- See COPYING in the root of this repo if you want to use code from here
+Getting shit done with emacs. I strive for simplicity and harmony in my practice.
+Lisp is my home.
+Clojure is my spaceship.
+
 * singularity group
 see [[sg-setup-notes.org][setup notes]] for linux setup help
-* gaia-s
-- for my main the desktop machine I use
-- does not use exwm yet
-* farstar
-a laptop running guix + exwm
-
 
 * Acknowledgments
+  thanks to
+  https://gitlab.com/ambrevar/dotfiles
+  See COPYING in the root of this repo
+
   some scripts are from https://github.com/LukeSmithxyz/voidrice
+
+** influences
+   https://www.youtube.com/c/GavinFreeborn
+   https://systemcrafters.cc/
