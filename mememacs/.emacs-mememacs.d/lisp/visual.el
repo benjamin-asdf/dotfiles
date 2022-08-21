@@ -328,7 +328,8 @@
    'markdown-code-face
    nil
    :inherit 'default
-   :background mindsape/lunar-green))
+   :foreground nil
+   :background mindsape/woodsmoke-shade))
 
 (with-eval-after-load
     'embark

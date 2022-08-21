@@ -1,27 +1,51 @@
 ;; -*- lexical-binding: t; -*-
 
+(setf project-switch-use-entire-map t)
+
+(defvar mm/project-command nil)
+
+(advice-add
+ #'project--switch-project-command
+ :override
+ (defun mm/project-command ()
+   (or
+    mm/project-command
+    (let ((completion-styles '(basic)))
+      (embark-completing-read-prompter
+       project-prefix-map
+       nil
+       'no-default)))))
+
 (mememacs/leader-def
   "p"
   project-prefix-map
+  "pP" (defun mm/project-switch-project-find-file ()
+	 (interactive)
+	 (let ((mm/project-command #'consult-project-buffer))
+	   (call-interactively #'project-switch-project)))
   "p."
   (defun mm/project-list-file ()
     (interactive)
     (find-file project-list-file))
-  "pf" #'consult-project-buffer)
+  "pf" #'consult-project-buffer
+  "pm" #'magit-status
+  "p/" #'consult-ripgrep
+  "pG" #'consult-git-grep
+  "p\\" #'mememacs/fd-find-file)
 
 (defun mm/cmd->lines (command)
-(with-temp-buffer
-  (shell-command
-   command
-   t
-   "*project-files-errors*")
-  (let ((shell-output (buffer-substring
-		       (point-min)
-		       (point-max))))
-    (split-string
-     (string-trim shell-output)
-     "\0"
-     t))))
+  (with-temp-buffer
+    (shell-command
+     command
+     t
+     "*project-files-errors*")
+    (let ((shell-output (buffer-substring
+			 (point-min)
+			 (point-max))))
+      (split-string
+       (string-trim shell-output)
+       "\0"
+       t))))
 
 (defun mememacs/fd-files ()
   (mm/cmd->lines "fd --hidden --exclude=.git --type=f . --print0"))
@@ -37,16 +61,6 @@
     (mememacs/fd-files))))
 
 (general-def "C-\\" #'mememacs/fd-find-file)
-
-(setq project-switch-commands
-      '((magit-status "Magit" "M")
-	(project-dired "Dired")
-	(project-find-file "Find file" "f")
-	(consult-ripgrep "Find regexp" "/")
-	(consult-git-grep "Git grep" "g")
-	(project-find-dir "Find directory")
-	(mememacs/fd-find-file "Fd file" "\\")
-	(project-eshell "Eshell")))
 
 (defvar mm/consult-fd-project-files
   `(:name "Project Files fd"
@@ -90,6 +104,5 @@
 	    `(:hidden nil :narrow ?f ,@consult--source-project-recent-file)
 	    `(:hidden nil :narrow ?d ,@mm/consult-fd-project-files)
 	    `(:hidden nil :narrow ?g ,@mm/consult-git-ls-files)))
-
 
 (provide 'init-project)
