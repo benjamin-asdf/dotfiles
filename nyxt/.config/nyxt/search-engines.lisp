@@ -13,7 +13,6 @@
 (define-configuration (buffer web-buffer)
   ((search-engines
     (list
-     (searx)
      (engines:google :shortcut "gmaps"
                      :object :maps)
      (engines:wordnet :shortcut "wn"
@@ -31,4 +30,5 @@
      (arch-wiki :shortcut "wa")
      (engines:github :shortcut "gh")
      (engines:wordnet)
-     (engines:wikipedia)))))
+     (engines:wikipedia)
+     (searx)))))

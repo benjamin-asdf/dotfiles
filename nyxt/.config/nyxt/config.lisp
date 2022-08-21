@@ -51,19 +51,37 @@
      ,scheme-name
      (list ,@bindings)))
 
+(defun benj/keybinds (map)
+  (alter-keyscheme
+      map
+      nyxt/keyscheme:vi-normal
+    "M-x" 'execute-command
+    "shift-space" 'toggle-mark-backwards
+    "; y" 'nyxt/hint-mode:copy-hint-url))
+
+(define-command duplicate-buffer (&key parent-buffer)
+  "Duplicate current buffer in a new buffer."
+  (nyxt::duplicate-buffer-with-current-modes :modes
+				       '(nyxt/document-mode:document-mode
+					 nyxt:base-mode)
+                                       :parent-buffer parent-buffer))
+
 (define-configuration
     (nyxt/document-mode:document-mode)
   ((keyscheme-map
-    (progn
-      (alter-keyscheme
-	  %slot-default%
-	  nyxt/keyscheme:vi-normal
-	"M-x" 'execute-command)))))
+    (benj/keybinds %slot-value%))))
 
+;; put stuff into kill ring .. ?
+
+;; I want to bind shift-space to the mark thing instead of scroll up
+
+
+
+
+
+
+;; (find-class 'nyxt/hint-mode:hint-mode)
 ;; prompt-mode in emacs mode
-
-;; ace kill
-;;
 
 ;; (default-modes (current-buffer))
 ;; (mode (current-buffer))
