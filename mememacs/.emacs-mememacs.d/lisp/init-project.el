@@ -56,9 +56,12 @@
 (defun mememacs/fd-find-file ()
   (interactive)
   (find-file
-   (completing-read
-    "find file: "
-    (mememacs/fd-files))))
+   (consult--read
+    (mememacs/fd-files)
+    :category 'file
+    :prompt "find file: "
+    :state (consult--file-preview)
+    :history 'file-name-history)))
 
 (general-def "C-\\" #'mememacs/fd-find-file)
 

@@ -144,7 +144,6 @@ PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
 
-
 # babashka tasks completer
 
 _bb_complete() {
@@ -153,7 +152,5 @@ _bb_complete() {
     COMPREPLY=($(compgen -W "$BB_TASKS $BB_HELP" -- "${COMP_WORDS[$COMP_CWORD]}"))
 }
 complete -f -F _bb_complete bb # autocomplete filenames as well
-
-
 
 alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"

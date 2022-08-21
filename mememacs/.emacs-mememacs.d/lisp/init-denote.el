@@ -57,7 +57,7 @@
   "of" (defun mm/consult-file-notes ()
 	 (interactive)
 	 (let ((default-directory denote-directory))
-	   (call-interactively #'consult-project-extra-find))))
+	   (call-interactively #'consult-project-buffer))))
 
 (mememacs/comma-def
   org-mode-map
