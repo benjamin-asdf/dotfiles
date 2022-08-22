@@ -571,6 +571,8 @@
       (interactive)
       (require 'org)
       (require 'init-denote)
+      (require 'ob-clojure)
+      (require 'ob-shell)
       (mm/find-today-journal))))
 
 (use-package markdown-mode)

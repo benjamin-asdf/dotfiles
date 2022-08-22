@@ -22,7 +22,8 @@
 
 (general-def
   'org-mode-map
-  "H-<return>" #'org-edit-src-exit)
+  "H-<return>" #'org-edit-src-exit
+  "C-c C-t" nil)
 
 (mememacs/local-def
   'org-mode-map
