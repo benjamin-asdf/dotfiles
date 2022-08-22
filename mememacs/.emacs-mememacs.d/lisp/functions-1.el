@@ -476,4 +476,18 @@ With negative N, comment out original line and use the absolute value."
     (shell-command-to-string
      (concat "github-readme.clj " url)))))
 
+
+(defun mm/trim-string-for-yank-when-inserting-in-quotes (s)
+  (if
+      (and
+       (eq (char-before) 34)
+       (eq (char-after) 34))
+      (thread-last
+	s
+	(s-chop-prefix "\"")
+	(s-chop-suffix "\""))
+    s))
+
+(add-hook 'yank-transform-functions #'mm/trim-string-for-yank-when-inserting-in-quotes)
+
 (provide 'functions-1)
