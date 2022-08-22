@@ -224,7 +224,6 @@ specific project."
 	(call-interactively #'cider-jack-in-clj))
     (user-error "no deps.edn file in project")))
 
-
 (defun clerk-show ()
   (interactive)
   (save-buffer)
@@ -237,7 +236,6 @@ specific project."
 (mememacs/local-def
   :keymaps mm/cider-mode-maps
   "c" #'clerk-show)
-
 
 
 

@@ -34,5 +34,10 @@
 (mememacs/comma-def
   "ol" #'org-store-link)
 
+(with-eval-after-load 'ob-clojure
+  (setf org-babel-clojure-backend 'cider
+	org-confirm-babel-evaluate nil))
+
+(require 'org-protocol)
 
 (provide 'init-org)

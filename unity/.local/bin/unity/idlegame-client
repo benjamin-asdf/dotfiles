@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 [ -n "$IDLEGAMEDIR" ] && rm -rf "$IDLEGAMEDIR/Temp/*"
+
+pgrep -f "when-low-on-mem-kill-unity" || watch when-low-on-mem-kill-unity &
 
 ulimit -n 4096
 
