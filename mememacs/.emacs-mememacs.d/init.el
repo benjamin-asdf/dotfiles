@@ -194,12 +194,6 @@
 	       help-mode-map)
     "SPC" nil))
 
-(general-def
-  "s-h" #'windmove-left
-  "s-l" #'windmove-right
-  "s-k" #'windmove-up
-  "s-j" #'windmove-down)
-
 (require 'functions)
 (require 'utils)
 (require 'main)

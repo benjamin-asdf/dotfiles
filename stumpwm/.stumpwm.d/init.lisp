@@ -102,6 +102,7 @@ Load a file that re-defines swank and then calls it."
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
 (defun rec-modeline (ml)
+  (declare (ignore ml))
   (if (probe-file
        "/tmp/recordingpid")
       "RECORDING"
@@ -185,6 +186,73 @@ windows of the same class as the current window."
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 (define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
 
+
+;; thanks gavin
+;; https://github.com/Gavinok/stump-conf
+(defun emacsp (win)
+  "Returns non-nil when WIN is an emacs window."
+  (when win
+    (string-equal (window-class win) "Emacs")))
+
+(defmacro exec-el (expression)
+  "execute emacs lisp do not collect it's output"
+  `(eval-string-as-el (write-to-string ',expression)))
+
+(defun eval-string-as-el (elisp &optional collect-output-p)
+  "evaluate a string as emacs lisp"
+  (let ((result (run-shell-command
+                 (format nil "timeout --signal=9 1m emacsclient --eval \"~a\""
+                         elisp)
+                 collect-output-p)))
+    (handler-case (read-from-string result)
+      ;; Pass back a string when we can't read from the string
+      (error () result))))
+
+(defun eval-el-1 (form)
+  "Eval FORM in emacs (via emacsclient) and return it's output.
+FORM should be a quoted list."
+  (eval-string-as-el (write-to-string form :case :downcase) t))
+
+(defmacro eval-el (expression)
+  "evaluate emacs lisp and collect it's output"
+  `(eval-el-1 ',expression))
+
+(comment
+ (macroexpand '(eval-el (+ 1 3 2)))
+ (eval-el (+ 1 3 2))
+ (eval-el-1 '(+ 1 3 2)))
+
+(declaim (ftype
+          (function (string) (values string &optional))
+          emacs-winmove))
+(defun emacs-winmove (direction)
+  "executes the emacs function winmove-DIRECTION where DIRECTION is a string"
+  (eval-string-as-el (concat "(windmove-" direction ")") t))
+
+;;; Window focusing
+(defun better-move-focus (ogdir)
+  "Similar to move-focus but also treats emacs windows as Xorg windows"
+  (declare (type (member :up :down :left :right) ogdir))
+  (flet ((mv () (move-focus ogdir)))
+    (if (emacsp (current-window))
+        (when ;; There is not emacs window in that direction
+            (length= (emacs-winmove (string-downcase (string ogdir)))
+                     1)
+          (mv))
+        (mv))))
+
+
+(defcommand my-mv (dir) ((:direction "Enter direction: "))
+  (when dir (better-move-focus dir)))
+
+(define-key *top-map* (kbd "s-h") "my-mv left")
+(define-key *top-map* (kbd "s-j") "my-mv down")
+(define-key *top-map* (kbd "s-k") "my-mv up")
+(define-key *top-map* (kbd "s-l") "my-mv right")
+
+
+
+
 ;; windowlist then go thought the same class wouuld be nice
 ;; also window list fitler same class
 
@@ -197,7 +265,8 @@ windows of the same class as the current window."
 ;; replace flameshot maybe
 ;; no drawing stuff though
 
-(defmacro comment (&rest _))
+(defmacro comment (&rest _)
+  (declare (ignore _)))
 
 (comment
 
