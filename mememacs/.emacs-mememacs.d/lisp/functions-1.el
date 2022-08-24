@@ -351,8 +351,6 @@ See `eval-last-sexp'."
   "x" (key-binding (kbd "C-x"))
   "c" (key-binding (kbd "C-c")))
 
-
-
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
 where the file does not exist."
@@ -475,7 +473,6 @@ With negative N, comment out original line and use the absolute value."
    (string-trim
     (shell-command-to-string
      (concat "github-readme.clj " url)))))
-
 
 (defun mm/trim-string-for-yank-when-inserting-in-quotes (s)
   (if

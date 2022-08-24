@@ -58,8 +58,6 @@
     :prompt "stumpwm window: "
     :category 'stumpwm-window)))
 
-(general-def "s-." #'mm/consult-stumpwm-windows)
-
 (add-to-list
  'embark-keymap-alist '(stumpwm-window mm-embark-stumpwm-window-map))
 

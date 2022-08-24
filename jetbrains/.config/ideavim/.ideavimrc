@@ -7,6 +7,7 @@ set scs
 set ignorecase
 set ideajoin
 set gdefault
+set commentary
 
 
 " "https://github.com/AlexPl292/IdeaVim-EasyMotion TODO
@@ -92,7 +93,7 @@ nmap <leader>wr :action VimWindowRight<cr>
 nmap <leader>wn :action VimWindowSplitVertical<cr>
 
 " misc actions
-inoremap <C-/> :action EditorCompleteStatement<CR> 
+inoremap <C-/> :action EditorCompleteStatement<CR>
 
 " help"
 nnoremap <leader>hd :action QuickJavaDoc<CR>
@@ -106,6 +107,9 @@ nnoremap gU :action FindUsages<CR>
 nnoremap gI :action GotoImplementation<CR>
 nmap gi :action ReSharperGotoImplementation<CR>
 
+
+
+nnoremap Y :action copy-to-clipboard<CR>
 
 
 

@@ -54,7 +54,7 @@
 
 (defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
-(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?m ?b))
+(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
 ;; Use no-littering to automatically set common paths to the new user-emacs-directory
 (use-package no-littering)
@@ -598,7 +598,7 @@
   (defun bash-completion-eshell-capf ()
     (bash-completion-capf-1 (lambda () (save-excursion (eshell-bol) (point)))))
   (defun bash-completion-capf ()
-    (bash-completion-capf-1 (lambda () (point-at-bol))))
+    (bash-completion-capf-1 #'point-at-bol))
   (add-hook
    'sh-mode-hook
    (defun mm/add-bash-completion ()
@@ -643,12 +643,17 @@
 
 (require 'keybinds)
 
+(use-package server
+  :ensure nil
+  :defer 1
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 ;; elp
 ;; memory-use-counts
 ;; instrument package
 ;; epl results
-
-;; todo org
 
 ;; figure out where the code is for guix packages
 
