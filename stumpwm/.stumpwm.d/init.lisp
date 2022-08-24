@@ -196,14 +196,14 @@ windows of the same class as the current window."
 
 (defmacro exec-el (expression)
   "execute emacs lisp do not collect it's output"
-  `(eval-string-as-el (write-to-string ',expression)))
+  `(eval-string-as-el (princ ',expression)))
 
 (defun eval-string-as-el (elisp &optional collect-output-p)
   "evaluate a string as emacs lisp"
-  (let ((result (run-shell-command
-                 (format nil "timeout --signal=9 1m emacsclient --eval \"~a\""
-                         elisp)
-                 collect-output-p)))
+  (let ((result
+	  (run-shell-command
+           (string-downcase (format nil "timeout --signal=9 1m emacsclient --eval '~a'" elisp))
+           collect-output-p)))
     (handler-case (read-from-string result)
       ;; Pass back a string when we can't read from the string
       (error () result))))
@@ -211,7 +211,7 @@ windows of the same class as the current window."
 (defun eval-el-1 (form)
   "Eval FORM in emacs (via emacsclient) and return it's output.
 FORM should be a quoted list."
-  (eval-string-as-el (write-to-string form :case :downcase) t))
+  (eval-string-as-el (princ form) t))
 
 (defmacro eval-el (expression)
   "evaluate emacs lisp and collect it's output"
@@ -241,7 +241,6 @@ FORM should be a quoted list."
           (mv))
         (mv))))
 
-
 (defcommand my-mv (dir) ((:direction "Enter direction: "))
   (when dir (better-move-focus dir)))
 
@@ -250,15 +249,30 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-k") "my-mv up")
 (define-key *top-map* (kbd "s-l") "my-mv right")
 
+(defun make-an-emacs ()
+  (deactivate-fullscreen (current-window))
+  (vsplit)
+  (move-focus :down)
+  (eval-el (make-frame)))
 
+(defcommand make-emacs-or-shell () ()
+  (if (emacsp (current-window))
+      (exec-el (shell))
+      (exec-el (make-frame))))
 
+(defcommand mm-consult-windows () ()
+  (unless (emacsp (current-window))
+    (make-an-emacs))
+  (exec-el (mm/consult-stumpwm-windows)))
+
+(exec-el (mm/consult-stumpwm-windows))
+
+(define-key *top-map* (kbd "s-.") "mm-consult-windows")
+(define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
 ;; windowlist then go thought the same class wouuld be nice
 ;; also window list fitler same class
-
-
 ;; window hook or sth to put qutebro
-
 ;; I don't want to hit tab if there is only 1 thing in the
 ;; selection list
 
@@ -269,12 +283,14 @@ FORM should be a quoted list."
   (declare (ignore _)))
 
 (comment
+ (exec-el (message "hi2"))
 
  (create-group-from-curr-class-windows)
+
  (group-indicate-focus (current-group))
  (group-sync-all-heads (current-group))
 
- (message "foo                                       fofoo")
+
  (setf *urgent-window-hook* nil)
  (load-module "screenshot")
  (screen-windows (current-screen))
@@ -288,14 +304,14 @@ FORM should be a quoted list."
    (when *honor-window-moves*
      (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
      (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
-            (pos  (if (eq relative-to :parent)
-		      (list
-		       (+ (xlib:drawable-x (window-parent window)) x)
-		       (+ (xlib:drawable-y (window-parent window)) y))
-		      (list (first pointer-pos) (second pointer-pos))))
-            (frame (apply #'find-frame group pos)))
+	    (pos (if (eq relative-to :parent)
+		     (list
+		      (+ (xlib:drawable-x (window-parent window)) x)
+		      (+ (xlib:drawable-y (window-parent window)) y))
+		     (list (first pointer-pos) (second pointer-pos))))
+	    (frame (apply #'find-frame group pos)))
        (when frame
-         (pull-window window frame)))))
+	 (pull-window window frame)))))
 
  (load-module "wifi")
  (setf
@@ -314,4 +330,7 @@ FORM should be a quoted list."
     `(:id ,(window-id w) :title ,(window-title w)))
   (group-windows (current-group)))
 
- (pull-window (window-by-id 23073195)))
+ (pull-window (window-by-id 23073195))
+
+
+ )
