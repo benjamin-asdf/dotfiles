@@ -1,5 +1,3 @@
-(require 'patch-consult)
-
 (setq-default completion-in-region-function #'consult-completion-in-region)
 
 (general-def
