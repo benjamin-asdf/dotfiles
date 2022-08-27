@@ -2,6 +2,11 @@
 
 (set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
 
+(defvar mm/avy-keys "adfjklophgb")
+(setf *frame-number-map* mm/avy-keys
+      *group-number-map* mm/avy-keys
+      *window-number-map* mm/avy-keys)
+
 (defcommand swank () ()
   "Turn on the swank server the first time.
 Load a file that re-defines swank and then calls it."
