@@ -116,4 +116,10 @@
 	   minibuffer-setup-hook (list #'mm/consult-completing-read-add-one-space))))
      (apply f args))))
 
+(advice-add
+ #'consult-yank-pop
+ :before
+ (defun mm/remove-whitespace-only-from-kill-ring ()
+   (setf kill-ring (cl-remove-if #'s-blank-str? kill-ring))))
+
 (provide 'init-consult)
