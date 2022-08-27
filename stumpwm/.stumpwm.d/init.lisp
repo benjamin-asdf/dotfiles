@@ -90,7 +90,29 @@ Load a file that re-defines swank and then calls it."
      (defcommand ,name () ()
        (run-shell-command ,script)))))
 
-;; (defun def-shell-command-cmd (s))
+;; (defcommand
+;;      )
+
+(defcommand (swap-this-window tile-group) () ()
+  (let* ((f1
+	   (frame-window
+	    (current-frame
+	     (current-window)))
+
+	   (progn (message "Select Window One")
+                  (choose-frame-by-number (current-group))))
+
+
+         (f2 (progn (message "Select Window Two")
+                    (choose-frame-by-number (current-group)))))
+    (when (and f1 f2)
+      (let ((w1 (frame-window f1))
+            (w2 (frame-window f2)))
+        (if (and w1 w2)
+            (exchange-windows w1 w2)
+            (throw 'error (format nil "Frame ~A has no window"
+                                  (or (and w1 f2) (and w2 f1)))))))))
+
 
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
@@ -165,6 +187,17 @@ Load a file that re-defines swank and then calls it."
   (setf *deny-map-request* (append *deny-map-request* lst))
   (setf *deny-raise-request* (append *deny-raise-request* lst)))
 
+(define-interactive-keymap
+    mm/group-mode ()
+  ((kbd "j") "gnext")
+  ((kbd "k") "gprev")
+  ((kbd "n") "gnew")
+  ((kbd "K") "gprev-with-window")
+  ((kbd "J") "gnext-with-window")
+  ((kbd ",") "grouplist")
+  ((kbd "a") "gselect"))
+
+(define-key *groups-map* (kbd "s-g") "mm/group-mode")
 
 (defun class-windows (class group)
   (remove-if-not
