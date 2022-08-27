@@ -119,7 +119,7 @@
 (advice-add
  #'consult-yank-pop
  :before
- (defun mm/remove-whitespace-only-from-kill-ring ()
+ (defun mm/remove-whitespace-only-from-kill-ring (&rest args)
    (setf kill-ring (cl-remove-if #'s-blank-str? kill-ring))))
 
 (provide 'init-consult)
