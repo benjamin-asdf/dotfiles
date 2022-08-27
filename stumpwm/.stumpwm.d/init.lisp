@@ -14,15 +14,21 @@ Load a file that re-defines swank and then calls it."
   (load
    "~/.stumpwm.d/swank.lisp")
   (echo-string
-  (current-screen)
+   (current-screen)
    "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 
 (define-key *root-map* (kbd "C-s") "swank")
 
-(bind "k" "move-focus up")
-(bind "j" "move-focus down")
-(bind "l" "move-focus right")
-(bind "h" "move-focus left")
+(bind "k" "move-window up")
+(bind "j" "move-window down")
+(bind "l" "move-window right")
+(bind "h" "move-window left")
+
+(bind "M-k" "exchange-direction up")
+(bind "M-j" "exchange-direction down")
+(bind "M-l" "exchange-direction right")
+(bind "M-h" "exchange-direction left")
+
 (bind "d" "kill")
 (bind "C-h" '*help-map*)
 
@@ -201,7 +207,7 @@ windows of the same class as the current window."
 
 (defmacro exec-el (expression)
   "execute emacs lisp do not collect it's output"
-  `(eval-string-as-el (princ ',expression)))
+  `(eval-string-as-el (format nil "~a" ',expression)))
 
 (defun eval-string-as-el (elisp &optional collect-output-p)
   "evaluate a string as emacs lisp"
@@ -216,7 +222,7 @@ windows of the same class as the current window."
 (defun eval-el-1 (form)
   "Eval FORM in emacs (via emacsclient) and return it's output.
 FORM should be a quoted list."
-  (eval-string-as-el (princ form) t))
+  (eval-string-as-el (format nil "~a" form) t))
 
 (defmacro eval-el (expression)
   "evaluate emacs lisp and collect it's output"
@@ -225,7 +231,18 @@ FORM should be a quoted list."
 (comment
  (macroexpand '(eval-el (+ 1 3 2)))
  (eval-el (+ 1 3 2))
- (eval-el-1 '(+ 1 3 2)))
+ (eval-string-as-el "(current-buffer)" t)
+ (eval-string-as-el "(message \"hi\")" t)
+ (run-shell-command (string-downcase (format nil "timeout --signal=9 1m emacsclient --eval '~a'" "(+ 1)")) t)
+ (eval-el-1 '(+ 1 3 2))
+ (eval-el-1 '(message "hi"))
+ (eval-el-1 '(current-buffer))
+
+ (eval-el-1 '(message "hi"))
+
+ (format nil "~a" '(message "hi"))
+
+ )
 
 (declaim (ftype
           (function (string) (values string &optional))
@@ -258,7 +275,7 @@ FORM should be a quoted list."
   (deactivate-fullscreen (current-window))
   (vsplit)
   (move-focus :down)
-  (eval-el (make-frame)))
+  (exec-el (make-frame)))
 
 (defcommand make-emacs-or-shell () ()
   (if (emacsp (current-window))
@@ -269,8 +286,6 @@ FORM should be a quoted list."
   (unless (emacsp (current-window))
     (make-an-emacs))
   (exec-el (mm/consult-stumpwm-windows)))
-
-(exec-el (mm/consult-stumpwm-windows))
 
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
@@ -288,13 +303,14 @@ FORM should be a quoted list."
   (declare (ignore _)))
 
 (comment
+
  (exec-el (message "hi2"))
+ (eval-el (current-bufferr))
 
  (create-group-from-curr-class-windows)
 
  (group-indicate-focus (current-group))
  (group-sync-all-heads (current-group))
-
 
  (setf *urgent-window-hook* nil)
  (load-module "screenshot")
