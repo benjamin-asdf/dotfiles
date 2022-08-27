@@ -67,6 +67,12 @@
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
+(use-package async
+  :ensure t
+  :defer t
+  :init
+  (dired-async-mode 1))
+
 (use-package undo-tree
   :ensure t
   :config
@@ -257,6 +263,13 @@
    '(orderless)
    completion-category-defaults nil
    completion-category-overrides '((file (styles partial-completion)))))
+
+
+;; org is early
+;; see note 20220826T155813--org-file-name-concat__code_issue.org
+(use-package org
+  :straight (:host github :repo "emacs-straight/org-mode")
+  :config (require 'init-org))
 
 (use-package savehist
   :after vertico
@@ -459,7 +472,8 @@
 (use-package avy
   :config
   (setf avy-timeout-seconds 0.18
-	avy-keys mememacs/avy-keys)
+	avy-keys mememacs/avy-keys
+	avy-style 'words)
   (add-to-list 'avy-ignored-modes 'cider-repl-mode)
   (mememacs/leader-def
     "jj" #'avy-goto-char-timer
@@ -501,8 +515,21 @@
    "GP" #'guix-pull))
 
 (use-package hippie-exp
+  :bind ([remap dabbrev-expand] . hippie-expand)
+  :commands (hippie-expand)
   :config
-  (general-def "M-/" #'hippie-expand))
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol
+          try-complete-file-name-partially
+          try-complete-file-name
+          try-expand-all-abbrevs
+          try-expand-list
+          try-expand-line)))
+
 
 (use-package flycheck-clj-kondo
   :after cider)
@@ -543,19 +570,8 @@
 	 "u" #'apropos-user-option)
        map))
 
-(with-eval-after-load
-    'sh-script
-  (mememacs/comma-def
-    :keymaps '(sh-mode-map)
-    "1"
-    (defun mememacs/execute-script ()
-      (interactive)
-      (-some->>
-	  (buffer-file-name)
-	(expand-file-name)
-	(shell-command)))))
 
-(use-package org :defer t :config (require 'init-org))
+
 (use-package denote
   :straight (:host github :repo "protesilaos/denote")
   :defer t
@@ -563,10 +579,7 @@
   (mememacs/comma-def "oj"
     (defun mm/denote-load ()
       (interactive)
-      (require 'org)
       (require 'init-denote)
-      (require 'ob-clojure)
-      (require 'ob-shell)
       (mm/find-today-journal))))
 
 (use-package markdown-mode)
@@ -649,6 +662,22 @@
   :config
   (unless (server-running-p)
     (server-start)))
+
+(use-package shell
+  :ensure nil
+  :config
+  (defun mm/with-current-window-buffer (f &rest args)
+    (with-current-buffer
+	(window-buffer (car (window-list)))
+      (funcall f args)))
+  ;; because I invoke from *server* buffer
+  (advice-add #'shell :around #'mm/with-current-window-buffer)
+
+  (setf shell-kill-buffer-on-exit t))
+
+
+
+
 
 ;; elp
 ;; memory-use-counts

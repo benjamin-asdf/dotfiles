@@ -83,7 +83,6 @@ See `eval-last-sexp'."
   ",dq" #'toggle-debug-on-quit
   ",dx" #'mememacs/cancel-debugs)
 
-
 (mememacs/leader-def
   "br" #'revert-buffer)
 
@@ -93,9 +92,7 @@ See `eval-last-sexp'."
   (interactive)
   (run-hooks 'mememacs/escape-functions))
 
-(general-def
-  "S-<escape>"
-  #'mememacs/escape)
+(general-def "S-<escape>" #'mememacs/escape)
 
 (with-eval-after-load 'iedit
   (add-hook
@@ -193,7 +190,6 @@ See `eval-last-sexp'."
       (elisp-enable-lexical-binding))
     buff))
 
-;; todo connect to background bb
 (defun mm/scratch-clj (&optional arg)
   (interactive "P")
   (mm/scratch arg "clj"))
@@ -216,15 +212,14 @@ See `eval-last-sexp'."
 (general-def
   :states '(normal motion)
   :keymaps '(process-menu-mode-map)
-  "b"
-  #'mememacs/process-menu-switch-to-buffer)
+  "b" #'mememacs/process-menu-switch-to-buffer)
 
 (defun mememacs/create-script* (file bang setup)
   (find-file file)
   (insert bang)
   (save-buffer)
   (evil-insert-state)
-  (set-file-modes file #o777)
+  (set-file-modes file #o751)
   (funcall setup))
 
 (defun mememacs/create-script (file)
@@ -283,6 +278,11 @@ See `eval-last-sexp'."
   :states 'normal
   "fy" #'mememacs/copy-file-name-dwim)
 
+(defun mm/force-clear-buff ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
+
 (defhydra hydra-buffer ()
   "buffer"
   ("d" #'kill-current-buffer)
@@ -295,7 +295,8 @@ See `eval-last-sexp'."
 (mememacs/comma-def
   :states '(normal motion)
   "b" #'hydra-buffer/body
-  "w" #'evil-window-map)
+  "w" #'evil-window-map
+  "E" #'mm/force-clear-buff)
 
 (defhydra outline-hydra ()
   ("c" #'counsel-outline :exit t)
@@ -370,16 +371,6 @@ where the file does not exist."
 	      dired-do-rename-regexp))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
-(defun mememacs/kill-shell-command ()
-  (interactive)
-  (kill-new
-   (with-temp-buffer
-     (shell-command
-      (read-shell-command
-       "kill cmd: ")
-      (current-buffer))
-     (buffer-string))))
-
 (general-def
   "C-x k"
   (defun mememacs/kill-minibuff-contents ()
@@ -403,12 +394,7 @@ where the file does not exist."
 	((p
 	  (get-buffer-process
 	   (current-buffer))))
-      (process-send-string p "y\n"))))
-
-(defun mm/force-clear-buff ()
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
+      (process-send-string p "n\n"))))
 
 (defun mm/completing-read-commit-msg ()
   (interactive)
@@ -486,5 +472,26 @@ With negative N, comment out original line and use the absolute value."
     s))
 
 (add-hook 'yank-transform-functions #'mm/trim-string-for-yank-when-inserting-in-quotes)
+
+
+;; thanks https://github.com/NicolasPetton/noccur.el
+(defun noccur-dired (regexp &optional nlines)
+  "Perform `multi-occur' with REGEXP in all dired marked files.
+When called with a prefix argument NLINES, display NLINES lines before and after."
+  (interactive (occur-read-primary-args))
+  (multi-occur (mapcar #'find-file (dired-get-marked-files)) regexp nlines))
+
+;; thanks Gavin
+(defun mm/shell-command-on-file (command)
+  "Execute COMMAND asynchronously on the current file."
+  (interactive (list (read-shell-command
+                      (concat "Async shell command on " (buffer-name) ": "))))
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (async-shell-command (concat command " " filename))))
+
+(general-def "C-M-&" #'mm/shell-command-on-file)
+(mememacs/comma-def "&" #'mm/shell-command-on-file)
 
 (provide 'functions-1)

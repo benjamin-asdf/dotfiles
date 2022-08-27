@@ -51,7 +51,7 @@
   (mm/cmd->lines "fd --hidden --exclude=.git --type=f . --print0"))
 
 (defun mememacs/git-ls-files ()
-  (mm/cmd->lines "git ls-files -z"))
+  (mm/cmd->lines "git ls-files --full-name -z"))
 
 (defun mememacs/fd-find-file ()
   (interactive)
@@ -81,8 +81,9 @@
 	  :enabled ,(lambda ()
 		      (and consult-project-function
 			   recentf-mode))
-	  :items ,(lambda () (mememacs/fd-files))))
-
+	  :items ,(lambda ()
+		    (let ((default-directory (consult--project-root)))
+		      (mapcar #'expand-file-name (mememacs/fd-files))))))
 
 (defvar mm/consult-git-ls-files
   `(:name "Project Files git ls files"
@@ -100,12 +101,14 @@
 	  :enabled ,(lambda ()
 		      (and consult-project-function
 			   recentf-mode))
-	  :items ,(lambda () (mememacs/git-ls-files))))
+	  :items ,(lambda ()
+		    (let ((default-directory (consult--project-root)))
+		      (mememacs/git-ls-files)))))
 
 (setq consult-project-buffer-sources
       (list `(:hidden nil :narrow ?b ,@consult--source-project-buffer)
 	    `(:hidden nil :narrow ?f ,@consult--source-project-recent-file)
-	    `(:hidden nil :narrow ?d ,@mm/consult-fd-project-files)
-	    `(:hidden nil :narrow ?g ,@mm/consult-git-ls-files)))
+	    `(:hidden t :narrow ?d ,@mm/consult-fd-project-files)
+	    `(:hidden t :narrow ?g ,@mm/consult-git-ls-files)))
 
 (provide 'init-project)

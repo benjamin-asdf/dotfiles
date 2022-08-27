@@ -49,7 +49,8 @@
 
 (general-def
   "H-<return>" #'save-buffer
-  "C-M-j" #'consult-buffer)
+  "C-M-j" #'consult-buffer
+  "M-/" #'dabbrev-expand)
 
 (defun mememacs/jump-back ()
   (interactive)
