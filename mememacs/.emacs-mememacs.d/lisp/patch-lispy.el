@@ -169,11 +169,11 @@ backward through lists, which is useful to move into special.
 		    (insert new-atom))
 		  (buffer-string)))
 	    subst)))
+      (insert subst)
       (if
           lispy-delete-at-paren
           (lispy-delete 1)
         (delete-region (point) he-string-end))
-      (insert subst)
       (goto-char newpos)
       (when lispy-delete-at-paren
         (special-lispy-different)
