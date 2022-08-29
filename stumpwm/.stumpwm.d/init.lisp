@@ -90,19 +90,9 @@ Load a file that re-defines swank and then calls it."
      (defcommand ,name () ()
        (run-shell-command ,script)))))
 
-;; (defcommand
-;;      )
-
 (defcommand (swap-this-window tile-group) () ()
   (let* ((f1
-	   (frame-window
-	    (current-frame
-	     (current-window)))
-
-	   (progn (message "Select Window One")
-                  (choose-frame-by-number (current-group))))
-
-
+	   (tile-group-current-frame (current-group)))
          (f2 (progn (message "Select Window Two")
                     (choose-frame-by-number (current-group)))))
     (when (and f1 f2)
@@ -117,6 +107,7 @@ Load a file that re-defines swank and then calls it."
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
+    (stumpwm:define-key m (kbd "w") "swap-this-window")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
     (stumpwm:define-key m (kbd "y")
       (def-just-a-shell-command emacs-kill-xselection "ec-kill-xselection"))
@@ -379,12 +370,14 @@ FORM should be a quoted list."
 
  (mapcar #'window-title (group-windows (current-group)))
 
- (mapcar
-  (lambda (w)
-    `(:id ,(window-id w) :title ,(window-title w)))
-  (group-windows (current-group)))
+ (tile-group-current-frame (current-group))
 
- (pull-window (window-by-id 23073195))
-
-
+ (define-remapped-keys
+     '(("Nyxt"
+        ("M-n"   . "Down")
+        ("M-p"   . "Up"))
+       ("jetbrains-rider"
+        ("M-n"   . "Down")
+        ("M-p"   . "Up"))
+       ))
  )
