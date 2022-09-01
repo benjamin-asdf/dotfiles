@@ -2,5 +2,6 @@
 
 tail -n 5000 -f ~/.config/unity3d/Editor.log | grep -v -e "{\"stat\":" -v -e "^Curl error"  -v -e "TransportCurl\.cpp" -v -e '^[[:space:]]*$' \
 							     -v -e "Unhandled description string" \
+							     -v -e "GTK_IS_CONTAINER (container)" \
 							     -v -e "ChannelMessageUnsequenced" \
 							     -v -e "^GLX Extensions:"

@@ -5,7 +5,6 @@
   '(emacs-lisp-mode-map
     lisp-interaction-mode-map)
   "e" nil
-  "el" #'mememacs/lispy-eval-line
   "ed" #'eval-defun
   "ee" #'mememacs/eval-last-sexp-dwim)
 

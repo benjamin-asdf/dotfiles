@@ -50,7 +50,10 @@
 (general-def
   "H-<return>" #'save-buffer
   "C-M-j" #'consult-buffer
-  "M-/" #'dabbrev-expand)
+  "M-/" #'dabbrev-expand
+  "H-j" #'evil-window-bottom
+  "H-k" #'evil-window-top)
+
 
 (defun mememacs/jump-back ()
   (interactive)

@@ -74,7 +74,6 @@ See `eval-last-sexp'."
 (general-def
   :states '(normal motion)
   "," nil
-  ",e" '(:ignore t)
   ",d" '(:ignore t)
   ",dv" #'debug-on-variable-change
   ",dd" #'debug-on-entry

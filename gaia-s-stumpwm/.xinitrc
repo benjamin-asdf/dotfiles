@@ -9,10 +9,16 @@ export GDK_CORE_DEVICE_EVENTS=1
 # Set default cursor.
 setroot -cursor_name left_ptr
 # The  first  specifies  the  delay before autorepeat starts and the second specfies the repeat rate.
-xset r rate 120 240
+xset r rate 120 250
 
 xautolock -time 4 -locker best-lock.sh &
 setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
+
+# https://askubuntu.com/questions/63681/how-can-i-make-xrandr-customization-permanent
+# I can use lightdm or xorg.confgs
+xrandr --output HDMI-1 --left-of DVI-D-1 --auto
+xrandr --output DP-1 --left-of HDMI-1 --auto
+
 xcape -e 'Control_L=Escape'
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
 flameshot &

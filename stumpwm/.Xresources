@@ -6,6 +6,8 @@ Xft.autohint:  false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
+emacs*useXIM: off
+
 XTerm*faceName:          Fixed
 XTerm*faceSize:          17
 XTerm*reverseVideo:      on

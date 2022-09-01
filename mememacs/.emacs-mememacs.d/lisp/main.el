@@ -181,6 +181,8 @@
 (setq scroll-step 0)
 (setq scroll-error-top-bottom t)
 
+(setq frame-resize-pixelwise t)
+
 ;;  so long
 
 (global-so-long-mode 1)

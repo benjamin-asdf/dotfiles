@@ -102,22 +102,25 @@
 F can be a program name, a file, or a file relative to the project root. "
   (interactive (list
 		(read-shell-command "cmd: ")))
-
-  ;; fix abort the minibuff...
-
-  (pop-to-buffer
-   (find-file-noselect
-   (or
-    (when (file-exists-p f) f)
-    (let ((f (string-trim
-	      (shell-command-to-string
-	       (concat "which " f)))))
-      (when (file-exists-p f) f))
-    (let ((f (expand-file-name f (project-root (project-current)))))
-      (when (file-exists-p f) f))
-    (let ((f (expand-file-name (concat "resources/" f) (project-root (project-current)))))
-      (when (file-exists-p f) f))
-    (user-error "%s is neither a file, nor anything I can follow" f)))))
+  (find-file
+   (or (when (file-exists-p f) f)
+       (let ((f (string-trim
+		 (shell-command-to-string
+		  (concat "which " f)))))
+	 (when (file-exists-p f) f))
+       (let ((f (expand-file-name
+		 f
+		 (project-root
+		  (project-current)))))
+	 (when (file-exists-p f) f))
+       (let ((f (expand-file-name
+		 (concat "resources/" f)
+		 (project-root
+		  (project-current)))))
+	 (when (file-exists-p f) f))
+       (user-error
+	"%s is neither a file, nor anything I can follow"
+	f))))
 
 (general-def
   embark-general-map

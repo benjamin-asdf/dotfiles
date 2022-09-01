@@ -8,7 +8,7 @@ cd ~/repos/emacs || exit 3
 export CC="gcc-10"
 
 sudo ./autogen.sh
-sudo ./configure --with-mailutils --with-native-compilation
+sudo ./configure --with-mailutils --with-native-compilation --with-pgtk
 
 sudo make -j$(nproc)
 sudo make install

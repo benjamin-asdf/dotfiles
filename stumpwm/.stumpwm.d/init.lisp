@@ -1,8 +1,11 @@
 (in-package :stumpwm)
 
-(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
+(defmacro comment (&rest _)
+  (declare (ignore _)))
 
+(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
 (defvar mm/avy-keys "adfjklophgb")
+
 (setf *frame-number-map* mm/avy-keys
       *group-number-map* mm/avy-keys
       *window-number-map* mm/avy-keys)
@@ -18,34 +21,34 @@ Load a file that re-defines swank and then calls it."
    "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 
 (define-key *root-map* (kbd "C-s") "swank")
-
 (bind "k" "move-window up")
 (bind "j" "move-window down")
 (bind "l" "move-window right")
-(bind "h" "move-window left")
 
+(bind "h" "move-window left")
 (bind "M-k" "exchange-direction up")
 (bind "M-j" "exchange-direction down")
 (bind "M-l" "exchange-direction right")
-(bind "M-h" "exchange-direction left")
 
+(bind "M-h" "exchange-direction left")
 (bind "d" "kill")
+
 (bind "C-h" '*help-map*)
 
 (setf  *help-keys* '("?" "H-h"))
-
 (define-key *top-map* (kbd "s-f") "fullscreen")
 (define-key *top-map* (kbd "s-w") "fselect")
 (define-key *top-map* (kbd "s-d") "delete-window")
 (define-key *top-map* (kbd "s-o") "only")
-(define-key *top-map* (kbd "s-e") "emacs")
 
+(define-key *top-map* (kbd "s-e") "emacs")
 (define-key *top-map* (kbd "s-m") "mode-line")
 (define-key *top-map* (kbd "s-i") "pull-from-windowlist")
-(define-key *top-map* (kbd "s-g") '*groups-map*)
 
+(define-key *top-map* (kbd "s-g") '*groups-map*)
 (defcommand flameshot-gui () ()
-  (run-shell-command "flameshot gui"))
+	    (run-shell-command "flameshot gui"))
+
 (define-key *top-map* (kbd "s-p") "flameshot-gui")
 
 (defcommand browser () ()
@@ -53,20 +56,20 @@ Load a file that re-defines swank and then calls it."
 
 (defcommand nyxt () ()
   (run-or-raise "nyxt" '(:class "Nyxt")))
-
 ;; todo make a group?
 (define-key *top-map* (kbd "s-u") "browser")
-(define-key *top-map* (kbd "s-n") "nyxt")
 
+(define-key *top-map* (kbd "s-n") "nyxt")
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
-(define-key *top-map* (kbd "s-s") "slack")
 
+(define-key *top-map* (kbd "s-s") "slack")
 (defcommand pull-emacs () ()
   (run-or-pull "emacs" '(:class "Emacs")))
-(define-key *top-map* (kbd "s-E") "pull-emacs")
 
+(define-key *top-map* (kbd "s-E") "pull-emacs")
 (define-key *top-map* (kbd "s-9")  "lock")
+
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
 
@@ -82,6 +85,7 @@ Load a file that re-defines swank and then calls it."
   (run-shell-command
    "video-selected"))
 
+
 (defmacro def-just-a-shell-command
     (name script)
     "Def a command via `defcommand` and return the command name string."
@@ -90,19 +94,20 @@ Load a file that re-defines swank and then calls it."
      (defcommand ,name () ()
        (run-shell-command ,script)))))
 
+(defvar framelist nil)
+
 (defcommand (swap-this-window tile-group) () ()
   (let* ((f1
 	   (tile-group-current-frame (current-group)))
-         (f2 (progn (message "Select Window Two")
-                    (choose-frame-by-number (current-group)))))
+         (f2
+	   (progn (message "Select Window Two")
+                  (choose-frame-by-number (current-group)))))
     (when (and f1 f2)
       (let ((w1 (frame-window f1))
             (w2 (frame-window f2)))
-        (if (and w1 w2)
-            (exchange-windows w1 w2)
-            (throw 'error (format nil "Frame ~A has no window"
-                                  (or (and w1 f2) (and w2 f1)))))))))
-
+	(when w1 (pull-window w1 f2))
+	(when w2 (pull-window w2 f1))
+	(focus-frame (current-group) f2)))))
 
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
@@ -118,11 +123,11 @@ Load a file that re-defines swank and then calls it."
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
-
 (setf *load-path* nil)
 (init-load-path "~/.stumpwm.d/modules/")
 (load-module "cpu")
 (load-module "mem")
+
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
 (defun rec-modeline (ml)
@@ -138,15 +143,14 @@ Load a file that re-defines swank and then calls it."
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
-
 (load-module "pass")
-(define-key *top-map* (kbd "s-a") "pass-copy")
 
+(define-key *top-map* (kbd "s-a") "pass-copy")
 (defcommand kill-unclutter () ()
   (run-shell-command "pkill unclutter"))
+
 (defcommand start-unclutter () ()
   (run-shell-command "unclutter &"))
-
 (define-interactive-keymap
     normie-mode
     (:on-enter #'kill-unclutter
@@ -161,10 +165,11 @@ Load a file that re-defines swank and then calls it."
   ((kbd "l") "ratrelwarp +30  0")
   ((kbd "d") "ratclick 1")
   ((kbd "c") "ratclick 3"))
-(define-key *top-map* (kbd "s-;") "normie-mode")
 
+(define-key *top-map* (kbd "s-;") "normie-mode")
 ;; seriosly popping windows 10 times and then not fixing the fucking class
 ;; 0 regards for the user, just money money splash screens
+
 (let ((lst
 	'((:class "Unity-editor")
 	  (:title "(Importing)")
@@ -197,6 +202,7 @@ Load a file that re-defines swank and then calls it."
      (equal class (window-class w)))
    (group-windows group)))
 
+
 (defcommand (pull-from-windowlist-curr-class tile-group)
     (&optional (fmt *window-format*)) (:rest)
   "Like `pull-from-windowlist` but only select
@@ -209,7 +215,6 @@ windows of the same class as the current window."
     (when pulled-window
       (pull-window pulled-window))))
 
-
 (defcommand (create-group-from-curr-class-windows tile-group) () ()
   "Create a group and put all current class windows there."
   (let* ((class (window-class (current-window)))
@@ -217,13 +222,13 @@ windows of the same class as the current window."
 	 (group (add-group (current-screen) class)))
     (mapc (lambda (w) (move-window-to-group w group)) windows)
     (switch-to-group group)))
-
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
+
+
 (define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
-
-
 ;; thanks gavin
 ;; https://github.com/Gavinok/stump-conf
+
 (defun emacsp (win)
   "Returns non-nil when WIN is an emacs window."
   (when win
@@ -267,15 +272,15 @@ FORM should be a quoted list."
  (format nil "~a" '(message "hi"))
 
  )
-
 (declaim (ftype
           (function (string) (values string &optional))
           emacs-winmove))
+
 (defun emacs-winmove (direction)
   "executes the emacs function winmove-DIRECTION where DIRECTION is a string"
   (eval-string-as-el (concat "(windmove-" direction ")") t))
-
 ;;; Window focusing
+
 (defun better-move-focus (ogdir)
   "Similar to move-focus but also treats emacs windows as Xorg windows"
   (declare (type (member :up :down :left :right) ogdir))
@@ -289,10 +294,10 @@ FORM should be a quoted list."
 
 (defcommand my-mv (dir) ((:direction "Enter direction: "))
   (when dir (better-move-focus dir)))
-
 (define-key *top-map* (kbd "s-h") "my-mv left")
 (define-key *top-map* (kbd "s-j") "my-mv down")
 (define-key *top-map* (kbd "s-k") "my-mv up")
+
 (define-key *top-map* (kbd "s-l") "my-mv right")
 
 (defun make-an-emacs ()
@@ -310,8 +315,8 @@ FORM should be a quoted list."
   (unless (emacsp (current-window))
     (make-an-emacs))
   (exec-el (mm/consult-stumpwm-windows)))
-
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
+
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
 ;; windowlist then go thought the same class wouuld be nice
@@ -322,9 +327,6 @@ FORM should be a quoted list."
 
 ;; replace flameshot maybe
 ;; no drawing stuff though
-
-(defmacro comment (&rest _)
-  (declare (ignore _)))
 
 (comment
 
@@ -378,6 +380,4 @@ FORM should be a quoted list."
         ("M-p"   . "Up"))
        ("jetbrains-rider"
         ("M-n"   . "Down")
-        ("M-p"   . "Up"))
-       ))
- )
+        ("M-p"   . "Up")))))
