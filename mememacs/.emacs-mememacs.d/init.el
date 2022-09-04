@@ -80,7 +80,8 @@
   (setf undo-tree-auto-save-history nil)
   (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
   (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
-  (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook))
+  (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
+  (general-def undo-tree-map "C-/" nil))
 
 (use-package evil
   :init
@@ -205,7 +206,7 @@
 (require 'main)
 (require 'visual)
 (require 'functions-1)
-;(require 'mememacs-stumpwm)
+
 (setf initial-buffer-choice (mememacs/latest-scratch "el"))
 (require 'init-emacs-lisp)
 
@@ -259,10 +260,11 @@
 (use-package orderless
   :init
   (setq
-   completion-styles
-   '(orderless)
+   completion-styles '(orderless)
    completion-category-defaults nil
-   completion-category-overrides '((file (styles partial-completion)))))
+   completion-category-overrides '((file (styles partial-completion))))
+  ;; (setq completion-styles '(basic))
+  )
 
 
 ;; org is early
@@ -280,12 +282,6 @@
   :straight nil
   :ensure nil
   :config
-  (general-def
-    dired-mode-map
-    :states '(normal emacs)
-    "h" #'dired-up-directory
-    "l" #'dired-find-file
-    "L" #'dired-find-file-other-window)
   (setf dired-listing-switches "-alh"))
 
 (use-package consult
@@ -357,6 +353,15 @@
   (setf mood-line-show-cursor-point t)
   (mood-line-mode))
 
+(use-package macrostep
+  :config
+  (mememacs/comma-def
+    :keymaps
+    '(emacs-lisp-mode-map lisp-interaction-mode-map lisp-mode-map)
+    "m" #'macrostep-expand)
+  (add-hook
+   'mememacs/escape-functions
+   #'macrostep-collapse-all))
 (use-package macrostep
   :config
   (mememacs/comma-def
@@ -480,7 +485,25 @@
     "jw" #'avy-goto-word-1
     "jl" #'avy-goto-line
     "cl" #'avy-copy-line
-    "cr" #'avy-copy-region))
+    "cr" #'avy-copy-region)
+  (defun avy-handler-default (char)
+    "The default handler for a bad CHAR."
+    (let (dispatch)
+      (cond ((setq dispatch (assoc char avy-dispatch-alist))
+             ;; (unless (eq avy-style 'words)
+             ;;   (setq avy-action (cdr dispatch)))
+             (throw 'done 'restart))
+            ((memq char avy-escape-chars)
+             ;; exit silently
+             (throw 'done 'abort))
+            ((eq char ??)
+             (avy-show-dispatch-help)
+             (throw 'done 'restart))
+            ((mouse-event-p char)
+             (signal 'user-error (list "Mouse event not handled" char)))
+            (t
+             (message "No such candidate: %s, hit `C-g' to quit."
+                      (if (characterp char) (string char) char)))))))
 
 (use-package symbol-overlay
   :config
@@ -591,12 +614,14 @@
   ;; `backup-each-save`
   (setf make-backup-files nil))
 
-(use-package vterm
-  :config
-  (mememacs/leader-def "'" #'vterm)
-  (general-def "s-<return>"
-    (defun mm/vterm-ARG () (interactive)
-	   (vterm t))))
+
+
+;; (use-package vterm
+;;   :config
+;;   (mememacs/leader-def "'" #'vterm)
+;;   (general-def "s-<return>"
+;;     (defun mm/vterm-ARG () (interactive)
+;; 	   (vterm t))))
 
 (use-package bash-completion
   :init
@@ -666,18 +691,77 @@
 (use-package shell
   :ensure nil
   :config
+  (defun mm/shell-with-buff-for-dir (args)
+    (let ((buff
+	   (get-buffer-create
+	    (format
+	     "*shell-%s*"
+	     (file-name-base (directory-file-name default-directory))))))
+      `(,buff ,@(cdr args))))
+
+  (advice-add #'shell :filter-args #'mm/shell-with-buff-for-dir)
+
   (defun mm/with-current-window-buffer (f &rest args)
     (with-current-buffer
 	(window-buffer (car (window-list)))
-      (funcall f args)))
+      (apply f args)))
+
   ;; because I invoke from *server* buffer
   (advice-add #'shell :around #'mm/with-current-window-buffer)
 
-  (setf shell-kill-buffer-on-exit t))
+  (setf shell-kill-buffer-on-exit t)
+  (add-hook
+   'shell-mode-hook
+   (defun mm/shell-dont-mess-with-scroll-conservatively ()
+     (setq-local scroll-conservatively 0))))
+
+(use-package iedit
+  :after general
+  :init
+  (setq iedit-toggle-key-default "C-/")
+  :config
+  ;; (mememacs/comma-def "i" #'iedit-mode)
+  ;; workaround for the moment
+  ;; (when (boundp 'undo-tree-map)
+  ;;   (general-def undo-tree-map iedit-toggle-key-default 'iedit-mode))
+  )
 
 
+(use-package emacs
+  :config
+  ;; Unify Marks
+  (setq global-mark-ring-max 256)
+  (setq set-mark-command-repeat-pop 256)
+  (defun push-mark (&optional location nomsg activate)
+    "Set mark at LOCATION (point, by default) and push old mark on mark ring.
+If the last global mark pushed was not in the current buffer,
+also push LOCATION on the global mark ring.
+Display `Mark set' unless the optional second arg NOMSG is non-nil.
 
+Novice Emacs Lisp programmers often try to use the mark for the wrong
+purposes.  See the documentation of `set-mark' for more information.
 
+In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
+    (when (mark t)
+      (let ((old (nth mark-ring-max mark-ring))
+            (history-delete-duplicates nil))
+        (add-to-history 'mark-ring (copy-marker (mark-marker)) mark-ring-max t)
+        (when old
+          (set-marker old nil))))
+    (set-marker (mark-marker) (or location (point)) (current-buffer))
+    (let ((old (nth global-mark-ring-max global-mark-ring))
+          (history-delete-duplicates nil))
+      (add-to-history
+       'global-mark-ring (copy-marker (mark-marker)) global-mark-ring-max t)
+      (when old
+        (set-marker old nil)))
+    (or nomsg executing-kbd-macro (> (minibuffer-depth) 0)
+        (message "Mark set"))
+    (if (or activate (not transient-mark-mode))
+        (set-mark (mark t)))
+    nil)
+
+  (mememacs/leader-def ";" #'consult-global-mark))
 
 ;; elp
 ;; memory-use-counts
@@ -686,4 +770,6 @@
 
 ;; figure out where the code is for guix packages
 
-; pprint
+					; pprint
+
+(require 'mememacs-stumpwm)
