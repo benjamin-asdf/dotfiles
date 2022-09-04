@@ -372,21 +372,45 @@
    'mememacs/escape-functions
    #'macrostep-collapse-all))
 
-(use-package slime
+;; (use-package slime
+;;   :config
+;;   (setq inferior-lisp-program "sbcl"
+;; 	slime-contribs
+;; 	'(slime-fancy slime-macrostep))
+;;   (defun mm/add-slime-filename-cap ()
+;;     (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
+;;   (defun mm/slime-simple-c-a-p ()
+;;     (setf
+;;      completion-at-point-functions
+;;      '(slime-filename-completion
+;;        slime-simple-completion-at-point)))
+;;   :hook
+;;   (prog-mode . mm/add-slime-filename-cap)
+;;   (slime-mode . mm/slime-simple-c-a-p))
+
+(use-package sly
   :config
-  (setq inferior-lisp-program "sbcl"
-	slime-contribs
-	'(slime-fancy slime-macrostep))
-  (defun mm/add-slime-filename-cap ()
-    (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
-  (defun mm/slime-simple-c-a-p ()
-    (setf
-     completion-at-point-functions
-     '(slime-filename-completion
-       slime-simple-completion-at-point)))
-  :hook
-  (prog-mode . mm/add-slime-filename-cap)
-  (slime-mode . mm/slime-simple-c-a-p))
+  (defun mm/sly-complete-at-point ()
+    (when (sly-connected-p)
+      (let  ((beg (sly-symbol-start-pos))
+             (end (sly-symbol-end-pos)))
+	(when-let*
+	    ((completion
+	      (car (sly--completion-request-completions
+		    (buffer-substring beg end)
+		    'slynk-completion:flex-completions))))
+	  (list
+	   beg
+	   end
+	   (completion-table-dynamic
+	    (lambda (_) completion)))))))
+
+  (sly-symbol-completion-mode -1)
+  (remove-hook 'sly-mode-hook 'sly--setup-completion)
+  (add-hook
+   'sly-mode-hook
+   (defun mm/setup-sly-completion ()
+     (add-hook completion-at-point-functions #'mm/sly-complete-at-point nil t))))
 
 (use-package lispy
   :ensure t
