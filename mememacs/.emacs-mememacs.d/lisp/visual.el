@@ -285,8 +285,7 @@
  'lazy-highlight
  nil
  :background mindsape/woodsmoke
- :foreground
- "green"
+ :foreground "lawn green"
  :height 1.1
  :weight 'ultra-bold)
 
@@ -362,5 +361,6 @@
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12")))
 
 (global-visual-line-mode)
+
 
 (provide 'visual)

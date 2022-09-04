@@ -16,4 +16,3 @@ ffmpeg \
 -c:v libx264 -qp 0 -r 30 \
 "$outfile" &
 echo $! > /tmp/recordingpid
-# printf "$outfile"

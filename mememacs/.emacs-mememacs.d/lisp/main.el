@@ -138,15 +138,11 @@
 (setq vc-follow-symlinks t)
 
 ;;; Clipboard and primary selection.
-;; (setq select-enable-clipboard t)
-;; TODO
-;; (setq select-enable-primary t
-;;       save-interprogram-paste-before-kill t)
+(setq select-enable-clipboard t)
 
-;;; Move mouse away.
-;; (mouse-avoidance-mode 'banish)
+(setq ;; select-enable-primary t
+ save-interprogram-paste-before-kill 256)
 
-;;; Sort
 (setq sort-fold-case t)
 
 ;;; Replace not-so-useful comment-dwim binding.
@@ -180,7 +176,6 @@
 (setf scroll-conservatively 0)
 (setq scroll-step 0)
 (setq scroll-error-top-bottom t)
-
 (setq frame-resize-pixelwise t)
 
 ;;  so long
