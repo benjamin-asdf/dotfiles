@@ -1,0 +1,16 @@
+#!/bin/sh
+
+echo "4481 0 1919 1080" > /tmp/slop
+read -r X Y W H < /tmp/slop
+rm /tmp/slop
+
+outfile="$HOME/Pictures/box-$(date '+%y%m%d-%H%M-%S').mp4"
+
+ffmpeg \
+-f x11grab \
+-framerate 60 \
+-video_size "$W"x"$H" \
+-i :0.0+"$X,$Y" \
+-c:v libx264 -qp 0 -r 30 \
+"$outfile" &
+echo $! > /tmp/recordingpid
