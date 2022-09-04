@@ -10,17 +10,7 @@
       *group-number-map* mm/avy-keys
       *window-number-map* mm/avy-keys)
 
-(defcommand swank () ()
-  "Turn on the swank server the first time.
-Load a file that re-defines swank and then calls it."
-  ;; Be careful with the quotes!
-  (load
-   "~/.stumpwm.d/swank.lisp")
-  (echo-string
-   (current-screen)
-   "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 
-(define-key *root-map* (kbd "C-s") "swank")
 (bind "k" "move-window up")
 (bind "j" "move-window down")
 (bind "l" "move-window right")
@@ -319,6 +309,67 @@ FORM should be a quoted list."
 
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
+
+;;; SLY setup
+(ql:quickload :slynk)
+(defvar *slynk-port* slynk::default-server-port)
+(defparameter *stumpwm-slynk-session* nil)
+
+(defcommand start-slynk (&optional (port *slynk-port*)) ()
+  (handler-case
+      (defparameter *stumpwm-slynk-session*
+        (slynk:create-server
+         :dont-close t
+         :port port))
+    (error (c)
+      (format *error-output* "Error starting slynk: ~a~%" c))))
+
+(defcommand restart-slynk () ()
+  "Restart Slynk and reload source.
+This is needed if Sly updates while StumpWM is running"
+  (stop-slynk)
+  (start-slynk))
+
+(defcommand stop-slynk () ()
+  "Restart Slynk and reload source.
+This is needed if Sly updates while StumpWM is running"
+  (slynk:stop-server *slynk-port*))
+
+(defcommand connect-to-sly () ()
+  (unless *stumpwm-slynk-session*
+    (start-slynk))
+  (exec-el (sly-connect "localhost" *slynk-port*))
+  (emacs))
+
+(define-key *root-map* (kbd "C-s") "connect-to-sly")
+
+(define-remapped-keys
+     '(("Nyxt"
+        ("M-n"   . "Down")
+        ("M-p"   . "Up"))
+       ("jetbrains-rider"
+        ("M-n"   . "Down")
+        ("M-p"   . "Up"))))
+
+
+(comment
+ (exec-el (message "hi2"))
+ (eval-el (current-bufferr))
+ (group-indicate-focus (current-group))
+ (group-sync-all-heads (current-group))
+ (setf *debug-level* 0)
+ (redirect-all-output (data-dir-file "output" "log"))
+ (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
+ (list-modules)
+
+ (load-module "wifi")
+ (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %I")
+ (load-module "battery-portable")
+ (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
+ (tile-group-current-frame (current-group))
+ )
+
+
 ;; windowlist then go thought the same class wouuld be nice
 ;; also window list fitler same class
 ;; window hook or sth to put qutebro
@@ -327,57 +378,3 @@ FORM should be a quoted list."
 
 ;; replace flameshot maybe
 ;; no drawing stuff though
-
-(comment
-
- (exec-el (message "hi2"))
- (eval-el (current-bufferr))
-
- (create-group-from-curr-class-windows)
-
- (group-indicate-focus (current-group))
- (group-sync-all-heads (current-group))
-
- (setf *urgent-window-hook* nil)
- (load-module "screenshot")
- (screen-windows (current-screen))
- (setf *deny-raise-request* nil *deny-map-request* nil)
- (setf *debug-level* 0)
- (redirect-all-output (data-dir-file "output" "log"))
- (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
- (list-modules)
- (setf *honor-window-moves* nil)
- (defmethod group-move-request ((group tile-group) (window tile-window) x y relative-to)
-   (when *honor-window-moves*
-     (dformat 3 "Window requested new position ~D,~D relative to ~S~%" x y relative-to)
-     (let* ((pointer-pos (multiple-value-list (xlib:global-pointer-position *display*)))
-	    (pos (if (eq relative-to :parent)
-		     (list
-		      (+ (xlib:drawable-x (window-parent window)) x)
-		      (+ (xlib:drawable-y (window-parent window)) y))
-		     (list (first pointer-pos) (second pointer-pos))))
-	    (frame (apply #'find-frame group pos)))
-       (when frame
-	 (pull-window window frame)))))
-
- (load-module "wifi")
- (setf
-  *screen-mode-line-format*
-  "[^B%n^b] %C | %M  %R %I")
- (load-module "battery-portable")
-
- (setf
-  *screen-mode-line-format*
-  "[^B%n^b] %C | %M  %R %B")
-
- (mapcar #'window-title (group-windows (current-group)))
-
- (tile-group-current-frame (current-group))
-
- (define-remapped-keys
-     '(("Nyxt"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up"))
-       ("jetbrains-rider"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up")))))
