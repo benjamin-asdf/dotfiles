@@ -396,7 +396,8 @@
   (emacs-lisp-mode . lispy-mode)
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
-  (clojure-mode . lispy-mode))
+  (clojure-mode . lispy-mode)
+  (python-mode . lispy-mode))
 
 (use-package lispyville
   :after lispy

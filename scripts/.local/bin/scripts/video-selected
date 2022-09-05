@@ -9,24 +9,32 @@ rm /tmp/slop
 
 outfile="$HOME/Pictures/box-$(date '+%y%m%d-%H%M-%S').mp4"
 
+
+ffmpeg \
+-f x11grab \
+-framerate 24 \
+-video_size "$W"x"$H" \
+-i :0.0+"$X,$Y" \
+-c:v libx264 -crf 25 -preset ultrafast \
+-pix_fmt yuv420p \
+"$outfile" &
+
+echo $! > /tmp/recordingpid
+
+
+
 # https://trac.ffmpeg.org/wiki/Encode/VP9
 # I wanted Constant Quality but did not immediately work
 # they warn that this is not the preferred way to do vp9
 # doesn't matter for the use case of just making vid snipps
-
 # we use vp9 because firefox does not support h.264 + yuv444
 # https://superuser.com/questions/1372702/ffmpeg-yuv420p-pixel-format-missing
-
-
-ffmpeg \
--f x11grab \
--framerate 60 \
--video_size "$W"x"$H" \
--i :0.0+"$X,$Y" \
--c:v libvpx-vp9 \
--vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" \
--vf format=yuv420p \
--b:v 2M \
-"$outfile" &
-
-echo $! > /tmp/recordingpid
+# ffmpeg \
+# -f x11grab \
+# -framerate 60 \
+# -video_size "$W"x"$H" \
+# -i :0.0+"$X,$Y" \
+# -c:v libvpx-vp9 \
+# -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" \
+# -vf format=yuv420p \
+# -b:v 2M \
