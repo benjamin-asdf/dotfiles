@@ -12,10 +12,8 @@
 
 ;; Give some breathing room
 (set-fringe-mode 10)
-(setq
- inhibit-startup-message t)
-
-(setf initial-scratch-message "")
+(setq inhibit-startup-message t
+      initial-scratch-message "")
 
 (defalias 'display-startup-echo-area-message (lambda ()))
 
@@ -56,8 +54,6 @@
 
 ;;; Enable all disabled commands.
 (setq disabled-command-function nil)
-
-;; (which-function-mode)
 
 ;;; Kill whole line including \n.
 (setq kill-whole-line t)

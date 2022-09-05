@@ -67,12 +67,6 @@
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
-(use-package async
-  :ensure t
-  :defer t
-  :init
-  (dired-async-mode 1))
-
 (use-package undo-tree
   :ensure t
   :config
@@ -81,7 +75,7 @@
   (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
   (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
   (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
-  (general-def undo-tree-map "C-/" nil))
+  (general-unbind undo-tree-map "C-/" nil))
 
 (use-package evil
   :init
@@ -345,6 +339,10 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file))
+
 (use-package wgrep)
 
 (use-package mood-line
@@ -362,34 +360,10 @@
   (add-hook
    'mememacs/escape-functions
    #'macrostep-collapse-all))
-(use-package macrostep
-  :config
-  (mememacs/comma-def
-    :keymaps
-    '(emacs-lisp-mode-map lisp-interaction-mode-map lisp-mode-map)
-    "m" #'macrostep-expand)
-  (add-hook
-   'mememacs/escape-functions
-   #'macrostep-collapse-all))
-
-;; (use-package slime
-;;   :config
-;;   (setq inferior-lisp-program "sbcl"
-;; 	slime-contribs
-;; 	'(slime-fancy slime-macrostep))
-;;   (defun mm/add-slime-filename-cap ()
-;;     (add-hook 'completion-at-point-functions #'slime-filename-completion 0 'local))
-;;   (defun mm/slime-simple-c-a-p ()
-;;     (setf
-;;      completion-at-point-functions
-;;      '(slime-filename-completion
-;;        slime-simple-completion-at-point)))
-;;   :hook
-;;   (prog-mode . mm/add-slime-filename-cap)
-;;   (slime-mode . mm/slime-simple-c-a-p))
 
 (use-package sly
   :config
+  (setq inferior-lisp-program "sbcl")
   (defun mm/sly-complete-at-point ()
     (when (sly-connected-p)
       (let  ((beg (sly-symbol-start-pos))
@@ -617,8 +591,6 @@
 	 "u" #'apropos-user-option)
        map))
 
-
-
 (use-package denote
   :straight (:host github :repo "protesilaos/denote")
   :defer t
@@ -637,15 +609,6 @@
  ;; the builtin backups are quite cute compared to
   ;; `backup-each-save`
   (setf make-backup-files nil))
-
-
-
-;; (use-package vterm
-;;   :config
-;;   (mememacs/leader-def "'" #'vterm)
-;;   (general-def "s-<return>"
-;;     (defun mm/vterm-ARG () (interactive)
-;; 	   (vterm t))))
 
 (use-package bash-completion
   :init
@@ -744,11 +707,7 @@
   :init
   (setq iedit-toggle-key-default "C-/")
   :config
-  ;; (mememacs/comma-def "i" #'iedit-mode)
-  ;; workaround for the moment
-  ;; (when (boundp 'undo-tree-map)
-  ;;   (general-def undo-tree-map iedit-toggle-key-default 'iedit-mode))
-  )
+  (mememacs/comma-def "i" #'iedit-mode))
 
 
 (use-package emacs
