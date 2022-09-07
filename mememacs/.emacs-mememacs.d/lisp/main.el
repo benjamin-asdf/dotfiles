@@ -105,24 +105,6 @@
 ;;; Compilation bindings and conveniences.
 (setq compilation-ask-about-save nil)
 (setq compilation-scroll-output 'first-error)
-(with-eval-after-load 'compile
-  ;; Making `compilation-directory' local only works with `recompile'
-  ;; and if `compile' is never used. In such a scenario,
-  ;; `compile-command' is not saved by `recompile' itself which adds a
-  ;; lot of bookkeeping.
-  ;; (make-variable-buffer-local 'compilation-directory)
-  ;; (make-variable-buffer-local 'compile-history)
-  (make-variable-buffer-local 'compile-command))
-;;; Some commands ignore that compilation-mode is a "dumb" terminal and still display colors.
-;;; Thus we render those colors.
-(require 'ansi-color)
-(defun ambrevar/compilation-colorize-buffer ()
-  (when (eq major-mode 'compilation-mode)
-    (ansi-color-apply-on-region compilation-filter-start (point-max))))
-(add-hook 'compilation-filter-hook 'ambrevar/compilation-colorize-buffer)
-(defun ambrevar/compile-last-command ()
-  (interactive)
-  (compile compile-command))
 
 ;;; Comint mode
 (setq comint-prompt-read-only t)
@@ -144,11 +126,9 @@
 ;;; Replace not-so-useful comment-dwim binding.
 (global-set-key (kbd "M-;") 'comment-line)
 
-;;; Replace `kill-buffer' binding by `kill-this-buffer'.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;;; Ediff
-;;; TODO: Ediff does not seem to auto-refine.  Bug?  Compare daemon and no-daemon.
 (setq ediff-window-setup-function 'ediff-setup-windows-plain
       ediff-split-window-function 'split-window-horizontally)
 
@@ -160,9 +140,6 @@
 ;;; Support for Emacs pinentry.
 ;;; Required for eshell/sudo and everything relying on GPG queries.
 (setq epa-pinentry-mode 'loopback) ; This will fail if gpg>=2.1 is not available.
-(when (require 'pinentry nil t)
-  (pinentry-start))
-
 (setq woman-fill-column fill-column)
 
 ;; scrolling etc
@@ -173,8 +150,6 @@
 (setq scroll-step 0)
 (setq scroll-error-top-bottom t)
 (setq frame-resize-pixelwise t)
-
-;;  so long
 
 (global-so-long-mode 1)
 
@@ -193,6 +168,10 @@
 (setf bookmark-set-fringe-mark nil)
 (setf shell-file-name "/bin/bash")
 
+
 (advice-add 'json-pretty-print :before (lambda (&rest _) (read-only-mode -1)))
+
+;; This code literally came to me in a dream basically verbatim:
+(add-hook 'kill-emacs-hook #'save-some-buffers)
 
 (provide 'main)
