@@ -9,7 +9,6 @@ rm /tmp/slop
 
 outfile="$HOME/Pictures/box-$(date '+%y%m%d-%H%M-%S').mp4"
 
-
 ffmpeg \
 -f x11grab \
 -framerate 24 \

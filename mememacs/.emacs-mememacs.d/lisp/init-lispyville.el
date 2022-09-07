@@ -293,6 +293,11 @@ when formatting with lispy."
 	  (defun mm/lipsy-set-clojure-thread-macro ()
 	    (setq-local lispy-thread-last-macro "->>")))
 
+(with-eval-after-load 'python
+  (defun mm/python-shell-or-lispy-proc (&optional _)
+    (lispy--python-proc))
+  (advice-add 'python-shell-get-process-or-error :before-until #'mm/python-shell-or-lispy-proc))
+
 
 (require 'lispy-eval-markers)
 

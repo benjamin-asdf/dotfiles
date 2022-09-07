@@ -58,7 +58,6 @@
 ;;; Kill whole line including \n.
 (setq kill-whole-line t)
 
-
 (setq
  whitespace-style
  '(face empty indentation space-after-tab space-before-tab tab-mark trailing))
@@ -141,6 +140,7 @@
 ;;; Required for eshell/sudo and everything relying on GPG queries.
 (setq epa-pinentry-mode 'loopback) ; This will fail if gpg>=2.1 is not available.
 (setq woman-fill-column fill-column)
+
 
 ;; scrolling etc
 (setq jit-lock-defer-time 0)

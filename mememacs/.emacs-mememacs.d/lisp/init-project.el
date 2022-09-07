@@ -72,7 +72,6 @@
 	  :category file
 	  :face consult-file
 	  :history file-name-history
-	  :state ,#'consult--file-state
 	  :new ,(lambda (file)
 		  (consult--file-action
 		   (expand-file-name
@@ -92,7 +91,6 @@
 	  :category file
 	  :face consult-file
 	  :history file-name-history
-	  :state ,#'consult--file-state
 	  :new ,(lambda (file)
 		  (consult--file-action
 		   (expand-file-name

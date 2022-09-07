@@ -67,6 +67,10 @@
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
+(use-package general
+  :after evil
+  :config (require 'init-general))
+
 (use-package undo-tree
   :ensure t
   :config
@@ -75,7 +79,7 @@
   (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
   (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
   (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
-  (general-unbind undo-tree-map "C-/" nil))
+  (general-unbind undo-tree-map "C-/"))
 
 (use-package evil
   :init
@@ -117,9 +121,7 @@
 
 (use-package hydra)
 
-(use-package general
-  :after evil
-  :config (require 'init-general))
+
 
 ;; todo improve
 (use-package evil-mc
@@ -384,10 +386,14 @@
   (add-hook
    'sly-mode-hook
    (defun mm/setup-sly-completion ()
-     (add-hook completion-at-point-functions #'mm/sly-complete-at-point nil t))))
+     (add-hook 'completion-at-point-functions #'mm/sly-complete-at-point nil t))))
 
 (use-package lispy
   :ensure t
+  :config
+  (defun mm/enable-le-python ()
+    (require 'le-python)
+    (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point))
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
@@ -397,7 +403,8 @@
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
   (clojure-mode . lispy-mode)
-  (python-mode . lispy-mode))
+  (python-mode . lispy-mode)
+  (python-mode . mm/enable-le-python))
 
 (use-package lispyville
   :after lispy
@@ -706,16 +713,23 @@
 (use-package iedit
   :after general
   :init
-  (setq iedit-toggle-key-default "C-/")
+  (setq iedit-toggle-key-default nil)
   :config
+  (setq iedit-toggle-key-default (kbd "C-/"))
+  (let ((key iedit-toggle-key-default)) (define-key global-map key 'iedit-mode)
+       (define-key isearch-mode-map key 'iedit-mode-from-isearch)
+       (define-key esc-map key 'iedit-execute-last-modification)
+       (define-key help-map key 'iedit-mode-toggle-on-function))
   (mememacs/comma-def "i" #'iedit-mode))
 
 
 (use-package emacs
   :config
+  (setq save-abbrevs 'silently)
   ;; Unify Marks
   (setq global-mark-ring-max 256)
   (setq set-mark-command-repeat-pop 256)
+
   (defun push-mark (&optional location nomsg activate)
     "Set mark at LOCATION (point, by default) and push old mark on mark ring.
 If the last global mark pushed was not in the current buffer,
@@ -755,5 +769,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;; figure out where the code is for guix packages
 
 					; pprint
+
 
 (require 'mememacs-stumpwm)
