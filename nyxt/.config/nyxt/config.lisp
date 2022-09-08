@@ -1,11 +1,7 @@
 (in-package #:nyxt-user)
 
-(load "~/.emacs-mememacs.d/straight/repos/slime/swank-loader.lisp")
-(swank-loader:init)
-(swank:create-server
- :port 4006
- :style swank:*communication-style*
- :dont-close t)
+(asdf:load-system :slynk)
+(slynk:create-server :port 4008)
 
 (setf (uiop:getenv "GTK_THEME") "Adwaita:dark")
 
