@@ -5,7 +5,6 @@
 
 (setf (uiop:getenv "GTK_THEME") "Adwaita:dark")
 
-
 ;; https://github.com/aartaka/nx-search-engines/
 ;; # The ~/.local/share/nyxt/extensions/ is the default path Nyxt looks
 ;; # for extensions in. Change to wherever you set your extension path.

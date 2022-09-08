@@ -496,8 +496,7 @@
     "The default handler for a bad CHAR."
     (let (dispatch)
       (cond ((setq dispatch (assoc char avy-dispatch-alist))
-             ;; (unless (eq avy-style 'words)
-             ;;   (setq avy-action (cdr dispatch)))
+             (setq avy-action (cdr dispatch))
              (throw 'done 'restart))
             ((memq char avy-escape-chars)
              ;; exit silently
