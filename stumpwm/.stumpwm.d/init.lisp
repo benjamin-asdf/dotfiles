@@ -338,8 +338,9 @@ This is needed if Sly updates while StumpWM is running"
 (defcommand connect-to-sly () ()
   (unless *stumpwm-slynk-session*
     (start-slynk))
-  (exec-el (sly-connect "localhost" *slynk-port*))
-  (emacs))
+  (exec-el (sly-connect "localhost" *slynk-port*)))
+
+(start-slynk)
 
 (define-key *root-map* (kbd "C-s") "connect-to-sly")
 
