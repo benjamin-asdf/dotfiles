@@ -363,4 +363,32 @@
 (global-visual-line-mode)
 
 
+(with-eval-after-load
+    'ansi-color
+  (set-face-attribute
+   'ansi-color-magenta
+   nil
+   :foreground "magenta")
+  (set-face-attribute
+   'ansi-color-green
+   nil
+   :foreground "chartreuse")
+  (set-face-attribute
+   'ansi-color-bright-green
+   nil
+   :foreground "green yellow")
+  (set-face-attribute
+   'ansi-color-red
+   nil
+   :foreground "red")
+  (setq ansi-color-names-vector
+	["black"
+	 "red"
+	 "chartreuse"
+	 "gold1"
+	 "DodgerBlue1"
+	 "magenta"
+	 "cyan1"
+	 "gray90"]))
+
 (provide 'visual)
