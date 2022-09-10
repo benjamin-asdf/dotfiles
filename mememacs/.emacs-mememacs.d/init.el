@@ -491,6 +491,33 @@
     "jl" #'avy-goto-line
     "cl" #'avy-copy-line
     "cr" #'avy-copy-region)
+  ;; better not start witch chars from
+  ;; avy-dispatch-alist
+  (setq
+   avy-words
+   '("am" "by" "jo" "jl" "jak" "jik"
+     "fo" "fa" "fro" "fam" "if" "is" "it" "my" "ox" "up" "em" "eb" "ef"
+     "ace" "act" "add" "age" "ago" "aim" "air" "ale" "all" "and" "ant" "any"
+     "ape" "apt" "arc" "are" "arm" "art" "ash" "ate" "awe" "axe" "bad" "bag"
+     "ban" "bar" "bat" "bay" "bed" "bee" "beg" "bet" "bid" "big" "bit" "bob"
+     "bot" "bow" "box" "boy" "but" "cab" "can" "cap" "car" "cat" "cog" "cop"
+     "cow" "cry" "cup" "cut" "day" "dew" "did" "die" "dig" "dim" "dip" "dog"
+     "dot" "dry" "dub" "dug" "dye" "ear" "eat" "eel" "egg" "ego" "elf" "eve"
+     "eye" "fan" "far" "fat" "fax" "fee" "few" "fin" "fit" "fix" "flu" "fly"
+     "foe" "fog" "for" "fox" "fry" "fun" "fur" "gag" "gap" "gas" "gel" "gem"
+     "get" "gig" "gin" "gnu" "god" "got" "gum" "gun" "gut" "guy" "gym" "had"
+     "hag" "ham" "has" "hat" "her" "hid" "him" "hip" "his" "hit" "hop" "hot"
+     "how" "hub" "hue" "hug" "hut" "ice" "icy" "imp" "ink" "inn" "ion" "ire"
+     "ivy" "jab" "jam" "jar" "jaw" "jet" "job" "jog" "joy" "key" "kid" "kit"
+     "lag" "lap" "lay" "let" "lid" "lie" "lip" "lit" "lob" "log" "lot" "low"
+     "mad" "man" "map" "mat" "may" "men" "met" "mix" "mob" "mop" "mud" "mug"
+     "nag" "nap" "new" "nil" "nod" "nor" "not" "now" "nun" "oak" "odd" "off"
+     "oil" "old" "one" "orb" "ore" "ork" "our" "out" "owl" "own" "pad" "pan"
+     "par" "pat" "paw" "pay" "pea" "pen" "pet" "pig" "pin" "pit" "pod" "pot"
+     "pry" "pub" "pun" "put" "rag" "ram" "ran" "rat" "raw" "ray" "red" "rib"
+     "rim" "rip" "rob" "rod" "rot" "row" "rub" "rug" "rum" "run" "sad" "sat"
+     "saw" "say" "sea" "see" "sew" "she" "shy" "sin" "sip" "sit" "six" "ski"
+     "sky" "sly" "sob" "son" "soy" "spy" "sum" "sun"  "urn" "use" "van"))
   (defun avy-handler-default (char)
     "The default handler for a bad CHAR."
     (let (dispatch)
