@@ -1,4 +1,20 @@
 * intro
+
+** the best packages
+
+vertico
+consult
+embark
+
+bash-completion
+avy
+
+magit?
+dired?
+
+
+
+
 ** best commands
 
 M-x (space space)
