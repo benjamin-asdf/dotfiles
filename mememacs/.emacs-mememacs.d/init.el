@@ -241,9 +241,8 @@
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
   (require 'init-magit)
-
   (add-hook 'git-commit-mode-hook
-	    (lambda ()
+	    (defun mm/disable-visual-line-mode ()
 	      (visual-line-mode -1)))
   (general-def 'magit-blob-mode-map "n" nil))
 
