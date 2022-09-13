@@ -428,7 +428,7 @@
 (when
     (require
      'string-edit-at-point
-     (expand-file-name "straight/repos/string-edit.el/string-edit.el"
+     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
 		       mememacs/config-dir)
      t)
   (mememacs/local-def
