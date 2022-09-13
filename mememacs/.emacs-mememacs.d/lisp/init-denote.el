@@ -59,8 +59,4 @@
 	 (let ((default-directory denote-directory))
 	   (call-interactively #'consult-project-buffer))))
 
-(mememacs/comma-def
-  org-mode-map
-  "l" #'denote-link)
-
 (provide 'init-denote)
