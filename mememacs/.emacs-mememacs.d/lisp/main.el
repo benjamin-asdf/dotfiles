@@ -11,7 +11,7 @@
 (when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
 ;; Give some breathing room
-(set-fringe-mode 10)
+(set-fringe-mode 8)
 (setq inhibit-startup-message t
       initial-scratch-message "")
 
