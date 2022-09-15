@@ -391,4 +391,12 @@
 	 "cyan1"
 	 "gray90"]))
 
+
+(with-eval-after-load
+    'magit-process
+  (set-face-attribute
+   'magit-process-ok
+   dnil
+   :foreground mindsape/mint-bright))
+
 (provide 'visual)
