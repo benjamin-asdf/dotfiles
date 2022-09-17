@@ -34,6 +34,13 @@ you want 3.1 sdk
 - get unity hub
   pamac build unityhub
 
+- for logging into unityhub, best is to copy the login url into google chrome.
+- if the redirect back from google to unity does not work for you (it
+  should ask you to open with xdg-open, click yes.),
+  consider setting [[https://forum.unity.com/threads/i-want-to-download-an-older-hub-version.1176920/#post-7541185][the mime type like described here]]
+  It probably just works though.
+
+
 ** specific unity version
 - find the version you need
 #+begin_src shell
@@ -48,6 +55,12 @@ you want 3.1 sdk
 #+end_src
 - if unity hub mime type is setup correctly you should be able to
   click (I just didn't bother with it because it's a 1 time click)
+
+- Note: if install the aur package they actually set the mimetype
+  correctly seems like.
+  I have it working with chrome that it opens unityhub correctley when
+  I click the unityhub link.
+
 
 ** git lfs
 
