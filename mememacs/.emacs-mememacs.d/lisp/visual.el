@@ -396,7 +396,7 @@
     'magit-process
   (set-face-attribute
    'magit-process-ok
-   dnil
+   nil
    :foreground mindsape/mint-bright))
 
 (provide 'visual)
