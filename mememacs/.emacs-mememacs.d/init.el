@@ -251,15 +251,7 @@
   :config
   (require 'init-vertico))
 
-(use-package orderless
-  :init
-  (setq
-   completion-styles '(orderless)
-   completion-category-defaults nil
-   completion-category-overrides '((file (styles partial-completion))))
-  ;; (setq completion-styles '(basic))
-  )
-
+(use-package orderless)
 
 ;; org is early
 ;; see note 20220826T155813--org-file-name-concat__code_issue.org
@@ -279,11 +271,10 @@
   (setf dired-listing-switches "-alh"))
 
 (use-package consult
+  :after orderless
   :init (recentf-mode)
   (setq completion-in-region-function #'consult-completion-in-region)
   (general-def :states '(insert) "C-j" #'completion-at-point)
-
-
   :config
   (require 'init-consult))
 
