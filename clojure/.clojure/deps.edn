@@ -138,7 +138,7 @@
 
 
            :ion-dev
-           {:deps {com.datomic/ion-dev {:mvn/version "1.0.304"}}
+           {:deps {com.datomic/ion-dev {:mvn/version "1.0.306"}}
             :main-opts ["-m" "datomic.ion.dev"]}
 
 

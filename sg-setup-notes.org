@@ -74,22 +74,42 @@ you want 3.1 sdk
 
 ** open unity with style (ditch unity hub for the most part)
 
-
 #+begin_src shell
-  sudo ln -s <unity-install-path>/Editor/Unity /usr/bin/unity-editor
+  sudo ln -s <unity-install-path>/Editor/Unity /usr/bin/
 #+end_src
+where unity-install-path usually is ~~/Unity/Hub/~
 
 make a script
 
 #+begin_src shell
   #!/bin/sh
-  unity-editor -forcefree -buildTarget standalone -projectPath <project-path>
+  Unity -projectPath <project-path>
 #+end_src
 
 project-path is the directory with the sln file.
 
 Now you do not need to click in the hub ever again like some normie.
-Also see [[file:unity/.local/bin/unity/unity-open][file:unity/.local/bin/unity/unity-open]]
+
+Here is the latest incarnation of me making it simple: [[file:unity/.local/bin/unity/run-unity::!/bin/sh][run-unity]]
+
+This is meant to be used for example with emacs ~async-shell-command~.
+Say ~run-unity~ in a shell with the current dir to where the sln is placed.
+
+
+** unity-editor-logs
+
+ditch console pro.
+Imagine you want to fuzzy find
+With this [[file:unity/.local/bin/unity/unity-editor-logs::!/bin/sh][script]] I can get the logs as a emacs buffer.
+Example:
+
+#+begin_src elisp
+  (let ((default-directory (expand-file-name "~/idlegame/"))
+	(shell-command-buffer-name-async (format "%s-%s" 'async-shell-command "unity-editor-logs")))
+    (async-shell-command "unity-editor-logs"))
+#+end_src
+
+Fix the paths or it doesn't work.
 
 
 ** unity project symlinks (if you want 2 unities)

@@ -110,6 +110,7 @@
       (def-just-a-shell-command dunst-close-all "dunstctl close-all"))
     (stumpwm:define-key m (kbd "x")
       (def-just-a-shell-command dunst-close-all "kill-unity"))
+    (stumpwm:define-key m (kbd "n") "normie-mode")
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
@@ -156,13 +157,12 @@
   ((kbd "d") "ratclick 1")
   ((kbd "c") "ratclick 3"))
 
-(define-key *top-map* (kbd "s-;") "normie-mode")
 ;; seriosly popping windows 10 times and then not fixing the fucking class
 ;; 0 regards for the user, just money money splash screens
-
 (let ((lst
 	'((:class "Unity-editor")
 	  (:title "(Importing)")
+	  (:title "Unity")
 	  (:title "Importing")
 	  (:title "Hold on...")
 	  (:title "Importing (iteration 2)")
@@ -368,7 +368,7 @@ This is needed if Sly updates while StumpWM is running"
  (load-module "battery-portable")
  (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
  (tile-group-current-frame (current-group))
- )
+ (group-windows (current-group)))
 
 
 ;; windowlist then go thought the same class wouuld be nice

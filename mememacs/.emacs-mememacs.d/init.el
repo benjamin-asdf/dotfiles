@@ -1,8 +1,8 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
 ;;; see COPYING in the root of this repo
-
-;;; -*- lexical-binding: t; -*-
 
 ;;; Speed up init.
 ;;; Temporarily reduce garbage collection during startup. Inspect `gcs-done'.
@@ -243,8 +243,7 @@
   (require 'init-magit)
   (add-hook 'git-commit-mode-hook
 	    (defun mm/disable-visual-line-mode ()
-	      (visual-line-mode -1)))
-  (general-def 'magit-blob-mode-map "n" nil))
+	      (visual-line-mode -1))))
 
 (use-package vertico
   :init
@@ -784,7 +783,31 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
         (set-mark (mark t)))
     nil)
 
-  (mememacs/leader-def ";" #'consult-global-mark))
+  (mememacs/leader-def ";" #'consult-global-mark)
+
+
+  (defun mm/make-unique-output-buffer-for-async-shell-command (args)
+    (pcase
+	args
+      (`(,command nil nil)
+       `(,command
+	 ,(generate-new-buffer
+	   (format
+	    "*async-shell-command-%s*"
+	    (string-trim
+	     (substring command 0 (min (length command) 10)))))
+	 nil))
+      (_ args)))
+
+
+  (advice-add 'async-shell-command :filter-args #'mm/make-unique-output-buffer-for-async-shell-command)
+
+  (add-hook
+   'comint-mode-hook
+   (defun mm/do-hack-dir-locals (&rest _)
+     (hack-dir-local-variables-non-file-buffer)))
+
+  )
 
 ;; elp
 ;; memory-use-counts

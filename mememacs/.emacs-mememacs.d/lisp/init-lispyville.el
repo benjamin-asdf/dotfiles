@@ -35,7 +35,11 @@
   (kbd "M-{") #'lispy-wrap-braces
   (kbd "M-[") #'lispy-wrap-brackets
 
-  (kbd "M-l") #'lispyville-next-opening
+  (kbd "M-j") #'lispyville-next-opening
+  (kbd "M-l") #'lispyville-next-closing
+  (kbd "M-f") #'lispy-split
+
+
   (kbd "M-K") #'lispy-move-left
   (kbd "M-J") #'lispy-move-right
   (kbd "<M-return>") #'mememacs/lispy-insert
@@ -98,7 +102,7 @@
 (lispyville--define-key '(motion normal visual)
   (kbd "^") #'lispy-left
   (kbd "M-h") (lispyville-wrap-command lispyville-previous-opening special)
-  (kbd "M-l") (lispyville-wrap-command lispyville-next-opening special)
+  (kbd "M-l") (lispyville-wrap-command lispyville-next-closing special)
   (kbd "M-j") (lispyville-wrap-command lispy-down special)
   (kbd "M-k") (lispyville-wrap-command lispy-up special)
 
@@ -234,8 +238,7 @@
   "," #'lispy-kill-at-point
   "g" (lispyville-wrap-command lispy-beginning-of-defun special)
   "G" (lispyville-wrap-command lispyville-end-of-defun special)
-  "f" #'mm/lispy-goto-toplevel-form
-  )
+  "f" #'mm/lispy-goto-toplevel-form)
 
 (mememacs/comma-def
   :keymaps '(lispy-mode-map)

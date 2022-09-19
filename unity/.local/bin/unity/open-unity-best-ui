@@ -3,4 +3,4 @@
 # unity_args="-forcefree -CacheServerIPAddress 192.168.2.113:80 -buildTarget standalone -projectPath $2"
 unity_args="-forcefree -projectPath /home/benj/idlegame/BestUI"
 
-konsole -p tabtitle="best-ui" -e bash -c "unity-editor $unity_args" &
+konsole -p tabtitle="best-ui" -e bash -c "Unity $unity_args" &
