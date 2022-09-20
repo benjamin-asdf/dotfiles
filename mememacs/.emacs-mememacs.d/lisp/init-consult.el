@@ -125,16 +125,12 @@
 
 
 ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
-(defun orderless-regexp-suffix (component)
-  (orderless-regexp (format "%s$" component)))
-
 (defvar +orderless-dispatch-alist
   '((?% . char-fold-to-regexp)
     (?! . orderless-without-literal)
     (?` . orderless-initialism)
     (?= . orderless-literal)
-    (?~ . orderless-flex)
-    (?. . orderless-regexp-suffix)))
+    (?~ . orderless-flex)))
 
 (defun +orderless--suffix-regexp ()
   (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
