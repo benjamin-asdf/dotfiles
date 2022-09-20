@@ -211,6 +211,4 @@
       orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
       orderless-style-dispatchers '(+orderless-dispatch))
 
-(setq orderless-style-dispatchers '(without-if-bang suffix-when-dot-at-end))
-
 (provide 'init-consult)
