@@ -147,6 +147,8 @@ See `eval-last-sexp'."
 
 (defvar mememacs/scratch-dir (expand-file-name "~/scratch"))
 (defun mememacs/latest-scratch (suffix)
+  (unless (file-exists-p mememacs/scratch-dir)
+    (make-directory mememacs/scratch-dir))
   (when-let
       ((f
 	(car
