@@ -19,6 +19,7 @@
 (mememacs/leader-def
   "p"
   project-prefix-map
+  "pl" #'recompile
   "pP" (defun mm/project-switch-project-find-file ()
 	 (interactive)
 	 (let ((mm/project-command #'consult-project-buffer))

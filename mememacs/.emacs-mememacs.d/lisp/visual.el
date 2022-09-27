@@ -53,10 +53,6 @@
 (defconst mindsape/summer-green "#a0b8a9")
 (defconst mindsape/cursor-default        "NavajoWhite")
 
-;; (ignore-errors
-;;   (set-frame-font "Iosevka Fixed SS14-15"))
-
-;; (set-face-foreground 'default "#d1abac")
 (set-face-background 'default mindsape/woodsmoke)
 (set-face-foreground 'default mindsape/hint-of-red)
 
@@ -398,5 +394,20 @@
    'magit-process-ok
    nil
    :foreground mindsape/mint-bright))
+
+(with-eval-after-load
+    'lsp-mode
+  (set-face-attribute
+   'lsp-face-highlight-read
+   nil
+   :inherit nil
+   :underline "white"
+   :bold t)
+  (set-face-attribute
+   'lsp-face-highlight-textual
+   nil
+   :inherit nil
+   :underline nil
+   :bold t))
 
 (provide 'visual)

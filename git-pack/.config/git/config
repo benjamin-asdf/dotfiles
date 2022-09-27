@@ -28,3 +28,5 @@
 	log = false
 [core]
 	pager = cat
+[safe]
+	directory = /opt/flutter

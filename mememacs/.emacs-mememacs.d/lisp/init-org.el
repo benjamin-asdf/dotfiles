@@ -34,6 +34,12 @@
 (mememacs/comma-def
   "ol" #'org-store-link)
 
+(advice-add
+ #'org-babel-execute-src-block-maybe
+ :before
+ (lambda (&rest _)
+   (require 'ob-clojure)))
+
 (with-eval-after-load 'ob-clojure
   (setf org-babel-clojure-backend 'cider
 	org-confirm-babel-evaluate nil))

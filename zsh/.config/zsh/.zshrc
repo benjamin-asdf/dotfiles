@@ -80,6 +80,9 @@ _bb_tasks() {
 }
 compdef _bb_tasks bb
 
+function _bbin() { _arguments "1: :($(bbin commands))" }
+compdef _bbin bbin
+
 eval `keychain -q --eval id_rsa`
 
 # set the window title to last command

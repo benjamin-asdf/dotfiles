@@ -182,12 +182,17 @@
     "+" #'backtrace-multi-line
     "-" #'backtrace-single-line))
 
+;; I am starting to experience this as bloat
 (use-package evil-collection
   :after evil
   :ensure t
   :config
-  (setf evil-collection-mode-list
-	(remove 'lispy evil-collection-mode-list))
+  (setf
+   evil-collection-want-find-usages-bindings nil
+   evil-collection-mode-list
+   (remove
+    'go-mode
+    (remove 'lispy evil-collection-mode-list)))
   (evil-collection-init)
   (general-def
     :states '(normal visual emacs)
@@ -439,13 +444,6 @@
   (require 'init-cider)
   (require 'patch-cider-orderless))
 
-(use-package re-jump
-  :straight (:host github :repo "benjamin-asdf/re-jump.el")
-  :config
-  (mememacs/local-def
-    :keymaps mm/cider-mode-maps
-    "j" #'re-frame-jump-to-reg))
-
 (use-package flycheck
   :config
   (require 'init-flycheck))
@@ -626,13 +624,6 @@
 
 (use-package markdown-mode)
 
-(use-package backup-each-save
-  :hook after-save
-  :config
- ;; the builtin backups are quite cute compared to
-  ;; `backup-each-save`
-  (setf make-backup-files nil))
-
 (use-package bash-completion
   :init
   (autoload 'bash-completion-dynamic-complete
@@ -640,6 +631,7 @@
     "BASH completion hook")
   (add-hook 'shell-dynamic-complete-functions
             #'bash-completion-dynamic-complete)
+
   :config
   (defun bash-completion-capf-1 (bol)
     (bash-completion-dynamic-complete-nocomint (funcall bol) (point) t))
@@ -651,6 +643,13 @@
    'sh-mode-hook
    (defun mm/add-bash-completion ()
      (add-hook 'completion-at-point-functions #'bash-completion-capf nil t))))
+
+(use-package backup-each-save
+  :config
+  (add-hook 'after-save-hook #'backup-each-save)
+   ;; the builtin backups are quite cute compared to
+   ;; `backup-each-save`
+  (setf make-backup-files nil))
 
 (use-package mu4e
   :ensure nil
@@ -738,6 +737,19 @@
   (mememacs/comma-def "i" #'iedit-mode))
 
 
+(use-package elfeed
+  :defer t
+  :config
+  (setq
+   elfeed-feeds
+   '("http://nullprogram.com/feed/"
+     "https://planet.emacslife.com/atom.xml"
+     "https://blog.michielborkent.nl/atom.xml"
+     "https://writepermission.com/rss.xml"
+     "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
+     "https://benjamin-asdf.github.io/faster-than-light-memes/atom.xml")))
+
+
 (use-package emacs
   :config
   (setq save-abbrevs 'silently)
@@ -798,7 +810,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
    (defun mm/do-hack-dir-locals (&rest _)
      (hack-dir-local-variables-non-file-buffer)))
 
-  )
+  (advice-add
+   'compile
+   :filter-args
+   (defun mm/always-use-comint-for-compile (args)
+     `(,(car args) t))))
 
 ;; elp
 ;; memory-use-counts

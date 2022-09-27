@@ -164,14 +164,16 @@ Meant to be added to `embark-identifier-map`"
 
 (add-to-list 'embark-keymap-alist '(consult-grep mm/embark-consult-grep-map))
 
-
-(defun mm/jump-vterm (d)
-  (interactive "D")
-  (let ((default-directory d))
-    (vterm 'new)))
-
-(general-def embark-file-map "'" #'mm/jump-vterm)
-
 (general-def embark-identifier-map "m" #'lispyville-wrap-lispy-mark-symbol-special)
+
+(defun mm/kill-file-name-relative-to-project (file)
+  (interactive "ffile: ")
+  (kill-new
+   (file-relative-name
+    file
+    (project-root
+     (project-current)))))
+
+(general-def embark-file-map "r" #'mm/kill-file-name-relative-to-project)
 
 (provide 'init-embark)

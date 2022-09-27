@@ -1,3 +1,6 @@
 #!/bin/sh
 
-ffmpeg -i "$1" -vf "fps=10,scale=500:-1:flags=lanczos" -c:v pam -f image2pipe - | convert -delay 10 - -loop 0 -layers optimize output.gif
+
+rm palette.png
+ffmpeg -i "$1" -filter_complex "[0:v] palettegen" palette.png
+ffmpeg -i "$1"  -i palette.png -filter_complex "[0:v] fps=10,scale=750:-1 [new];[new][1:v] paletteuse" output.gif

@@ -26,7 +26,7 @@
 
 (mememacs/local-def
   :keymaps
-  '(sh-mode-map sql-mode-map)
+  '(prog-mode-map)
   "e" flycheck-command-map)
 
 (provide 'init-flycheck)

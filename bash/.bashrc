@@ -4,6 +4,12 @@
 
 [[ $- != *i* ]] && return
 
+__prompt_command() {
+    PS1="[$?] \$ "
+}
+
+PROMPT_COMMAND=__prompt_command
+
 alias more=less
 
 xhost +local:root > /dev/null 2>&1
@@ -52,13 +58,15 @@ PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
 
-# babashka tasks completer
+
+alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
+
 
 _bb_complete() {
     BB_TASKS=$(bb tasks|bb -io '(->> *input* (drop 2) (map #(-> % (str/split #" ") first)))')
     BB_HELP=$(bb help|bb -io '(->> *input* (map #(->> % (re-find #"^  ([-a-z]+)") second)) (filter some?))')
     COMPREPLY=($(compgen -W "$BB_TASKS $BB_HELP" -- "${COMP_WORDS[$COMP_CWORD]}"))
 }
-complete -f -F _bb_complete bb # autocomplete filenames as well
 
-alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
+complete -f -F _bb_complete bb
+complete -W "$(bbin commands)" bbin

@@ -239,6 +239,12 @@ specific project."
 
 
 
+
+(advice-add
+ #'cider-eldoc :before-while
+ (defun mm/not-when-cider-debug-active (&rest _)
+   (not cider--debug-mode)))
+
 ;; I think this functionality is ultra silly
 ;; as if I run out of buffers to create
 (defun mm/cleanup-cider-repls-and-do-not-reuse (&rest _)

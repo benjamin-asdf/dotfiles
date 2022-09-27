@@ -70,13 +70,14 @@
 (general-def
   :states '(normal visual motion)
   "C-i" #'evil-jump-forward
-  "C-o" #'mememacs/jump-back
-  "gr" #'revert-buffer)
+  "C-o" #'mememacs/jump-back)
+
+(bind-key "gr" #'revert-buffer 'evil-normal-state-map)
 
 (global-set-key
-  (kbd
-   "s-<backspace>")
-  #'evil-delete-whole-line)
+ (kbd
+  "s-<backspace>")
+ #'evil-delete-whole-line)
 
 (mememacs/comma-def
   "n" '(:ignore t)
