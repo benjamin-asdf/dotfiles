@@ -182,23 +182,13 @@
    'evil-mc-mode-hook
    #'mm/add-lispy-to-incompatible-minor-modes))
 
-(if (require 'slime nil 'noerror)
-    ;; REVIEW: Fix SLIME REPL issue with "goto".
-    ;; See https://github.com/abo-abo/lispy/issues/182.
-    ;; Remove once Guix package is updated.
-    (progn
-      (add-to-list 'lispy-goto-symbol-alist
-                   '(slime-repl-mode lispy-goto-symbol-lisp le-lisp))
-      (add-to-list 'lispy-goto-symbol-alist
-                   '(slime-mrepl-mode lispy-goto-symbol-lisp le-lisp)))
-  (progn
-    (add-to-list 'lispy-goto-symbol-alist
-                 '(sly-mrepl-mode lispy-goto-symbol-lisp le-lisp))
-    (setq lispy-use-sly t)))
+(progn
+  (add-to-list 'lispy-goto-symbol-alist
+               '(sly-mrepl-mode lispy-goto-symbol-lisp le-lisp))
+  (setq lispy-use-sly t))
 
 (set-face-foreground 'lispy-face-hint "#FF00FF")
 (add-hook 'lispy-mode-hook 'lispyville-mode)
-
 
 ;; todo swap prefix arg
 ;; (defadvice lispy-ace-paren ())

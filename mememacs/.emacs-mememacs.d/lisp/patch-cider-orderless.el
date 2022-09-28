@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 
 (defun mm/cider-complete-at-point ()
   "Complete the symbol at point."
