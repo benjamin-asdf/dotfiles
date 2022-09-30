@@ -753,6 +753,8 @@
 (use-package emacs
   :config
   (setq save-abbrevs 'silently)
+  (setf create-lockfiles nil)
+
   ;; Unify Marks
   (setq global-mark-ring-max 256)
   (setq set-mark-command-repeat-pop 256)
@@ -788,22 +790,40 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
   (mememacs/leader-def ";" #'consult-global-mark)
 
+  (defun path-slug (dir)
+    "Returns the initials of `dir`s path,
+with the last part appended fully
 
-  (defun mm/make-unique-output-buffer-for-async-shell-command (args)
-    (pcase
-	args
-      (`(,command nil nil)
-       `(,command
-	 ,(generate-new-buffer
-	   (format
-	    "*async-shell-command-%s*"
-	    (string-trim
-	     (substring command 0 (min (length command) 10)))))
-	 nil))
-      (_ args)))
+Example:
 
+(path-slug \"/foo/bar/hello\")
+=> \"f/b/hello\" "
+    (require 'dash)
+    (let* ((path (replace-regexp-in-string "\\." "" dir))
+	   (path (split-string path "/" t))
+	   (path-s (mapconcat
+		    (lambda (it)
+		      (cl-subseq it 0 1))
+		    (-drop-last 1 path)
+		    "/"))
+	   (path-s (concat
+		    path-s
+		    "/"
+		    (-last-item path))))
+      path-s))
 
-  (advice-add 'async-shell-command :filter-args #'mm/make-unique-output-buffer-for-async-shell-command)
+  (defun mm/put-command-in-async-buff-name (f &rest args)
+    (let* ((path-s (path-slug default-directory))
+	   (command (car args))
+	   (buffname (concat path-s " " command))
+	   (shell-command-buffer-name-async
+	    (format
+	     "*async-shell-command %s*"
+	     (string-trim
+	      (substring buffname 0 (min (length buffname) 50))))))
+      (apply f args)))
+
+  (advice-add 'shell-command :around #'mm/put-command-in-async-buff-name)
 
   (add-hook
    'comint-mode-hook

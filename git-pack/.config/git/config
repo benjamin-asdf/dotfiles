@@ -30,3 +30,5 @@
 	pager = cat
 [safe]
 	directory = /opt/flutter
+[init]
+	defaultBranch = main
