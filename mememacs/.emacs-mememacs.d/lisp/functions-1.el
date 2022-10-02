@@ -161,9 +161,7 @@ See `eval-last-sexp'."
 	   "-A"
 	   "-t"
 	   mememacs/scratch-dir)))))
-    (expand-file-name
-     f
-     mememacs/scratch-dir)))
+    (expand-file-name f mememacs/scratch-dir)))
 
 (defun mememacs/new-scratch-name (suffix)
   (unless (file-exists-p
@@ -179,29 +177,31 @@ See `eval-last-sexp'."
  (mememacs/latest-scratch "el")
  (mememacs/latest-scratch "clj"))
 
-(defun mm/scratch (create-new suffix)
+(defun mm/scratch
+    (&optional create-new suffix)
+  "Visit the latest scratch file with `suffix` (a file extension).
+With prefix arg make a new file."
+  (interactive
+   (list current-prefix-arg
+	 (completing-read "scratch filetype: " '("cljs" "clj"))))
   (let* ((latest (mememacs/latest-scratch suffix))
 	 (buff
 	  (find-file-noselect
 	   (if (or create-new (not latest))
 	       (mememacs/new-scratch-name suffix)
-	     (mememacs/latest-scratch suffix)))))
+	     latest))))
     (pop-to-buffer-same-window buff)
     (when (eq major-mode 'emacs-lisp-mode)
       (elisp-enable-lexical-binding))
     buff))
 
-(defun mm/scratch-clj (&optional arg)
-  (interactive "P")
-  (mm/scratch arg "clj"))
-
-(defun mm/scratch-elisp (&optional arg)
+(defun mm/scratch-el (&optional arg)
   (interactive "P")
   (mm/scratch arg "el"))
 
 (mememacs/leader-def
-  "bs" #'mm/scratch-elisp
-  "bS" #'mm/scratch-clj)
+  "bs" #'mm/scratch-el
+  "bS" #'mm/scratch)
 
 (defun mememacs/process-menu-switch-to-buffer ()
   (interactive)
@@ -339,8 +339,9 @@ See `eval-last-sexp'."
 
 (mememacs/comma-def
   "f" '(:ignore t)
-  "fs" #'save-buffer
+  "fj" #'save-buffer
   "ff" #'consult-find
+  "l" #'consult-line
 
   "," (defun call-C-c-C-c ()
 	(interactive)

@@ -1,5 +1,8 @@
 source ~/.profile
 
+gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
+
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1

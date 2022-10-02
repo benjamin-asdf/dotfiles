@@ -235,7 +235,7 @@
 
   (mememacs/comma-def
     "g" '(:ignore t)
-    "gs" #'magit-status
+    "gj" #'magit-status
     "gl" #'magit-log
     "gd" #'magit-diff
     "gc" #'magit-clone
@@ -789,6 +789,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
     nil)
 
   (mememacs/leader-def ";" #'consult-global-mark)
+
+  (setq async-shell-command-buffer 'confirm-kill-process)
 
   (defun path-slug (dir)
     "Returns the initials of `dir`s path,

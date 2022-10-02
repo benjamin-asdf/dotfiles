@@ -14,8 +14,8 @@
   "bw" #'toggle-read-only
   "b." #'hydra-buffer/body
   "f" '(:ignore t)
-  "fs" #'save-buffer
-  "fS" #'save-some-buffers
+  "fj" #'save-buffer
+  "fJ" #'save-some-buffers
   "u" #'undo-tree-visualize
   "w" evil-window-map
   "j" '(:ignore t)
@@ -70,7 +70,9 @@
 (general-def
   :states '(normal visual motion)
   "C-i" #'evil-jump-forward
-  "C-o" #'mememacs/jump-back)
+  "C-o" #'mememacs/jump-back
+  "DEL" #'evil-execute-in-emacs-state
+  "\\" #'consult-line)
 
 (bind-key "gr" #'revert-buffer 'evil-normal-state-map)
 
