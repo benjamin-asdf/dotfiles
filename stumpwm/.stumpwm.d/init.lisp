@@ -353,6 +353,10 @@ This is needed if Sly updates while StumpWM is running"
         ("M-p"   . "Up"))))
 
 
+
+
+
+(comment
 (defun ben/init-stumptray ()
   (load-module "stumptray")
   (defun ben/select-systray-head (heads)
@@ -362,9 +366,6 @@ This is needed if Sly updates while StumpWM is running"
      (error "No heads have a modeline on this screen.")))
   (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
   (stumptray::stumptray))
-
-
-(comment
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
  (group-indicate-focus (current-group))
