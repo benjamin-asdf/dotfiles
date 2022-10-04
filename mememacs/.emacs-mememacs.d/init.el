@@ -787,7 +787,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
   (mememacs/leader-def ";" #'consult-global-mark)
 
-  (setq async-shell-command-buffer 'confirm-kill-process)
+  (setq async-shell-command-buffer 'new-buffer)
 
   (defun path-slug (dir)
     "Returns the initials of `dir`s path,

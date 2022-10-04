@@ -205,10 +205,10 @@ With prefix arg make a new file."
 
 (defun mememacs/process-menu-switch-to-buffer ()
   (interactive)
-  (-some->>
-      (tabulated-list-get-id)
-    (process-buffer)
-    (switch-to-buffer)))
+  (when-let*
+      ((id (tabulated-list-get-id))
+       (b (process-buffer id)))
+    (switch-to-buffer b)))
 
 (general-def
   :states '(normal motion)
