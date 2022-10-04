@@ -42,7 +42,11 @@
 (define-key *top-map* (kbd "s-p") "flameshot-gui")
 
 (defcommand browser () ()
-  (run-or-raise "qutebrowser" '(:class "qutebrowser")))
+  (if
+   (equal "" (run-shell-command "pgrep qutebrowser" t))
+   (run-or-raise "qutebrowser" '(:class "qutebrowser"))
+   (run-shell-command "qute-window")))
+
 
 (defcommand nyxt () ()
   (run-or-raise "nyxt" '(:class "Nyxt")))
@@ -298,7 +302,7 @@ FORM should be a quoted list."
 
 (defcommand make-emacs-or-shell () ()
   (if (emacsp (current-window))
-      (exec-el (shell))
+      (exec-el (mm/shell-via-async-shell-command))
       (exec-el (make-frame))))
 
 (defcommand mm-consult-windows () ()
@@ -340,7 +344,7 @@ This is needed if Sly updates while StumpWM is running"
     (start-slynk))
   (exec-el (sly-connect "localhost" *slynk-port*)))
 
-(start-slynk)
+;; (start-slynk)
 
 (define-key *root-map* (kbd "C-s") "connect-to-sly")
 
@@ -357,15 +361,15 @@ This is needed if Sly updates while StumpWM is running"
 
 
 (comment
-(defun ben/init-stumptray ()
-  (load-module "stumptray")
-  (defun ben/select-systray-head (heads)
-    (or
-     (first
-      (remove-if-not #'stumpwm::head-mode-line heads))
-     (error "No heads have a modeline on this screen.")))
-  (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
-  (stumptray::stumptray))
+;; (defun ben/init-stumptray ()
+;;   (load-module "stumptray")
+;;   (defun ben/select-systray-head (heads)
+;;     (or
+;;      (first
+;;       (remove-if-not #'stumpwm::head-mode-line heads))
+;;      (error "No heads have a modeline on this screen.")))
+;;   (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
+;;   (stumptray::stumptray))
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
  (group-indicate-focus (current-group))

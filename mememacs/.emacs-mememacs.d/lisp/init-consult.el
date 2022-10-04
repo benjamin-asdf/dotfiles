@@ -99,9 +99,6 @@
     (`(,s (4)) `(,s ,default-directory))
     (_ args)))
 
-(declare (mm/consult-grep-dir-prompt-advice '("f" (4)))
-	 (mm/consult-grep-dir-prompt-advice '("f" (1))))
-
 (advice-add #'consult--directory-prompt :filter-args #'mm/consult-grep-dir-prompt-advice)
 
 (defun mm/consult-completing-read-add-one-space ()

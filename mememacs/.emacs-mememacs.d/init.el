@@ -700,25 +700,21 @@
 (use-package shell
   :ensure nil
   :config
-  (defun mm/shell-with-buff-for-dir (args)
-    (let ((buff
-	   (get-buffer-create
-	    (format
-	     "*shell-%s*"
-	     (file-name-base (directory-file-name default-directory))))))
-      `(,buff ,@(cdr args))))
-
-  (advice-add #'shell :filter-args #'mm/shell-with-buff-for-dir)
-
   (defun mm/with-current-window-buffer (f &rest args)
     (with-current-buffer
 	(window-buffer (car (window-list)))
       (apply f args)))
 
-  ;; because I invoke from *server* buffer
-  (advice-add #'shell :around #'mm/with-current-window-buffer)
+  (defun mm/shell-via-async-shell-command ()
+    (switch-to-buffer
+     (window-buffer
+      (async-shell-command
+       shell-file-name))))
+
+  (advice-add #'mm/shell-via-async-shell-command :around #'mm/with-current-window-buffer)
 
   (setf shell-kill-buffer-on-exit t)
+
   (add-hook
    'shell-mode-hook
    (defun mm/shell-dont-mess-with-scroll-conservatively ()
@@ -744,6 +740,7 @@
    elfeed-feeds
    '("http://nullprogram.com/feed/"
      "https://planet.emacslife.com/atom.xml"
+     "https://vlaaad.github.io/feed.xml"
      "https://blog.michielborkent.nl/atom.xml"
      "https://writepermission.com/rss.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
