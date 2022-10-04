@@ -1,7 +1,7 @@
-
 export BROWSER=/usr/bin/qutebrowser
 export SBCL_HOME=/usr/lib/sbcl/
 
+PATH="$PATH:$HOME/.babashka/bbin/bin"
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 
 export PATH
