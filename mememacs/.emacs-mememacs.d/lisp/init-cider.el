@@ -8,7 +8,7 @@
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
-      cider-clojure-cli-aliases "lib/hotload")
+      cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm")
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -85,6 +85,25 @@
     (if arg
 	ad-do-it
       (mm/cider-emit-into-popup-buffer (lispy--eval-dwim)))))
+
+;; https://github.com/abo-abo/lispy/issues/639
+
+(defvar lispy-eval-buff nil)
+
+(defun mm/set-lispy-eval-buff (fn &rest args)
+  (let ((lispy-eval-buff (current-buffer)))
+    (apply fn args)))
+
+(defun mm/lispy-eval-buff-did-not-change-p (&rest _)
+  (or
+   (not lispy-eval-buff)
+   (equal lispy-eval-buff (current-buffer))))
+
+(advice-add #'lispy-eval :around #'mm/set-lispy-eval-buff)
+(advice-add
+ #'cider--display-interactive-eval-result
+ :before-while #'mm/lispy-eval-buff-did-not-change-p)
+
 
 ;; --------------------------------------------
 
