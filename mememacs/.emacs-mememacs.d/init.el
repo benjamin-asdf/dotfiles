@@ -822,16 +822,12 @@ Example:
 
   (advice-add 'shell-command :around #'mm/put-command-in-async-buff-name)
 
-  (add-hook
-   'comint-mode-hook
-   (defun mm/do-hack-dir-locals (&rest _)
-     (hack-dir-local-variables-non-file-buffer)))
+  (add-hook 'comint-mode-hook
+	    (defun mm/do-hack-dir-locals (&rest _)
+	      (hack-dir-local-variables-non-file-buffer)))
 
-  (advice-add
-   'compile
-   :filter-args
-   (defun mm/always-use-comint-for-compile (args)
-     `(,(car args) t))))
+  (advice-add 'compile :filter-args
+	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t))))
 
 ;; elp
 ;; memory-use-counts

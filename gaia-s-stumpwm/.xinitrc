@@ -15,7 +15,7 @@ setroot -cursor_name left_ptr
 xset r rate 120 250
 
 xautolock -time 4 -locker best-lock.sh &
-setxkbmap -layout us -option ctrl:swapcaps_hyper,caps:hyper,nodeadkeys,nbsp:level3,altwin:menu_win
+setxkbmap -layout us -option ctrl:swapcaps_hyper,nodeadkeys,nbsp:level3,altwin:menu_win
 
 # https://askubuntu.com/questions/63681/how-can-i-make-xrandr-customization-permanent
 # I can use lightdm or xorg.confgs
