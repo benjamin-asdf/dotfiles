@@ -647,8 +647,6 @@
 (use-package backup-each-save
   :config
   (add-hook 'after-save-hook #'backup-each-save)
-   ;; the builtin backups are quite cute compared to
-   ;; `backup-each-save`
   (setf make-backup-files nil))
 
 (use-package mu4e

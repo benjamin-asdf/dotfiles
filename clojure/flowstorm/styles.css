@@ -1,0 +1,27 @@
+.main-pane {
+	-fx-font-size: 18;
+}
+
+.tab .ikonli-font-icon {
+	-fx-font-size: 18;
+}
+
+.code-token {
+	-fx-font-size: 18;
+}
+
+.button.def-btn {
+	-fx-font-size: 14;
+}
+
+.label.browser-fn-fq-name {
+    -fx-font-size: 20;
+}
+
+.button.browser-instrument-btn {
+    -fx-font-size: 14;
+}
+
+.browser-instr-del-btn {
+    -fx-font-size: 14;
+}

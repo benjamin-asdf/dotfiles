@@ -7,6 +7,7 @@ export GDK_CORE_DEVICE_EVENTS=1
 
 xset r rate 140 220
 
+xautolock -time 4 -locker best-lock.sh &
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
 xcape -e 'Control_L=Escape'
 
