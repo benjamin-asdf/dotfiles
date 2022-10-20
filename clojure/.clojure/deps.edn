@@ -86,8 +86,8 @@
            ;; flowstorm
            :trace/flowstorm
            {:extra-deps
-            {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.0.236"}
-             com.github.jpmonettas/flow-storm-inst {:mvn/version "3.0.236"}}}
+            {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.1.263"}
+             com.github.jpmonettas/flow-storm-inst {:mvn/version "3.1.263"}}}
 
 
            ;; Portal

@@ -826,6 +826,8 @@ Example:
 	    (defun mm/do-hack-dir-locals (&rest _)
 	      (hack-dir-local-variables-non-file-buffer)))
 
+  (advice-add #'start-process-shell-command :before #'mm/do-hack-dir-locals)
+
   (advice-add 'compile :filter-args
 	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t))))
 

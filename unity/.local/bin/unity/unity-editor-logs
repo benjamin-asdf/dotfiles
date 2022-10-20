@@ -5,3 +5,4 @@ tail -n 5000 -f ~/.config/unity3d/Editor.log | grep -v -e "{\"stat\":" -v -e "^C
 							     -v -e "GTK_IS_CONTAINER (container)" \
 							     -v -e "ChannelMessageUnsequenced" \
 							     -v -e "^GLX Extensions:"
+# useless if you have the socket exception

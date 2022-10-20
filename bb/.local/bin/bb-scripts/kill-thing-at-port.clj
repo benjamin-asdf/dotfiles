@@ -20,6 +20,7 @@
 (comment
 
 (shell/sh "lsof" (str "-i:" 40800) "-n" "-P" "-t")
+(shell/sh "lsof" (str "-i:" 33242) "-n" "-P" "-t")
 
 
   )

@@ -101,6 +101,18 @@
 
 (advice-add #'consult--directory-prompt :filter-args #'mm/consult-grep-dir-prompt-advice)
 
+(defun mm/consult-completing-read-add-one-space ()
+  (insert " "))
+
+(advice-add
+ #'consult-completion-in-region
+ :around
+ (defun mememacs/advice-consult-completion-in-region (f &rest args)
+   (let ((minibuffer-setup-hook
+	  (append
+	   minibuffer-setup-hook (list #'mm/consult-completing-read-add-one-space))))
+     (apply f args))))
+
 (advice-add
  #'consult-yank-pop
  :before
