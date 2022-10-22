@@ -13,7 +13,8 @@
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
 
-(defconst mindsape/woodsmoke		 "#17161e")
+;; (defconst mindsape/woodsmoke		 "#17161e")
+(defconst mindsape/woodsmoke		 "black")
 (defconst mindsape/woodsmoke-shade       "#121218")
 (defconst mindsape/woodsmoke-tint-1	 "#2e2d35")
 (defconst mindsape/scarpa-flow		 "#5d5c62")
@@ -53,7 +54,8 @@
 (defconst mindsape/summer-green "#a0b8a9")
 (defconst mindsape/cursor-default        "NavajoWhite")
 
-(set-face-background 'default mindsape/woodsmoke)
+(set-face-background 'default "black" ;; mindsape/woodsmoke
+		     )
 (set-face-foreground 'default mindsape/hint-of-red)
 
 (set-face-attribute
@@ -113,37 +115,21 @@
  :foreground mindsape/heliotrope
  :background mindsape/woodsmoke)
 
-
-
-;; (set-face-attribute
-;;  'reb-match-1
-;;  nil
-;;  :inherit 'reb-match-0
-;;  :background mindsape/dune)
-
-
 (set-face-attribute
  'font-lock-builtin-face
  nil
  :bold t
- :foreground
- ;; "MediumPurple1"
- mindsape/water
- :overline "MediumPurple1"
- )
-
-
+ :foreground mindsape/water
+ :overline "MediumPurple1")
 
 (set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
-
-(set-face-background 'region mindsape/tundora)
 
 (set-face-attribute
  'region
  nil
- :foreground mindsape/sundown
+ :foreground "white"
  :box nil
- :background mindsape/log-cabin
+ :background "gray49"
  :underline nil)
 
 
@@ -163,7 +149,6 @@
  :foreground
  mindsape/fruit-salad
  :bold t)
-
 
 (when
     (facep

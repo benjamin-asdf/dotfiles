@@ -81,97 +81,97 @@
   (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
   (general-unbind undo-tree-map "C-/"))
 
-(use-package evil
-  :init
-  (setq
-   evil-want-integration t
-   evil-want-keybinding nil
-   evil-want-C-u-scroll nil
-   evil-want-C-i-jump nil
-   evil-move-cursor-back nil
-   evil-move-beyond-eol t
-   evil-want-fine-undo t)
+;; (use-package evil
+;;   :init
+;;   (setq
+;;    evil-want-integration t
+;;    evil-want-keybinding nil
+;;    evil-want-C-u-scroll nil
+;;    evil-want-C-i-jump nil
+;;    evil-move-cursor-back nil
+;;    evil-move-beyond-eol t
+;;    evil-want-fine-undo t)
 
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
+;;   :config
+;;   (evil-mode 1)
+;;   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+;;   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
 
-  (custom-set-variables
-   '(evil-undo-system 'undo-tree))
+;;   (custom-set-variables
+;;    '(evil-undo-system 'undo-tree))
 
-  (define-key evil-normal-state-map "U" #'evil-redo)
+;;   (define-key evil-normal-state-map "U" #'evil-redo)
 
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal)
+;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
+;;   (evil-set-initial-state 'dashboard-mode 'normal)
 
-  (defadvice evil-show-registers
-      (after mm/evil-show-registers-adv activate)
-    (text-mode)))
+;;   (defadvice evil-show-registers
+;;       (after mm/evil-show-registers-adv activate)
+;;     (text-mode)))
 
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode 1)
-  (add-hook 'emacs-lisp-mode-hook
-	    (lambda ()
-              (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
+;; (use-package evil-surround
+;;   :config
+;;   (global-evil-surround-mode 1)
+;;   (add-hook 'emacs-lisp-mode-hook
+;; 	    (lambda ()
+;;               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
-(use-package evil-commentary
-  :hook (prog-mode . evil-commentary-mode))
+;; (use-package evil-commentary
+;;   :hook (prog-mode . evil-commentary-mode))
 
 (use-package hydra)
 
 
 
 ;; todo improve
-(use-package evil-mc
-  :config
-  (add-hook 'prog-mode-hook #'evil-mc-initialize)
-  (add-hook 'text-mode-hook #'evil-mc-initialize)
+;; (use-package evil-mc
+;;   :config
+;;   (add-hook 'prog-mode-hook #'evil-mc-initialize)
+;;   (add-hook 'text-mode-hook #'evil-mc-initialize)
 
-  (add-hook
-   'mememacs/escape-functions
-   #'evil-mc-undo-all-cursors)
+;;   (add-hook
+;;    'mememacs/escape-functions
+;;    #'evil-mc-undo-all-cursors)
 
-  (general-def
-    :states '(normal visual motion)
-    :keymaps '(evil-mc-key-map)
-    "gr" '(evil-mc-cursors-map)
-    "M-n" 'evil-mc-make-and-goto-next-cursor
-    "M-p" 'evil-mc-make-and-goto-prev-cursor
-    "C-n" 'evil-mc-make-and-goto-next-match
-    "C-t" 'evil-mc-skip-and-goto-next-match
-    "C-p" 'evil-mc-make-and-goto-prev-match)
+;;   (general-def
+;;     :states '(normal visual motion)
+;;     :keymaps '(evil-mc-key-map)
+;;     "gr" '(evil-mc-cursors-map)
+;;     "M-n" 'evil-mc-make-and-goto-next-cursor
+;;     "M-p" 'evil-mc-make-and-goto-prev-cursor
+;;     "C-n" 'evil-mc-make-and-goto-next-match
+;;     "C-t" 'evil-mc-skip-and-goto-next-match
+;;     "C-p" 'evil-mc-make-and-goto-prev-match)
 
-  (defhydra hydra-evil-mc ()
-    "mc"
-    ("n" #'evil-mc-make-and-goto-next-match "next match")
-    ("j" #'evil-mc-make-cursor-move-next-line "make line")
-    ("q" #'evil-mc-undo-all-cursors "undo all")
-    ("I" #'evil-mc-make-cursor-in-visual-selection-beg)
-    ("a" 'evil-mc-key-map "...")
-    ("m" #'evil-mc-make-all-cursors)
-    ("k" #'evil-mc-undo-last-added-cursor "undo last")
-    ("p" #'evil-mc-find-prev-cursor "prev"))
+;;   (defhydra hydra-evil-mc ()
+;;     "mc"
+;;     ("n" #'evil-mc-make-and-goto-next-match "next match")
+;;     ("j" #'evil-mc-make-cursor-move-next-line "make line")
+;;     ("q" #'evil-mc-undo-all-cursors "undo all")
+;;     ("I" #'evil-mc-make-cursor-in-visual-selection-beg)
+;;     ("a" 'evil-mc-key-map "...")
+;;     ("m" #'evil-mc-make-all-cursors)
+;;     ("k" #'evil-mc-undo-last-added-cursor "undo last")
+;;     ("p" #'evil-mc-find-prev-cursor "prev"))
 
-  (general-def
-    :states '(normal visual)
-    "gn" #'hydra-evil-mc/body)
+;;   (general-def
+;;     :states '(normal visual)
+;;     "gn" #'hydra-evil-mc/body)
 
-  (mememacs/leader-def "gn" '(evil-mc-key-map))
+;;   (mememacs/leader-def "gn" '(evil-mc-key-map))
 
-  (defun mememacs/disable-evil-mc-mode ()
-    (evil-mc-mode -1))
+;;   (defun mememacs/disable-evil-mc-mode ()
+;;     (evil-mc-mode -1))
 
-  (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
+;;   (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
 
-  (add-hook
-   'mememacs/escape-functions
-   (defun mm/maybe-delete-mc-cursors ()
-     (when (and
-	    evil-mc-cursor-state
-	    (eq evil-state 'normal))
-       (evil-mc-undo-all-cursors)))))
+;;   (add-hook
+;;    'mememacs/escape-functions
+;;    (defun mm/maybe-delete-mc-cursors ()
+;;      (when (and
+;; 	    evil-mc-cursor-state
+;; 	    (eq evil-state 'normal))
+;;        (evil-mc-undo-all-cursors)))))
 
 (use-package debug
   :ensure nil
@@ -183,24 +183,24 @@
     "-" #'backtrace-single-line))
 
 ;; I am starting to experience this as bloat
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (setf
-   evil-collection-want-find-usages-bindings nil
-   evil-collection-mode-list
-   (remove
-    'go-mode
-    (remove 'lispy evil-collection-mode-list)))
-  (evil-collection-init)
-  (general-def
-    :states '(normal visual emacs)
-    :keymaps '(dired-mode-map
-	       Info-mode-map
-	       Man-mode-map
-	       help-mode-map)
-    "SPC" nil))
+;; (use-package evil-collection
+;;   :after evil
+;;   :ensure t
+;;   :config
+;;   (setf
+;;    evil-collection-want-find-usages-bindings nil
+;;    evil-collection-mode-list
+;;    (remove
+;;     'go-mode
+;;     (remove 'lispy evil-collection-mode-list)))
+;;   (evil-collection-init)
+;;   (general-def
+;;     :states '(normal visual emacs)
+;;     :keymaps '(dired-mode-map
+;; 	       Info-mode-map
+;; 	       Man-mode-map
+;; 	       help-mode-map)
+;;     "SPC" nil))
 
 (require 'functions)
 (require 'utils)
@@ -839,6 +839,107 @@ Example:
 ;; figure out where the code is for guix packages
 
 					; pprint
+
+
+
+(use-package meow
+  :config
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
+	  meow-use-cursor-position-hack t)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
+  (meow-setup)
+  (meow-global-mode 1))
+
+
+
+
+;; (use-package boon
+;;   :config
+;;   (require 'boon-qwerty)
+;;   (boon-mode))
 
 
 (require 'mememacs-stumpwm)
