@@ -1,4 +1,6 @@
 #!/bin/sh
 
+echo "$@" >> /tmp/cos_redirect_input
+
 mkdir -p /tmp/cos_redirect/ && echo "$@" >> /tmp/cos_redirect/url.txt
-zenity --info --text "$@"
+notify-send "cos redirect complete"

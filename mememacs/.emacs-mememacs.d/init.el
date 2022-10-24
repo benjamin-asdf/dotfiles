@@ -68,7 +68,7 @@
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
 (use-package general
-  :after evil
+  ;; :after evil
   :config (require 'init-general))
 
 (use-package undo-tree
@@ -844,18 +844,26 @@ Example:
 
 (use-package meow
   :config
+  (setf meow--kbd-undo "C-_")
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
 	  meow-use-cursor-position-hack t)
+
+    (setf meow-keypad-start-keys '((?c . ?c) (?h . ?h) (?x . ?x)
+				   ;; (?j . ?j)
+				   ;; (?f . ?f)
+				   ))
+
+    (bind-keys*
+     ("C-j b" . consult-buffer)
+     ("C-j s" . consult-line))
+
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
      '("<escape>" . ignore))
     (meow-leader-define-key
-     ;; SPC j/k will run the original command in MOTION state.
-     '("j" . "H-j")
-     '("k" . "H-k")
-     ;; Use SPC (0-9) for digit arguments.
+
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
@@ -866,6 +874,9 @@ Example:
      '("8" . meow-digit-argument)
      '("9" . meow-digit-argument)
      '("0" . meow-digit-argument)
+     '("bb" . consult-buffer)
+     '("bh" . meow-last-buffer)
+
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
