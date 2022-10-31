@@ -291,7 +291,6 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-h") "my-mv left")
 (define-key *top-map* (kbd "s-j") "my-mv down")
 (define-key *top-map* (kbd "s-k") "my-mv up")
-
 (define-key *top-map* (kbd "s-l") "my-mv right")
 
 (defun make-an-emacs ()
@@ -356,20 +355,16 @@ This is needed if Sly updates while StumpWM is running"
         ("M-n"   . "Down")
         ("M-p"   . "Up"))))
 
-
-
-
-
 (comment
-;; (defun ben/init-stumptray ()
-;;   (load-module "stumptray")
-;;   (defun ben/select-systray-head (heads)
-;;     (or
-;;      (first
-;;       (remove-if-not #'stumpwm::head-mode-line heads))
-;;      (error "No heads have a modeline on this screen.")))
-;;   (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
-;;   (stumptray::stumptray))
+ ;; (defun ben/init-stumptray ()
+ ;;   (load-module "stumptray")
+ ;;   (defun ben/select-systray-head (heads)
+ ;;     (or
+ ;;      (first
+ ;;       (remove-if-not #'stumpwm::head-mode-line heads))
+ ;;      (error "No heads have a modeline on this screen.")))
+ ;;   (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
+ ;;   (stumptray::stumptray))
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
  (group-indicate-focus (current-group))
@@ -377,8 +372,9 @@ This is needed if Sly updates while StumpWM is running"
  (setf *debug-level* 0)
  (redirect-all-output (data-dir-file "output" "log"))
  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
- (list-modules)
 
+ (list-modules)
+ (my-mv :left)
  (load-module "wifi")
  (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %I")
  (load-module "battery-portable")

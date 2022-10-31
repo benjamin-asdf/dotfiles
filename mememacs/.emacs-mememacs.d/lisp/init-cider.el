@@ -15,6 +15,11 @@
     cider-repl-mode-mapl
     cider-macroexpansion-mode-map))
 
+(set-face-attribute
+ 'cider-result-overlay-face
+ nil
+ :background "black")
+
 (when
     (require 'neil "~/repos/clojure/neil/neil.el" 'no-err)
   (mememacs/comma-def

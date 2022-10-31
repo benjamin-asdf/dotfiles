@@ -320,11 +320,8 @@
   (general-def
     'embark-symbol-map
     "h" #'helpful-symbol)
-
   (setq prefix-help-command #'embark-prefix-help-command)
-
-  (global-set-key
-   (kbd "H-h") #'embark-bindings)
+  (global-set-key (kbd "H-h") #'embark-bindings)
 
   :config
   (require 'init-embark))
@@ -728,7 +725,10 @@
        (define-key isearch-mode-map key 'iedit-mode-from-isearch)
        (define-key esc-map key 'iedit-execute-last-modification)
        (define-key help-map key 'iedit-mode-toggle-on-function))
-  (mememacs/comma-def "i" #'iedit-mode))
+
+  (add-hook 'mememacs/escape-functions (defun mm/iedit-quit ()
+					 (when iedit-lib-quit-func (iedit--quit))))
+  )
 
 
 (use-package elfeed
@@ -844,26 +844,33 @@ Example:
 
 (use-package meow
   :config
-  (setf meow--kbd-undo "C-_")
+
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
-	  meow-use-cursor-position-hack t)
+	  meow-use-cursor-position-hack t
+	  meow--kbd-undo "C-_"
+	  meow-use-clipboard t)
 
-    (setf meow-keypad-start-keys '((?c . ?c) (?h . ?h) (?x . ?x)
-				   ;; (?j . ?j)
-				   ;; (?f . ?f)
-				   ))
+    (meow--setup-which-key nil)
+    (setq meow-keypad-describe-keymap-function nil)
 
-    (bind-keys*
-     ("C-j b" . consult-buffer)
-     ("C-j s" . consult-line))
+    (add-hook 'mememacs/escape-functions #'meow-cancel-selection)
+
+    (setf meow-keypad-start-keys
+	  '((?c . ?c)
+	    (?h . ?h)
+	    (?x . ?x)
+	    (?j . ?x)))
 
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
+     '("l" . meow-right)
+     '("h" . meow-left)
+     '("," . meow-keypad)
      '("<escape>" . ignore))
-    (meow-leader-define-key
 
+    (meow-leader-define-key
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
@@ -876,9 +883,27 @@ Example:
      '("0" . meow-digit-argument)
      '("bb" . consult-buffer)
      '("bh" . meow-last-buffer)
+     '("bd" . kill-this-buffer)
 
+
+     '("bs" . mm/scratch-el)
+     '("br" . revert-buffer)
+     '("wd" . kill-buffer-and-window)
+     '("wh" . split-window-vertically)
+     '("wv" . split-window-horizontally)
+
+     '("fe" . mememacs/find-init-file)
+     '("fj" . save-buffer)
+     '("ff" . consult-find)
+
+     '("oj" . mm/denote-load)
+     '("s" . meow-visit)
      '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
+
+     '("?" . meow-cheatsheet)
+     '("ag" . consult-git-grep)
+     )
+
     (meow-normal-define-key
      '("0" . meow-expand-0)
      '("9" . meow-expand-9)
@@ -892,7 +917,9 @@ Example:
      '("1" . meow-expand-1)
      '("-" . negative-argument)
      '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
+
+     '("," . meow-keypad)
+
      '("." . meow-bounds-of-thing)
      '("[" . meow-beginning-of-thing)
      '("]" . meow-end-of-thing)
@@ -903,8 +930,15 @@ Example:
      '("c" . meow-change)
      '("d" . meow-delete)
      '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
+
+     '("\\" . meow-next-word)
+     '("|" . meow-next-symbol)
+
+     '("e" . special-lispy-eval)
+     '("E" . special-lispy-eval-and-insert)
+     '("C-m" . lispy-mark-symbol)
+
+
      '("f" . meow-find)
      '("g" . meow-cancel-selection)
      '("G" . meow-grab)
@@ -923,15 +957,16 @@ Example:
      '("o" . meow-block)
      '("O" . meow-to-block)
      '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
+     ;; '("q" . meow-quit)
+     ;; '("Q" . meow-goto-line)
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
      '("t" . meow-till)
      '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
+     '("U" . undo-tree-redo)
+     '("M-u" . meow-undo-in-selection)
+     '("v" . meow-inner-of-thing)
      '("w" . meow-mark-word)
      '("W" . meow-mark-symbol)
      '("x" . meow-line)
@@ -940,11 +975,116 @@ Example:
      '("Y" . meow-sync-grab)
      '("z" . meow-pop-selection)
      '("'" . repeat)
-     '("<escape>" . ignore)))
+     '("<escape>" . ignore)
+     '("/" . isearch-forward)
+     )
+
+    (meow-define-keys 'insert
+      '("C-j" . completion-at-point)
+      '("e" . special-lispy-eval)
+      '("E" . special-lispy-eval-and-insert)))
   (meow-setup)
-  (meow-global-mode 1))
+
+  (meow-global-mode 1)
 
 
+  (defun lispyville-end-of-defun ()
+    "This is the evil motion equivalent of `end-of-defun'.
+This won't jump to the end of the buffer if there is no paren there."
+    (interactive)
+    (when (<= (- (line-end-position)
+		 (point))
+              1)
+      (forward-line))
+    (end-of-defun 1)
+    (re-search-backward lispy-right nil t)
+    (meow-append))
+
+  (meow-normal-define-key '("C-l" . lispyville-end-of-defun))
+  (meow-define-keys 'insert '("C-l" . lispyville-end-of-defun))
+
+  (defun mm/meow-insert (&rest _) (meow-insert))
+  (advice-add #'lispy-right-nostring :after #'mm/meow-insert)
+
+  (advice-add #'lispy-left-maybe :after #'mm/meow-insert)
+  (define-key lispy-mode-map-lispy (kbd "(") #'lispy-parens)
+
+
+  (defun mm/embark-meow-keypad-desribe ()
+    (interactive)
+    (let ((kmap (meow--keypad-get-keymap-for-describe)))
+      (meow-keyboard-quit)
+      (embark-bindings-in-keymap kmap)))
+
+  (define-key meow-keypad-state-keymap (kbd "?") #'mm/embark-meow-keypad-desribe)
+
+
+  (defvar mm/spc-map (let ((m (make-sparse-keymap)))
+		       (define-key m (kbd "f") #'find-file)
+		       (define-key m (kbd "b") #'consult-buffer)
+		       m))
+
+  (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
+
+  (defun mm/lispy-back-or-lispy-pair (arg)
+    (interactive "P")
+    (if (region-active-p)
+	(lispy-parens arg)
+      (lispy-backward (or arg 1))
+      (meow-insert)))
+
+  (meow-normal-define-key '("(" . mm/lispy-back-or-lispy-pair))
+
+  (defvar mm/spc-map (let ((m (make-sparse-keymap)))
+		       (define-key m (kbd "f")
+				   #'find-file)
+		       (define-key m (kbd "b")
+				   #'consult-buffer)
+		       (define-key m (kbd "s")
+				   #'magit-status)
+		       (define-key m (kbd "p")
+				   project-prefix-map)
+		       (define-key m (kbd "/")
+				   #'consult-ripgrep)
+		       (define-key m (kbd "wd")
+				   #'delete-window)
+		       (define-key m (kbd "wu")
+				   #'winner-undo)
+		       (define-key m (kbd "wU")
+				   #'winner-redo)
+		       m))
+
+  (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
+  (define-key meow-motion-state-keymap (kbd "SPC") mm/spc-map)
+
+  (define-key isearch-mode-map (kbd "/") #'isearch-repeat-forward)
+
+  (defvar mm/c-c-c-j-map
+    (let ((m (make-sparse-keymap
+	      "mememacs j map")))
+      (define-key m (kbd "f") #'find-function)
+      (define-key m (kbd "l") #'find-library)
+      m))
+
+  (define-key global-map (kbd "C-c C-j") mm/c-c-c-j-map)
+
+  (defun call-C-c-C-c ()
+    (interactive)
+    (call-interactively (key-binding (kbd "C-c C-c"))))
+
+  (defun call-C-c-C-k ()
+    (interactive)
+    (call-interactively (key-binding (kbd "C-c C-k"))))
+
+  (meow-leader-define-key
+   '("," . call-C-c-C-c)
+   '("k" . call-C-c-C-k))
+
+  (define-key magit-status-mode-map (kbd "x") #'magit-discard)
+  (define-key magit-status-mode-map (kbd "p") #'magit-push)
+
+  (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
+  (define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char))
 
 
 ;; (use-package boon

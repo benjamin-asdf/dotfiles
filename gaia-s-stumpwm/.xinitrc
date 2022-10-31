@@ -23,7 +23,7 @@ xrandr --output HDMI-1 --left-of DVI-D-1 --auto
 xrandr --output DP-1 --left-of HDMI-1 --auto
 
 xcape -e 'Control_L=Escape'
-redshift -l 55.7:12.6 -t 2200:1600 -m randr &
+redshift -l 55.7:12.6 -t 2600:1800 -m randr &
 flameshot &
 unclutter &
 dunst &

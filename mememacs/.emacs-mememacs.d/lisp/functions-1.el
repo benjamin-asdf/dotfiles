@@ -93,13 +93,6 @@ See `eval-last-sexp'."
 
 (general-def "S-<escape>" #'mememacs/escape)
 
-(with-eval-after-load 'iedit
-  (add-hook
-   'mememacs/escape-functions
-   (defun mm/iedit-quit-maybe ()
-     (when iedit-lib-quit-func
-       (iedit--quit)))))
-
 (add-hook 'mememacs/escape-functions #'widen)
 
 
