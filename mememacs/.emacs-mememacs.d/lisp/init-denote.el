@@ -42,21 +42,37 @@
        denote-directory
        t)))))
 
-(mememacs/comma-def
-  "oo" (defun mm/denote-dir () (interactive) (dired-jump nil denote-last-path))
-  "oJ" #'mm/denote-journal
-  "oj" (defun mm/find-today-journal ()
-	 (interactive)
-	 (if-let
-	     ((f (mm/denote-current-journal)))
-	     (find-file (expand-file-name f))
-	   (mm/denote-journal)))
-  "od" #'denote
-  "oT" (defun mm/denote-todo () (interactive) (denote "todo"))
-  "oc" #'org-capture
-  "of" (defun mm/consult-file-notes ()
-	 (interactive)
-	 (let ((default-directory denote-directory))
-	   (call-interactively #'consult-project-buffer))))
+(defvar mm/org-dispatch-map
+  (let ((m (make-sparse-keymap "mm org dispatch")))
+    (define-key m (kbd "o") (defun mm/denote-dir () (interactive) (dired-jump nil denote-last-path)))
+    (define-key m (kbd "J") #'mm/denote-journal)0
+    (define-key m (kbd "j") (defun mm/find-today-journal ()
+			      (interactive)
+			      (if-let
+				  ((f (mm/denote-current-journal)))
+				  (find-file (expand-file-name f))
+				(mm/denote-journal))))
+    (define-key m (kbd "d") #'denote)
+    (define-key m (kbd "T") (defun mm/denote-todo () (interactive) (denote "todo")))
+    (define-key m (kbd "c") #'org-capture)
+    (define-key m (kbd "f") (defun mm/consult-file-notes ()
+			      (interactive)
+			      (let ((default-directory denote-directory))
+				(call-interactively #'consult-project-buffer))))
+    (define-key m (kbd "c") #'org-capture)
+    (define-key m (kbd "l") #'org-store-link)
+    m))
+
+(meow-leader-define-key (cons "o" mm/org-dispatch-map))
+
+(define-key org-mode-map (kbd "C-c t") #'org-todo)
+
+
+(advice-add
+ 'org-babel-execute-src-block
+ :before
+ (defun mm/load-ob-implementations (&rest _)
+   (require 'ob-clojure)
+   (require 'ob-shell)))
 
 (provide 'init-denote)

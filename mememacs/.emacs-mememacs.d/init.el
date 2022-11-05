@@ -67,8 +67,10 @@
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
+;; prepare to be liberated from you own inferior genes!
+;; soon getting rid of this
+;; (bind-keys)
 (use-package general
-  ;; :after evil
   :config (require 'init-general))
 
 (use-package undo-tree
@@ -81,97 +83,7 @@
   (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
   (general-unbind undo-tree-map "C-/"))
 
-;; (use-package evil
-;;   :init
-;;   (setq
-;;    evil-want-integration t
-;;    evil-want-keybinding nil
-;;    evil-want-C-u-scroll nil
-;;    evil-want-C-i-jump nil
-;;    evil-move-cursor-back nil
-;;    evil-move-beyond-eol t
-;;    evil-want-fine-undo t)
-
-;;   :config
-;;   (evil-mode 1)
-;;   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-;;   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-word)
-
-;;   (custom-set-variables
-;;    '(evil-undo-system 'undo-tree))
-
-;;   (define-key evil-normal-state-map "U" #'evil-redo)
-
-;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
-;;   (evil-set-initial-state 'dashboard-mode 'normal)
-
-;;   (defadvice evil-show-registers
-;;       (after mm/evil-show-registers-adv activate)
-;;     (text-mode)))
-
-;; (use-package evil-surround
-;;   :config
-;;   (global-evil-surround-mode 1)
-;;   (add-hook 'emacs-lisp-mode-hook
-;; 	    (lambda ()
-;;               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
-
-;; (use-package evil-commentary
-;;   :hook (prog-mode . evil-commentary-mode))
-
 (use-package hydra)
-
-
-
-;; todo improve
-;; (use-package evil-mc
-;;   :config
-;;   (add-hook 'prog-mode-hook #'evil-mc-initialize)
-;;   (add-hook 'text-mode-hook #'evil-mc-initialize)
-
-;;   (add-hook
-;;    'mememacs/escape-functions
-;;    #'evil-mc-undo-all-cursors)
-
-;;   (general-def
-;;     :states '(normal visual motion)
-;;     :keymaps '(evil-mc-key-map)
-;;     "gr" '(evil-mc-cursors-map)
-;;     "M-n" 'evil-mc-make-and-goto-next-cursor
-;;     "M-p" 'evil-mc-make-and-goto-prev-cursor
-;;     "C-n" 'evil-mc-make-and-goto-next-match
-;;     "C-t" 'evil-mc-skip-and-goto-next-match
-;;     "C-p" 'evil-mc-make-and-goto-prev-match)
-
-;;   (defhydra hydra-evil-mc ()
-;;     "mc"
-;;     ("n" #'evil-mc-make-and-goto-next-match "next match")
-;;     ("j" #'evil-mc-make-cursor-move-next-line "make line")
-;;     ("q" #'evil-mc-undo-all-cursors "undo all")
-;;     ("I" #'evil-mc-make-cursor-in-visual-selection-beg)
-;;     ("a" 'evil-mc-key-map "...")
-;;     ("m" #'evil-mc-make-all-cursors)
-;;     ("k" #'evil-mc-undo-last-added-cursor "undo last")
-;;     ("p" #'evil-mc-find-prev-cursor "prev"))
-
-;;   (general-def
-;;     :states '(normal visual)
-;;     "gn" #'hydra-evil-mc/body)
-
-;;   (mememacs/leader-def "gn" '(evil-mc-key-map))
-
-;;   (defun mememacs/disable-evil-mc-mode ()
-;;     (evil-mc-mode -1))
-
-;;   (add-hook 'dired-mode-hook #'mememacs/disable-evil-mc-mode)
-
-;;   (add-hook
-;;    'mememacs/escape-functions
-;;    (defun mm/maybe-delete-mc-cursors ()
-;;      (when (and
-;; 	    evil-mc-cursor-state
-;; 	    (eq evil-state 'normal))
-;;        (evil-mc-undo-all-cursors)))))
 
 (use-package debug
   :ensure nil
@@ -181,26 +93,6 @@
     "." #'backtrace-expand-ellipses
     "+" #'backtrace-multi-line
     "-" #'backtrace-single-line))
-
-;; I am starting to experience this as bloat
-;; (use-package evil-collection
-;;   :after evil
-;;   :ensure t
-;;   :config
-;;   (setf
-;;    evil-collection-want-find-usages-bindings nil
-;;    evil-collection-mode-list
-;;    (remove
-;;     'go-mode
-;;     (remove 'lispy evil-collection-mode-list)))
-;;   (evil-collection-init)
-;;   (general-def
-;;     :states '(normal visual emacs)
-;;     :keymaps '(dired-mode-map
-;; 	       Info-mode-map
-;; 	       Man-mode-map
-;; 	       help-mode-map)
-;;     "SPC" nil))
 
 (require 'functions)
 (require 'utils)
@@ -292,20 +184,11 @@
 
 (use-package consult-dir
   :config
-  (general-def
-    "C-x C-d"
-    #'consult-dir)
-
-  (mememacs/comma-def
-    "fd" #'consult-dir)
-
-  (general-def
-    'vertico-map
-    :prefix "C-,"
-    "d" #'consult-dir
-    "j" #'consult-dir-jump-file))
-
-;; (use-package consult-flycheck)
+  :bind
+  (:map vertico-map
+	:prefix "C-,"
+	("C-, d" . consult-dir)
+	("C-, j" . consult-dir-jump-file)))
 
 (use-package marginalia
   :bind
@@ -317,14 +200,13 @@
 (use-package embark
   :ensure t
   :init
-  (general-def
-    'embark-symbol-map
-    "h" #'helpful-symbol)
   (setq prefix-help-command #'embark-prefix-help-command)
   (global-set-key (kbd "H-h") #'embark-bindings)
-
   :config
-  (require 'init-embark))
+  (require 'init-embark)
+  :bind
+  (:map
+   embark-symbol-map ("h" . helpful-symbol)))
 
 (use-package embark-consult
   :ensure t
@@ -397,11 +279,6 @@
   (python-mode . lispy-mode)
   (python-mode . mm/enable-le-python))
 
-(use-package lispyville
-  :after lispy
-  :config (require 'init-lispyville))
-;; maybe remove evil-mc if works well
-
 (use-package multiple-cursors
   :config
   (add-hook
@@ -409,9 +286,6 @@
    (defun mm/mc-remove ()
      (deactivate-mark)
      (mc/remove-fake-cursors))))
-
-(use-package targets
-  :straight (:host github :repo "noctuid/targets.el"))
 
 (when (require 'project nil t)
   (require 'init-project))
@@ -431,10 +305,7 @@
 (use-package ace-window
   :config
   (setq aw-keys mememacs/avy-keys
-	aw-background nil)
-  (general-def 'evil-window-map
-    "w" #'ace-window
-    "D" #'ace-delete-window))
+	aw-background nil))
 
 (use-package cider
   :config
@@ -445,7 +316,8 @@
   :config
   (require 'init-flycheck))
 
-(use-package flycheck-clj-kondo)
+(use-package flycheck-clj-kondo
+  :after cider)
 
 (use-package geiser
   :when mememacs/guile-enabled)
@@ -532,14 +404,9 @@
     "so" '(:ignore t)
     "soo" #'symbol-overlay-put)
 
-  (general-def
-    'symbol-overlay-map
-    "h" nil))
+  (define-key symbol-overlay-map (kbd "h") nil))
 
-(use-package link-hint
-  :config
-  (mememacs/leader-def
-    "ju" #'link-hint-open-link))
+(use-package link-hint)
 
 (use-package guix
   :when mememacs/enable-guix
@@ -569,10 +436,6 @@
           try-expand-list
           try-expand-line)))
 
-
-(use-package flycheck-clj-kondo
-  :after cider)
-
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
 
@@ -587,12 +450,7 @@
 (load custom-file t)
 
 (use-package winner
-  :config
-  (winner-mode)
-  (general-def
-    evil-window-map
-    "u" #'winner-undo
-    "r" #'winner-redo))
+  :config (winner-mode))
 
 (general-def
     :states '(normal motion)
@@ -683,8 +541,6 @@
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
-(require 'keybinds)
-
 (use-package server
   :ensure nil
   :defer 1
@@ -727,9 +583,7 @@
        (define-key help-map key 'iedit-mode-toggle-on-function))
 
   (add-hook 'mememacs/escape-functions (defun mm/iedit-quit ()
-					 (when iedit-lib-quit-func (iedit--quit))))
-  )
-
+					 (when iedit-lib-quit-func (iedit--quit)))))
 
 (use-package elfeed
   :defer t
@@ -743,7 +597,6 @@
      "https://writepermission.com/rss.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/atom.xml")))
-
 
 (use-package emacs
   :config
@@ -836,256 +689,10 @@ Example:
 ;; instrument package
 ;; epl results
 
-;; figure out where the code is for guix packages
-
-					; pprint
-
-
-
-(use-package meow
-  :config
-
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
-	  meow-use-cursor-position-hack t
-	  meow--kbd-undo "C-_"
-	  meow-use-clipboard t)
-
-    (meow--setup-which-key nil)
-    (setq meow-keypad-describe-keymap-function nil)
-
-    (add-hook 'mememacs/escape-functions #'meow-cancel-selection)
-
-    (setf meow-keypad-start-keys
-	  '((?c . ?c)
-	    (?h . ?h)
-	    (?x . ?x)
-	    (?j . ?x)))
-
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("l" . meow-right)
-     '("h" . meow-left)
-     '("," . meow-keypad)
-     '("<escape>" . ignore))
-
-    (meow-leader-define-key
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("bb" . consult-buffer)
-     '("bh" . meow-last-buffer)
-     '("bd" . kill-this-buffer)
-
-
-     '("bs" . mm/scratch-el)
-     '("br" . revert-buffer)
-     '("wd" . kill-buffer-and-window)
-     '("wh" . split-window-vertically)
-     '("wv" . split-window-horizontally)
-
-     '("fe" . mememacs/find-init-file)
-     '("fj" . save-buffer)
-     '("ff" . consult-find)
-
-     '("oj" . mm/denote-load)
-     '("s" . meow-visit)
-     '("/" . meow-keypad-describe-key)
-
-     '("?" . meow-cheatsheet)
-     '("ag" . consult-git-grep)
-     )
-
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-
-     '("," . meow-keypad)
-
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-
-     '("\\" . meow-next-word)
-     '("|" . meow-next-symbol)
-
-     '("e" . special-lispy-eval)
-     '("E" . special-lispy-eval-and-insert)
-     '("C-m" . lispy-mark-symbol)
-
-
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     ;; '("q" . meow-quit)
-     ;; '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . undo-tree-redo)
-     '("M-u" . meow-undo-in-selection)
-     '("v" . meow-inner-of-thing)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . ignore)
-     '("/" . isearch-forward)
-     )
-
-    (meow-define-keys 'insert
-      '("C-j" . completion-at-point)
-      '("e" . special-lispy-eval)
-      '("E" . special-lispy-eval-and-insert)))
-  (meow-setup)
-
-  (meow-global-mode 1)
-
-
-  (defun lispyville-end-of-defun ()
-    "This is the evil motion equivalent of `end-of-defun'.
-This won't jump to the end of the buffer if there is no paren there."
-    (interactive)
-    (when (<= (- (line-end-position)
-		 (point))
-              1)
-      (forward-line))
-    (end-of-defun 1)
-    (re-search-backward lispy-right nil t)
-    (meow-append))
-
-  (meow-normal-define-key '("C-l" . lispyville-end-of-defun))
-  (meow-define-keys 'insert '("C-l" . lispyville-end-of-defun))
-
-  (defun mm/meow-insert (&rest _) (meow-insert))
-  (advice-add #'lispy-right-nostring :after #'mm/meow-insert)
-
-  (advice-add #'lispy-left-maybe :after #'mm/meow-insert)
-  (define-key lispy-mode-map-lispy (kbd "(") #'lispy-parens)
-
-
-  (defun mm/embark-meow-keypad-desribe ()
-    (interactive)
-    (let ((kmap (meow--keypad-get-keymap-for-describe)))
-      (meow-keyboard-quit)
-      (embark-bindings-in-keymap kmap)))
-
-  (define-key meow-keypad-state-keymap (kbd "?") #'mm/embark-meow-keypad-desribe)
-
-
-  (defvar mm/spc-map (let ((m (make-sparse-keymap)))
-		       (define-key m (kbd "f") #'find-file)
-		       (define-key m (kbd "b") #'consult-buffer)
-		       m))
-
-  (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
-
-  (defun mm/lispy-back-or-lispy-pair (arg)
-    (interactive "P")
-    (if (region-active-p)
-	(lispy-parens arg)
-      (lispy-backward (or arg 1))
-      (meow-insert)))
-
-  (meow-normal-define-key '("(" . mm/lispy-back-or-lispy-pair))
-
-  (defvar mm/spc-map (let ((m (make-sparse-keymap)))
-		       (define-key m (kbd "f")
-				   #'find-file)
-		       (define-key m (kbd "b")
-				   #'consult-buffer)
-		       (define-key m (kbd "s")
-				   #'magit-status)
-		       (define-key m (kbd "p")
-				   project-prefix-map)
-		       (define-key m (kbd "/")
-				   #'consult-ripgrep)
-		       (define-key m (kbd "wd")
-				   #'delete-window)
-		       (define-key m (kbd "wu")
-				   #'winner-undo)
-		       (define-key m (kbd "wU")
-				   #'winner-redo)
-		       m))
-
-  (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
-  (define-key meow-motion-state-keymap (kbd "SPC") mm/spc-map)
-
-  (define-key isearch-mode-map (kbd "/") #'isearch-repeat-forward)
-
-  (defvar mm/c-c-c-j-map
-    (let ((m (make-sparse-keymap
-	      "mememacs j map")))
-      (define-key m (kbd "f") #'find-function)
-      (define-key m (kbd "l") #'find-library)
-      m))
-
-  (define-key global-map (kbd "C-c C-j") mm/c-c-c-j-map)
-
-  (defun call-C-c-C-c ()
-    (interactive)
-    (call-interactively (key-binding (kbd "C-c C-c"))))
-
-  (defun call-C-c-C-k ()
-    (interactive)
-    (call-interactively (key-binding (kbd "C-c C-k"))))
-
-  (meow-leader-define-key
-   '("," . call-C-c-C-c)
-   '("k" . call-C-c-C-k))
-
-  (define-key magit-status-mode-map (kbd "x") #'magit-discard)
-  (define-key magit-status-mode-map (kbd "p") #'magit-push)
-
-  (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
-  (define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char))
-
+(use-package
+  meow
+  :config (require 'init-meow)
+  (meow-global-mode 1))
 
 ;; (use-package boon
 ;;   :config
@@ -1093,4 +700,4 @@ This won't jump to the end of the buffer if there is no paren there."
 ;;   (boon-mode))
 
 
-(require 'mememacs-stumpwm)
+;; (require 'mememacs-stumpwm)

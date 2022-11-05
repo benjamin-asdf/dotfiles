@@ -71,27 +71,15 @@ See `eval-last-sexp'."
 	   (buffer-string)))
       s)))
 
-(general-def
-  :states '(normal motion)
-  "," nil
-  ",d" '(:ignore t)
-  ",dv" #'debug-on-variable-change
-  ",dd" #'debug-on-entry
-  ",dr" #'trace-function
-  ",dt" #'toggle-debug-on-error
-  ",dq" #'toggle-debug-on-quit
-  ",dx" #'mememacs/cancel-debugs)
-
-(mememacs/leader-def
-  "br" #'revert-buffer)
-
 (defvar mememacs/escape-functions '())
 (defun mememacs/escape ()
   "Run `mememacs/escape-functions'"
   (interactive)
-  (run-hooks 'mememacs/escape-functions))
+  (run-hook-wrapped 'mememacs/escape-functions
+		    (lambda (f)
+		      (progn (ignore-errors (funcall f)) nil))))
 
-(general-def "S-<escape>" #'mememacs/escape)
+(define-key global-map (kbd "S-<escape>") #'mememacs/escape)
 
 (add-hook 'mememacs/escape-functions #'widen)
 
@@ -212,7 +200,6 @@ With prefix arg make a new file."
   (find-file file)
   (insert bang)
   (save-buffer)
-  (evil-insert-state)
   (set-file-modes file #o751)
   (funcall setup))
 
@@ -267,10 +254,6 @@ With prefix arg make a new file."
      it)
    (progn (kill-new it)
 	  (message "Copied %s" it))))
-
-(mememacs/comma-def
-  :states 'normal
-  "fy" #'mememacs/copy-file-name-dwim)
 
 (defun mm/force-clear-buff ()
   (interactive)
@@ -330,22 +313,7 @@ With prefix arg make a new file."
   "jJ" #'scroll-hydra/lambda-J
   "jK" #'scroll-hydra/lambda-K)
 
-(mememacs/comma-def
-  "f" '(:ignore t)
-  "fj" #'save-buffer
-  "ff" #'consult-find
-  "l" #'consult-line
 
-  "," (defun call-C-c-C-c ()
-	(interactive)
-	(call-interactively (key-binding (kbd "C-c C-c"))))
-
-  "k" (defun call-C-c-C-k ()
-	(interactive)
-	(call-interactively (key-binding (kbd "C-c C-k"))))
-
-  "x" (key-binding (kbd "C-x"))
-  "c" (key-binding (kbd "C-c")))
 
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
@@ -487,6 +455,6 @@ When called with a prefix argument NLINES, display NLINES lines before and after
     (async-shell-command (concat command " " filename))))
 
 (general-def "C-M-&" #'mm/shell-command-on-file)
-(mememacs/comma-def "&" #'mm/shell-command-on-file)
+
 
 (provide 'functions-1)

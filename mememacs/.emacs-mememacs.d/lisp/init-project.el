@@ -16,23 +16,24 @@
        nil
        'no-default)))))
 
-(mememacs/leader-def
-  "p"
-  project-prefix-map
-  "pl" #'recompile
-  "pP" (defun mm/project-switch-project-find-file ()
-	 (interactive)
-	 (let ((mm/project-command #'consult-project-buffer))
-	   (call-interactively #'project-switch-project)))
-  "p."
-  (defun mm/project-list-file ()
-    (interactive)
-    (find-file project-list-file))
-  "pf" #'consult-project-buffer
-  "pm" #'magit-status
-  "p/" #'consult-ripgrep
-  "pG" #'consult-git-grep
-  "p\\" #'mememacs/fd-find-file)
+(defun mm/project-switch-project-find-file ()
+  (interactive)
+  (let ((mm/project-command #'consult-project-buffer))
+    (call-interactively #'project-switch-project)))
+(defun mm/project-list-file ()
+      (interactive)
+      (find-file project-list-file))
+
+(bind-keys
+ :map project-prefix-map
+ ("l" . recompile)
+ ("P" . mm/project-switch-project-find-file)
+ ("." . mm/project-list-file)
+ ("f" . consult-project-buffer)
+ ("m" . magit-status)
+ ("/" . consult-ripgrep)
+ ("G" . consult-git-grep)
+ ("\\" . mememacs/fd-find-file))
 
 (defun mm/cmd->lines (command)
   (with-temp-buffer

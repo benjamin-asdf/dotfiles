@@ -1,8 +1,3 @@
-(general-def
-  evil-window-map
-  "m" #'delete-other-windows
-  "d" #'evil-window-delete)
-
 (mememacs/leader-def
   "t" '(:ignore t)
   "n" '(:ignore t)
@@ -17,7 +12,6 @@
   "fj" #'save-buffer
   "fJ" #'save-some-buffers
   "u" #'undo-tree-visualize
-  "w" evil-window-map
   "j" '(:ignore t)
 
   "jd" #'dired-jump
