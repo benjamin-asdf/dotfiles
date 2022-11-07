@@ -249,25 +249,7 @@
 
 (defalias #'lispy-occur #'mememacs/lispy-occur-consult)
 
-(defun mememacs/lispy-set-faces ()
-  (if
-      (and (eq evil-state 'insert)
-	   (lispyville--special-p))
-      (set-face-attribute
-       'show-paren-match
-       nil
-       :foreground mindsape/heliotrope
-       :underline t)
-    (set-face-attribute
-     'show-paren-match
-     nil
-     :foreground mindsape/mint-bright-2
-     :underline t)))
 
-(setf show-paren-style 'parenthesis)
-
-(add-hook 'evil-insert-state-entry-hook #'mememacs/lispy-set-faces)
-(add-hook 'evil-normal-state-entry-hook #'mememacs/lispy-set-faces)
 
 (defun mm/lispy-advice-print-length (f r)
   "This is so you do not get '...' all the time

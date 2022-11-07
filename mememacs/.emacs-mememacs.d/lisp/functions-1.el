@@ -14,23 +14,7 @@
   (interactive)
   (let ((s (buffer-name)))
     (kill-new s)
-    (message "%s"s)))
-
-;; http://stackoverflow.com/a/10216338/4869
-(defun mm/kill-whole-buffer ()
-  "Copy entire buffer to clipboard"
-  (interactive)
-  (clipboard-kill-ring-save (point-min) (point-max)))
-
-(mememacs/leader-def
-  "by" #'mememacs/kill-buffer-name
-  "bY" #'mm/kill-whole-buffer)
-
-(defun mememacs/lispy-eval-line ()
-  (interactive)
-  (save-excursion
-    (goto-char (line-end-position))
-    (special-lispy-eval)))
+    (message "%s" s)))
 
 (defun mememacs/cancel-debugs ()
   (interactive)
@@ -313,8 +297,6 @@ With prefix arg make a new file."
   "jJ" #'scroll-hydra/lambda-J
   "jK" #'scroll-hydra/lambda-K)
 
-
-
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
 where the file does not exist."
@@ -371,7 +353,6 @@ where the file does not exist."
   :keymaps '(git-commit-mode-map)
   "i" #'mm/completing-read-commit-msg)
 
-
 ;; from https://www.emacswiki.org/emacs/CopyingWholeLines
 (defun mm/duplicate-line-or-region (&optional n)
   "Duplicate current line, or region if active.
@@ -406,7 +387,6 @@ With negative N, comment out original line and use the absolute value."
 (mememacs/leader-def
   "xL" #'mm/duplicate-line-or-region)
 
-
 (defun mm/copy-word-above ()
   (interactive)
   (insert
@@ -436,7 +416,6 @@ With negative N, comment out original line and use the absolute value."
 
 (add-hook 'yank-transform-functions #'mm/trim-string-for-yank-when-inserting-in-quotes)
 
-
 ;; thanks https://github.com/NicolasPetton/noccur.el
 (defun noccur-dired (regexp &optional nlines)
   "Perform `multi-occur' with REGEXP in all dired marked files.
@@ -455,6 +434,5 @@ When called with a prefix argument NLINES, display NLINES lines before and after
     (async-shell-command (concat command " " filename))))
 
 (general-def "C-M-&" #'mm/shell-command-on-file)
-
 
 (provide 'functions-1)

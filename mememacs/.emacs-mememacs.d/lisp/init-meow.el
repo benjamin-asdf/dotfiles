@@ -43,11 +43,12 @@
  '("bs" . mm/scratch-el)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
- '("by" . mm/kill-whole-buffer)
+ '("by" . mememacs/kill-buffer-name)
+
  '("wd" . delete-window)
  '("wh" . split-window-vertically)
- '("wv" . split-window-right)
  '("ws" . split-window-below)
+ '("wv" . split-window-right)
  '("wD" . ace-delete-window)
  '("ww" . ace-window)
  '("wm" . delete-other-windows)
@@ -62,10 +63,12 @@
  '("/" . meow-keypad-describe-key)
  '("!" . flycheck-mode)
  '("?" . meow-cheatsheet)
- '("ag" . consult-git-grep) '("aj" . avy-goto-char-timer)
+ '("ag" . consult-git-grep)
+ '("aj" . avy-goto-char-timer)
  '("aw" . avy-goto-word-1)
  '("e" . string-edit-at-point)
- '("&" . mm/shell-command-on-file))
+ '("&" . mm/shell-command-on-file)
+ '("u" . vundo))
 
 (meow-normal-define-key
  '("0" . meow-expand-0)
@@ -125,7 +128,7 @@
  '("s" . meow-kill)
  '("t" . meow-till)
  '("u" . meow-undo)
- '("U" . undo-tree-redo)
+ '("U" . undo-redo)
  '("M-u" . meow-undo-in-selection)
  '("v" . meow-inner-of-thing)
  '("w" . meow-mark-word)
@@ -144,6 +147,14 @@
   '("C-j" . completion-at-point)
   '("e" . special-lispy-eval)
   '("E" . special-lispy-eval-and-insert))
+
+(global-set-key "/" #'isearch-forward)
+(global-set-key "/" nil)
+
+;; (global-set-key
+;;  (kbd
+;;   "s-<backspace>")
+;;  #')
 
 
 (defun lispyville-end-of-defun ()
@@ -219,6 +230,7 @@ This won't jump to the end of the buffer if there is no paren there."
 		     (define-key m (kbd "z") #'recenter)
 		     (define-key m (kbd "ju") #'link-hint-open-link)
 		     (define-key m (kbd "jl") #'avy-goto-line)
+		     (define-key m (kbd "jj") #'avy-goto-char-timer)
 		     m))
 
 (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
@@ -363,5 +375,55 @@ This won't jump to the end of the buffer if there is no paren there."
 
 ;; I hit this key accidentally 10 times per day
 (define-key help-map (kbd "h") (defun mm/no-help-file () (interactive) (message "C-h h, lol")))
+
+(delete-selection-mode)
+
+(defvar-local mm/moew-last-normal nil)
+
+(add-hook 'meow-insert-mode-hook
+	  (defun mm/remember-last-normal-meow ()
+	    (setf mm/moew-last-normal (point))))
+
+(meow-leader-define-key
+ (cons (kbd ";")
+       (defun mm/goto-last-meow-normal ()
+	 (interactive)
+	 (when mm/moew-last-normal
+	   (goto-char mm/moew-last-normal)))))
+
+(defun mememacs/lispy-set-faces ()
+  (if
+      (and (eq meow--current-state 'insert)
+	   (or
+	    (lispy-left-p)
+	    (lispy-right-p)
+	    (and (lispy-bolp)
+		 (or (looking-at lispy-outline-header)
+		     (looking-at lispy-outline)))))
+      (set-face-attribute
+       'show-paren-match
+       nil
+       :foreground mindsape/heliotrope
+       :underline t)
+    (set-face-attribute
+     'show-paren-match
+     nil
+     :foreground mindsape/mint-bright-2
+     :underline t)))
+
+(setf
+ show-paren-style 'parenthesis
+ show-paren-context-when-offscreen 'overlay
+ show-paren-when-point-in-periphery t
+ show-paren-when-point-inside-paren t)
+
+(add-hook 'meow-insert-mode-hook #'mememacs/lispy-set-faces)
+(add-hook 'meow-normal-mode-hook #'mememacs/lispy-set-faces)
+
+(bind-keys
+ :map emacs-lisp-mode-map
+ ("C-, m" . macrostep-expand))
+
+(define-key lispy-mode-map-lispy (kbd "C-,") nil)
 
 (provide 'init-meow)

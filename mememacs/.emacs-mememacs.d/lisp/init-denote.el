@@ -67,6 +67,8 @@
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
 
+(add-to-list org-babel-load-languages '(clojure . t))
+(add-to-list org-babel-load-languages '(shell . t))
 
 (advice-add
  'org-babel-execute-src-block

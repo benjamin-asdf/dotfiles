@@ -8,7 +8,8 @@
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
-      cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm")
+      cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm"
+      cider-merge-sessions 'host)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -221,7 +222,6 @@ specific project."
 (advice-add 'cider-interactive-eval :before #'mm/cider-barf-unless-connected)
 (advice-add 'cider-load-buffer :before #'mm/cider-barf-unless-connected)
 
-
 ;; ---
 
 (defun mm/bb (form)
@@ -307,5 +307,11 @@ specific project."
   (setf
    gdscript-godot-executable "godot-mono"
    gdscript-docs-use-eww nil))
+
+(bind-keys
+ :map cider-mode-map
+ ("C-, m" . macrostep-expand)
+ ("C-, k" . cider-doc)
+ ("C-, h" . cider-clojuredocs))
 
 (provide 'init-cider)

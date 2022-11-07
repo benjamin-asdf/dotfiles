@@ -73,15 +73,10 @@
 (use-package general
   :config (require 'init-general))
 
-(use-package undo-tree
-  :ensure t
+(use-package vundo
   :config
-  (global-undo-tree-mode)
-  (setf undo-tree-auto-save-history nil)
-  (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
-  (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
-  (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)
-  (general-unbind undo-tree-map "C-/"))
+  (setq vundo-glyph-alist vundo-unicode-symbols
+	vundo-compact-display t))
 
 (use-package hydra)
 
@@ -185,10 +180,10 @@
 (use-package consult-dir
   :config
   :bind
-  (:map vertico-map
-	:prefix "C-,"
-	("C-, d" . consult-dir)
-	("C-, j" . consult-dir-jump-file)))
+  (:map
+   vertico-map
+   ("C-, d" . consult-dir)
+   ("C-, j" . consult-dir-jump-file)))
 
 (use-package marginalia
   :bind
