@@ -77,4 +77,6 @@
    (require 'ob-clojure)
    (require 'ob-shell)))
 
+(setf org-cycle-global-at-bob t)
+
 (provide 'init-denote)

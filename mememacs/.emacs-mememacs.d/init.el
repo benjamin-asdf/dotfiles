@@ -171,11 +171,10 @@
   (require 'init-consult))
 
 (use-package consult-flycheck
-  :config
-  (mememacs/local-def
-    :states '(normal)
-    :keymaps '(flycheck-mode-map)
-    "e," #'consult-flycheck))
+  :bind
+  (:map
+   flycheck-mode-map
+   ("," . #'consult-flycheck)))
 
 (use-package consult-dir
   :config
@@ -287,15 +286,17 @@
 
 ;; https://github.com/magnars/string-edit.el/issues/19
 (when
-    (require
-     'string-edit-at-point
-     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
-		       mememacs/config-dir)
-     t)
-  (mememacs/local-def
-    :states '(normal insert)
-    :keymaps '(prog-mode-map)
-    "se" #'string-edit-at-point))
+    (or
+     (require
+      'string-edit-at-point
+      (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
+			mememacs/config-dir)
+      t)
+     (require
+      'string-edit-at-point
+      (expand-file-name "straight/repos/string-edit.el/string-edit.el"
+			mememacs/config-dir)
+      t)))
 
 (use-package ace-window
   :config

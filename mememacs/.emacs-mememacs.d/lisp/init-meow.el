@@ -68,7 +68,11 @@
  '("aw" . avy-goto-word-1)
  '("e" . string-edit-at-point)
  '("&" . mm/shell-command-on-file)
- '("u" . vundo))
+ '("u" . vundo)
+ '("r" . vertico-repeat-last)
+ '("R" . vertico-repeat-select)
+
+ '("fr" . display-line-numbers-mode))
 
 (meow-normal-define-key
  '("0" . meow-expand-0)
@@ -209,6 +213,28 @@ This won't jump to the end of the buffer if there is no paren there."
 
 (meow-normal-define-key '("(" . mm/lispy-back-or-lispy-pair))
 
+(defun mm/lispy-ace-symbol-window ()
+  "Like `lispy-ace-symbol` but from the whole screen.
+This is the power I desired."
+  (interactive)
+  (let ((avy-keys lispy-avy-keys)
+        res)
+    (avy-with lispy-ace-symbol
+      (let ((avy--overlay-offset (if (eq lispy-avy-style-symbol 'at) -1 0)))
+        (setq res (lispy--avy-do
+                   "[([{ ]\\(?:\\sw\\|\\s_\\|[\"'`#~,@]\\)"
+		   (cons (window-start) (window-end))
+		   (lambda ()
+                     (not (save-excursion
+                            (forward-char -1)
+                            (lispy--in-string-or-comment-p))))
+                   lispy-avy-style-symbol))))
+    (unless (memq res '(t nil))
+      (unless (or (eq (char-after) ?\")
+                  (looking-at ". "))
+        (forward-char 1))
+      (lispy-mark-symbol))))
+
 (defvar mm/spc-map (let ((m (make-sparse-keymap)))
 		     (define-key m (kbd "f")
 				 #'find-file)
@@ -231,6 +257,7 @@ This won't jump to the end of the buffer if there is no paren there."
 		     (define-key m (kbd "ju") #'link-hint-open-link)
 		     (define-key m (kbd "jl") #'avy-goto-line)
 		     (define-key m (kbd "jj") #'avy-goto-char-timer)
+		     (define-key m (kbd "ja") #'mm/lispy-ace-symbol-window)
 		     m))
 
 (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
@@ -336,6 +363,8 @@ This won't jump to the end of the buffer if there is no paren there."
   ("?" lispy-x-more-verbosity "help" :exit nil))
 
 
+(advice-add #'lispy-goto-symbol-clojure :override #'cider-find-var)
+
 (defun mm/lispy-meow-symbol-and-insert ()
   (interactive)
   (meow-insert)
@@ -413,7 +442,8 @@ This won't jump to the end of the buffer if there is no paren there."
 
 (setf
  show-paren-style 'parenthesis
- show-paren-context-when-offscreen 'overlay
+ show-paren-context-when-offscreen nil
+ ;; 'overlay
  show-paren-when-point-in-periphery t
  show-paren-when-point-inside-paren t)
 
