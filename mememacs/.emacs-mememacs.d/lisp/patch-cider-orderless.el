@@ -25,9 +25,3 @@
 (advice-add 'cider-complete-at-point :override #'mm/cider-complete-at-point)
 
 (provide 'patch-cider-orderless)
-
-
-
-(cider-complete "links/")
-(cider-complete "pri")
-(cider-complete "pri")
