@@ -456,4 +456,7 @@ This is the power I desired."
 
 (define-key lispy-mode-map-lispy (kbd "C-,") nil)
 
+(define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
+(define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
+
 (provide 'init-meow)
