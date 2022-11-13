@@ -20,8 +20,8 @@
  '("l" . meow-right)
  '("h" . meow-left)
  '("," . meow-keypad)
+ '("/" . isearch-forward)
  '("<escape>" . ignore))
-
 
 (meow-leader-define-key
  '("1" . meow-digit-argument)
@@ -262,7 +262,6 @@ This is the power I desired."
 
 (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
 (define-key meow-motion-state-keymap (kbd "SPC") mm/spc-map)
-
 (define-key isearch-mode-map (kbd "/") #'isearch-repeat-forward)
 
 (defvar mm/c-c-c-j-map
@@ -458,5 +457,8 @@ This is the power I desired."
 
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "/") #'self-insert-command))
 
 (provide 'init-meow)
