@@ -6,4 +6,4 @@ pgrep -f "when-low-on-mem-kill-unity" || watch when-low-on-mem-kill-unity &
 
 ulimit -n 4096
 
-nice -n 2 Unity -forcefree -buildTarget standalone -projectPath ~/idlegame/IdleGame/
+nice -n 2 /home/benj/Unity/Hub/Editor/2021.3.13f1/Editor/Unity -forcefree -buildTarget standalone -projectPath ~/idlegame/IdleGame/

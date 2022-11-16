@@ -67,15 +67,9 @@
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
 
-(add-to-list org-babel-load-languages '(clojure . t))
-(add-to-list org-babel-load-languages '(shell . t))
+(add-to-list 'org-babel-load-languages '(clojure . t))
+(add-to-list 'org-babel-load-languages '(shell . t))
 
-(advice-add
- 'org-babel-execute-src-block
- :before
- (defun mm/load-ob-implementations (&rest _)
-   (require 'ob-clojure)
-   (require 'ob-shell)))
 
 (setf org-cycle-global-at-bob t)
 

@@ -155,12 +155,6 @@
 (global-set-key "/" #'isearch-forward)
 (global-set-key "/" nil)
 
-;; (global-set-key
-;;  (kbd
-;;   "s-<backspace>")
-;;  #')
-
-
 (defun lispyville-end-of-defun ()
   "This is the evil motion equivalent of `end-of-defun'.
 This won't jump to the end of the buffer if there is no paren there."

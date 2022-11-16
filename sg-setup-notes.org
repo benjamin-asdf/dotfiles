@@ -43,10 +43,16 @@ you want 3.1 sdk
 
 ** specific unity version
 - find the version you need
+
 #+begin_src shell
-    cd <repo-root>
+    cd ~/idlegame/
     cat IdleGame/ProjectSettings/ProjectVersion.txt | head -n 1 | cut  -d " " -f2
 #+end_src
+
+#+RESULTS:
+: 2021.3.13f1
+
+
 - go here https://unity3d.com/get-unity/download/archive
 - get the url from the "unity hub" button (e.g. right click "copy link
   address"

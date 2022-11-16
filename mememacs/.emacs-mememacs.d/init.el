@@ -170,11 +170,7 @@
   :config
   (require 'init-consult))
 
-(use-package consult-flycheck
-  :bind
-  (:map
-   flycheck-mode-map
-   ("," . #'consult-flycheck)))
+(use-package consult-flycheck)
 
 (use-package consult-dir
   :config

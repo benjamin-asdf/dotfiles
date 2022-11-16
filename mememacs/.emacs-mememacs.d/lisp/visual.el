@@ -67,14 +67,9 @@
 
 ;;; Programming
 
-(set-face-foreground 'font-lock-comment-face mindsape/tundora)
+(set-face-foreground 'font-lock-comment-face "cyan")
 (set-face-foreground 'font-lock-comment-delimiter-face mindsape/scorpion)
-
-(set-face-foreground
- 'font-lock-comment-delimiter-face
- (face-foreground
-  'font-lock-comment-face))
-
+(set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
 (set-face-foreground 'font-lock-doc-face "#84892f")
 
 (set-face-foreground 'font-lock-string-face "#abd1d0")
