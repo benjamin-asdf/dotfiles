@@ -177,6 +177,6 @@ Meant to be added to `embark-identifier-map`"
 (general-def
   embark-file-map "r" #'mm/kill-file-name-relative-to-project)
 
-
+(define-key embark-region-map (kbd "y") #'mm/duplicate-line-or-region)
 
 (provide 'init-embark)

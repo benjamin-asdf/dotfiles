@@ -175,10 +175,9 @@ With prefix arg make a new file."
        (b (process-buffer id)))
     (switch-to-buffer b)))
 
-(general-def
-  :states '(normal motion)
-  :keymaps '(process-menu-mode-map)
-  "b" #'mememacs/process-menu-switch-to-buffer)
+(define-key
+  process-menu-mode-map
+  (kbd "b") #'mememacs/process-menu-switch-to-buffer)
 
 (defun mememacs/create-script* (file bang setup)
   (find-file file)
@@ -384,17 +383,12 @@ With negative N, comment out original line and use the absolute value."
 	(forward-line 1)
 	(forward-char pos)))))
 
-(mememacs/leader-def
-  "xL" #'mm/duplicate-line-or-region)
-
 (defun mm/copy-word-above ()
   (interactive)
   (insert
    (save-excursion
      (evil-previous-line 1)
      (thing-at-point 'evil-WORD))))
-
-(general-def :states '(insert) "C-w" #'mm/copy-word-above)
 
 (defun github-pull-readme (&optional url)
   (interactive (list (read-from-kill-ring "find github readme: ")))
@@ -432,7 +426,5 @@ When called with a prefix argument NLINES, display NLINES lines before and after
                       default-directory
                     (buffer-file-name))))
     (async-shell-command (concat command " " filename))))
-
-(general-def "C-M-&" #'mm/shell-command-on-file)
 
 (provide 'functions-1)
