@@ -14,6 +14,7 @@ XTerm*reverseVideo:      on
 XTerm*selectToClipboard: true
 XTerm.vt100.backarrowKey: false
 XTerm.ttyModes: erase ^?
+XTerm.vt100.metaSendsEscape: true
 
 *foreground: #17161e
 *background: #faf7f7

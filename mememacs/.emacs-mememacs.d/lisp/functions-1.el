@@ -248,7 +248,7 @@ With prefix arg make a new file."
   "buffer"
   ("d" #'kill-current-buffer)
   ("k" #'previous-buffer)
-  ("j" #'previous-buffer)
+  ("j" #'next-buffer)
   ("b" #'consult-buffer :exit t)
   ("a" #'mark-whole-buffer)
   ("y" #'mememacs/kill-buffer-name :exit t))

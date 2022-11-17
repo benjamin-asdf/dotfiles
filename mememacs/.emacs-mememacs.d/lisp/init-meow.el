@@ -39,7 +39,8 @@
  (cons "bd"  (defun mm/kill-this-buffer ()
 	       (interactive)
 	       (kill-buffer (current-buffer))))
-
+ '("bD" . hydra-buffer/kill-current-buffer)
+ '("bj" . next-buffer)
  '("bs" . mm/scratch-el)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
@@ -125,8 +126,6 @@
  '("o" . meow-block)
  '("O" . meow-to-block)
  '("p" . meow-yank)
- ;; '("q" . meow-quit)
- ;; '("Q" . meow-goto-line)
  '("r" . meow-replace)
  '("R" . meow-swap-grab)
  '("s" . meow-kill)
@@ -319,7 +318,6 @@ This is the power I desired."
 			       :hint nil
 			       :columns 3)
   "x"
-  ;; ("a" nil)
   ("b" lispy-bind-variable "bind variable")
   ("c" lispy-to-cond "to cond")
   ("C" lispy-cleanup "cleanup")
@@ -328,7 +326,6 @@ This is the power I desired."
   ("e" lispy-edebug "edebug")
   ("f" lispy-flatten "flatten")
   ("F" lispy-let-flatten "let-flatten")
-  ;; ("g" nil)
   ("h" lispy-describe "describe")
   ("i" lispy-to-ifs "to ifs")
   ("j" lispy-debug-step-in "debug step in")
@@ -336,18 +333,13 @@ This is the power I desired."
   ("l" lispy-to-lambda "to lambda")
   ("m" lispy-cursor-ace "multi cursor")
   ("n" lispy-cd)
-  ;; ("o" nil)
   ("p" lispy-set-python-process "process")
-  ;; ("q" nil)
   ("r" lispy-eval-and-replace "eval and replace")
   ("s" lispy-splice)
   ("t" lispy-view-test "view test")
   ("u" lispy-unbind-variable "unbind let-var")
   ("v" lispy-eval-expression "eval")
   ("w" lispy-show-top-level "where")
-  ;; ("x" nil)
-  ;; ("y" nil)
-  ;; ("z" nil)
   ("B" lispy-store-region-and-buffer "store list bounds")
   ("R" lispy-reverse "reverse")
   ("T" lispy-ert "ert")
@@ -452,7 +444,22 @@ This is the power I desired."
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
 
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "/") #'self-insert-command))
+(global-set-key (kbd "/") #'self-insert-command)
+;; (with-eval-after-load 'org
+;;   (define-key org-mode-map (kbd "/") #'self-insert-command))
+
+(defun mm/meow-right-or-avy ()
+  (interactive)
+  (let ((ra (region-active-p)))
+    (if (and ra
+	     (not (equal '(expand . char)
+			 (meow--selection-type))))
+	(if (meow--direction-forward-p)
+	    (progn (avy-goto-line-below)
+		   (goto-char (point-at-eol)))
+	  (call-interactively #'avy-goto-line-above))
+      (meow-right))))
+
+(meow-normal-define-key '("l" . mm/meow-right-or-avy))
 
 (provide 'init-meow)

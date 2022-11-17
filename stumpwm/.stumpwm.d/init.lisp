@@ -377,6 +377,7 @@ This is needed if Sly updates while StumpWM is running"
  (my-mv :left)
  (load-module "wifi")
  (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %I")
+ (run-shell-command "hostname" t)
  (load-module "battery-portable")
  (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
  (tile-group-current-frame (current-group))

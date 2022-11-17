@@ -174,6 +174,9 @@ Meant to be added to `embark-identifier-map`"
     (project-root
      (project-current)))))
 
-(general-def embark-file-map "r" #'mm/kill-file-name-relative-to-project)
+(general-def
+  embark-file-map "r" #'mm/kill-file-name-relative-to-project)
+
+
 
 (provide 'init-embark)
