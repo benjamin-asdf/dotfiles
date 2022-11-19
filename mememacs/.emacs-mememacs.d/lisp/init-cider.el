@@ -314,4 +314,18 @@ specific project."
  ("C-, k" . cider-doc)
  ("C-, h" . cider-clojuredocs))
 
+
+;; happens to me all time I get a compilation error for the toplevel
+;; if you eval a compilation error via evel sexp etc, same thing
+;; and it jumps to the top
+;; even though that does not help me
+(advice-add
+ #'cider-jump-to
+ :before-while
+ (defun mm/cider-do-not-jump-if-pos-1-same-buffer
+     (buffer &optional pos other-window)
+   (or
+    (not (equal buffer (current-buffer)))
+    (not (eq pos 1)))))
+
 (provide 'init-cider)
