@@ -32,9 +32,7 @@
   :keymaps
   '(clojure-mode-map cider-repl-mode clojurescript-mode)
   "m" #'macrostep-expand
-
   "e" 'cider-eval-commands-map
-
   "l" 'cider-doc-map
   "h," #'cider-drink-a-sip
   "k" #'cider-load-buffer
