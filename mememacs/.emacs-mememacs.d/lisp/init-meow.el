@@ -167,7 +167,7 @@ This won't jump to the end of the buffer if there is no paren there."
 (defun mm/c-l ()
   (interactive)
   (if (region-active-p)
-      (if (meow--direction-forward-p)str/blank?
+      (if (meow--direction-forward-p)
 	  (progn (avy-goto-line-below) (end-of-line))
 	  (progn (avy-goto-line-above) (beginning-of-line)))
     (lispyville-end-of-defun)))
