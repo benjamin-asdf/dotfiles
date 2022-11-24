@@ -151,9 +151,7 @@
   '("e" . special-lispy-eval)
   '("E" . special-lispy-eval-and-insert))
 
-(global-set-key "/" #'isearch-forward)
-(global-set-key "/" nil)
-
+;; thanks https://github.com/noctuid/lispyville
 (defun lispyville-end-of-defun ()
   "This is the evil motion equivalent of `end-of-defun'.
 This won't jump to the end of the buffer if there is no paren there."
@@ -166,8 +164,16 @@ This won't jump to the end of the buffer if there is no paren there."
   (re-search-backward lispy-right nil t)
   (meow-append))
 
-(meow-normal-define-key '("C-l" . lispyville-end-of-defun))
-(meow-define-keys 'insert '("C-l" . lispyville-end-of-defun))
+(defun mm/c-l ()
+  (interactive)
+  (if (region-active-p)
+      (if (meow--direction-forward-p)str/blank?
+	  (progn (avy-goto-line-below) (end-of-line))
+	  (progn (avy-goto-line-above) (beginning-of-line)))
+    (lispyville-end-of-defun)))
+
+(meow-normal-define-key '("C-l" . mm/c-l))
+(meow-define-keys 'insert '("C-l" . mm/c-l))
 
 (defun mm/meow-insert (&rest _) (meow-insert))
 (advice-add #'lispy-right-nostring :after #'mm/meow-insert)
@@ -291,9 +297,8 @@ This is the power I desired."
 (with-eval-after-load 'magit-status
   (define-key magit-status-mode-map (kbd "x") #'magit-discard)
   (define-key magit-status-mode-map (kbd "p") #'magit-push))
+
 (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
-
-
 (define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char)
 
 
@@ -463,5 +468,9 @@ This is the power I desired."
       (meow-right))))
 
 (meow-normal-define-key '("l" . mm/meow-right-or-avy))
+
+(global-set-key (kbd "H-n") #'meow-normal-mode)
+(global-set-key (kbd "H-j") #'meow-end-or-call-kmacro)
+(global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
 
 (provide 'init-meow)

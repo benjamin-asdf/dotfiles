@@ -92,21 +92,40 @@
 
 ;; https://github.com/abo-abo/lispy/issues/639
 
-(defvar lispy-eval-buff nil)
-
-(defun mm/set-lispy-eval-buff (fn &rest args)
-  (let ((lispy-eval-buff (current-buffer)))
-    (apply fn args)))
-
-(defun mm/lispy-eval-buff-did-not-change-p (&rest _)
-  (or
-   (not lispy-eval-buff)
-   (equal lispy-eval-buff (current-buffer))))
-
-(advice-add #'lispy-eval :around #'mm/set-lispy-eval-buff)
-(advice-add
- #'cider--display-interactive-eval-result
- :before-while #'mm/lispy-eval-buff-did-not-change-p)
+(defun lispy-eval (arg &optional e-str)
+  "Eval the current sexp and display the result.
+When ARG is 2, insert the result as a comment.
+When at an outline, eval the outline."
+  (interactive "p")
+  (setq lispy-eval-output nil)
+  (condition-case e
+      (let ((buff (current-buffer)))
+        (cond ((eq arg 2)
+               (lispy-eval-and-comment))
+              ((and (looking-at lispy-outline)
+                    (looking-at lispy-outline-header))
+               (lispy-eval-outline))
+              (t
+               (let ((res (lispy--eval e-str)))
+                 (when (memq major-mode lispy-clojure-modes)
+                   (setq res (lispy--clojure-pretty-string res)))
+                 (when lispy-eval-output
+                   (setq res (concat lispy-eval-output res)))
+                 (cond ((eq lispy-eval-display-style 'message)
+                        (lispy-message res))
+                       ((or (fboundp 'cider--display-interactive-eval-result)
+                            (require 'cider nil t))
+                        (when (equal buff (current-buffer))
+                          (cider--display-interactive-eval-result
+                           res (cdr (lispy--bounds-dwim)))))
+                       ((or (fboundp 'eros--eval-overlay)
+                            (require 'eros nil t))
+                        (eros--eval-overlay
+                         res (cdr (lispy--bounds-dwim))))
+                       (t
+                        (error "Please install CIDER >= 0.10 or eros to display overlay")))))))
+    (eval-error
+     (lispy-message (cdr e)))))
 
 
 ;; --------------------------------------------

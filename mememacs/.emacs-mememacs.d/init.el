@@ -166,7 +166,6 @@
   :after orderless
   :init (recentf-mode)
   (setq completion-in-region-function #'consult-completion-in-region)
-  (general-def :states '(insert) "C-j" #'completion-at-point)
   :config
   (require 'init-consult))
 
@@ -345,7 +344,7 @@
   (setq
    avy-words
    '("am" "by" "jo" "jl" "jak" "jik"
-     "fo" "fa" "fro" "fam" "if" "is" "it" "my" "ox" "up" "em" "eb" "ef"
+     "fo" "fa" "fro" "if" "is" "it" "my" "ox" "up" "em" "eb" "ef"
      "ace" "act" "add" "age" "ago" "aim" "air" "ale" "all" "and" "ant" "any"
      "ape" "apt" "arc" "are" "arm" "art" "ash" "ate" "awe" "axe" "bad" "bag"
      "ban" "bar" "bat" "bay" "bed" "bee" "beg" "bet" "bid" "big" "bit" "bob"
@@ -587,6 +586,7 @@
      "https://vlaaad.github.io/feed.xml"
      "https://blog.michielborkent.nl/atom.xml"
      "https://writepermission.com/rss.xml"
+     "https://planet.clojure.in/atom.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/atom.xml")))
 
@@ -628,8 +628,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
         (set-mark (mark t)))
     nil)
 
-  (mememacs/leader-def ";" #'consult-global-mark)
-
   (setq async-shell-command-buffer 'new-buffer)
 
   (defun path-slug (dir)
@@ -640,18 +638,17 @@ Example:
 
 (path-slug \"/foo/bar/hello\")
 => \"f/b/hello\" "
-    (require 'dash)
     (let* ((path (replace-regexp-in-string "\\." "" dir))
 	   (path (split-string path "/" t))
 	   (path-s (mapconcat
 		    (lambda (it)
 		      (cl-subseq it 0 1))
-		    (-drop-last 1 path)
+		    (nbutlast (copy-sequence path) 1)
 		    "/"))
 	   (path-s (concat
 		    path-s
 		    "/"
-		    (-last-item path))))
+		    (car (last path)))))
       path-s))
 
   (defun mm/put-command-in-async-buff-name (f &rest args)

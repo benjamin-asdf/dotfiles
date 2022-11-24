@@ -66,6 +66,10 @@
 (meow-leader-define-key (cons "o" mm/org-dispatch-map))
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
+;; Accidentally hit org-goto, then I was confused about the isearch fn being overriden
+;; during the rec edit
+(define-key org-mode-map (kbd "C-c C-j") nil)
+
 
 (add-to-list 'org-babel-load-languages '(clojure . t))
 (add-to-list 'org-babel-load-languages '(shell . t))

@@ -87,7 +87,9 @@
    "dragon"
    (get-buffer-create "*dragon*")
    (concat
-    "dragon-drag-and-drop "
+    (or (executable-find "dragon-drag-and-drop")
+	(executable-find "dragon-drop"))
+    " "
     (expand-file-name file)
     " "
     "--and-exit")))
