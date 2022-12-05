@@ -265,6 +265,27 @@ This is the power I desired."
 (define-key meow-motion-state-keymap (kbd "SPC") mm/spc-map)
 (define-key isearch-mode-map (kbd "/") #'isearch-repeat-forward)
 
+(defun mememacs/lispy-occur-consult ()
+  (interactive)
+  (save-restriction
+    (narrow-to-defun)
+    (consult-line)
+    (widen)))
+
+(defalias #'lispy-occur #'mememacs/lispy-occur-consult)
+
+(defun mm/lispy-advice-print-length (f r)
+  "This is so you do not get '...' all the time
+when formatting with lispy."
+  (let ((print-length 2000)
+	(print-level nil))
+    (funcall f r)))
+
+(advice-add #'lispy--insert :around #'mm/lispy-advice-print-length)
+
+(add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
+
+
 (defvar mm/c-c-c-j-map
   (let ((m (make-sparse-keymap
 	    "mememacs j map")))
@@ -318,8 +339,26 @@ This is the power I desired."
  lispy-occur-backend 'ivy
  lispy-teleport-global t
  lispy-avy-keys mememacs/avy-keys
- lispy-x-default-verbosity 1)
+ lispy-x-default-verbosity 1
+ lispy-use-sly t)
 
+(defun mm/cider-goto-var (&optional arg)
+  (interactive "P")
+  (cider-find-var (not arg)))
+
+(setf
+ lispy-goto-symbol-alist
+ '((clojure-mode mm/cider-goto-var)
+   (clojurec-mode mm/cider-goto-var)
+   (clojurescript-mode lispy-goto-symbol-clojurescript le-clojure)
+   (scheme-mode lispy-goto-symbol-scheme le-scheme)
+   (geiser-repl-mode lispy-goto-symbol-scheme le-scheme)
+   (racket-mode lispy-goto-symbol-racket le-racket)
+   (lisp-mode lispy-goto-symbol-lisp le-lisp)
+   (slime-repl-mode lispy-goto-symbol-lisp le-lisp)
+   (slime-mrepl-mode lispy-goto-symbol-lisp le-lisp)
+   (sly-mrepl-mode lispy-goto-symbol-lisp le-lisp)
+   (python-mode lispy-goto-symbol-python le-python)))
 
 (defhydra hydra-lispy-x (:exit t
 			       :hint nil

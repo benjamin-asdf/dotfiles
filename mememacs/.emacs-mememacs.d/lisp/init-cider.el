@@ -2,6 +2,7 @@
 
 (setq cider-repl-display-help-banner nil
       cider-repl-display-in-current-window t
+      cider-font-lock-reader-conditionals nil
       cider-babashka-parameters "nrepl-server 0"
       cider-repl-require-ns-on-set t
       cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow"
@@ -9,7 +10,7 @@
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm"
-      cider-merge-sessions 'host)
+      cider-merge-sessions nil)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -27,29 +28,6 @@
     :keymaps
     '(clojure-mode-map cider-repl-mode clojurescript-mode)
     "nn" #'neil-find-clojure-package))
-
-(mememacs/comma-def
-  :keymaps
-  '(clojure-mode-map cider-repl-mode clojurescript-mode)
-  "m" #'macrostep-expand
-  "e" 'cider-eval-commands-map
-  "l" 'cider-doc-map
-  "h," #'cider-drink-a-sip
-  "k" #'cider-load-buffer
-  "hh" #'cider-clojuredocs)
-
-(general-def
-  :keymaps mm/cider-mode-maps
-  :states '(normal motion)
-  "gd" (lambda (&optional arg)
-	 (interactive "P")
-	 (cider-find-var (not arg)))
-  "H-k" #'cider-load-buffer)
-
-(general-def
-  'cider-eval-commands-map
-  "L" #'cider-eval-sexp-at-point
-  "l" #'mememacs/lispy-eval-line)
 
 (defun mm/cider-emit-into-popup-buffer (out)
   (cider-emit-into-popup-buffer
@@ -202,8 +180,6 @@ specific project."
                                                 cljr-suppress-middleware-warnings t)
                                     (rename-buffer "*babashka-scratch*"))))))))
 
-
-
 (defun mememacs/babashka-scratch (&optional arg)
   (interactive)
   (with-current-buffer
@@ -332,7 +308,8 @@ specific project."
  ("C-, h" . cider-clojuredocs))
 
 
-;; happens to me all time I get a compilation error for the toplevel
+;; happens to me all time I get a compilation error for the toplevel.
+;; i.e. fo
 ;; if you eval a compilation error via evel sexp etc, same thing
 ;; and it jumps to the top
 ;; even though that does not help me
@@ -344,5 +321,22 @@ specific project."
    (or
     (not (equal buffer (current-buffer)))
     (not (eq pos 1)))))
+
+(defun clojure-insert-ns-form ()
+  "Insert a namespace form at the beginning of the buffer."
+  (interactive)
+  (widen)
+  (goto-char (point-min))
+  (if
+      ;; when I already have a ns form,
+      ;; TODO make it replace the ns name
+      (re-search-forward "(ns\\s-" nil t)
+      (progn
+        (insert " "
+                (funcall
+                 clojure-expected-ns-function)))
+    (clojure-insert-ns-form-at-point)))
+
+
 
 (provide 'init-cider)

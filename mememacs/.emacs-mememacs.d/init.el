@@ -250,6 +250,7 @@
   (defun mm/enable-le-python ()
     (require 'le-python)
     (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point))
+  (require 'lispy-eval-markers)
   :hook
   (emacs-lisp-mode . lispy-mode)
   (lisp-interaction-mode . lispy-mode)
@@ -662,6 +663,9 @@ Example:
 	    (defun mm/do-hack-dir-locals (&rest _)
 	      (hack-dir-local-variables-non-file-buffer)))
 
+  ;; it logs a warning when you hack a local
+  ;; Making process-environment buffer-local while locally let-bound!
+  ;; It is sort of want I want though
   (advice-add #'start-process-shell-command :before #'mm/do-hack-dir-locals)
 
   (advice-add 'compile :filter-args

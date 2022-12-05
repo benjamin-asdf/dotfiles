@@ -2,7 +2,24 @@
 
 (setf project-switch-use-entire-map t)
 
+;; overriding this so it also sets default-directory
+(defun project-switch-project (dir)
+  "\"Switch\" to another project by running an Emacs command.
+The available commands are presented as a dispatch menu
+made from `project-switch-commands'.
+
+When called in a program, it will use the project corresponding
+to directory DIR."
+  (interactive (list (project-prompt-project-dir)))
+  (let ((command (if (symbolp project-switch-commands)
+                     project-switch-commands
+                   (project--switch-project-command))))
+    (let ((project-current-directory-override dir)
+	  (default-directory dir))
+      (call-interactively command))))
+
 (defvar mm/project-command nil)
+
 
 (advice-add
  #'project--switch-project-command

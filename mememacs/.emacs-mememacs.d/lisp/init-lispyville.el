@@ -240,27 +240,6 @@
   "C-l" (lispyville-wrap-command lispyville-end-of-defun special)
   "C-e" #'mm/lispyville-forward-and-eval)
 
-(defun mememacs/lispy-occur-consult ()
-  (interactive)
-  (save-restriction
-    (narrow-to-defun)
-    (consult-line)
-    (widen)))
-
-(defalias #'lispy-occur #'mememacs/lispy-occur-consult)
-
-
-
-(defun mm/lispy-advice-print-length (f r)
-  "This is so you do not get '...' all the time
-when formatting with lispy."
-  (let ((print-length 2000)
-	(print-level nil))
-    (funcall f r)))
-
-(advice-add #'lispy--insert :around #'mm/lispy-advice-print-length)
-
-(add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
 
 ;; --------------------------------------------
 
@@ -274,6 +253,6 @@ when formatting with lispy."
   (advice-add 'python-shell-get-process-or-error :before-until #'mm/python-shell-or-lispy-proc))
 
 
-(require 'lispy-eval-markers)
+
 
 (provide 'init-lispyville)

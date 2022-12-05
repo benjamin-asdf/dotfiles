@@ -45,7 +45,7 @@
 (defvar mm/org-dispatch-map
   (let ((m (make-sparse-keymap "mm org dispatch")))
     (define-key m (kbd "o") (defun mm/denote-dir () (interactive) (dired-jump nil denote-last-path)))
-    (define-key m (kbd "J") #'mm/denote-journal)0
+    (define-key m (kbd "J") #'mm/denote-journal)
     (define-key m (kbd "j") (defun mm/find-today-journal ()
 			      (interactive)
 			      (if-let
@@ -74,6 +74,7 @@
 (add-to-list 'org-babel-load-languages '(clojure . t))
 (add-to-list 'org-babel-load-languages '(shell . t))
 
+(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 (setf org-cycle-global-at-bob t)
 

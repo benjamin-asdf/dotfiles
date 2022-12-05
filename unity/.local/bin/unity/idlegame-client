@@ -1,5 +1,13 @@
 #!/bin/bash
 
+
+# https://github.com/Azure/Bridge-To-Kubernetes/issues/42
+# needed to specially intall openssl1.1.1c
+# it uses dotnet 2.1 or 3.1 somewhere
+LD_LIBRARY_PATH="/usr/local/lib"
+export LD_LIBRARY_PATH
+
+
 [ -n "$IDLEGAMEDIR" ] && rm -rf "$IDLEGAMEDIR/Temp/*"
 
 pgrep -f "when-low-on-mem-kill-unity" || watch when-low-on-mem-kill-unity &
