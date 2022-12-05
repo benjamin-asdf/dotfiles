@@ -49,15 +49,9 @@
 
 (defconst mememacs/config-dir user-emacs-directory)
 
-(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
-      url-history-file (expand-file-name "url/history" user-emacs-directory))
-
 (defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
-
-;; Use no-littering to automatically set common paths to the new user-emacs-directory
-(use-package no-littering)
 
 (use-package keychain-environment
     :straight  (:host github :repo "tarsius/keychain-environment")
