@@ -103,9 +103,30 @@
 	(when w2 (pull-window w2 f1))
 	(focus-frame (current-group) f2)))))
 
+(defcommand mm-emacs-with-editor-insert () ()
+  (run-shell-command (concat "emacsclient" " " "--eval" " "  "\"(emacs-everywhere)\""))
+  ;; (let ((file-s (concat "/tmp/"
+  ;; 			(string-trim '(#\Newline) (run-shell-command "uuidgen" t)))))
+  ;;   (sb-thread:make-thread
+  ;;    (lambda ()
+  ;;      ;; (run-shell-command
+  ;;      ;; 	(concat "emacsclient" " -c" " " file-s) 't)
+  ;;      (stumpwm:call-in-main-thread
+  ;; 	(lambda ()
+  ;; 	  (window-send-string
+  ;; 	   "hurr"
+  ;; 	   ;; (with-output-to-string (s)
+  ;; 	   ;;   (with-open-file (is file-s :direction :i)
+  ;; 	   ;;     (loop for line = (read-line is nil is)
+  ;; 	   ;; 	     until (eq line is) do
+  ;; 	   ;; 	       (format s "~A~%" line))))
+  ;; 	   ))))))
+  )
+
 (defvar *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
+    (stumpwm:define-key m (kbd "e") "mm-emacs-with-editor-insert")
     (stumpwm:define-key m (kbd "w") "swap-this-window")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
     (stumpwm:define-key m (kbd "y")
@@ -116,6 +137,13 @@
       (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
     m))
+
+    ;; (let* ((curr-thread sb-thread:*current-thread*)
+    ;;        (curr-thread-name (sb-thread:thread-name curr-thread))
+    ;;        (all-threads (sb-thread:list-all-threads)))
+    ;;   (format t "Current thread: ~a~%~%" curr-thread)
+    ;;   (format t "Current thread name: ~a~%~%" curr-thread-name)
+    ;;   (format t "All threads:~% ~{~a~%~}~%" all-threads))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 (setf *load-path* nil)
@@ -309,8 +337,9 @@ FORM should be a quoted list."
     (make-an-emacs))
   (exec-el (mm/consult-stumpwm-windows)))
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
-
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
+
+
 
 
 ;;; SLY setup

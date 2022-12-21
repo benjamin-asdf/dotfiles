@@ -58,22 +58,26 @@
 ;;; Kill whole line including \n.
 (setq kill-whole-line t)
 
+(setq-default indent-tabs-mode nil)
+(setq-default c-basic-offset 4)
+
+
 (setq
  whitespace-style
  '(face empty indentation space-after-tab space-before-tab tab-mark trailing))
+
 ;;; REVIEW: `whitespace-report' will mistakenly always report empty lines at
 ;;; beginning and end of buffer as long as there is at least one empty line.
 ;;; `whitespace-cleanup' works properly however.
 ;;; Reported at http://debbugs.gnu.org/cgi/bugreport.cgi?bug=23740.
 ;; (setq whitespace-action '(report-on-bogus))
-
 ;;; Add formatting functions to the buffer-local `before-save-hook'.
 ;;; WARNING: this can break some configuration files needing whitespaces at the
 ;;; end. This can also slow down saving on big files.  Some modes (e.g. lisp) run
 ;;; `ambrevar/prettify' in their local hook, which is redundant with this.
 ;; (add-hook 'find-file-hook 'ambrevar/turn-on-prettify-before-save)
-(add-hook 'find-file-hook 'ambrevar/turn-on-delete-trailing-whitespace)
 
+(add-hook 'find-file-hook 'ambrevar/turn-on-delete-trailing-whitespace)
 
 ;;; Abbreviation is like snippets: annoying at times, especially in
 ;;; prog-mode.  They are useful in text mode to avoid the sprawling of
@@ -163,12 +167,11 @@
      (check-parens))))
 
 ;; dired
-(setf dired-dwim-target t
+(setf dired-dwim-target #'dired-dwim-target-recent
       delete-by-moving-to-trash nil)
 
 (setf bookmark-set-fringe-mark nil)
 (setf shell-file-name "/bin/bash")
-
 
 (advice-add 'json-pretty-print :before (lambda (&rest _) (read-only-mode -1)))
 

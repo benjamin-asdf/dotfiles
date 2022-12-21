@@ -22,6 +22,7 @@
 	(lambda (_) completion))
        :annotation-function #'cider-annotate-symbol))))
 
+
 (advice-add 'cider-complete-at-point :override #'mm/cider-complete-at-point)
 
 (provide 'patch-cider-orderless)

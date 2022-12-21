@@ -12,6 +12,8 @@ c.input.partial_timeout = 2000
 c.tabs.tabs_are_windows = True
 c.new_instance_open_target = "window"
 c.tabs.show = "multiple"
+c.colors.webpage.preferred_color_scheme = "dark"
+
 # c.window.title_format = "{title}{title_sep}{host}"
 
 # lazy_restore does not work when idle.

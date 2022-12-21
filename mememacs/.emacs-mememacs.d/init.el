@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*-
+;; -*- lexical-binding: t; -*-
 
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
@@ -129,7 +129,11 @@
   (require 'init-magit)
   (add-hook 'git-commit-mode-hook
 	    (defun mm/disable-visual-line-mode ()
-	      (visual-line-mode -1))))
+	      (visual-line-mode -1)))
+  (define-key magit-blob-mode-map "n" nil)
+  (define-key magit-blob-mode-map (kbd "C-n") nil)
+
+  )
 
 (use-package vertico
   :init
@@ -250,6 +254,17 @@
   (defun mm/enable-le-python ()
     (require 'le-python)
     (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point))
+  (defvar *1 nil)
+  (defvar *2 nil)
+  (defvar *3 nil)
+  (advice-add #'lispy--eval-elisp
+              :filter-return
+              (defun mm/def-lispy-eval-out (output-str)
+                (setq *3 *2)
+                (setq *2 *1)
+                (setq *1 (or (ignore-errors (car (read-from-string output-str))) output-str))
+                output-str))
+
   (require 'lispy-eval-markers)
   :hook
   (emacs-lisp-mode . lispy-mode)
@@ -339,7 +354,7 @@
   (setq
    avy-words
    '("am" "by" "jo" "jl" "jak" "jik"
-     "fo" "fa" "fro" "if" "is" "it" "my" "ox" "up" "em" "eb" "ef"
+     "fro" "if" "is" "it" "my" "ox" "up" "em" "eb" "ef"
      "ace" "act" "add" "age" "ago" "aim" "air" "ale" "all" "and" "ant" "any"
      "ape" "apt" "arc" "are" "arm" "art" "ash" "ate" "awe" "axe" "bad" "bag"
      "ban" "bar" "bat" "bay" "bed" "bee" "beg" "bet" "bid" "big" "bit" "bob"
@@ -669,7 +684,9 @@ Example:
   (advice-add #'start-process-shell-command :before #'mm/do-hack-dir-locals)
 
   (advice-add 'compile :filter-args
-	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t))))
+	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t)))
+
+  (add-to-list 'auto-mode-alist '("\\.mjs" . javascript-mode)))
 
 ;; elp
 ;; memory-use-counts

@@ -73,7 +73,9 @@
  '("r" . vertico-repeat-last)
  '("R" . vertico-repeat-select)
 
- '("fr" . display-line-numbers-mode))
+ '("fr" . display-line-numbers-mode)
+
+ )
 
 (meow-normal-define-key
  '("0" . meow-expand-0)
@@ -511,5 +513,18 @@ when formatting with lispy."
 (global-set-key (kbd "H-n") #'meow-normal-mode)
 (global-set-key (kbd "H-j") #'meow-end-or-call-kmacro)
 (global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
+
+(global-set-key (kbd "C-x C-e") #'mm/lispy-eval-mark-last-or-consult)
+(define-key cider-mode-map (kbd "C-c C-e") #'mm/lispy-eval-mark-last-or-consult)
+(meow-leader-define-key '("j e" . #'mm/lispy-eval-mark-last-or-consult))
+
+(define-key dired-mode-map (kbd "M-c") #'magit-clone)
+
+(global-set-key
+ (kbd "C-c M-l") #'magit-log-buffer-file)
+
+(advice-add #'embark-act :after (defun mm/meow-cancel-selectin (&rest _) (meow-cancel-selection)))
+
+(define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
 
 (provide 'init-meow)
