@@ -591,7 +591,8 @@
   :config
   (setq
    elfeed-feeds
-   '("http://nullprogram.com/feed/"
+   '("http://blog.samaltman.com/posts.atom"
+     "http://nullprogram.com/feed/"
      "https://planet.emacslife.com/atom.xml"
      "https://vlaaad.github.io/feed.xml"
      "https://blog.michielborkent.nl/atom.xml"
@@ -697,6 +698,22 @@ Example:
   meow
   :config (require 'init-meow)
   (meow-global-mode 1))
+
+(use-package openai-api
+  :straight nil
+  :load-path "/home/benj/repos/openai-api.el/"
+  :config
+  (auth-source-pass-enable)
+  (setq openai-api-key
+        (auth-source-pick-first-password
+         :host "openai-api-key-2"))
+  (define-key openai-api-keymap (kbd "i")
+    (defun mm/insert-todo ()
+      (interactive)
+      (insert "TODO: ")
+      (comment-line 1)))
+  (meow-leader-define-key
+   `("." . ,openai-api-keymap)))
 
 ;; (use-package boon
 ;;   :config

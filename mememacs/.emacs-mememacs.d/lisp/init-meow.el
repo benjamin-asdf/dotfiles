@@ -523,7 +523,10 @@ when formatting with lispy."
 (global-set-key
  (kbd "C-c M-l") #'magit-log-buffer-file)
 
-(advice-add #'embark-act :after (defun mm/meow-cancel-selectin (&rest _) (meow-cancel-selection)))
+(advice-add #'embark-act :after
+            (defun mm/meow-cancel-selection (&rest _)
+              (ignore-errors
+                (meow-cancel-selection))))
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
 

@@ -14,3 +14,7 @@
 /gaia-s-stumpwm/.stumpwm.d/stumpwm.log.1
 /stumpwm/.stumpwm.d/stumpwm.log.1
 /stumpwm/.stumpwm.d/init.fasl
+/mememacs/.emacs-mememacs.d/history
+/mememacs/.emacs-mememacs.d/projects
+/mememacs/.emacs-mememacs.d/recentf
+/mememacs/.emacs-mememacs.d/transient/
