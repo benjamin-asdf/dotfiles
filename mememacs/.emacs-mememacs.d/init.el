@@ -49,7 +49,7 @@
 
 (defconst mememacs/config-dir user-emacs-directory)
 
-(defvar user-mail-address "Benjamin.Schwerdtner@gmail.com")
+(setf user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
