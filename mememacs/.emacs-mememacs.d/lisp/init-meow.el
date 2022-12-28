@@ -166,13 +166,26 @@ This won't jump to the end of the buffer if there is no paren there."
   (re-search-backward lispy-right nil t)
   (meow-append))
 
+(defun mm/clear-whitespace-end-of-paren-stack ()
+  (interactive)
+  (save-excursion
+    (let ((end (progn
+                 (end-of-defun 1)
+                 (re-search-backward lispy-right nil t)
+                 (point-marker))))
+      (skip-chars-backward " \t\n()[]{}")
+      (while (re-search-forward "[ \t\n]+" end t)
+        (replace-match "")))))
+
 (defun mm/c-l ()
   (interactive)
   (if (region-active-p)
       (if (meow--direction-forward-p)
 	  (progn (avy-goto-line-below) (end-of-line))
-	  (progn (avy-goto-line-above) (beginning-of-line)))
-    (lispyville-end-of-defun)))
+	(progn (avy-goto-line-above) (beginning-of-line)))
+    (progn
+      (lispyville-end-of-defun)
+      (mm/clear-whitespace-end-of-paren-stack))))
 
 (meow-normal-define-key '("C-l" . mm/c-l))
 (meow-define-keys 'insert '("C-l" . mm/c-l))
@@ -320,10 +333,10 @@ when formatting with lispy."
 (with-eval-after-load 'magit-status
   (define-key magit-status-mode-map (kbd "x") #'magit-discard)
   (define-key magit-status-mode-map (kbd "p") #'magit-push))
-
 (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
-(define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char)
 
+
+(define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char)
 
 ;; lispy
 
@@ -395,7 +408,6 @@ when formatting with lispy."
   ("" lispy-x-more-verbosity :exit nil)
   ("?" lispy-x-more-verbosity "help" :exit nil))
 
-
 (advice-add #'lispy-goto-symbol-clojure :override #'cider-find-var)
 
 (defun mm/lispy-meow-symbol-and-insert ()
@@ -434,8 +446,8 @@ when formatting with lispy."
  ((kbd "M-(") . lispy-wrap-round)
  ((kbd "M-h") . mm/lispy-back-or-lispy-pair)
  ((kbd "M-l") . mm/lispy-forward-and-insert))
-
 ;; I hit this key accidentally 10 times per day
+
 (define-key help-map (kbd "h") (defun mm/no-help-file () (interactive) (message "C-h h, lol")))
 
 (delete-selection-mode)
@@ -479,8 +491,8 @@ when formatting with lispy."
  ;; 'overlay
  show-paren-when-point-in-periphery t
  show-paren-when-point-inside-paren t)
-
 (add-hook 'meow-insert-mode-hook #'mememacs/lispy-set-faces)
+
 (add-hook 'meow-normal-mode-hook #'mememacs/lispy-set-faces)
 
 (bind-keys
@@ -488,11 +500,11 @@ when formatting with lispy."
  ("C-, m" . macrostep-expand))
 
 (define-key lispy-mode-map-lispy (kbd "C-,") nil)
-
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
-(define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
 
+(define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
 (global-set-key (kbd "/") #'self-insert-command)
+
 ;; (with-eval-after-load 'org
 ;;   (define-key org-mode-map (kbd "/") #'self-insert-command))
 
@@ -509,13 +521,13 @@ when formatting with lispy."
       (meow-right))))
 
 (meow-normal-define-key '("l" . mm/meow-right-or-avy))
-
 (global-set-key (kbd "H-n") #'meow-normal-mode)
 (global-set-key (kbd "H-j") #'meow-end-or-call-kmacro)
-(global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
 
+(global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
 (global-set-key (kbd "C-x C-e") #'mm/lispy-eval-mark-last-or-consult)
 (define-key cider-mode-map (kbd "C-c C-e") #'mm/lispy-eval-mark-last-or-consult)
+
 (meow-leader-define-key '("j e" . #'mm/lispy-eval-mark-last-or-consult))
 
 (define-key dired-mode-map (kbd "M-c") #'magit-clone)
@@ -529,5 +541,9 @@ when formatting with lispy."
                 (meow-cancel-selection))))
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
+
+(define-key help-map (kbd "c") #'describe-char)
+
+
 
 (provide 'init-meow)
