@@ -131,9 +131,7 @@
 	    (defun mm/disable-visual-line-mode ()
 	      (visual-line-mode -1)))
   (define-key magit-blob-mode-map "n" nil)
-  (define-key magit-blob-mode-map (kbd "C-n") nil)
-
-  )
+  (define-key magit-blob-mode-map (kbd "C-n") nil))
 
 (use-package vertico
   :init
@@ -505,40 +503,39 @@
   (add-hook 'after-save-hook #'backup-each-save)
   (setf make-backup-files nil))
 
-(use-package mu4e
-  :ensure nil
-  :when nil
-  :straight nil
+(defun load-mu4e ()
+  (interactive)
+  (use-package mu4e
+    :ensure nil
+    :straight nil
 
-  ;; should be added by emacs
-  :load-path
-  ;; "/usr/share/emacs/site-lisp/mu4e/.."
-  "/usr/share/emacs/site-lisp/mu4e/"
+    ;; should be added by emacs
+    :load-path
+    ;; "/usr/share/emacs/site-lisp/mu4e/.."
+    "/usr/share/emacs/site-lisp/mu4e/"
 
-  ;; else it syncs on startup
-  :defer 60
-  :config
+    :config
 
-  ;; This is set to 't' to avoid mail syncing issues when using mbsync
-  (setq mu4e-change-filenames-when-moving t)
+    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+    (setq mu4e-change-filenames-when-moving t)
 
-  ;; Refresh mail using isync every 10 minutes
-  (setq mu4e-update-interval ;; (* 10 60)
-	nil)
-  (setq mu4e-get-mail-command "mbsync -a")
-  (setq mu4e-maildir "~/mail")
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval ;; (* 10 60)
+	  nil)
+    (setq mu4e-get-mail-command "mbsync -a")
+    (setq mu4e-maildir "~/mail")
 
-  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
-  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
-  (setq mu4e-refile-folder "/[Gmail]/All Mail")
-  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+    (setq mu4e-drafts-folder "/[Gmail]/Drafts")
+    (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
+    (setq mu4e-refile-folder "/[Gmail]/All Mail")
+    (setq mu4e-trash-folder  "/[Gmail]/Trash")
 
-  (setq mu4e-maildir-shortcuts
-        '(("/Inbox"             . ?i)
-          ("/[Gmail]/Sent Mail" . ?s)
-          ("/[Gmail]/Trash"     . ?t)
-          ("/[Gmail]/Drafts"    . ?d)
-          ("/[Gmail]/All Mail"  . ?a))))
+    (setq mu4e-maildir-shortcuts
+          '(("/Inbox"             . ?i)
+            ("/[Gmail]/Sent Mail" . ?s)
+            ("/[Gmail]/Trash"     . ?t)
+            ("/[Gmail]/Drafts"    . ?d)
+            ("/[Gmail]/All Mail"  . ?a)))))
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
