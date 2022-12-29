@@ -151,7 +151,8 @@
 (meow-define-keys 'insert
   '("C-j" . completion-at-point)
   '("e" . special-lispy-eval)
-  '("E" . special-lispy-eval-and-insert))
+  '("E" . special-lispy-eval-and-insert)
+  '("M-p" . mm/copy-word-above))
 
 ;; thanks https://github.com/noctuid/lispyville
 (defun lispyville-end-of-defun ()
@@ -174,8 +175,13 @@ This won't jump to the end of the buffer if there is no paren there."
                  (re-search-backward lispy-right nil t)
                  (point-marker))))
       (skip-chars-backward " \t\n()[]{}")
+      (while (and
+              (< (point) end)
+              (lispy--in-string-or-comment-p))
+        (forward-char 1))
       (while (re-search-forward "[ \t\n]+" end t)
-        (replace-match "")))))
+        (replace-match ""))
+      (lisp-indent-line))))
 
 (defun mm/c-l ()
   (interactive)
@@ -543,7 +549,5 @@ when formatting with lispy."
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
 
 (define-key help-map (kbd "c") #'describe-char)
-
-
 
 (provide 'init-meow)

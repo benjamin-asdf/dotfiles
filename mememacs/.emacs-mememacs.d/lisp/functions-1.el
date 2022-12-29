@@ -387,8 +387,8 @@ With negative N, comment out original line and use the absolute value."
   (interactive)
   (insert
    (save-excursion
-     (evil-previous-line 1)
-     (thing-at-point 'evil-WORD))))
+     (previous-line 1)
+     (thing-at-point 'symbol))))
 
 (defun github-pull-readme (&optional url)
   (interactive (list (read-from-kill-ring "find github readme: ")))
