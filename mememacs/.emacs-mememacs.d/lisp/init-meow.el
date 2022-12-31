@@ -152,7 +152,7 @@
   '("C-j" . completion-at-point)
   '("e" . special-lispy-eval)
   '("E" . special-lispy-eval-and-insert)
-  '("M-p" . mm/copy-word-above))
+  '("M-u" . mm/copy-word-above))
 
 ;; thanks https://github.com/noctuid/lispyville
 (defun lispyville-end-of-defun ()

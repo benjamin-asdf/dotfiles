@@ -508,14 +508,9 @@
   (use-package mu4e
     :ensure nil
     :straight nil
-
-    ;; should be added by emacs
-    :load-path
-    ;; "/usr/share/emacs/site-lisp/mu4e/.."
-    "/usr/share/emacs/site-lisp/mu4e/"
+    :load-path "/usr/share/emacs/site-lisp/mu4e/"
 
     :config
-
     ;; This is set to 't' to avoid mail syncing issues when using mbsync
     (setq mu4e-change-filenames-when-moving t)
 
@@ -700,15 +695,14 @@ Example:
   :straight nil
   :load-path "/home/benj/repos/openai-api.el/"
   :config
-  (auth-source-pass-enable)
   (setq openai-api-key
         (auth-source-pick-first-password
-         :host "openai-api-key-2"))
+         :host "openai-api"))
   (define-key openai-api-keymap (kbd "i")
-    (defun mm/insert-todo ()
-      (interactive)
-      (insert "TODO: ")
-      (comment-line 1)))
+              (defun mm/insert-todo ()
+                (interactive)
+                (insert "TODO: ")
+                (comment-line 1)))
   (meow-leader-define-key
    `("." . ,openai-api-keymap)))
 
