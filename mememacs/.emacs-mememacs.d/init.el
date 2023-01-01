@@ -703,6 +703,7 @@ Example:
                 (interactive)
                 (insert "TODO: ")
                 (comment-line 1)))
+  (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg)
   (meow-leader-define-key
    `("." . ,openai-api-keymap)))
 
