@@ -583,7 +583,8 @@
   :config
   (setq
    elfeed-feeds
-   '("http://blog.samaltman.com/posts.atom"
+   '("http://gigasquidsoftware.com/atom.xml"
+     "http://blog.samaltman.com/posts.atom"
      "http://nullprogram.com/feed/"
      "https://planet.emacslife.com/atom.xml"
      "https://vlaaad.github.io/feed.xml"
@@ -695,9 +696,8 @@ Example:
   :straight nil
   :load-path "/home/benj/repos/openai-api.el/"
   :config
-  (setq openai-api-key
-        (auth-source-pick-first-password
-         :host "openai-api"))
+  (auth-source-pass-enable)
+  (setq openai-api-key (auth-source-pick-first-password :host "openai-api"))
   (define-key openai-api-keymap (kbd "i")
               (defun mm/insert-todo ()
                 (interactive)
