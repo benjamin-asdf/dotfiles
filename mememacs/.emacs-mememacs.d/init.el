@@ -8,7 +8,7 @@
 ;;; Temporarily reduce garbage collection during startup. Inspect `gcs-done'.
 (defun ambrevar/reset-gc-cons-threshold ()
   (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
-      gc-cons-percentage 0.1))
+        gc-cons-percentage 0.1))
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 (add-hook 'after-init-hook 'ambrevar/reset-gc-cons-threshold)
