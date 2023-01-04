@@ -86,10 +86,19 @@
  consult-buffer
  :preview-key (kbd "M-."))
 
+(defvar mm/stay-in-dired nil)
+
 (defun mm/dired-find-file-after-consult (old-fn pos)
   (funcall old-fn pos)
-  (when (and pos (eq major-mode 'dired-mode))
-    (call-interactively #'dired-find-file)))
+  (unless mm/stay-in-dired
+      (when (and pos
+                 (eq major-mode 'dired-mode))
+        (call-interactively #'dired-find-file))))
+
+(defun mm/consult-line-stay-in-dired ()
+  (interactive)
+  (let ((mm/stay-in-dired t))
+    (consult-line)))
 
 (advice-add 'consult--jump :around  #'mm/dired-find-file-after-consult)
 

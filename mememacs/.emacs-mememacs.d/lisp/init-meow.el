@@ -59,6 +59,7 @@
  '("fj" . save-buffer)
  '("ff" . consult-find)
  '("l" . consult-line)
+ '("L" . mm/consult-line-stay-in-dired)
  '("oj" . mm/denote-load)
  '("s" . meow-visit)
  '("/" . meow-keypad-describe-key)
@@ -73,9 +74,7 @@
  '("r" . vertico-repeat-last)
  '("R" . vertico-repeat-select)
 
- '("fr" . display-line-numbers-mode)
-
- )
+ '("fr" . display-line-numbers-mode))
 
 (meow-normal-define-key
  '("0" . meow-expand-0)
