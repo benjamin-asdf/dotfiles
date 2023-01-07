@@ -77,7 +77,7 @@
 ;;; `ambrevar/prettify' in their local hook, which is redundant with this.
 ;; (add-hook 'find-file-hook 'ambrevar/turn-on-prettify-before-save)
 
-(add-hook 'find-file-hook 'ambrevar/turn-on-delete-trailing-whitespace)
+(add-hook 'proc-mode-hook 'ambrevar/turn-on-delete-trailing-whitespace)
 
 ;;; Abbreviation is like snippets: annoying at times, especially in
 ;;; prog-mode.  They are useful in text mode to avoid the sprawling of

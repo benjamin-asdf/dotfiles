@@ -423,6 +423,69 @@
   :bind ([remap dabbrev-expand] . hippie-expand)
   :commands (hippie-expand)
   :config
+
+  ;; this is when you have :foo in the buffer and you start type
+  ;; {:keys [fo]} I wanted this badly
+  ;; TODO:
+  (defun mm/hippy-lisp-keywords
+      (old)
+    "Try to expand keyword \"dynamically\", searching the current buffer.
+The argument OLD has to be nil the first call of this function, and t
+for subsequent calls (for further possible expansions of the same
+string).  It returns t if a new expansion is found, nil otherwise."
+    (let ((expansion ()))
+      (when (not old)
+        (he-init-string (he-dabbrev-beg) (point))
+        (set-marker he-search-loc he-string-beg)
+        (setq he-search-bw t))
+      (when (not (equal he-search-string ""))
+        (save-excursion
+          (save-restriction
+	    (if hippie-expand-no-restriction
+	        (widen))
+	    ;; Try looking backward unless inhibited.
+	    (if he-search-bw
+	        (progn
+	          (setq expansion
+                        (or
+                         (let ((he-search-string (concat ":" he-search-string)))
+                           (progn
+                             (goto-char he-search-loc)
+                             (when-let ((exp (he-dabbrev-search he-search-string t)))
+                               (cl-subseq exp 1))))
+                         (let ((he-search-string (concat "::" he-search-string)))
+                           (progn
+                             (goto-char he-search-loc)
+                             (when-let ((exp (he-dabbrev-search he-search-string t)))
+                               (cl-subseq exp 2))))))
+	          (set-marker he-search-loc (point))
+	          (if (not expansion)
+		      (progn
+		        (set-marker he-search-loc he-string-end)
+		        (setq he-search-bw ())))))
+
+	    (if (not expansion)         ; Then look forward.
+	        (progn
+	          (setq expansion
+                        (or
+                         (let ((he-search-string (concat ":" he-search-string)))
+                           (progn
+                             (goto-char he-search-loc)
+                             (when-let ((exp (he-dabbrev-search he-search-string)))
+                               (cl-subseq exp 1))))
+                         (let ((he-search-string (concat "::" he-search-string)))
+                           (progn
+                             (goto-char he-search-loc)
+                             (when-let ((exp (he-dabbrev-search he-search-string)))
+                               (cl-subseq exp 2))))))
+	          (set-marker he-search-loc (point)))))))
+      (if (not expansion)
+	  (progn
+	    (if old (he-reset-string))
+	    ())
+        (progn
+	  (he-substitute-string expansion t)
+	  t))))
   (setq hippie-expand-try-functions-list
         '(try-expand-dabbrev
           try-expand-dabbrev-all-buffers
@@ -433,7 +496,8 @@
           try-complete-file-name
           try-expand-all-abbrevs
           try-expand-list
-          try-expand-line)))
+          try-expand-line
+          mm/hippy-lisp-keywords)))
 
 ;; figure out guix manifests
 ;; figure out guix packages for clj kondo etc
