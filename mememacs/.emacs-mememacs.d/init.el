@@ -127,9 +127,10 @@
   (setq auto-revert-mode-text "")
   (setq git-commit-summary-max-length fill-column)
   (require 'init-magit)
-  (add-hook 'git-commit-mode-hook
-	    (defun mm/disable-visual-line-mode ()
-	      (visual-line-mode -1)))
+  (with-eval-after-load 'git-commit-mode
+       (add-hook 'git-commit-mode-hook
+	        (defun mm/disable-visual-line-mode ()
+	          (visual-line-mode -1))))
   (define-key magit-blob-mode-map "n" nil)
   (define-key magit-blob-mode-map (kbd "C-n") nil))
 
@@ -486,6 +487,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
         (progn
 	  (he-substitute-string expansion t)
 	  t))))
+
   (setq hippie-expand-try-functions-list
         '(try-expand-dabbrev
           try-expand-dabbrev-all-buffers
