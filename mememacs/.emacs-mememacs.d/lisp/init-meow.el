@@ -455,7 +455,7 @@ when formatting with lispy."
 
 (define-key help-map (kbd "h") (defun mm/no-help-file () (interactive) (message "C-h h, lol")))
 
-(delete-selection-mode)
+(delete-selection-mode 1)
 
 (defvar-local mm/moew-last-normal nil)
 
