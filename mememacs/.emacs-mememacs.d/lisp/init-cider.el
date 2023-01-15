@@ -10,7 +10,8 @@
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm"
-      cider-merge-sessions nil)
+      cider-merge-sessions nil
+      cider-show-error-buffer nil)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -336,7 +337,6 @@ specific project."
                 (funcall
                  clojure-expected-ns-function)))
     (clojure-insert-ns-form-at-point)))
-
 
 
 (provide 'init-cider)
