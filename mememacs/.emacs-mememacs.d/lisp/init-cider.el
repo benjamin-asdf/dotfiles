@@ -11,6 +11,7 @@
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm"
       cider-merge-sessions nil
+      cider-auto-jump-to-error nil
       cider-show-error-buffer nil)
 
 (defvar mm/cider-mode-maps
@@ -338,5 +339,12 @@ specific project."
                  clojure-expected-ns-function)))
     (clojure-insert-ns-form-at-point)))
 
+(defun mm/pop-cider-error ()
+  (interactive)
+  (if-let ((cider-error (get-buffer "*cider-error*")))
+      (pop-to-buffer cider-error)
+    (message "no cider error buffer")))
+
+(define-key cider-mode-map (kbd "C-c E") #'mm/pop-cider-error)
 
 (provide 'init-cider)
