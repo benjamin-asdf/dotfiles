@@ -86,23 +86,6 @@
  consult-buffer
  :preview-key (kbd "M-."))
 
-(defvar mm/stay-in-dired nil)
-
-(defun mm/dired-find-file-after-consult (old-fn pos)
-  (funcall old-fn pos)
-  (unless mm/stay-in-dired
-      (when (and pos
-                 (eq major-mode 'dired-mode))
-        (call-interactively #'dired-find-file))))
-
-(defun mm/consult-line-stay-in-dired ()
-  (interactive)
-  (let ((mm/stay-in-dired t))
-    (consult-line)))
-
-(advice-add 'consult--jump :around  #'mm/dired-find-file-after-consult)
-
-
 (defun mm/consult-grep-dir-prompt-advice (args)
   (pcase args
     (`(,s (4)) `(,s ,default-directory))
@@ -127,8 +110,6 @@
  :before
  (defun mm/remove-whitespace-only-from-kill-ring (&rest args)
    (setf kill-ring (cl-remove-if #'s-blank-str? kill-ring))))
-
-
 
 ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
 (defvar +orderless-dispatch-alist
