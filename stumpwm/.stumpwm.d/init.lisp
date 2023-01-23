@@ -66,11 +66,20 @@
 
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
+(defcommand phone () ()
+  (window-send-string (string-trim '(#\Newline) (run-shell-command "pass my-phone-number" t))))
+(defcommand my-first-name () ()
+  (window-send-string "Benjamin"))
+(defcommand my-last-name () ()
+  (window-send-string "Schwerdtner"))
+(defcommand my-linked-in () ()
+  (window-send-string "https://www.linkedin.com/in/benjamin-schwerdtner-4987a1140/"))
+
 
 (defcommand
     start-or-stop-recording
     ()
-    ()
+  ()
   (message
    (if (probe-file
 	"/tmp/recordingpid")
@@ -123,18 +132,22 @@
   ;; 	   ))))))
   )
 
-(defvar *my-comma-map*
+(defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
+    (stumpwm:define-key m (kbd "p") "phone")
+    (stumpwm:define-key m (kbd "f") "my-first-name")
+    (stumpwm:define-key m (kbd "N") "my-last-name")
+    (stumpwm:define-key m (kbd "l") "my-linked-in")
     (stumpwm:define-key m (kbd "e") "mm-emacs-with-editor-insert")
     (stumpwm:define-key m (kbd "w") "swap-this-window")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
-    (stumpwm:define-key m (kbd "y")
-      (def-just-a-shell-command emacs-kill-xselection "ec-kill-xselection"))
-    (stumpwm:define-key m (kbd "c")
-      (def-just-a-shell-command dunst-close-all "dunstctl close-all"))
-    (stumpwm:define-key m (kbd "x")
-      (def-just-a-shell-command dunst-close-all "kill-unity"))
+    ;; (stumpwm:define-key m (kbd "y")
+    ;;   (def-just-a-shell-command emacs-kill-xselection "ec-kill-xselection"))
+    ;; (stumpwm:define-key m (kbd "c")
+    ;;   (def-just-a-shell-command dunst-close-all "dunstctl close-all"))
+    ;; (stumpwm:define-key m (kbd "x")
+    ;;   (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
     m))
 
@@ -338,9 +351,6 @@ FORM should be a quoted list."
   (exec-el (mm/consult-stumpwm-windows)))
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
-
-
-
 
 ;;; SLY setup
 (ql:quickload :slynk)
