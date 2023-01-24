@@ -69,6 +69,7 @@
 ;; Accidentally hit org-goto, then I was confused about the isearch fn being overriden
 ;; during the rec edit
 (define-key org-mode-map (kbd "C-c C-j") nil)
+(define-key org-mode-map (kbd "C-c E") #'org-edit-src-code)
 
 
 (add-to-list 'org-babel-load-languages '(clojure . t))
@@ -78,4 +79,6 @@
 
 (setf org-cycle-global-at-bob t)
 
+
+()
 (provide 'init-denote)

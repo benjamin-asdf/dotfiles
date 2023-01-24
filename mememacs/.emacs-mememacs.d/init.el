@@ -29,12 +29,11 @@
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
-(load
- (expand-file-name "local-before.el" user-emacs-directory) 'no-err)
-
-(straight-use-package 'use-package)
+;; (straight-override-recipe '(compat :host github :repo "emacs-compat/compat"))
 
 (require 'use-package)
+
+(straight-use-package 'use-package)
 
 (setf
  straight-vc-git-default-protocol 'https
@@ -53,11 +52,12 @@
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
+
 (use-package keychain-environment
-    :straight  (:host github :repo "tarsius/keychain-environment")
-    :init
-    (keychain-refresh-environment)
-    (auth-source-pass-enable))
+  :straight  (:host github :repo "tarsius/keychain-environment")
+  :init
+  (keychain-refresh-environment)
+  (auth-source-pass-enable))
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
@@ -110,7 +110,15 @@
     "hc" #'describe-char
     "hm" #'describe-mode))
 
+;; https://github.com/magit/magit/issues/4836
+;; straight users fucked, not so nice
+;; in clojure we would just not brake you
+(use-package compat
+  :ensure t
+  :straight (:host github :repo "emacs-compat/compat"))
+
 (use-package magit
+  :straight (:host github :repo "magit/magit")
   :defer t
   :init
 
@@ -124,13 +132,13 @@
     "gU" #'magit-pull)
 
   :config
-  (setq auto-revert-mode-text "")
+  (setq auto-revert-mode-teaaxt "")
   (setq git-commit-summary-max-length fill-column)
   (require 'init-magit)
   (with-eval-after-load 'git-commit-mode
-       (add-hook 'git-commit-mode-hook
-	        (defun mm/disable-visual-line-mode ()
-	          (visual-line-mode -1))))
+    (add-hook 'git-commit-mode-hook
+	      (defun mm/disable-visual-line-mode ()
+	        (visual-line-mode -1))))
   (define-key magit-blob-mode-map "n" nil)
   (define-key magit-blob-mode-map (kbd "C-n") nil))
 
@@ -250,9 +258,11 @@
 (use-package lispy
   :ensure t
   :config
-  (defun mm/enable-le-python ()
-    (require 'le-python)
-    (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point))
+  (with-eval-after-load 'le-python
+    (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point)
+    (with-eval-after-load 'python
+      (advice-add #'python-shell-get-process :after-until
+                  #'lispy--python-proc)))
   (defvar *1 nil)
   (defvar *2 nil)
   (defvar *3 nil)
@@ -275,7 +285,8 @@
   (scheme-mode . lispy-mode)
   (clojure-mode . lispy-mode)
   (python-mode . lispy-mode)
-  (python-mode . mm/enable-le-python))
+  ;; (python-mode . mm/enable-le-python)
+  )
 
 (use-package multiple-cursors
   :config
@@ -649,7 +660,8 @@ string).  It returns t if a new expansion is found, nil otherwise."
   :config
   (setq
    elfeed-feeds
-   '("http://gigasquidsoftware.com/atom.xml"
+   '("https://martinfowler.com/feed.atom"
+     "http://gigasquidsoftware.com/atom.xml"
      "http://blog.samaltman.com/posts.atom"
      "http://nullprogram.com/feed/"
      "https://planet.emacslife.com/atom.xml"
@@ -762,8 +774,11 @@ Example:
   :straight nil
   :load-path "/home/benj/repos/openai-api.el/"
   :config
-  (auth-source-pass-enable)
-  (setq openai-api-key (auth-source-pick-first-password :host "openai-api"))
+  (setq openai-api-key
+        (let ((s))
+          (lambda ()
+            (or s (setf s (progn (auth-source-pass-enable)
+                                 (auth-source-pick-first-password :host "openai-api")))))))
   (define-key openai-api-keymap (kbd "i")
               (defun mm/insert-todo ()
                 (interactive)
