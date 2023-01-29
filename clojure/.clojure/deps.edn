@@ -44,10 +44,14 @@
            ;; alpha state software as API has not been finalized however the code works reliably
            ;; Latest commit on add-lib3 branch, don't update with :project/outdated
            ;; Set logging implementation to no-operation
-           :lib/hotload
+           :lib/tools-deps+slf4j-nop
            {:extra-deps {org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha"
-                                                       :git/sha     "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}
+                                                       :git/sha "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}
                          org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}}
+
+           :lib/tools-deps
+           {:extra-deps {org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha"
+                                                       :git/sha "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}}}
 
 
            :new {:extra-deps {com.github.seancorfield/clj-new {:git/sha "e9081e54502167f168d13cd68532447fb5e8b466"

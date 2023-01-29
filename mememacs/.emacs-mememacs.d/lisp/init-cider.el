@@ -9,7 +9,7 @@
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
-      cider-clojure-cli-aliases ":lib/hotload:trace/flowstorm"
+      cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
       cider-merge-sessions nil
       cider-auto-jump-to-error nil
       cider-show-error-buffer nil)
@@ -23,6 +23,15 @@
  'cider-result-overlay-face
  nil
  :background "black")
+
+(set-face-attribute
+ 'cider-error-overlay-face
+ nil
+ :background "green"
+ :foreground "white")
+
+
+(define-key cider-mode-map (kbd "C-c X") #'cider-selector)
 
 (when
     (require 'neil "~/repos/clojure/neil/neil.el" 'no-err)

@@ -777,8 +777,7 @@ Example:
   (setq openai-api-key
         (let ((s))
           (lambda ()
-            (or s (setf s (progn (auth-source-pass-enable)
-                                 (auth-source-pick-first-password :host "openai-api")))))))
+            (or s (setf s (auth-source-pick-first-password :host "openai-api"))))))
   (define-key openai-api-keymap (kbd "i")
               (defun mm/insert-todo ()
                 (interactive)

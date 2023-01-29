@@ -40,3 +40,5 @@
 (lsp--load-default-session)
 
 (use-package yaml-mode)
+
+(use-package julia-mode)
