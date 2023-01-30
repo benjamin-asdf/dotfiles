@@ -41,4 +41,22 @@
 
 (use-package yaml-mode)
 
-(use-package julia-mode)
+(use-package julia-mode
+  :config
+  ;; (add-to-list 'load-path "/home/benj/repos/julia-repl/")
+  ;; (require 'julia-repl)
+
+  ;; eh that didn't work out of the box
+  ;; (add-to-list 'load-path "~/repos/julia-shell-mode/")
+  ;; (require 'julia-shell)
+  ;; (setf julia-shell-animate-logo nil)
+
+  (use-package lsp-julia
+    ;; :config
+    ;; (setq lsp-julia-default-environment "~/.julia/environments/v1.7")
+    )
+
+  ;; (use-package julia-snail
+  ;; :ensure t
+  ;; :hook (julia-mode . julia-snail-mode))
+  )
