@@ -772,12 +772,15 @@ Example:
 
 (use-package openai-api
   :straight nil
-  :load-path "/home/benj/repos/openai-api.el/"
+  :load-path "~/repos/openai-api.el/"
   :config
   (setq openai-api-key
         (let ((s))
           (lambda ()
-            (or s (setf s (auth-source-pick-first-password :host "openai-api"))))))
+            (or s (setf
+                   s
+                   (auth-source-pick-first-password
+                    :host "openai-api"))))))
   (define-key openai-api-keymap (kbd "i")
               (defun mm/insert-todo ()
                 (interactive)

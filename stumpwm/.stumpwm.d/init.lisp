@@ -67,7 +67,7 @@
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
 (defcommand phone () ()
-  (window-send-string (string-trim '(#\Newline) (run-shell-command "pass my-phone-number" t))))
+  (window-send-string (string-trim '(#\Newline) (run-shell-command "cat ~/phone-number" t))))
 (defcommand my-first-name () ()
   (window-send-string "Benjamin"))
 (defcommand my-last-name () ()
