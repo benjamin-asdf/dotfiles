@@ -68,4 +68,8 @@ _bb_complete() {
 }
 
 complete -f -F _bb_complete bb
-complete -W "$(bbin commands)" bbin
+# can I not make this a functoin so I only do this on demand?
+# this is not how I want it. It run when I start bash
+# and that is asking for trouble if there is any err in bb
+# e.g. with broken bb.edn also it needs to pull bbin stuff sometimes
+# complete -W "$(bbin commands)" bbin
