@@ -627,10 +627,9 @@ string).  It returns t if a new expansion is found, nil otherwise."
       (apply f args)))
 
   (defun mm/shell-via-async-shell-command ()
-    (switch-to-buffer
-     (window-buffer
-      (async-shell-command
-       shell-file-name))))
+    (let ((display-buffer-alist
+           '((".*" display-buffer-same-window))))
+      (async-shell-command shell-file-name)))
 
   (advice-add #'mm/shell-via-async-shell-command :around #'mm/with-current-window-buffer)
 
