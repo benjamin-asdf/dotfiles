@@ -149,9 +149,105 @@
 
 (meow-define-keys 'insert
   '("C-j" . completion-at-point)
-  '("e" . special-lispy-eval)
-  '("E" . special-lispy-eval-and-insert)
   '("M-u" . mm/copy-word-above))
+
+;; -------------------------------------
+;; lispy-eval
+
+;; https://github.com/abo-abo/lispy/issues/639
+;; do not fuck around, when the buffer changes while I eval
+(defun lispy-eval (arg &optional e-str)
+  "Eval the current sexp and display the result.
+When ARG is 2, insert the result as a comment.
+When at an outline, eval the outline."
+  (interactive "p")
+  (setq lispy-eval-output nil)
+  (condition-case e
+      (let ((buff (current-buffer)))
+        (cond ((eq arg 2)
+               (lispy-eval-and-comment))
+              ((and (looking-at lispy-outline)
+                    (looking-at lispy-outline-header))
+               (lispy-eval-outline))
+              (t
+               (let ((res (lispy--eval e-str)))
+                 (when (memq major-mode lispy-clojure-modes)
+                   (setq res (lispy--clojure-pretty-string res)))
+                 (when lispy-eval-output
+                   (setq res (concat lispy-eval-output res)))
+                 (cond ((eq lispy-eval-display-style 'message)
+                        (lispy-message res))
+                       ((or (fboundp 'cider--display-interactive-eval-result)
+                            (require 'cider nil t))
+                        (when (equal buff (current-buffer))
+                          (cider--display-interactive-eval-result
+                           res (cdr (lispy--bounds-dwim)))))
+                       ((or (fboundp 'eros--eval-overlay)
+                            (require 'eros nil t))
+                        (eros--eval-overlay
+                         res (cdr (lispy--bounds-dwim))))
+                       (t
+                        (error "Please install CIDER >= 0.10 or eros to display overlay")))))))
+    (eval-error
+     (lispy-message (cdr e)))))
+
+;; e without prefix arg is the most important command, the quick-eval
+;; e with prefix arg inserts into buffer
+(defun mm/lispy--eval (&optional arg)
+  (interactive "p")
+  (cond ((not lispy-mode)
+         (call-interactively
+          #'self-insert-command))
+        ((memq
+          major-mode
+          lispy-clojure-modes)
+         (if (eq arg 1)
+             (cider-eval-last-sexp nil)
+           (progn
+             (lispy-newline-and-indent-plain)
+             (cider-eval-last-sexp t))))
+        (t
+         (if (eq arg 4)
+             (lispy-eval-and-insert 'insert)
+           (lispy-eval arg)))))
+
+(defun mm/cider-emit-into-popup-buffer (out)
+  (cider-emit-into-popup-buffer
+   (cider-popup-buffer
+    "*mm-lispy-result*"
+    nil
+    major-mode
+    'ancillary)
+   (ansi-color-apply out)
+   nil
+   t))
+
+;; E pops a buffer
+;; with prefix arg, I insert
+(defun mm/lispy--eval-and-insert (&optional arg)
+  (interactive "p")
+  (cond ((not lispy-mode)
+         (call-interactively
+          #'self-insert-command))
+        ((memq
+          major-mode
+          lispy-clojure-modes)
+         (save-excursion
+	   (goto-char
+	    (cdr (lispy--bounds-dwim)))
+	   (if arg
+	       (cider-pprint-eval-last-sexp-to-comment nil)
+	     (cider-pprint-eval-last-sexp nil))))
+        (t
+         (if arg
+	     (lispy-eval-and-insert)
+           (mm/cider-emit-into-popup-buffer (lispy--eval-dwim))))))
+
+(lispy-define-key meow-insert-state-keymap (kbd "e") 'mm/lispy--eval)
+(lispy-define-key meow-insert-state-keymap (kbd "E") 'mm/lispy--eval-and-insert)
+
+;; lispy-eval end
+
 
 ;; thanks https://github.com/noctuid/lispyville
 (defun lispyville-end-of-defun ()
