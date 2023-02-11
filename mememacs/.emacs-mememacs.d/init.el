@@ -29,11 +29,8 @@
 (defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
-;; (straight-override-recipe '(compat :host github :repo "emacs-compat/compat"))
-
-(require 'use-package)
-
 (straight-use-package 'use-package)
+(require 'use-package)
 
 (setf
  straight-vc-git-default-protocol 'https
@@ -51,7 +48,6 @@
 (setf user-mail-address "Benjamin.Schwerdtner@gmail.com")
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
-
 
 (use-package keychain-environment
   :straight  (:host github :repo "tarsius/keychain-environment")
