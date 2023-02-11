@@ -1,82 +1,22 @@
 (setq-default completion-in-region-function #'consult-completion-in-region)
 
-(general-def
-  isearch-mode-map
-  "H-/" #'consult-line)
+(define-key isearch-mode-map (kbd "H-/") #'consult-line)
 
-(mememacs/local-def
-  "SPC" #'consult-mode-command)
+(define-key minibuffer-mode-map (kbd "M-h") #'consult-history)
+(define-key minibuffer-mode-map (kbd "M-i") #'completion-at-point)
 
-(mememacs/comma-def
-  "ss" #'consult-line
-  "sS" #'consult-line-multi
+(bind-keys
+  ("H-m M" . consult-register-store)
+  ("H-m m" . consult-register)
+  ("H-m b" . consult-bookmark))
 
-  "sk" #'consult-keep-lines
+(bind-keys
+  ("H-SPC" . consult-line)
+  ("H-m ." . (lambda () (interactive) (push-mark))))
 
-  "sf" #'consult-focus-lines
-  "g/" #'consult-git-grep
-
-  "fl" #'consult-locate
-  "ff" #'consult-find
-  "fo" #'consult-file-externally
-  "hw" #'consult-man
-  "M" #'consult-minor-mode-menu)
-
-(general-def
-  'minibuffer-mode-map
-  "M-h" #'consult-history
-  "M-i" #'completion-at-point)
-
-(general-def
-  :prefix
-  "H-m"
-  "M" #'consult-register-store
-  "m" #'consult-register
-  "b" #'consult-bookmark)
-
-(mememacs/leader-def
-  "SPC" #'execute-extended-command
-  "bb" #'consult-buffer
-  "bB" #'consult-buffer-other-window
-
-  "sk" #'consult-keep-lines
-
-  "sf" #'consult-focus-lines
-
-  "ss" #'consult-line
-  "sS" #'consult-line-multi
-  "ff" #'find-file
-  "fr" #'consult-recent-file
-
-  "ji" #'consult-imenu
-  "jI" #'consult-imenu-multi
-  ;; info?
-  "m" #'consult-global-mark
-
-  "jL" #'consult-goto-line
-  "jo" #'consult-org-heading
-  "jO" #'consult-outline
-  ;; org-agenda
-  "sb" #'consult-multi-occur
-
-  ":" #'consult-complex-command
-
-  "ha" #'consult-apropos
-
-  "e" nil
-  "en" #'consult-compile-eror
-  ;; flycheck
-  ;; "ef" #'consult-flymake
-
-  "/" #'consult-ripgrep)
-
-(general-def
-  "H-SPC" #'consult-line
-  "H-m ." (lambda () (interactive) (push-mark)))
-
-(general-def
-  "M-y" #'yank-pop
-  [remap yank-pop] #'consult-yank-pop)
+(bind-keys
+  ("M-y" . yank-pop)
+  ([remap yank-pop] . consult-yank-pop))
 
 (consult-customize
  consult-ripgrep consult-git-grep consult-grep

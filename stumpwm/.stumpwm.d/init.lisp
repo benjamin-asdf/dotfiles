@@ -37,7 +37,7 @@
 
 (define-key *top-map* (kbd "s-g") '*groups-map*)
 (defcommand flameshot-gui () ()
-	    (run-shell-command "flameshot gui"))
+            (run-shell-command "flameshot gui"))
 
 (define-key *top-map* (kbd "s-p") "flameshot-gui")
 
@@ -82,7 +82,7 @@
   ()
   (message
    (if (probe-file
-	"/tmp/recordingpid")
+        "/tmp/recordingpid")
        "stop recording"
        "select for recording"))
   (run-shell-command
@@ -101,35 +101,35 @@
 
 (defcommand (swap-this-window tile-group) () ()
   (let* ((f1
-	   (tile-group-current-frame (current-group)))
+           (tile-group-current-frame (current-group)))
          (f2
-	   (progn (message "Select Window Two")
+           (progn (message "Select Window Two")
                   (choose-frame-by-number (current-group)))))
     (when (and f1 f2)
       (let ((w1 (frame-window f1))
             (w2 (frame-window f2)))
-	(when w1 (pull-window w1 f2))
-	(when w2 (pull-window w2 f1))
-	(focus-frame (current-group) f2)))))
+        (when w1 (pull-window w1 f2))
+        (when w2 (pull-window w2 f1))
+        (focus-frame (current-group) f2)))))
 
 (defcommand mm-emacs-with-editor-insert () ()
   (run-shell-command (concat "emacsclient" " " "--eval" " "  "\"(emacs-everywhere)\""))
   ;; (let ((file-s (concat "/tmp/"
-  ;; 			(string-trim '(#\Newline) (run-shell-command "uuidgen" t)))))
+  ;;                    (string-trim '(#\Newline) (run-shell-command "uuidgen" t)))))
   ;;   (sb-thread:make-thread
   ;;    (lambda ()
   ;;      ;; (run-shell-command
-  ;;      ;; 	(concat "emacsclient" " -c" " " file-s) 't)
+  ;;      ;;    (concat "emacsclient" " -c" " " file-s) 't)
   ;;      (stumpwm:call-in-main-thread
-  ;; 	(lambda ()
-  ;; 	  (window-send-string
-  ;; 	   "hurr"
-  ;; 	   ;; (with-output-to-string (s)
-  ;; 	   ;;   (with-open-file (is file-s :direction :i)
-  ;; 	   ;;     (loop for line = (read-line is nil is)
-  ;; 	   ;; 	     until (eq line is) do
-  ;; 	   ;; 	       (format s "~A~%" line))))
-  ;; 	   ))))))
+  ;;    (lambda ()
+  ;;      (window-send-string
+  ;;       "hurr"
+  ;;       ;; (with-output-to-string (s)
+  ;;       ;;   (with-open-file (is file-s :direction :i)
+  ;;       ;;     (loop for line = (read-line is nil is)
+  ;;       ;;        until (eq line is) do
+  ;;       ;;          (format s "~A~%" line))))
+  ;;       ))))))
   )
 
 (defparameter *my-comma-map*
@@ -205,16 +205,16 @@
 ;; seriosly popping windows 10 times and then not fixing the fucking class
 ;; 0 regards for the user, just money money splash screens
 (let ((lst
-	'((:class "Unity-editor")
-	  (:title "(Importing)")
-	  (:title "Unity")
-	  (:title "Importing")
-	  (:title "Hold on...")
-	  (:title "Importing (iteration 2)")
-	  (:title "Importing (iteration 3)")
-	  (:title "Importing (iteration 4)")
-	  (:title "Importing (iteration 5)")
-	  (:title "Importing (iteration 6)"))))
+        '((:class "Unity-editor")
+          (:title "(Importing)")
+          (:title "Unity")
+          (:title "Importing")
+          (:title "Hold on...")
+          (:title "Importing (iteration 2)")
+          (:title "Importing (iteration 3)")
+          (:title "Importing (iteration 4)")
+          (:title "Importing (iteration 5)")
+          (:title "Importing (iteration 6)"))))
   (setf *deny-map-request* (append *deny-map-request* lst))
   (setf *deny-raise-request* (append *deny-raise-request* lst)))
 
@@ -243,9 +243,9 @@
   "Like `pull-from-windowlist` but only select
 windows of the same class as the current window."
   (let* ((curr-class (window-class (current-window)))
-	 (windows (class-windows curr-class (current-group)))
-	 (pulled-window (select-window-from-menu
-			 windows
+         (windows (class-windows curr-class (current-group)))
+         (pulled-window (select-window-from-menu
+                         windows
                          fmt)))
     (when pulled-window
       (pull-window pulled-window))))
@@ -253,8 +253,8 @@ windows of the same class as the current window."
 (defcommand (create-group-from-curr-class-windows tile-group) () ()
   "Create a group and put all current class windows there."
   (let* ((class (window-class (current-window)))
-	 (windows (class-windows class (current-group)))
-	 (group (add-group (current-screen) class)))
+         (windows (class-windows class (current-group)))
+         (group (add-group (current-screen) class)))
     (mapc (lambda (w) (move-window-to-group w group)) windows)
     (switch-to-group group)))
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
@@ -276,7 +276,7 @@ windows of the same class as the current window."
 (defun eval-string-as-el (elisp &optional collect-output-p)
   "evaluate a string as emacs lisp"
   (let ((result
-	  (run-shell-command
+          (run-shell-command
            (string-downcase (format nil "timeout --signal=9 1m emacsclient --eval '~a'" elisp))
            collect-output-p)))
     (handler-case (read-from-string result)
@@ -301,12 +301,9 @@ FORM should be a quoted list."
  (eval-el-1 '(+ 1 3 2))
  (eval-el-1 '(message "hi"))
  (eval-el-1 '(current-buffer))
-
  (eval-el-1 '(message "hi"))
+ (format nil "~a" '(message "hi")))
 
- (format nil "~a" '(message "hi"))
-
- )
 (declaim (ftype
           (function (string) (values string &optional))
           emacs-winmove))
@@ -351,6 +348,21 @@ FORM should be a quoted list."
   (exec-el (mm/consult-stumpwm-windows)))
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
+
+;; doesn't work right now
+;; google chrome needs be active for recievent keys?
+;; (defcommand mm-refresh-google-chromes () ()
+;;   (mapc
+;;    (lambda (w)
+;;      (stumpwm::focus-frame (stumpwm::window-frame w) (current-group))
+;;      (stumpwm::send-fake-key
+;;       w
+;;       (kbd "F5")))
+;;    (stumpwm::find-matching-windows
+;;     '(:class "Google-chrome")
+;;     nil
+;;     nil)))
+
 
 ;;; SLY setup
 (ql:quickload :slynk)
@@ -404,6 +416,9 @@ This is needed if Sly updates while StumpWM is running"
  ;;      (error "No heads have a modeline on this screen.")))
  ;;   (setf stumptray::*tray-head-selection-fn* #'ben/select-systray-head)
  ;;   (stumptray::stumptray))
+
+ (window-list)
+
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
  (group-indicate-focus (current-group))
@@ -411,6 +426,8 @@ This is needed if Sly updates while StumpWM is running"
  (setf *debug-level* 0)
  (redirect-all-output (data-dir-file "output" "log"))
  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
+
+
 
  (list-modules)
  (my-mv :left)

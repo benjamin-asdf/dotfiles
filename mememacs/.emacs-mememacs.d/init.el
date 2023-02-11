@@ -209,8 +209,9 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package cape
+  :ensure t
   :init
-  (add-to-list 'completion-at-point-functions #'cape-file))
+  (add-hook 'completion-at-point-functions #'cape-file))
 
 (use-package wgrep)
 
@@ -259,7 +260,10 @@
   :ensure t
   :config
   (with-eval-after-load 'le-python
-    (add-to-list 'completion-at-point-functions 'lispy-python-completion-at-point)
+    (add-hook
+     'python-mode-hook
+     (defun mm/add-lispy-python-capf ()
+       (add-hook 'completion-at-point-functions #'lispy-python-completion-at-point nil t)))
     (with-eval-after-load 'python
       (advice-add #'python-shell-get-process :after-until
                   #'lispy--python-proc)))
@@ -556,14 +560,8 @@ string).  It returns t if a new expansion is found, nil otherwise."
 (use-package markdown-mode)
 
 (use-package bash-completion
-  :init
-  (autoload 'bash-completion-dynamic-complete
-    "bash-completion"
-    "BASH completion hook")
-  (add-hook 'shell-dynamic-complete-functions
-            #'bash-completion-dynamic-complete)
-
   :config
+  (bash-completion-setup)
   (defun bash-completion-capf-1 (bol)
     (bash-completion-dynamic-complete-nocomint (funcall bol) (point) t))
   (defun bash-completion-eshell-capf ()

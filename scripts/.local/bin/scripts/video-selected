@@ -20,7 +20,3 @@ ffmpeg \
 "$outfile" &
 
 echo $! > /tmp/recordingpid
-
-slop -f "%x %y %w %h %g %i" > /tmp/slop
-read -r X Y W H < /tmp/slop
-rm /tmp/slop

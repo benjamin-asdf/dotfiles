@@ -79,6 +79,4 @@
 
 (setf org-cycle-global-at-bob t)
 
-
-()
 (provide 'init-denote)

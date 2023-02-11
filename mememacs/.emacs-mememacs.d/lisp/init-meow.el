@@ -208,7 +208,7 @@ When at an outline, eval the outline."
              (cider-eval-last-sexp t))))
         (t
          (if (eq arg 4)
-             (lispy-eval-and-insert 'insert)
+             (lispy-eval-and-insert)
            (lispy-eval arg)))))
 
 (defun mm/cider-emit-into-popup-buffer (out)
@@ -229,17 +229,15 @@ When at an outline, eval the outline."
   (cond ((not lispy-mode)
          (call-interactively
           #'self-insert-command))
-        ((memq
-          major-mode
-          lispy-clojure-modes)
+        ((memq major-mode lispy-clojure-modes)
          (save-excursion
 	   (goto-char
 	    (cdr (lispy--bounds-dwim)))
-	   (if arg
+	   (if (eq arg 4)
 	       (cider-pprint-eval-last-sexp-to-comment nil)
 	     (cider-pprint-eval-last-sexp nil))))
         (t
-         (if arg
+         (if (eq arg 4)
 	     (lispy-eval-and-insert)
            (mm/cider-emit-into-popup-buffer (lispy--eval-dwim))))))
 
@@ -303,8 +301,6 @@ This won't jump to the end of the buffer if there is no paren there."
   (if (region-active-p)
       (call-interactively #'join-line)
     (join-line 'below)))
-
-;; (define-key lispy-mode-map-lispy (kbd "C-j") #'mm/join-below)
 
 (bind-keys
  :map lispy-mode-map-lispy
