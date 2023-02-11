@@ -783,11 +783,3 @@ Example:
     (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg))
   (meow-leader-define-key
    `("." . ,openai-api-keymap)))
-
-;; (use-package boon
-;;   :config
-;;   (require 'boon-qwerty)
-;;   (boon-mode))
-
-
-;; (require 'mememacs-stumpwm)
