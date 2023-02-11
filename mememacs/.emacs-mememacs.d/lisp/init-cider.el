@@ -27,7 +27,7 @@
 (set-face-attribute
  'cider-error-overlay-face
  nil
- :background "green"
+ :background "DarkGreen"
  :foreground "white")
 
 
