@@ -558,6 +558,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
 (use-package bash-completion
   :config
   (bash-completion-setup)
+  (setf bash-completion-use-separate-processes t)
   (defun bash-completion-capf-1 (bol)
     (bash-completion-dynamic-complete-nocomint (funcall bol) (point) t))
   (defun bash-completion-eshell-capf ()
