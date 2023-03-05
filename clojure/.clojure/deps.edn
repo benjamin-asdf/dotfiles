@@ -151,6 +151,12 @@
            {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2022.02.09"}}
             :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
 
+           ;; more
+           :babashka/dev
+           {:paths []
+            :deps {babashka/babashka {:local/root "/home/benj/repos/babashka/"}}
+            :main-opts ["-m" "babashka.main"]}
+
            }
 
  ;; Provider attributes
