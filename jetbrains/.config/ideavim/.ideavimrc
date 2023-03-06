@@ -33,6 +33,7 @@ noremap <a-v> V
 
 " ============================================================================
 " Editing
+
 " ============================================================================
 
 nnoremap <leader>oe :action emacsclient<CR>
@@ -107,11 +108,7 @@ nnoremap gU :action FindUsages<CR>
 nnoremap gI :action GotoImplementation<CR>
 nmap gi :action ReSharperGotoImplementation<CR>
 
-
-
 nnoremap Y :action copy-to-clipboard<CR>
-
-
 
 " ideavim regex are a bit buggy, cannot use regex from vimrc
 nnoremap ]c /\\<trait\>\\\|\\<class\>\\\|\\<object\>\\\|\\<interface\>\\\|\\<enum\><CR>w:nohlsearch<CR>
@@ -126,6 +123,9 @@ nnoremap [d b?\\<def\><CR>w:nohlsearch<CR>
 nnoremap <leader>en :action GotoNextError<CR>
 nnoremap <leader>ep :action GotoPreviousError<CR>
 
+" Map quick doc to gk
+map gh <Action>(QuickJavaDoc)
 
-
-" fix g
+" Map commenting or uncommenting to gc
+vmap gc <Plug>CommentMotion
+nmap gc <Plug>CommentMotion

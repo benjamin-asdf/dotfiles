@@ -1,6 +1,0 @@
-#!/bin/sh
-
-bluetoothctl power on
-# bluetoothctl scan on &
-bluetoothctl remove 4C:87:5D:7F:FC:58
-bluetoothctl connect 4C:87:5D:7F:FC:58

@@ -29,3 +29,5 @@ unclutter &
 dunst &
 
 /home/benj/repos/lisp/stumpwm/stumpwm
+
+# xset r rate 200 180

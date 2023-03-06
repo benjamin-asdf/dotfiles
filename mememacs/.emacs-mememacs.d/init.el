@@ -130,7 +130,6 @@
   :config
   (setq auto-revert-mode-teaaxt "")
   (setq git-commit-summary-max-length fill-column)
-  (require 'init-magit)
   (with-eval-after-load 'git-commit-mode
     (add-hook 'git-commit-mode-hook
 	      (defun mm/disable-visual-line-mode ()

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+DEV="$1"
+[ -z "$DEV" ] && DEV="4C:87:5D:7F:FC:58"
+
+bluetoothctl << EOF
+power on
+agent on
+default-agent
+scan on
+pair $DEV
+trust $DEV
+connect $DEV
+quit
+EOF
