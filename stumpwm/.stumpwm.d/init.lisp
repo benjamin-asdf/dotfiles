@@ -54,10 +54,9 @@
 (define-key *top-map* (kbd "s-u") "browser")
 
 (define-key *top-map* (kbd "s-n") "nyxt")
-(defcommand slack () ()
-  (run-or-raise "slack" '(:class "Slack")))
 
-(define-key *top-map* (kbd "s-s") "slack")
+
+
 (defcommand pull-emacs () ()
   (run-or-pull "emacs" '(:class "Emacs")))
 
@@ -132,6 +131,22 @@
   ;;       ))))))
   )
 
+(defcommand switch-to-calls () ()
+  (when-let
+      ((g
+        (car (remove-if-not
+              (lambda (g)
+                (string= "calls" (group-name g)))
+              (screen-groups (current-screen))))))
+    (stumpwm::switch-to-group g)))
+
+(defcommand run-or-raise-teams () ()
+  (run-or-raise "teams-for-linux" '(:class "teams-for-linux")))
+(define-key *top-map* (kbd "s-s") "run-or-raise-teams")
+
+(defcommand slack () ()
+  (run-or-raise "slack" '(:class "Slack")))
+
 (defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
@@ -149,6 +164,10 @@
     ;; (stumpwm:define-key m (kbd "x")
     ;;   (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
+    (stumpwm:define-key m (kbd "c") "switch-to-calls")
+
+    (stumpwm:define-key m (kbd "s") "slack")
+    (stumpwm:define-key m (kbd "c") "switch-to-calls")
     m))
 
     ;; (let* ((curr-thread sb-thread:*current-thread*)
@@ -166,6 +185,7 @@
 
 (setf mem::*mem-modeline-fmt* "MEM: %a %p %b")
 
+;; (define-key *top-map* (kbd "s") nil)
 (defun rec-modeline (ml)
   (declare (ignore ml))
   (if (probe-file
@@ -259,8 +279,8 @@ windows of the same class as the current window."
     (switch-to-group group)))
 (define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 
-
 (define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
+
 ;; thanks gavin
 ;; https://github.com/Gavinok/stump-conf
 
@@ -349,20 +369,6 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
-;; doesn't work right now
-;; google chrome needs be active for recievent keys?
-;; (defcommand mm-refresh-google-chromes () ()
-;;   (mapc
-;;    (lambda (w)
-;;      (stumpwm::focus-frame (stumpwm::window-frame w) (current-group))
-;;      (stumpwm::send-fake-key
-;;       w
-;;       (kbd "F5")))
-;;    (stumpwm::find-matching-windows
-;;     '(:class "Google-chrome")
-;;     nil
-;;     nil)))
-
 
 ;;; SLY setup
 (ql:quickload :slynk)
@@ -394,8 +400,6 @@ This is needed if Sly updates while StumpWM is running"
     (start-slynk))
   (exec-el (sly-connect "localhost" *slynk-port*)))
 
-;; (start-slynk)
-
 (define-key *root-map* (kbd "C-s") "connect-to-sly")
 
 (define-remapped-keys
@@ -403,6 +407,9 @@ This is needed if Sly updates while StumpWM is running"
         ("M-n"   . "Down")
         ("M-p"   . "Up"))
        ("jetbrains-rider"
+        ("M-n"   . "Down")
+        ("M-p"   . "Up"))
+       ("teams-for-linux"
         ("M-n"   . "Down")
         ("M-p"   . "Up"))))
 
@@ -427,7 +434,19 @@ This is needed if Sly updates while StumpWM is running"
  (redirect-all-output (data-dir-file "output" "log"))
  (equal *module-dir* (pathname-as-directory (concat (getenv "HOME") "/.stumpwm.d/modules")))
 
+ (run-or-raise "slack" '(:class "Slack"))
 
+ (window-class
+  (car (remove-if-not
+        (lambda (w)
+          (string=
+           "Raoul Venn | Microsoft Teams"
+           (window-title w)))
+        (screen-windows
+         (current-screen)))))
+ "\"teams-for-linux\""
+
+ (switch-to-calls)
 
  (list-modules)
  (my-mv :left)
