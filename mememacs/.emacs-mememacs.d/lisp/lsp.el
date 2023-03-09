@@ -29,7 +29,7 @@
 (use-package lsp-grammarly)
 (use-package typescript-mode
  :config
-  (add-hook 'typescript-mode-hook #'lsp-deferred))
+ (add-hook 'typescript-mode-hook #'lsp-deferred))
 
 (use-package go-mode
   :config

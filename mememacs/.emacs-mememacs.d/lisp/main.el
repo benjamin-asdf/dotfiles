@@ -84,12 +84,6 @@
 ;;; abbreviations.
 (add-hook 'text-mode-hook 'abbrev-mode)
 
-;;; Auto-fill
-(when (getenv "MANWIDTH")
-  (setq-default fill-column (string-to-number (getenv "MANWIDTH"))))
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-;; (setq sentence-end-double-space nil)
-
 ;; shr
 (setq shr-width (string-to-number (or (getenv "MANWIDTH") "80")))
 
