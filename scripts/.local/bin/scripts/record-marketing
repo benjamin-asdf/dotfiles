@@ -1,0 +1,14 @@
+#!/bin/sh
+
+[ -f /tmp/recordingpid ] && (kill "$(cat /tmp/recordingpid)" ; rm -f /tmp/recordingpid ; exit 0) && exit 0
+
+outfile="$HOME/Pictures/screen-$(date '+%y%m%d-%H%M-%S').mp4"
+
+ffmpeg -video_size 2560x1440 -framerate 60 -f x11grab -i ":0.0+1920,0" "$outfile"
+# Video format description:
+
+# video_size: 2560x1440
+# framerate: 60
+# input: x11grab from :0.0+1920,0 (1920 pixels from the left side of the screen)
+
+echo $! > /tmp/recordingpid

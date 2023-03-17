@@ -641,4 +641,7 @@ when formatting with lispy."
 
 (define-key help-map (kbd "c") #'describe-char)
 
+(global-set-key (kbd "H-<return>") #'save-buffer)
+(global-set-key (kbd "s-r") #'delete-other-windows)
+
 (provide 'init-meow)
