@@ -644,4 +644,20 @@ when formatting with lispy."
 (global-set-key (kbd "H-<return>") #'save-buffer)
 (global-set-key (kbd "s-r") #'delete-other-windows)
 
+(defun meow-start-isearch-with-last-search ()
+  "Start an isearch using the last search string from `meow--push-search'."
+  (interactive)
+  (if-let ((string (car regexp-search-ring)))
+      (if string
+          (progn
+            (when (region-active-p) (meow-cancel-selection))
+            (isearch-mode t t)
+            (setq isearch-yank-flag t)
+            (isearch-process-search-string string string)
+            (isearch-beginning-of-buffer)))
+    (message
+     "No previous search string found")))
+
+(global-set-key (kbd "H-l") #'meow-start-isearch-with-last-search)
+
 (provide 'init-meow)
