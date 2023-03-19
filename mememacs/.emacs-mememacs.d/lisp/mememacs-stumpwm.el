@@ -41,13 +41,6 @@
    (lambda (w-id) (mm/stumpwm-eval `(pull-window (window-by-id ,w-id))))
    #'mm/stumpwm-window-display->id))
 
-(embark-define-keymap
-    mm-embark-stumpwm-window-map
-  "Keymap for Embark stumpwm window actions."
-  :parent embark-general-map
-  ("k" mm/stumpwm-kill-window)
-  ("o" mm/stumpwm-open-window))
-
 (defun mm/consult-stumpwm-windows ()
   (interactive)
   (mm/stumpwm-open-window

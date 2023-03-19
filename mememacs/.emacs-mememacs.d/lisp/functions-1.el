@@ -69,34 +69,6 @@ See `eval-last-sexp'."
 
 
 
-(defun mememacs/jump-eshell ()
-  (interactive)
-  (let* ((dir default-directory)
-	 (cd-shell
-	  (lambda ()
-            (goto-char (point-max))
-	    (insert
-	     (format "cd %s" (shell-quote-argument dir)))
-	    (eshell-send-input))))
-    (eshell)
-    (funcall cd-shell)))
-
-(mememacs/leader-def "jE" #'mememacs/jump-eshell)
-
-(defun mememacs/eshell-hist ()
-  (interactive)
-  (goto-char (point-max))
-  (insert
-   (completing-read
-    "hist: "
-    (ring-elements
-     eshell-history-ring))))
-
-(mememacs/local-def
-  :states '(insert normal)
-  :keymaps '(eshell-mode-map)
-  "h" #'mememacs/eshell-hist)
-
 (defun mememacs/magit-kill-origin-url (&optional arg)
   (interactive "p")
   (-->
@@ -164,10 +136,6 @@ With prefix arg make a new file."
   (interactive "P")
   (mm/scratch arg "el"))
 
-(mememacs/leader-def
-  "bs" #'mm/scratch-el
-  "bS" #'mm/scratch)
-
 (defun mememacs/process-menu-switch-to-buffer ()
   (interactive)
   (when-let*
@@ -200,11 +168,6 @@ With prefix arg make a new file."
    "#!/usr/bin/env bb\n"
    #'clojure-mode))
 
-(mememacs/comma-def
-  :keymaps 'dired-mode-map
-  "ns" #'mememacs/create-script
-  "nS" #'mememacs/create-bb-script)
-
 (defun mememacs/toggle-debug-on-quit (arg)
   (interactive "P")
   (if arg
@@ -213,7 +176,7 @@ With prefix arg make a new file."
     (setf debug-on-quit
 	  (not debug-on-quit))))
 
-(general-def "C-x C-q" #'mememacs/toggle-debug-on-quit)
+(global-set-key (kbd "C-x C-q") #'mememacs/toggle-debug-on-quit)
 
 (defun mememacs/copy-file-name-dwim (arg)
   (interactive "P")
@@ -252,50 +215,6 @@ With prefix arg make a new file."
   ("a" #'mark-whole-buffer)
   ("y" #'mememacs/kill-buffer-name :exit t))
 
-(mememacs/comma-def
-  :states '(normal motion)
-  "b" #'hydra-buffer/body
-  "w" #'evil-window-map
-  "E" #'mm/force-clear-buff)
-
-(defhydra outline-hydra ()
-  ("c" #'counsel-outline :exit t)
-  ("J" #'outline-forward-same-level)
-  ("K" #'outline-backward-same-level)
-  ("L" #'outline-demote)
-  ("H" #'outline-promote)
-  ("M-j" #'outline-move-subtree-down)
-  ("M-k" #'outline-move-subtree-up)
-  ("g" #'outline-back-to-heading)
-  ("i" #'outline-cycle)
-  ("m" #'outline-hide-other)
-  ("o" #'outline-show-all))
-
-(defhydra scroll-hydra
-  (:pre (set-cursor-color "Red") :post (set-cursor-color mindsape/cursor-default))
-  "scroll"
-  ("j" (evil-scroll-down 20) "down")
-  ("k" (evil-scroll-up 20) "up")
-  ("J" (evil-scroll-down 150))
-  ("K" (evil-scroll-up 150))
-  ("h" #'evil-window-top)
-  ("l" #'evil-window-bottom)
-  ("z" #'evil-scroll-line-to-center)
-  ("H" #'evil-scroll-line-to-top)
-  ("L" #'evil-scroll-line-to-bottom)
-  ("g" #'evil-goto-first-line)
-  ("G" #'evil-goto-line)
-  ("a" #'mark-whole-buffer)
-  ("o" #'outline-hydra/body "outline" :exit t)
-  ("y" #'mm/kill-whole-buffer "kill-whole" :exit t))
-
-(mememacs/comma-def
-  "jo" #'outline-hydra/body
-  "jj" #'scroll-hydra/body
-  "jk" #'scroll-hydra/lambda-k
-  "jJ" #'scroll-hydra/lambda-J
-  "jK" #'scroll-hydra/lambda-K)
-
 (defun mememacs/kill-dangling-buffs (&rest args)
   "Kill all buffers that are connected to a file,
 where the file does not exist."
@@ -315,8 +234,8 @@ where the file does not exist."
 	      dired-do-rename-regexp))
   (advice-add fn :after #'mememacs/kill-dangling-buffs))
 
-(general-def
-  "C-x k"
+(global-set-key
+ (kbd "C-x k")
   (defun mememacs/kill-minibuff-contents ()
     (interactive)
     (let ((s (minibuffer-contents)))
@@ -324,33 +243,22 @@ where the file does not exist."
     (keyboard-quit)
     (message "%s" s)))
 
-(general-def
-  :keymaps '(emacs-lisp-mode-map)
-  "C-c C-k" #'eval-buffer
-  "C-c C-c" #'eval-defun)
+(bind-keys
+ :map emacs-lisp-mode-map
+ ("C-c C-k" . eval-buffer)
+ ("C-c C-c" . eval-defun))
 
-(general-def
-  :keymaps '(compilation-mode-map)
-  "M-<return>"
-  (defun mm/send-y ()
-    (interactive)
-    (when-let
-	((p
-	  (get-buffer-process
-	   (current-buffer))))
-      (process-send-string p "n\n"))))
-
-(defun mm/completing-read-commit-msg ()
-  (interactive)
-    (insert
-     (s-trim
-      (completing-read
-       "Commit msg: "
-       (ring-elements log-edit-comment-ring)))))
-
-(mememacs/local-def
-  :keymaps '(git-commit-mode-map)
-  "i" #'mm/completing-read-commit-msg)
+(with-eval-after-load 'compilation
+  (define-key
+   compilation-mode-map
+   (kbd "M-<return>")
+   (defun mm/send-y ()
+     (interactive)
+     (when-let
+         ((p
+	   (get-buffer-process
+	    (current-buffer))))
+       (process-send-string p "n\n")))))
 
 ;; from https://www.emacswiki.org/emacs/CopyingWholeLines
 (defun mm/duplicate-line-or-region (&optional n)

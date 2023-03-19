@@ -82,7 +82,7 @@ to directory DIR."
     :state (consult--file-preview)
     :history 'file-name-history)))
 
-(general-def "C-\\" #'mememacs/fd-find-file)
+(global-set-key (kbd "C-\\") #'mememacs/fd-find-file)
 
 (defvar mm/consult-fd-project-files
   `(:name "Project Files fd"

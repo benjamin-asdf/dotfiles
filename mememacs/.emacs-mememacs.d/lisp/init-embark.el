@@ -1,21 +1,9 @@
 ;; -*- lexical-binding: t; -*-
-(general-def
-  :states '(normal insert motion emacs)
-  "C-." #'embark-act
-  "C-;" #'embark-dwim)
 
-(general-def
-  :keymap vertico-map
-  "C-." #'embark-act
-  "C-;" #'embark-dwim)
-
-(general-def :states '(normal motion emacs)
-  "C-h B" #'embark-bindings)
-
-(declare (describe-keymap 'vertico-map))
-
-(mememacs/leader-def
-  "hM" #'embark-bindings-in-keymap)
+(bind-keys
+ :map vertico-map
+ ("C-." . embark-act)
+ ("C-;" . embark-dwim))
 
 (defun mm/embark-eval-identifier-dwim (identifier)
   (let ((s (mm/identifier-unquote
@@ -32,9 +20,7 @@
 	    (cider--nrepl-pr-request-map)))
 	  (t (lispy--eval s)))))
 
-(general-def
-  embark-identifier-map
-  "e" #'mm/embark-eval-identifier-dwim)
+(define-key embark-identifier-map (kbd "e") #'mm/embark-eval-identifier-dwim)
 
 (add-to-list
  'display-buffer-alist
@@ -94,10 +80,10 @@
     " "
     "--and-exit")))
 
-(general-def
-  'embark-file-map
-  "S" #'sudo-find-file
-  ">" #'mememacs/dragon)
+(bind-keys
+ :map embark-file-map
+ ("S"  . sudo-find-file)
+ (">" . mememacs/dragon))
 
 (defun mememacs-find-file-dwim (&optional f)
   "Follow F.
@@ -124,9 +110,7 @@ F can be a program name, a file, or a file relative to the project root. "
 	"%s is neither a file, nor anything I can follow"
 	f))))
 
-(general-def
-  embark-general-map
-  "f" #'mememacs-find-file-dwim)
+(define-key embark-general-map (kbd "f") #'mememacs-find-file-dwim)
 
 (defun mememacs/embark-call-symbol (&optional symbol)
   "Insert a call to SYMBOl below the current toplevel form.
@@ -137,12 +121,12 @@ Meant to be added to `embark-identifier-map`"
   (insert
    (format "(%s)" symbol)))
 
-(general-def embark-identifier-map
-  "l" #'mememacs/embark-call-symbol)
+(define-key embark-identifier-map (kbd "l") #'mememacs/embark-call-symbol)
 
-(general-def embark-variable-map
-  "t" #'debug-on-variable-change
-  "T" #'cancel-debug-on-variable-change)
+(bind-keys
+ :map embark-variable-map
+ ("t" . debug-on-variable-change)
+ ("T" . cancel-debug-on-variable-change))
 
 (defun ensure-list (e) (if (listp e) e `(,e)))
 (defun mm/embark-kill-displayed (strings)
@@ -154,7 +138,7 @@ Meant to be added to `embark-identifier-map`"
      #'vertico--display-string
      (ensure-list strings)))))
 
-(general-def embark-general-map "C-k" #'mm/embark-kill-displayed)
+(define-key embark-general-map (kbd "C-k") #'mm/embark-kill-displayed)
 
 ;; define a keymap with parent
 (defvar mm/embark-consult-grep-map
@@ -170,7 +154,7 @@ Meant to be added to `embark-identifier-map`"
 
 (add-to-list 'embark-keymap-alist '(consult-grep mm/embark-consult-grep-map))
 
-(general-def embark-identifier-map "m" #'lispyville-wrap-lispy-mark-symbol-special)
+(define-key embark-identifier-map (kbd "m") #'lispyville-wrap-lispy-mark-symbol-special)
 
 (defun mm/kill-file-name-relative-to-project (file)
   (interactive "ffile: ")
@@ -180,9 +164,7 @@ Meant to be added to `embark-identifier-map`"
     (project-root
      (project-current)))))
 
-(general-def
-  embark-file-map "r" #'mm/kill-file-name-relative-to-project)
-
+(define-key embark-file-map (kbd "r") #'mm/kill-file-name-relative-to-project)
 (define-key embark-region-map (kbd "y") #'mm/duplicate-line-or-region)
 
 (provide 'init-embark)

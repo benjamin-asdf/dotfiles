@@ -57,12 +57,6 @@
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
-;; prepare to be liberated from you own inferior genes!
-;; soon getting rid of this
-;; (bind-keys)
-(use-package general
-  :config (require 'init-general))
-
 (use-package vundo
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols
@@ -72,12 +66,12 @@
 
 (use-package debug
   :ensure nil
-  :config
-  (general-def
+  :bind
+  (:map
     debugger-mode-map
-    "." #'backtrace-expand-ellipses
-    "+" #'backtrace-multi-line
-    "-" #'backtrace-single-line))
+    ("." . backtrace-expand-ellipses)
+    ("+" . backtrace-multi-line)
+    ("-" . backtrace-single-line)))
 
 (require 'functions)
 (require 'utils)
@@ -86,25 +80,13 @@
 (require 'functions-1)
 
 (setf initial-buffer-choice (mememacs/latest-scratch "el"))
-(require 'init-emacs-lisp)
 
 
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package helpful
-  :config
-  (mememacs/leader-def "hk" #'helpful-key)
-  (mememacs/comma-def
-    :states '(normal visual motion)
-    "hf" #'helpful-callable
-    "hv" #'helpful-variable
-    "hk" #'helpful-key
-    "hF" #'helpful-function
-    "hC" #'helpful-command
-    "hc" #'describe-char
-    "hm" #'describe-mode))
+(use-package helpful)
 
 ;; https://github.com/magit/magit/issues/4836
 ;; straight users fucked, not so nice
@@ -116,17 +98,6 @@
 (use-package magit
   :straight (:host github :repo "magit/magit")
   :defer t
-  :init
-
-  (mememacs/comma-def
-    "g" '(:ignore t)
-    "gj" #'magit-status
-    "gl" #'magit-log
-    "gd" #'magit-diff
-    "gc" #'magit-clone
-    "gu" #'magit-fetch
-    "gU" #'magit-pull)
-
   :config
   (setq auto-revert-mode-teaaxt "")
   (setq git-commit-summary-max-length fill-column)
@@ -217,10 +188,6 @@
 
 (use-package macrostep
   :config
-  (mememacs/comma-def
-    :keymaps
-    '(emacs-lisp-mode-map lisp-interaction-mode-map lisp-mode-map)
-    "m" #'macrostep-expand)
   (add-hook
    'mememacs/escape-functions
    #'macrostep-collapse-all))
@@ -351,12 +318,6 @@
 	avy-keys mememacs/avy-keys
 	avy-style 'words)
   (add-to-list 'avy-ignored-modes 'cider-repl-mode)
-  (mememacs/leader-def
-    "jj" #'avy-goto-char-timer
-    "jw" #'avy-goto-word-1
-    "jl" #'avy-goto-line
-    "cl" #'avy-copy-line
-    "cr" #'avy-copy-region)
   ;; better not start witch chars from
   ;; avy-dispatch-alist
   (setq
@@ -408,26 +369,14 @@
    'mememacs/escape-functions
    (defun mm/so-remove-all ()
      (call-interactively #'symbol-overlay-remove-all)))
-
-  (mememacs/leader-def
-    "so" '(:ignore t)
-    "soo" #'symbol-overlay-put)
-
+  
   (define-key symbol-overlay-map (kbd "h") nil))
 
 (use-package link-hint)
 
 (use-package guix
   :when mememacs/enable-guix
-  :defer t
-  :init
-  (mememacs/leader-def
-   "G"  '(:ignore t)
-   "Gg" #'guix
-   "Gi" #'guix-installed-user-packages
-   "GI" #'guix-installed-system-packages
-   "Gp" #'guix-packages-by-name
-   "GP" #'guix-pull))
+  :defer t)
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
@@ -526,30 +475,9 @@ string).  It returns t if a new expansion is found, nil otherwise."
 (use-package winner
   :config (winner-mode))
 
-(general-def
-    :states '(normal motion)
-    ",da"
-    (let ((map (make-sparse-keymap "apropos")))
-       (general-def map
-	 "v" #'apropos-variable
-	 "V" #'apropos-value
-	 "l" #'apropos-library
-	 "L" #'apropos-local-value
-	 "d" #'apropos-documentation
-	 "D" #'apropos-documentation-property
-	 "f" #'apropos-command
-	 "u" #'apropos-user-option)
-       map))
-
 (use-package denote
   :straight (:host github :repo "protesilaos/denote")
-  :defer t
-  :init
-  (mememacs/comma-def "oj"
-    (defun mm/denote-load ()
-      (interactive)
-      (require 'init-denote)
-      (mm/find-today-journal))))
+  :defer t)
 
 (use-package markdown-mode)
 

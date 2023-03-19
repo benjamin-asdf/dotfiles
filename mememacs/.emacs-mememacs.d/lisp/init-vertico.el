@@ -18,13 +18,13 @@
 
 (setq enable-recursive-minibuffers t)
 
-(general-def
-  :keymap vertico-map
-  "M-k" #'backward-paragraph
-  "M-j"  #'forward-paragraph
-  "M-f" nil
-  "M-f g" #'beginning-of-buffer
-  "M-f G" #'end-of-buffer)
+(bind-keys
+  :map vertico-map
+  ("M-k" . backward-paragraph)
+  ("M-j" . forward-paragraph)
+  ("M-f" . nil)
+  ("M-f g" . beginning-of-buffer)
+  ("M-f G" . end-of-buffer))
 
 (add-to-list
  'load-path
@@ -33,36 +33,25 @@
 
 (require 'vertico-directory)
 
-(general-def
- 'vertico-map
-  "RET"  #'vertico-directory-enter
-  "DEL"  #'vertico-directory-delete-char
-  "M-DEL" #'vertico-directory-delete-word)
-
 (add-hook 'rfn-eshadow-update-overlay #'vertico-directory-tidy)
 
 (require 'vertico-quick)
 
-(general-def
-  'vertico-map
-  "C-k" #'vertico-quick-exit
-  "M-q" #'vertico-quick-insert
-  "M-a" #'vertico-quick-jump)
+(bind-keys
+ :map vertico-map
+ ("RET" . vertico-directory-enter)
+ ("DEL" . vertico-directory-delete-char)
+ ("M-DEL" . vertico-directory-delete-word)
+ ("C-k" . vertico-quick-exit)
+ ("M-q" . vertico-quick-insert)
+ ("M-a" . vertico-quick-jump))
 
 (setq vertico-quick1
       "adf"
       vertico-quick2
       "jkl")
 
-(mememacs/leader-def
-  "bb" #'consult-buffer)
-
 (require 'vertico-repeat)
-
-
-(mememacs/comma-def
-  "rl" #'vertico-repeat-last
-  "rL" #'vertico-repeat-select)
 
 (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 

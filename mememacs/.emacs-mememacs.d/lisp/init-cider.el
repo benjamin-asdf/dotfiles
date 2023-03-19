@@ -33,12 +33,7 @@
 
 (define-key cider-mode-map (kbd "C-c X") #'cider-selector)
 
-(when
-    (require 'neil "~/repos/clojure/neil/neil.el" 'no-err)
-  (mememacs/comma-def
-    :keymaps
-    '(clojure-mode-map cider-repl-mode clojurescript-mode)
-    "nn" #'neil-find-clojure-package))
+(require 'neil "~/repos/clojure/neil/neil.el" 'no-err)
 
 ;; --------------------------------------------
 
@@ -54,27 +49,6 @@
     (replace-regexp-in-region
      "[^/]\\(\\<\\w+\\>\\) {:mvn/version \\(.+\\)}"
      "\\1/\\1 {:mvn/version \\2}")))
-
-(mememacs/local-def
-  :keymaps mm/cider-mode-maps
-  "r" 'clojure-refactor-map
-  "m" #'cider-macroexpand-1-inplace
-  "s" nil
-  "sl" #'cider-inspect-last-result
-  "sd" #'cider-inspect-defun-at-point)
-
-(general-def
-  :states '(insert normal)
-  :keymaps '(cider-inspector-mode-map)
-  "d" #'cider-inspector-def-current-val)
-
-(with-eval-after-load 'flycheck
-  (mememacs/local-def
-    :keymaps mm/cider-mode-maps
-    "e"
-    (let ((map flycheck-command-map))
-      (define-key map "N" #'cider-jump-to-compilation-error)
-      map)))
 
 
 ;; patch for nbb-or-scittle-or-joyride
@@ -119,8 +93,6 @@ specific project."
   (with-current-buffer
       (mm/scratch arg "clj")
     (corgi/cider-jack-in-babashka)))
-
-(mememacs/leader-def "cb" #'mememacs/babashka-scratch)
 
 ;;  --- portal
 
@@ -183,10 +155,6 @@ specific project."
         (buffer-file-name)))
     (cider-interactive-eval
      (concat "(nextjournal.clerk/show! \"" filename "\")"))))
-
-(mememacs/local-def
-  :keymaps mm/cider-mode-maps
-  "c" #'clerk-show)
 
 
 

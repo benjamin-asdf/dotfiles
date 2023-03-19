@@ -20,13 +20,4 @@
 	"Dont know how to disable errors in "
 	major-mode)))))
 
-(general-def
-  flycheck-command-map
-  "f" #'flycheck-mode)
-
-(mememacs/local-def
-  :keymaps
-  '(prog-mode-map)
-  "e" flycheck-command-map)
-
 (provide 'init-flycheck)
