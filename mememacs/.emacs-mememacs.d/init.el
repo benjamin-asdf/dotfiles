@@ -186,6 +186,11 @@
   :init
   (marginalia-mode))
 
+(use-package embark-consult
+  :ensure t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 (use-package embark
   :ensure t
   :init
@@ -196,12 +201,6 @@
   :bind
   (:map
    embark-symbol-map ("h" . helpful-symbol)))
-
-(use-package embark-consult
-  :ensure t
-  :after (embark consult)
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package cape
   :ensure t

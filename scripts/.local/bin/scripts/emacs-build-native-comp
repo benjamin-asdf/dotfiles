@@ -3,13 +3,7 @@
 
 cd ~/repos/emacs || exit 3
 
-# Needed for compiling libgccjit or we'll get cryptic error messages
-# about failing smoke tests.
-export CC="gcc-10"
-
-
 ./autogen.sh
 ./configure --with-mailutils --with-native-compilation --with-pgtk
 
- make -j$(nproc)
- # make install
+make -j$(nproc)
