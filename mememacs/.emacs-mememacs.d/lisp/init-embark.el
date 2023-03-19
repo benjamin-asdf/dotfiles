@@ -156,11 +156,15 @@ Meant to be added to `embark-identifier-map`"
 
 (general-def embark-general-map "C-k" #'mm/embark-kill-displayed)
 
-(embark-define-keymap mm/embark-consult-grep-map
-  "For consult grep"
-  :parent embark-general-map
-  ("w" mm/kill-consult-grep-dwim)
-  ("k" #'embark-copy-as-kill))
+;; define a keymap with parent
+(defvar mm/embark-consult-grep-map
+  (define-keymap
+    :parent embark-general-map
+    (kbd "w")
+    #'mm/kill-consult-grep-dwim
+    (kbd "k")
+    #'embark-copy-as-kill))
+
 
 (defun mm/kill-consult-grep-dwim (s) (kill-new (replace-regexp-in-string ".+?\s+\\(.*\\)" "\\1" s)))
 

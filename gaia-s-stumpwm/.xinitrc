@@ -14,7 +14,7 @@ setroot -cursor_name left_ptr
 # The  first  specifies  the  delay before autorepeat starts and the second specfies the repeat rate.
 xset r rate 120 250
 
-xautolock -time 4 -locker best-lock.sh &
+# xautolock -time 4 -locker best-lock.sh &
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win
 
 # https://askubuntu.com/questions/63681/how-can-i-make-xrandr-customization-permanent
