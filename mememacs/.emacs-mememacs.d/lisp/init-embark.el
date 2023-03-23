@@ -1,7 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
 (bind-keys
- :map vertico-map
  ("C-." . embark-act)
  ("C-;" . embark-dwim))
 

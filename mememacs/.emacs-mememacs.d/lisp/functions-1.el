@@ -83,6 +83,7 @@ See `eval-last-sexp'."
      (kill-new it))))
 
 (defvar mememacs/scratch-dir (expand-file-name "~/scratch"))
+(defvar mm/jvm-clj-scratch-dir (expand-file-name "jvm-clj/" mememacs/scratch-dir))
 (defun mememacs/latest-scratch (suffix)
   (unless (file-exists-p mememacs/scratch-dir)
     (make-directory mememacs/scratch-dir))
@@ -100,6 +101,10 @@ See `eval-last-sexp'."
 	   mememacs/scratch-dir)))))
     (expand-file-name f mememacs/scratch-dir)))
 
+(defun mm/latest-jvm-clj-scratch ()
+  (let ((mememacs/scratch-dir mm/jvm-clj-scratch-dir))
+    (mememacs/latest-scratch ".clj")))
+
 (defun mememacs/new-scratch-name (suffix)
   (unless (file-exists-p
 	   mememacs/scratch-dir)
@@ -114,8 +119,7 @@ See `eval-last-sexp'."
  (mememacs/latest-scratch "el")
  (mememacs/latest-scratch "clj"))
 
-(defun mm/scratch
-    (&optional create-new suffix)
+(defun mm/scratch (&optional create-new suffix)
   "Visit the latest scratch file with `suffix` (a file extension).
 With prefix arg make a new file."
   (interactive
@@ -130,6 +134,8 @@ With prefix arg make a new file."
     (pop-to-buffer-same-window buff)
     (when (eq major-mode 'emacs-lisp-mode)
       (elisp-enable-lexical-binding))
+    (when (eq major-mode 'clojure-mode)
+      (insert "(ns scratch)"))
     buff))
 
 (defun mm/scratch-el (&optional arg)

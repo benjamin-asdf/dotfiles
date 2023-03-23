@@ -477,7 +477,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
 (use-package denote
   :straight (:host github :repo "protesilaos/denote")
-  :defer t)
+  :config (require 'init-denote))
 
 (use-package markdown-mode)
 

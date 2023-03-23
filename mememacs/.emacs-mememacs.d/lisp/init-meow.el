@@ -40,7 +40,8 @@
 	       (interactive)
 	       (kill-buffer (current-buffer))))
  '("bD" . hydra-buffer/kill-current-buffer)
- '("bj" . next-buffer)
+ '("bk" . hydra-buffer/previous-buffer)
+ '("bj" . hydra-buffer/next-buffer)
  '("bs" . mm/scratch-el)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
@@ -60,7 +61,6 @@
  '("ff" . consult-find)
  '("l" . consult-line)
  '("L" . mm/consult-line-stay-in-dired)
- '("oj" . mm/denote-load)
  '("s" . meow-visit)
  '("/" . meow-keypad-describe-key)
  '("!" . flycheck-mode)
@@ -413,6 +413,7 @@ when formatting with lispy."
 
 (defun call-C-c-C-k ()
   (interactive)
+  
   (call-interactively (key-binding (kbd "C-c C-k"))))
 
 (meow-leader-define-key
