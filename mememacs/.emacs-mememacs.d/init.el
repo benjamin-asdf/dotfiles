@@ -562,7 +562,6 @@ string).  It returns t if a new expansion is found, nil otherwise."
      (setq-local scroll-conservatively 0))))
 
 (use-package iedit
-  :after general
   :init
   (setq iedit-toggle-key-default nil)
   :config
