@@ -411,6 +411,9 @@ This is needed if Sly updates while StumpWM is running"
         ("M-p"   . "Up"))
        ("teams-for-linux"
         ("M-n"   . "Down")
+        ("M-p"   . "Up"))
+       ("Slack"
+        ("M-n"   . "Down")
         ("M-p"   . "Up"))))
 
 (comment
@@ -439,12 +442,11 @@ This is needed if Sly updates while StumpWM is running"
  (window-class
   (car (remove-if-not
         (lambda (w)
-          (string=
-           "Raoul Venn | Microsoft Teams"
+          (search
+           "- Slack"
            (window-title w)))
-        (screen-windows
-         (current-screen)))))
- "\"teams-for-linux\""
+        (group-windows (current-group)))))
+ "Slack"
 
  (switch-to-calls)
 
