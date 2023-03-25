@@ -603,8 +603,7 @@ when formatting with lispy."
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
 (global-set-key (kbd "/") #'self-insert-command)
 
-;; (with-eval-after-load 'org
-;;   (define-key org-mode-map (kbd "/") #'self-insert-command))
+(meow-leader-define-key (cons "o" mm/org-dispatch-map))
 
 (defun mm/meow-right-or-avy ()
   (interactive)
@@ -660,5 +659,13 @@ when formatting with lispy."
      "No previous search string found")))
 
 (global-set-key (kbd "H-l") #'meow-start-isearch-with-last-search)
+
+(defun mm/= ()
+  (interactive)
+  (cond
+   (cider-mode (cider-format-defun))
+   (t nil)))
+
+(meow-normal-define-key '("=" . mm/=))
 
 (provide 'init-meow)

@@ -63,7 +63,7 @@
     (define-key m (kbd "l") #'org-store-link)
     m))
 
-(meow-leader-define-key (cons "o" mm/org-dispatch-map))
+
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
 ;; Accidentally hit org-goto, then I was confused about the isearch fn being overriden

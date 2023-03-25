@@ -20,8 +20,8 @@ setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwi
 # https://askubuntu.com/questions/63681/how-can-i-make-xrandr-customization-permanent
 # I can advice you using arandr if you have trouble with screen names
 # https://wiki.archlinux.org/title/Xrandr
-xrandr --output HDMI-0 --left-of DP-0 --auto
-xrandr --output DVI-D-0 --left-of DP-0 DVI-D-0 --auto
+xrandr --output HDMI-0 --right-of DP-0 --auto
+xrandr --output DVI-D-0 --left-of DP-0 --auto
 
 xcape -e 'Control_L=Escape'
 redshift -l 55.7:12.6 -t 2600:1800 -m randr &

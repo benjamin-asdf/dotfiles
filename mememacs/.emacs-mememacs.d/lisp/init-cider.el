@@ -209,7 +209,6 @@ specific project."
  ("C-, k" . cider-doc)
  ("C-, h" . cider-clojuredocs))
 
-
 ;; happens to me all time I get a compilation error for the toplevel.
 ;; i.e. fo
 ;; if you eval a compilation error via evel sexp etc, same thing
