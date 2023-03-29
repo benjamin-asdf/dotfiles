@@ -12,7 +12,8 @@
       cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
       cider-merge-sessions nil
       cider-auto-jump-to-error nil
-      cider-show-error-buffer nil)
+      cider-show-error-buffer nil
+      cider-use-overlays t)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -245,5 +246,63 @@ specific project."
     (message "no cider error buffer")))
 
 (define-key cider-mode-map (kbd "C-c E") #'mm/pop-cider-error)
+
+(defun mm/clojure-add-libs-snippet ()
+  (interactive)
+  (insert
+   "(comment
+ (require '[clojure.tools.deps.alpha.repl :refer [add-libs]]))
+  (add-libs
+   '{org.sg.get-currency-conversions/get-currency-conversions
+     {:local/root \"../get-currency-conversions/\"}})"))
+
+;; (defun mm/cider-clojure-load-deps ()
+;;   (interactive)
+;;   (cider-interactive-eval
+;;    (with-current-buffer
+;;        (find-file-noselect
+;;         (expand-file-name "deps.edn"
+;;                           (project-root (project-current))))
+;;      (goto-char (point-min))
+;;      (let ((m (parseedn-read)))
+;;        (defvar foo
+;;          (parseedn-print-          (gethash :deps m))))))
+;;   (insert
+;;    "(comment
+;;  (require '[clojure.tools.deps.alpha.repl :refer [add-libs]]))
+;;   (add-libs
+;;    '{org.sg.get-currency-conversions/get-currency-conversions
+;;      {:local/root \"../get-currency-conversions/\"}})"))
+
+
+;; I want this to always make invisible messages
+;; when I run shadow interactively this would end up printing all stderr
+
+(defun cider--display-interactive-eval-result (value &optional point overlay-face)
+  "Display the result VALUE of an interactive eval operation.
+VALUE is syntax-highlighted and displayed in the echo area.
+OVERLAY-FACE is the face applied to the overlay, which defaults to
+`cider-result-overlay-face' if nil.
+If POINT and `cider-use-overlays' are non-nil, it is also displayed in an
+overlay at the end of the line containing POINT.
+Note that, while POINT can be a number, it's preferable to be a marker, as
+that will better handle some corner cases where the original buffer is not
+focused."
+  (let* ((font-value (if cider-result-use-clojure-font-lock
+                         (cider-font-lock-as-clojure value)
+                       value))
+         (font-value (string-trim-right font-value))
+         (used-overlay (when (and point cider-use-overlays)
+                         (cider--make-result-overlay font-value
+                           :where point
+                           :duration cider-eval-result-duration
+                           :prepend-face (or overlay-face 'cider-result-overlay-face)))))
+    (message
+     "%s"
+     (propertize (format "%s%s" cider-eval-result-prefix font-value)
+                 ;; The following hides the message from the echo-area, but
+                 ;; displays it in the Messages buffer. We only hide the message
+                 ;; if the user wants to AND if the overlay succeeded.
+                 'invisible t))))
 
 (provide 'init-cider)

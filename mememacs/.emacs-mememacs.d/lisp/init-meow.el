@@ -521,9 +521,15 @@ when formatting with lispy."
  (kbd "RET")
  (defun mm/meow-lispy-ret-or-mark-symbol ()
    (interactive)
-   (if lispy-mode
-       (mm/lispy-meow-symbol-and-insert)
-     (call-interactively #'meow-open-below))))
+   (cond
+    (lispy-mode (mm/lispy-meow-symbol-and-insert))
+    ((looking-at-p "```")
+     (progn
+       (forward-line 1)
+       (set-mark-command nil)
+       (re-search-forward "```")
+       (beginning-of-line)))
+    (t (call-interactively #'meow-open-below)))))
 
 (define-key
  meow-normal-state-keymap

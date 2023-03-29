@@ -1,4 +1,3 @@
-;; -*- lexical-binding: t; -*-
 
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
@@ -46,6 +45,7 @@
 (defconst mememacs/config-dir user-emacs-directory)
 
 (setf user-mail-address "Benjamin.Schwerdtner@gmail.com")
+(setf user-iq 140)
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
@@ -499,7 +499,21 @@ string).  It returns t if a new expansion is found, nil otherwise."
 (use-package backup-each-save
   :config
   (add-hook 'after-save-hook #'backup-each-save)
-  (setf make-backup-files nil))
+  (setf make-backup-files nil)
+  (defun mm/jump-to-backup-dir ()
+  (interactive)
+  (let* ((backup-root-dir (expand-file-name "~/.backups"))
+         (buffer-file-path (buffer-file-name))
+         (backup-dir (concat
+                      backup-root-dir
+                      (if buffer-file-path
+                          (file-name-directory buffer-file-path)
+                        (error "Current buffer is not visiting a file.")))))
+    (if buffer-file-path
+        (progn
+          (make-directory backup-dir t)
+          (dired backup-dir))
+      (message "Current buffer is not visiting a file.")))))
 
 (defun load-mu4e ()
   (interactive)
@@ -588,6 +602,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
      "https://blog.michielborkent.nl/atom.xml"
      "https://writepermission.com/rss.xml"
      "https://planet.clojure.in/atom.xml"
+     "https://rigsomelight.com/feed.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/atom.xml")))
 
@@ -653,7 +668,7 @@ Example:
       path-s))
 
   (defun mm/put-command-in-async-buff-name (f &rest args)
-    (let* ((path-s (path-slug default-directory))
+    (let* ((path-s (if default-directory (path-slug default-directory) ""))
 	   (command (car args))
 	   (buffname (concat path-s " " command))
 	   (shell-command-buffer-name-async
@@ -709,3 +724,36 @@ Example:
     (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg))
   (meow-leader-define-key
    `("." . ,openai-api-keymap)))
+
+(use-package chatgpt-shell
+  :straight nil
+  :load-path "~/repos/chatgpt-shell/"
+  :after openai-api
+  :config
+  (define-key openai-api-keymap (kbd "a") #'chatgpt-shell-shell-add-context-file)
+  (define-key openai-api-keymap (kbd "A") #'chatgpt-clear-some-contexts)
+  (setq chatgpt-shell-openai-key
+        (let ((s))
+          (lambda ()
+            (or s (setf
+                   s
+                   (string-trim
+                    (shell-command-to-string
+                     "pass us-openai-test-key")))))))
+  (setq-default
+   chatgpt-additional-prompts
+   (lambda ()
+     `((role . "system")
+       (content . ,(format
+                    "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
+You treat his time as precious. You do not repeat obvious things.
+You never appologize for confusions because the user thinks that is a waste of time.
+Whenever you output updated code for the user, please only say the lines that changed, not the whole block.
+The user knows how to read manuals.
+user iq: %s
+uname -a: %s
+emacs version: %s"
+                    user-iq
+                    (shell-command-to-string
+                     "uname -a")
+                    (emacs-version)))))))

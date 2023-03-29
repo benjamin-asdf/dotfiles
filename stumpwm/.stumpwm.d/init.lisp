@@ -47,15 +47,11 @@
    (run-or-raise "qutebrowser" '(:class "qutebrowser"))
    (run-shell-command "qute-window")))
 
-
 (defcommand nyxt () ()
   (run-or-raise "nyxt" '(:class "Nyxt")))
 ;; todo make a group?
 (define-key *top-map* (kbd "s-u") "browser")
-
 (define-key *top-map* (kbd "s-n") "nyxt")
-
-
 
 (defcommand pull-emacs () ()
   (run-or-pull "emacs" '(:class "Emacs")))
@@ -74,11 +70,10 @@
 (defcommand my-linked-in () ()
   (window-send-string "https://www.linkedin.com/in/benjamin-schwerdtner-4987a1140/"))
 
-
 (defcommand
     start-or-stop-recording
     ()
-  ()
+    ()
   (message
    (if (probe-file
         "/tmp/recordingpid")
@@ -87,10 +82,9 @@
   (run-shell-command
    "video-selected"))
 
-
 (defmacro def-just-a-shell-command
     (name script)
-    "Def a command via `defcommand` and return the command name string."
+  "Def a command via `defcommand` and return the command name string."
   `(symbol-name
     (command-name
      (defcommand ,name () ()
@@ -147,6 +141,13 @@
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
 
+(defcommand pull-window-across-groups () ()
+  (let* ((windows (apply #'append (mapcar #'group-windows (screen-groups (current-screen)))))
+         (window (select-window-from-menu windows *window-format*)))
+    (when window
+      (switch-to-group (window-group window))
+      (pull-window window))))
+
 (defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
@@ -167,15 +168,9 @@
     (stumpwm:define-key m (kbd "c") "switch-to-calls")
 
     (stumpwm:define-key m (kbd "s") "slack")
-    (stumpwm:define-key m (kbd "c") "switch-to-calls")
-    m))
+    (stumpwm:define-key m (kbd "a") "pull-window-across-groups")
 
-    ;; (let* ((curr-thread sb-thread:*current-thread*)
-    ;;        (curr-thread-name (sb-thread:thread-name curr-thread))
-    ;;        (all-threads (sb-thread:list-all-threads)))
-    ;;   (format t "Current thread: ~a~%~%" curr-thread)
-    ;;   (format t "Current thread name: ~a~%~%" curr-thread-name)
-    ;;   (format t "All threads:~% ~{~a~%~}~%" all-threads))
+    m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 (setf *load-path* nil)
@@ -417,7 +412,10 @@ This is needed if Sly updates while StumpWM is running"
         ("M-p"   . "Up"))))
 
 (comment
- ;; (defun ben/init-stumptray ()
+ (mapcan #'group-windows (group-list)))
+
+(comment
+ ;; (progn
  ;;   (load-module "stumptray")
  ;;   (defun ben/select-systray-head (heads)
  ;;     (or

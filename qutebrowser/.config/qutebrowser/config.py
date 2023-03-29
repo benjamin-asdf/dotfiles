@@ -68,16 +68,20 @@ c.url.searchengines = {
     "goo"    : "https://www.google.com/search?q={}",
     'gg'     : 'https://g4gsearch.com/ws/search/search?a=true&c=%7B%7D&e=true&m&p=1&q={}&s=_score&w=%5B%5D',
     'wi'     : 'https://en.wikipedia.org/wiki/{}',
-    "clja"   : 'https://clojars.org/search?q={}',
-
-    "gsm"    : 'https://www.gsmarena.com/res.php3?sSearch={}'
-
-    # 'un'     : 'https://docs.unity3d.com/ScriptReference/30_search.html?q={}',
-    # 'glab'   : 'https://gitlab.botogames.com/search?search={}',
-    # 'drive'  : 'https://drive.google.com/drive/search?q={}',
-    # 'jir'    : 'https://singularitygroup.atlassian.net/issues/?jql=text~'
+    'nci'    : 'https://github.com/UnitedSignals/nc-platform/issues/{}',
+    "clja"   : 'https://clojars.org/search?q={}'
 }
 
+
+import os
+import os.path
+
+# work config is not in a public git repo
+
+work_config_path = os.path.join(os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config')), 'qutebrowser', 'work_config.py')
+
+if os.path.exists(work_config_path):
+    exec(open(work_config_path).read())
 
 c.editor.command = ['emacsclient', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
 
