@@ -305,4 +305,6 @@ focused."
                  ;; if the user wants to AND if the overlay succeeded.
                  'invisible t))))
 
+(add-hook 'clojure-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
+
 (provide 'init-cider)
