@@ -263,10 +263,8 @@ This does not interfere with `subword-mode'."
   (set (make-variable-buffer-local 'column-number-mode) t))
 
 (defun ambrevar/turn-on-delete-trailing-whitespace ()
-  "Add the `delete-trailing-whitespace' function to `before-save-hook'.
-This does not affect .csv files."
-  (unless (string= (file-name-extension buffer-file-name) "csv")
-    (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
+  "Add the `delete-trailing-whitespace' function to `before-save-hook'."
+  (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
 
 (defun ambrevar/turn-off-delete-trailing-whitespace ()
   "Unconditionally remove the `delete-trailing-whitespace' function to `before-save-hook'."
