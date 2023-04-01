@@ -732,6 +732,10 @@ Example:
   :config
   (define-key openai-api-keymap (kbd "a") #'chatgpt-shell-shell-add-context-file)
   (define-key openai-api-keymap (kbd "A") #'chatgpt-clear-some-contexts)
+  (define-key openai-api-keymap (kbd "RET")
+              (defun mm/chatpgt-shell-new ()
+                (interactive)
+                (chatgpt-shell t)))
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
