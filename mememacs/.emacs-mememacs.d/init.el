@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
@@ -732,10 +733,9 @@ Example:
   :config
   (define-key openai-api-keymap (kbd "a") #'chatgpt-shell-shell-add-context-file)
   (define-key openai-api-keymap (kbd "A") #'chatgpt-clear-some-contexts)
-  (define-key openai-api-keymap (kbd "RET")
-              (defun mm/chatpgt-shell-new ()
-                (interactive)
-                (chatgpt-shell t)))
+  (define-key openai-api-keymap (kbd "RET") #'chatgpt-shell)
+  (define-key openai-api-keymap (kbd "b") #'chatgpt-shell-ibuffer-buffers)
+  (define-key openai-api-keymap (kbd "B") #'chatgpt-jump-to-context-shell)
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
@@ -747,9 +747,9 @@ Example:
   (setq-default
    chatgpt-additional-prompts
    (lambda ()
-     `((role . "system")
-       (content . ,(format
-                    "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
+     `(((role . "system")
+        (content . ,(format
+                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
 You treat his time as precious. You do not repeat obvious things.
 You never appologize for confusions because the user thinks that is a waste of time.
 Whenever you output updated code for the user, please only say the lines that changed, not the whole block.
@@ -757,7 +757,7 @@ The user knows how to read manuals.
 user iq: %s
 uname -a: %s
 emacs version: %s"
-                    user-iq
-                    (shell-command-to-string
-                     "uname -a")
-                    (emacs-version)))))))
+                     user-iq
+                     (shell-command-to-string
+                      "uname -a")
+                     (emacs-version))))))))

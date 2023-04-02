@@ -67,4 +67,6 @@
 
 (setf org-cycle-global-at-bob t)
 
+(add-hook 'org-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
+
 (provide 'init-denote)

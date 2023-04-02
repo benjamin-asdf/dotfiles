@@ -548,6 +548,8 @@ when formatting with lispy."
 (bind-keys
  :map lispy-mode-map-lispy
  ((kbd "M-(") . lispy-wrap-round)
+ ((kbd "M-[") . lispy-wrap-brackets)
+ ((kbd "M-{") . lispy-wrap-braces)
  ((kbd "M-h") . mm/lispy-back-or-lispy-pair)
  ((kbd "M-l") . mm/lispy-forward-and-insert))
 ;; I hit this key accidentally 10 times per day

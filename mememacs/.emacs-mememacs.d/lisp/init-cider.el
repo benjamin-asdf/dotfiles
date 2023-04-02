@@ -307,4 +307,10 @@ focused."
 
 (add-hook 'clojure-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
 
+(add-hook
+'clojure-mode-hook
+(defun mm/add-keywords-to-imenu ()
+  (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))
+
+
 (provide 'init-cider)
