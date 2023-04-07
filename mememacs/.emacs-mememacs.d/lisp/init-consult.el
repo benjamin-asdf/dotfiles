@@ -24,7 +24,7 @@
  consult--source-bookmark consult--source-recent-file
  consult--source-project-recent-file
  consult-buffer
- :preview-key (kbd "M-."))
+ :preview-key "M-.")
 
 (defun mm/consult-grep-dir-prompt-advice (args)
   (pcase args
