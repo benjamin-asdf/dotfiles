@@ -35,6 +35,7 @@
  '("9" . meow-digit-argument)
  '("0" . meow-digit-argument)
  '("bb" . consult-buffer)
+ '("bc" . cider-repls-ibuffer)
  '("bh" . meow-last-buffer)
  (cons "bd"  (defun mm/kill-this-buffer ()
 	       (interactive)
@@ -560,16 +561,22 @@ when formatting with lispy."
 
 (defvar-local mm/moew-last-normal nil)
 
-(add-hook 'meow-insert-mode-hook
-	  (defun mm/remember-last-normal-meow ()
-	    (setf mm/moew-last-normal (point))))
+
 
 (meow-leader-define-key
  (cons (kbd ";")
-       (defun mm/goto-last-meow-normal ()
-	 (interactive)
-	 (when mm/moew-last-normal
-	   (goto-char mm/moew-last-normal)))))
+       (defun mm/goto-last-change ()
+         (interactive)
+         (let ((last-change-pos (catch 'found
+                                  (dolist (entry buffer-undo-list)
+                                    (when (and (consp entry)
+                                               (numberp (cdr entry))
+                                               (< -1 (cdr entry)))
+                                      (throw 'found (cdr entry)))))))
+           (if last-change-pos
+               (goto-char last-change-pos)
+             (message
+              "No last change position found"))))))
 
 (defun mememacs/lispy-set-faces ()
   (if

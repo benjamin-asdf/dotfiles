@@ -154,10 +154,8 @@
            ;; more
            :babashka/dev
            {:paths []
-            :deps {babashka/babashka {:local/root "/home/benj/repos/babashka/"}}
-            :main-opts ["-m" "babashka.main"]}
-
-           }
+            :deps {babashka/babashka {:local/root "/home/benj/repos/clojure/babashka/."}}
+            :main-opts ["-m" "babashka.main"]}}
 
  ;; Provider attributes
 

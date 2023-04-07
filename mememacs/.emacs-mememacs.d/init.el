@@ -609,7 +609,8 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
 (use-package emacs
   :config
-  (setq save-abbrevs 'silently)
+  (setq save-abbrevs 'silently
+        find-file-suppress-same-file-warnings t)
   (setf create-lockfiles nil)
 
   ;; Unify Marks
