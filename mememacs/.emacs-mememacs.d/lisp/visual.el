@@ -338,7 +338,6 @@
 
 (global-visual-line-mode)
 
-
 (with-eval-after-load
     'ansi-color
   (set-face-attribute

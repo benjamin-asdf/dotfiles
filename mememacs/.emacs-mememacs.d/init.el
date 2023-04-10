@@ -232,13 +232,15 @@
   (defvar *1 nil)
   (defvar *2 nil)
   (defvar *3 nil)
-  (advice-add #'lispy--eval-elisp
-              :filter-return
-              (defun mm/def-lispy-eval-out (output-str)
-                (setq *3 *2)
-                (setq *2 *1)
-                (setq *1 (or (ignore-errors (car (read-from-string output-str))) output-str))
-                output-str))
+
+  (advice-add
+   #'lispy--eval-elisp-form
+   :filter-return
+   (defun mm/def-lispy-eval-out (r)
+     (setq *3 *2)
+     (setq *2 *1)
+     (setq *1 r)
+     r))
 
   (require 'lispy-eval-markers)
   :hook
