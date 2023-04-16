@@ -105,25 +105,39 @@
         (when w2 (pull-window w2 f1))
         (focus-frame (current-group) f2)))))
 
-(defcommand mm-emacs-with-editor-insert () ()
-  (run-shell-command (concat "emacsclient" " " "--eval" " "  "\"(emacs-everywhere)\""))
-  ;; (let ((file-s (concat "/tmp/"
-  ;;                    (string-trim '(#\Newline) (run-shell-command "uuidgen" t)))))
-  ;;   (sb-thread:make-thread
-  ;;    (lambda ()
-  ;;      ;; (run-shell-command
-  ;;      ;;    (concat "emacsclient" " -c" " " file-s) 't)
-  ;;      (stumpwm:call-in-main-thread
-  ;;    (lambda ()
-  ;;      (window-send-string
-  ;;       "hurr"
-  ;;       ;; (with-output-to-string (s)
-  ;;       ;;   (with-open-file (is file-s :direction :i)
-  ;;       ;;     (loop for line = (read-line is nil is)
-  ;;       ;;        until (eq line is) do
-  ;;       ;;          (format s "~A~%" line))))
-  ;;       ))))))
-  )
+
+(defcommand edit-string-with-emacs () ()
+  (let ((file-s (concat "/tmp/"
+                        (string-trim '(#\Newline) (run-shell-command "uuidgen" t))))
+        (w (current-window)))
+    (hsplit)
+    (move-focus :right)
+    (sb-thread:make-thread
+     (lambda ()
+       (let ((emacs-command
+               (format
+                nil
+                "timeout 1m emacsclient -c -e \"(mm/edit-with-editor \\\"~a\\\")\"" file-s)))
+         (run-shell-command emacs-command t)
+         (when (probe-file file-s)
+           (stumpwm:call-in-main-thread
+            (lambda ()
+              (ignore-errors (remove-split))
+              (window-send-string
+               (let* ((s (string-trim '(#\Newline)
+                                      (with-output-to-string (s)
+                                        (with-open-file
+                                            (is file-s :direction :input)
+                                          (loop for line = (read-line is nil is)
+                                                until
+                                                (eq line is)
+                                                do (format s "~A~%" line)))))))
+                 ;; LOL
+                 (cond
+                   ((string= "teams-for-linux" (window-class w))
+                    (reverse s))
+                   (t s)))
+               w)))))))))
 
 (defcommand switch-to-calls () ()
   (when-let
@@ -155,7 +169,7 @@
     (stumpwm:define-key m (kbd "f") "my-first-name")
     (stumpwm:define-key m (kbd "N") "my-last-name")
     (stumpwm:define-key m (kbd "l") "my-linked-in")
-    (stumpwm:define-key m (kbd "e") "mm-emacs-with-editor-insert")
+    (stumpwm:define-key m (kbd "e") "edit-string-with-emacs")
     (stumpwm:define-key m (kbd "w") "swap-this-window")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
     ;; (stumpwm:define-key m (kbd "y")
@@ -169,7 +183,6 @@
 
     (stumpwm:define-key m (kbd "s") "slack")
     (stumpwm:define-key m (kbd "a") "pull-window-across-groups")
-
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)

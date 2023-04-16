@@ -410,11 +410,14 @@ when formatting with lispy."
 
 (defun call-C-c-C-c ()
   (interactive)
-  (call-interactively (key-binding (kbd "C-c C-c"))))
+  (when-let
+      (k (key-binding (kbd "C-c C-c")))
+    (call-interactively k)))
+
+
 
 (defun call-C-c-C-k ()
   (interactive)
-  
   (call-interactively (key-binding (kbd "C-c C-k"))))
 
 (meow-leader-define-key
