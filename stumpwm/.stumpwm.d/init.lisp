@@ -105,7 +105,6 @@
         (when w2 (pull-window w2 f1))
         (focus-frame (current-group) f2)))))
 
-
 (defcommand edit-string-with-emacs () ()
   (let ((file-s (concat "/tmp/"
                         (string-trim '(#\Newline) (run-shell-command "uuidgen" t))))
@@ -117,7 +116,7 @@
        (let ((emacs-command
                (format
                 nil
-                "timeout 1m emacsclient -c -e \"(mm/edit-with-editor \\\"~a\\\")\"" file-s)))
+                "timeout 2m emacsclient -c -e \"(mm/edit-with-editor \\\"~a\\\")\"" file-s)))
          (run-shell-command emacs-command t)
          (when (probe-file file-s)
            (stumpwm:call-in-main-thread

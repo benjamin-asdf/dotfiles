@@ -696,7 +696,13 @@ Example:
   (advice-add 'compile :filter-args
 	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t)))
 
-  (add-to-list 'auto-mode-alist '("\\.mjs" . javascript-mode)))
+  (add-to-list 'auto-mode-alist '("\\.mjs" . javascript-mode))
+
+  (advice-add 'yank-pop :before
+              (defun mm/add-primary-to-kill-ring ()
+                (interactive)
+                (setf kill-ring
+                      (append kill-ring (gui-get-primary-selection))))))
 
 ;; elp
 ;; memory-use-counts
