@@ -43,7 +43,8 @@ config.bind('<Ctrl-Space>', 'toggle-selection', mode='caret')
 config.bind('<Escape>', 'mode-enter normal')
 # config.bind(',v',':spawn vlc {url}', mode='normal')
 config.bind(',v', ':spawn mpv {url}', mode='normal')
-
+config.bind(',g', ':spawn google-chrome-stable {url}', mode='normal')
+config.bind(',u', 'spawn --userscript edit_url_with_emacs')
 
 config.bind('<Ctrl-Escape>', 'mode-enter normal' , mode='passthrough')
 
@@ -83,6 +84,7 @@ work_config_path = os.path.join(os.environ.get('XDG_CONFIG_HOME', os.path.expand
 if os.path.exists(work_config_path):
     exec(open(work_config_path).read())
 
-c.editor.command = ['emacsclient', "--eval", "(progn (find-file-other-window \"{file}\") (markdown-mode))" ]
+c.editor.command = ['emacsclient', "-c", "--eval", "(mm/edit-with-editor \"{file}\")" ]
+
 
 config.load_autoconfig(False)
