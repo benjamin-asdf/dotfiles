@@ -256,6 +256,16 @@ specific project."
    '{org.sg.get-currency-conversions/get-currency-conversions
      {:local/root \"../get-currency-conversions/\"}})"))
 
+(defun mm/clojure-dir-locals-snippet ()
+  (interactive)
+  (with-current-buffer
+      (find-file (expand-file-name ".dir-locals.el" (project-root (project-current))))
+    (insert
+     "((nil .
+      ((cider-clojure-cli-aliases . \"dev\")
+       (cider-preferred-build-tool . clojure-cli))))
+")))
+
 ;; (defun mm/cider-clojure-load-deps ()
 ;;   (interactive)
 ;;   (cider-interactive-eval
@@ -312,5 +322,27 @@ focused."
 (defun mm/add-keywords-to-imenu ()
   (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))
 
+
+(with-eval-after-load 'consult
+
+  (defvar cider-consult-repl-buffer-source
+    `(:name     "Repl Buffer"
+                :category buffer
+                :face     consult-buffer
+                :history  buffer-name-history
+                :action   ,#'consult--buffer-action
+                :items
+                ,(lambda ()
+                   (let ((sessions
+                          (or (sesman--linked-sessions 'CIDER 'sort)
+                              (sesman--friendly-sessions 'CIDER 'sort))))
+                     (mapcar #'buffer-name (mapcar #'cadr sessions)))))
+    "Candidate source for `cider-repl-consult'.")
+
+  (defun cider-repl-consult ()
+    (interactive)
+    (consult-buffer
+     (list
+      cider-consult-repl-buffer-source))))
 
 (provide 'init-cider)
