@@ -369,11 +369,18 @@ FORM should be a quoted list."
       (exec-el (mm/shell-via-async-shell-command))
       (exec-el (make-frame))))
 
+(defcommand mm-kill-window-or-in-emacs () ()
+  (if (emacsp (current-window))
+      (exec-el (delete-window))
+      (remove-split)))
+
 (defcommand mm-consult-windows () ()
   (unless (emacsp (current-window))
     (make-an-emacs))
   (exec-el (mm/consult-stumpwm-windows)))
+
 (define-key *top-map* (kbd "s-.") "mm-consult-windows")
+(define-key *top-map* (kbd "s-x") "mm-kill-window-or-in-emacs")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
 
