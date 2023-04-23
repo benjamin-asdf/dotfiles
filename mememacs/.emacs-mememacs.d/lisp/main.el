@@ -172,20 +172,17 @@
 ;; This code literally came to me in a dream basically verbatim:
 (add-hook 'kill-emacs-hook #'save-some-buffers)
 
-;; (defun mm/eval-script-with-args (file-path &rest args)
-;;   (with-temp-buffer
-;;     (insert-file-contents file-path)
-;;     (let ((argv args))
-;;       (eval-buffer))))
-
 (defun mm/edit-done ()
   (interactive)
   (save-buffer)
   (delete-frame))
 
+(defvar-local mm/allow-lsp-grammerly nil)
+
 (defun mm/edit-with-editor (file-path)
   (with-current-buffer (find-file-noselect file-path)
     (local-set-key (kbd "C-c C-c") #'mm/edit-done)
+    (setq-local mm/allow-lsp-grammerly t)
     (pop-to-buffer (current-buffer))))
 
 (provide 'main)

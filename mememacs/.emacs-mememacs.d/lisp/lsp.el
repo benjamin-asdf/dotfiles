@@ -26,10 +26,36 @@
   (setq rustic-lsp-client 'lsp))
 
 (use-package rustic)
-(use-package lsp-grammarly)
+
+(use-package lsp-grammarly
+  :config
+  (setq-default lsp-grammarly-domain "academic")
+
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection #'lsp-grammarly--server-command)
+    :activation-fn (lambda (&rest _)
+                     (or mm/allow-lsp-grammerly
+                         (memq major-mode lsp-grammarly-active-modes)))
+    :initialization-options
+    `((clientId . ,lsp-grammarly-client-id)
+      (name . "Grammarly"))
+    :major-modes lsp-grammarly-active-modes
+    :priority -1
+    :add-on? t
+    :server-id 'grammarly-ls
+    :download-server-fn (lambda (_client callback error-callback _update?)
+                          (lsp-package-ensure 'grammarly-ls callback error-callback))
+    :after-open-fn #'lsp-grammarly--init
+    :async-request-handlers
+    (ht ("$/showError" #'lsp-grammarly--show-error)
+        ("$/updateDocumentState" #'lsp-grammarly--update-document-state)))))
+
+
+
 (use-package typescript-mode
- :config
- (add-hook 'typescript-mode-hook #'lsp-deferred))
+  :config
+  (add-hook 'typescript-mode-hook #'lsp-deferred))
 
 (use-package go-mode
   :config
