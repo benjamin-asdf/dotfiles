@@ -299,7 +299,10 @@
   :after cider)
 
 (use-package geiser
-  :when mememacs/guile-enabled)
+  :when mememacs/guile-enabled
+  :config
+  (with-eval-after-load 'geiser-mode
+    (bind-keys :map geiser-mode-map ("C-."))))
 
 (use-package macrostep-geiser
   :config
@@ -745,6 +748,8 @@ Example:
   (define-key openai-api-keymap (kbd "RET") #'chatgpt-shell)
   (define-key openai-api-keymap (kbd "b") #'chatgpt-shell-ibuffer-buffers)
   (define-key openai-api-keymap (kbd "B") #'chatgpt-jump-to-context-shell)
+  (setq chatgpt-shell-model-version "gpt-3.5-turbo")
+  (setq chatgpt-shell-model-version "gpt-4")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
@@ -752,7 +757,9 @@ Example:
                    s
                    (string-trim
                     (shell-command-to-string
-                     "pass us-openai-test-key")))))))
+                     ;; "pass sg-openai-api-key"
+                       "pass us-openai-test-key"
+                     )))))))
   (setq-default
    chatgpt-additional-prompts
    (lambda ()

@@ -46,6 +46,7 @@
  '("bs" . mm/scratch-el)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
+ '("bR" . cider-repl-consult)
  '("by" . mememacs/kill-buffer-name)
 
  '("wd" . delete-window)
@@ -347,23 +348,48 @@ This is the power I desired."
         (forward-char 1))
       (lispy-mark-symbol))))
 
+(global-set-key (kbd "H-i") #'lispy-mode)
+
+(add-hook
+ 'cider--debug-mode-hook
+ (defun mm/disable-lispy-during-cider-debug ()
+   (if (bound-and-true-p cider--debug-mode)
+       (lispy-mode -1)
+     (lispy-mode 1))))
+
+(defun mm/cider-debug-command (cmd force)
+  (defalias
+    (intern (concat "mm/cider-debug-" cmd (when force "-force")))
+    (lambda () (interactive)
+      (cider-debug-mode-send-reply cmd force))))
+
+(define-key cider--debug-mode-map (kbd ";") (defun mm/cider-debug-move-here () (interactive) (cider-debug-move-here nil)))
+(define-key cider--debug-mode-map (kbd ":")
+            (defun mm/cider-debug-move-here-force ()
+              (interactive)
+              (cider-debug-move-here 't)))
+
+(define-key cider--debug-mode-map (kbd "H-;") #'cider-debug-toggle-locals)
+(define-key cider--debug-mode-map (kbd "H-l") (mm/cider-debug-command ":locals" nil))
+(define-key cider--debug-mode-map (kbd "C-j") (mm/cider-debug-command ":inject" nil))
+
 (defvar mm/spc-map (let ((m (make-sparse-keymap)))
 		     (define-key m (kbd "f")
-		       #'find-file)
+		                 #'find-file)
 		     (define-key m (kbd "b")
-		       #'consult-buffer)
+		                 #'consult-buffer)
 		     (define-key m (kbd "s")
-		       #'magit-status)
+		                 #'magit-status)
 		     (define-key m (kbd "p")
-		       project-prefix-map)
+		                 project-prefix-map)
 		     (define-key m (kbd "/")
-		       #'consult-ripgrep)
+		                 #'consult-ripgrep)
 		     (define-key m (kbd "wd")
-		       #'delete-window)
+		                 #'delete-window)
 		     (define-key m (kbd "wu")
-		       #'winner-undo)
+		                 #'winner-undo)
 		     (define-key m (kbd "wU")
-		       #'winner-redo)
+		                 #'winner-redo)
 		     (define-key m (kbd "d") #'consult-dir)
 		     (define-key m (kbd "z") #'recenter)
 		     (define-key m (kbd "ju") #'link-hint-open-link)
@@ -510,7 +536,10 @@ when formatting with lispy."
   ("" lispy-x-more-verbosity :exit nil)
   ("?" lispy-x-more-verbosity "help" :exit nil))
 
-(advice-add #'lispy-goto-symbol-clojure :override #'cider-find-var)
+(advice-add #'lispy-goto-symbol-clojure
+            :override (defun mm/cider-find-var (_)
+                        (interactive)
+                        (cider--find-var (cider-symbol-at-point 'look-back))))
 
 (defun mm/lispy-meow-symbol-and-insert ()
   (interactive)
