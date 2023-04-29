@@ -185,6 +185,14 @@
     m))
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
+
+(defcommand close-all-fullscreens-in-screen () ()
+     (loop for window in (screen-windows (current-screen))
+           when (window-fullscreen window)
+             do (deactivate-fullscreen window)))
+
+(define-key *top-map* (kbd "s--") "close-all-fullscreens-in-screen")
+
 (setf *load-path* nil)
 (init-load-path "~/.stumpwm.d/modules/")
 (load-module "cpu")
@@ -371,8 +379,8 @@ FORM should be a quoted list."
 
 (defcommand mm-kill-window-or-in-emacs () ()
   (if (emacsp (current-window))
-      (exec-el (delete-window))
-      (remove-split)))
+      (exec-el (mm/delete-window-or-frame))
+    (remove-split)))
 
 (defcommand mm-consult-windows () ()
   (unless (emacsp (current-window))
@@ -383,7 +391,6 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-x") "mm-kill-window-or-in-emacs")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
-
 ;;; SLY setup
 (ql:quickload :slynk)
 (defvar *slynk-port* slynk::default-server-port)
@@ -391,10 +398,12 @@ FORM should be a quoted list."
 
 (defcommand start-slynk (&optional (port *slynk-port*)) ()
   (handler-case
-      (defparameter *stumpwm-slynk-session*
-        (slynk:create-server
-         :dont-close t
-         :port port))
+      (progn
+        (defparameter *stumpwm-slynk-session*
+          (slynk:create-server
+           :dont-close t
+           :port port))
+        (echo "started slynk"))
     (error (c)
       (format *error-output* "Error starting slynk: ~a~%" c))))
 
