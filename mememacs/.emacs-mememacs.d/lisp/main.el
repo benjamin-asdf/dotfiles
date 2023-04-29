@@ -185,4 +185,9 @@
     (setq-local mm/allow-lsp-grammerly t)
     (pop-to-buffer (current-buffer))))
 
+(defun mm/delete-window-or-frame ()
+  (if (window-parent (window-normalize-window nil))
+      (delete-window)
+    (delete-frame)))
+
 (provide 'main)
