@@ -317,9 +317,9 @@ With negative N, comment out original line and use the absolute value."
        (eq (char-before) 34)
        (eq (char-after) 34))
       (thread-last
-	s
-	(s-chop-prefix "\"")
-	(s-chop-suffix "\""))
+        s
+        (s-chop-prefix "\"")
+        (s-chop-suffix "\""))
     s))
 
 (add-hook 'yank-transform-functions #'mm/trim-string-for-yank-when-inserting-in-quotes)
