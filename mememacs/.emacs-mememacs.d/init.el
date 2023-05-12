@@ -759,7 +759,7 @@ Example:
                     (shell-command-to-string
                      ;; "pass sg-openai-api-key"
                        "pass us-openai-test-key"
-                     )))))))
+                       )))))))
   (setq-default
    chatgpt-additional-prompts
    (lambda ()
