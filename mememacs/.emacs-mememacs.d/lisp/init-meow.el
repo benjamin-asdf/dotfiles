@@ -295,7 +295,7 @@ This won't jump to the end of the buffer if there is no paren there."
 (advice-add #'lispy-right-nostring :after #'mm/meow-insert)
 
 (advice-add #'lispy-left-maybe :after #'mm/meow-insert)
-(define-key lispy-mode-map-lispy (kbd "(") #'lispy-parens)
+;; (define-key lispy-mode-map-lispy (kbd "(") #'lispy-parens)
 (define-key lispy-mode-map-lispy (kbd "C-w") #'lispy-kill-at-point)
 
 (defun mm/join-below ()
@@ -303,11 +303,6 @@ This won't jump to the end of the buffer if there is no paren there."
   (if (region-active-p)
       (call-interactively #'join-line)
     (join-line 'below)))
-
-(bind-keys
- :map lispy-mode-map-lispy
- ((kbd "(") . lispy-parens)
- ((kbd "C-j") . join-line))
 
 (defun mm/embark-meow-keypad-desribe ()
   (interactive)
@@ -372,6 +367,9 @@ This is the power I desired."
 (define-key cider--debug-mode-map (kbd "H-;") #'cider-debug-toggle-locals)
 (define-key cider--debug-mode-map (kbd "H-l") (mm/cider-debug-command ":locals" nil))
 (define-key cider--debug-mode-map (kbd "C-j") (mm/cider-debug-command ":inject" nil))
+
+(add-hook 'cider-inspector-mode-hook #'meow-motion-mode)
+
 
 (defvar mm/spc-map (let ((m (make-sparse-keymap)))
 		     (define-key m (kbd "f")
@@ -578,13 +576,6 @@ when formatting with lispy."
   (lispy-forward arg)
   (meow-insert))
 
-(bind-keys
- :map lispy-mode-map-lispy
- ((kbd "M-(") . lispy-wrap-round)
- ((kbd "M-[") . lispy-wrap-brackets)
- ((kbd "M-{") . lispy-wrap-braces)
- ((kbd "M-h") . mm/lispy-back-or-lispy-pair)
- ((kbd "M-l") . mm/lispy-forward-and-insert))
 ;; I hit this key accidentally 10 times per day
 
 (define-key help-map (kbd "h") (defun mm/no-help-file () (interactive) (message "C-h h, lol")))
@@ -592,8 +583,6 @@ when formatting with lispy."
 (delete-selection-mode 1)
 
 (defvar-local mm/moew-last-normal nil)
-
-
 
 (meow-leader-define-key
  (cons (kbd ";")
@@ -636,20 +625,19 @@ when formatting with lispy."
  ;; 'overlay
  show-paren-when-point-in-periphery t
  show-paren-when-point-inside-paren t)
-(add-hook 'meow-insert-mode-hook #'mememacs/lispy-set-faces)
 
+(add-hook 'meow-insert-mode-hook #'mememacs/lispy-set-faces)
 (add-hook 'meow-normal-mode-hook #'mememacs/lispy-set-faces)
 
 (bind-keys
  :map emacs-lisp-mode-map
  ("C-, m" . macrostep-expand))
 
-(define-key lispy-mode-map-lispy (kbd "C-,") nil)
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
 
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
-(global-set-key (kbd "/") #'self-insert-command)
 
+(global-set-key (kbd "/") #'self-insert-command)
 (meow-leader-define-key (cons "o" mm/org-dispatch-map))
 
 (defun mm/meow-right-or-avy ()
@@ -665,13 +653,13 @@ when formatting with lispy."
       (meow-right))))
 
 (meow-normal-define-key '("l" . mm/meow-right-or-avy))
+
 (global-set-key (kbd "H-n") #'meow-normal-mode)
 (global-set-key (kbd "H-j") #'meow-end-or-call-kmacro)
-
 (global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
+
 (global-set-key (kbd "C-x C-e") #'mm/lispy-eval-mark-last-or-consult)
 (define-key cider-mode-map (kbd "C-c C-e") #'mm/lispy-eval-mark-last-or-consult)
-
 (meow-leader-define-key '("j e" . #'mm/lispy-eval-mark-last-or-consult))
 
 (define-key dired-mode-map (kbd "M-c") #'magit-clone)
@@ -689,8 +677,8 @@ when formatting with lispy."
 (define-key help-map (kbd "c") #'describe-char)
 
 (global-set-key (kbd "H-<return>") #'save-buffer)
-(global-set-key (kbd "s-r") #'delete-other-windows)
 
+(global-set-key (kbd "s-r") #'delete-other-windows)
 (defun meow-start-isearch-with-last-search ()
   "Start an isearch using the last search string from `meow--push-search'."
   (interactive)
@@ -714,5 +702,19 @@ when formatting with lispy."
    (t nil)))
 
 (meow-normal-define-key '("=" . mm/=))
+
+(bind-keys
+ :map lispy-mode-map-lispy
+ ((kbd "M-(") . lispy-wrap-round)
+ ((kbd "M-[") . lispy-wrap-brackets)
+ ((kbd "M-{") . lispy-wrap-braces)
+ ((kbd "M-h") . mm/lispy-back-or-lispy-pair)
+ ((kbd "M-l") . mm/lispy-forward-and-insert)
+ ((kbd "e") . nil)
+ ((kbd "E") . nil)
+ ((kbd "C-j") . nil)
+ ((kbd "C-,") . nil))
+
+(lispy-set-key-theme lispy-key-theme)
 
 (provide 'init-meow)

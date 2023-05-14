@@ -3,10 +3,11 @@
 DEV="$1"
 [ -z "$DEV" ] && DEV="4C:87:5D:7F:FC:58"
 
+# default-agent
+# agent on
+
 bluetoothctl << EOF
 power on
-agent on
-default-agent
 scan on
 pair $DEV
 trust $DEV
