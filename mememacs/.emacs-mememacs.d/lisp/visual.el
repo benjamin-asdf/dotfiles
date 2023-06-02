@@ -389,4 +389,8 @@
    :underline nil
    :bold t))
 
+(with-eval-after-load
+    'ediff-init
+    (set-face-attribute 'ediff-current-diff-C nil :foreground "white"))
+
 (provide 'visual)

@@ -705,16 +705,20 @@ when formatting with lispy."
 
 (bind-keys
  :map lispy-mode-map-lispy
- ((kbd "M-(") . lispy-wrap-round)
- ((kbd "M-[") . lispy-wrap-brackets)
- ((kbd "M-{") . lispy-wrap-braces)
- ((kbd "M-h") . mm/lispy-back-or-lispy-pair)
- ((kbd "M-l") . mm/lispy-forward-and-insert)
- ((kbd "e") . nil)
- ((kbd "E") . nil)
- ((kbd "C-j") . nil)
- ((kbd "C-,") . nil))
+ ("M-(" . lispy-wrap-round)
+ ("M-[" . lispy-wrap-brackets)
+ ("M-{" . lispy-wrap-braces)
+ ("M-h" . mm/lispy-back-or-lispy-pair)
+ ("M-l" . mm/lispy-forward-and-insert)
+ ("e" . nil)
+ ("E" . nil)
+ ("C-j" . nil)
+ ("C-," . nil))
 
 (lispy-set-key-theme lispy-key-theme)
+
+;; See docstring of `meow-thing-register'
+(meow-thing-register 'quoted '(regexp "`" "`\\|'") '(regexp "`" "`\\|'"))
+(add-to-list 'meow-char-thing-table '(?` . quoted))
 
 (provide 'init-meow)

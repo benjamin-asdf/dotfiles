@@ -8,8 +8,15 @@
 # ip link set wlp0s20f0u14 up
 
 # just check man nmcli for the hotspot
-nmcli -s dev wifi hotspot con-name BenHotspot
+nmcli -s dev wifi hotspot con-name BenniHotspot
 
 # nmcli connection show
 # connection down or device down to stop the hotspot.
 # Hint: "nmcli dev wifi show-password" shows the Wi-Fi name and password.
+
+# nmcli c add type wifi ifname wlp0s20f0u4 con-name BenHotspot autoconnect no ssid Hotspot-benj-pc
+# nmcli c modify BenHotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+
+
+# nmcli c modify <hotspot-name> wifi-sec.key-mgmt wpa-psk wifi-sec.psk <hotspot-password>
+

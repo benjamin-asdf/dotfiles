@@ -9,6 +9,7 @@ DEV="$1"
 bluetoothctl << EOF
 power on
 scan on
+remove $DEV
 pair $DEV
 trust $DEV
 connect $DEV

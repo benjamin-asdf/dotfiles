@@ -138,15 +138,6 @@
                    (t s)))
                w)))))))))
 
-(defcommand switch-to-calls () ()
-  (when-let
-      ((g
-        (car (remove-if-not
-              (lambda (g)
-                (string= "calls" (group-name g)))
-              (screen-groups (current-screen))))))
-    (stumpwm::switch-to-group g)))
-
 (defcommand run-or-raise-teams () ()
   (run-or-raise "teams-for-linux" '(:class "teams-for-linux")))
 (define-key *top-map* (kbd "s-s") "run-or-raise-teams")
@@ -178,8 +169,7 @@
     ;; (stumpwm:define-key m (kbd "x")
     ;;   (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
-    (stumpwm:define-key m (kbd "c") "switch-to-calls")
-
+    
     (stumpwm:define-key m (kbd "s") "slack")
     (stumpwm:define-key m (kbd "a") "pull-window-across-groups")
     m))
@@ -272,7 +262,6 @@
      (equal class (window-class w)))
    (group-windows group)))
 
-
 (defcommand (pull-from-windowlist-curr-class tile-group)
     (&optional (fmt *window-format*)) (:rest)
   "Like `pull-from-windowlist` but only select
@@ -292,8 +281,8 @@ windows of the same class as the current window."
          (group (add-group (current-screen) class)))
     (mapc (lambda (w) (move-window-to-group w group)) windows)
     (switch-to-group group)))
-(define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 
+(define-key *top-map* (kbd "H-o") "pull-from-windowlist-curr-class")
 (define-key *groups-map* (kbd "w") "create-group-from-curr-class-windows")
 
 ;; thanks gavin
@@ -473,8 +462,6 @@ This is needed if Sly updates while StumpWM is running"
            (window-title w)))
         (group-windows (current-group)))))
  "Slack"
-
- (switch-to-calls)
 
  (list-modules)
  (my-mv :left)

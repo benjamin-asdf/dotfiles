@@ -765,14 +765,7 @@ Example:
    (lambda ()
      `(((role . "system")
         (content . ,(format
-                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
-You treat his time as precious. You do not repeat obvious things.
-You never appologize for confusions because the user thinks that is a waste of time.
-Whenever you output updated code for the user, please only say the lines that changed, not the whole block.
-The user knows how to read manuals.
-user iq: %s
-uname -a: %s
-emacs version: %s"
+                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.\nYou treat his time as precious. You do not repeat obvious things.\nYou never appologize for confusions because the user thinks that is a waste of time.\nSkip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.\nWhenever you output updated code for the user, please only say the lines that changed, not the whole block.\nThe user knows how to read manuals.\nuser iq: %s\nuname -a: %s\nemacs version: %s"
                      user-iq
                      (shell-command-to-string
                       "uname -a")
