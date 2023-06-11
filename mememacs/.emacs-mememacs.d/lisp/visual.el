@@ -67,7 +67,12 @@
 
 ;;; Programming
 
-(set-face-foreground 'font-lock-comment-face "cyan")
+(set-face-attribute
+ 'font-lock-comment-face
+ nil
+ :foreground "cyan"
+ :italic nil)
+
 (set-face-foreground 'font-lock-comment-delimiter-face mindsape/scorpion)
 (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
 (set-face-foreground 'font-lock-doc-face "#84892f")
@@ -88,6 +93,7 @@
  nil
  :foreground mindsape/heliotrope
  :bold t
+ :underline nil
  :box `(:line-width 2 :color ,mindsape/heliotrope-shade))
 
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
@@ -136,7 +142,8 @@
  nil
  :foreground mindsape/hit-pink
  :italic t
- :bold t)
+ :bold t
+ :underline nil)
 
 (set-face-attribute
  'minibuffer-prompt
