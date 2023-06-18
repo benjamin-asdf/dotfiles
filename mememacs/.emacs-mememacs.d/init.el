@@ -32,6 +32,12 @@
 (straight-use-package 'use-package)
 (require 'use-package)
 
+(use-package server
+  :ensure nil
+  :config
+  (unless noninteractive
+    (server-start nil t)))
+
 (setf
  straight-vc-git-default-protocol 'https
  straight-use-package-by-default t
@@ -552,12 +558,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
-(use-package server
-  :ensure nil
-  :defer 1
-  :config
-  (unless (server-running-p)
-    (server-start)))
+
 
 (use-package shell
   :ensure nil
@@ -758,8 +759,8 @@ Example:
                    (string-trim
                     (shell-command-to-string
                      ;; "pass sg-openai-api-key"
-                       "pass us-openai-test-key"
-                       )))))))
+                     "pass us-openai-test-key"
+                     )))))))
   (setq-default
    chatgpt-additional-prompts
    (lambda ()

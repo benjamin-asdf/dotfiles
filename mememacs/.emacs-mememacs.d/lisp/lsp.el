@@ -51,7 +51,6 @@
     (ht ("$/showError" #'lsp-grammarly--show-error)
         ("$/updateDocumentState" #'lsp-grammarly--update-document-state)))))
 
-
 (use-package typescript-mode
   :config
   (add-hook 'typescript-mode-hook #'lsp-deferred))

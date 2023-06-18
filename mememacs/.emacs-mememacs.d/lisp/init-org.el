@@ -26,6 +26,8 @@
   (setf org-babel-clojure-backend 'cider
 	org-confirm-babel-evaluate nil))
 
+(setf org-export-with-toc nil)
+
 (require 'org-protocol)
 
 (provide 'init-org)

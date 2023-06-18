@@ -14,6 +14,13 @@ c.new_instance_open_target = "window"
 c.tabs.show = "multiple"
 c.colors.webpage.preferred_color_scheme = "dark"
 
+
+c.content.cookies.accept = 'all'
+c.content.cookies.store = True
+
+c.content.javascript.enabled = True
+
+
 # c.window.title_format = "{title}{title_sep}{host}"
 
 # lazy_restore does not work when idle.
@@ -69,7 +76,6 @@ c.url.searchengines = {
     "goo"    : "https://www.google.com/search?q={}",
     'gg'     : 'https://g4gsearch.com/ws/search/search?a=true&c=%7B%7D&e=true&m&p=1&q={}&s=_score&w=%5B%5D',
     'wi'     : 'https://en.wikipedia.org/wiki/{}',
-    'nci'    : 'https://github.com/UnitedSignals/nc-platform/issues/{}',
     "clja"   : 'https://clojars.org/search?q={}'
 }
 
