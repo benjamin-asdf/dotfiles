@@ -52,6 +52,11 @@
 				(call-interactively #'consult-project-buffer))))
     (define-key m (kbd "c") #'org-capture)
     (define-key m (kbd "l") #'org-store-link)
+    (define-key m (kbd "RET") #'denote-rename-file)
+    (define-key m (kbd "g")
+      (defun mm/consult-ripgrep-denote-titles-and-filetags ()
+        (interactive)
+        (consult-ripgrep denote-directory "\\(\\(+title:\\)\\|\\(+filetags:\\)\\) ")))
     m))
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
@@ -59,6 +64,10 @@
 ;; during the rec edit
 (define-key org-mode-map (kbd "C-c C-j") nil)
 (define-key org-mode-map (kbd "C-c E") #'org-edit-src-code)
+
+
+
+
 
 (add-to-list 'org-babel-load-languages '(clojure . t))
 (add-to-list 'org-babel-load-languages '(shell . t))
