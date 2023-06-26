@@ -65,7 +65,6 @@
                          (file-remote-p file 'host) ":" (file-remote-p file 'localname))
                (concat "/sudo:root@localhost:" file))))
 
-
 (defun mememacs/dragon (file)
   (interactive "FDragon drag and drop: ")
   (start-process-shell-command
@@ -75,7 +74,7 @@
     (or (executable-find "dragon-drag-and-drop")
 	(executable-find "dragon-drop"))
     " "
-    (expand-file-name file)
+    (shell-quote-argument (expand-file-name file))
     " "
     "--and-exit")))
 

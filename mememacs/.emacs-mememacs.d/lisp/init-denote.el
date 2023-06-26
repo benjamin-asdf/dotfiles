@@ -64,11 +64,6 @@
 ;; during the rec edit
 (define-key org-mode-map (kbd "C-c C-j") nil)
 (define-key org-mode-map (kbd "C-c E") #'org-edit-src-code)
-
-
-
-
-
 (add-to-list 'org-babel-load-languages '(clojure . t))
 (add-to-list 'org-babel-load-languages '(shell . t))
 

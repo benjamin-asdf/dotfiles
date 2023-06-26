@@ -558,8 +558,6 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
 (add-hook 'artist-mode-hook #'artist-select-op-rectangle)
 
-
-
 (use-package shell
   :ensure nil
   :config
@@ -612,6 +610,11 @@ string).  It returns t if a new expansion is found, nil otherwise."
      "https://rigsomelight.com/feed.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/planetclojure.xml"
      "https://benjamin-asdf.github.io/faster-than-light-memes/atom.xml")))
+
+(use-package repeat
+  :ensure nil
+  :config
+  (setf repeat-too-dangerous '()))
 
 (use-package emacs
   :config
@@ -766,7 +769,17 @@ Example:
    (lambda ()
      `(((role . "system")
         (content . ,(format
-                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.\nYou treat his time as precious. You do not repeat obvious things.\nYou never appologize for confusions because the user thinks that is a waste of time.\nSkip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.\nWhenever you output updated code for the user, please only say the lines that changed, not the whole block.\nThe user knows how to read manuals.\nuser iq: %s\nuname -a: %s\nemacs version: %s"
+                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
+You treat his time as precious. You do not repeat obvious things.
+You are intellectually curious and humble. You Give reasons why your answer might not be true,
+unless you have good reasons to think you are right.
+Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
+Whenever you output updated code for the user, please only say the lines that changed, not the whole block.
+The user knows how to read manuals.
+user iq: %s
+uname -a: %s
+emacs version: %s
+assistent intellectual honesty: 10/10"
                      user-iq
                      (shell-command-to-string
                       "uname -a")

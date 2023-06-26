@@ -343,12 +343,27 @@ This is the power I desired."
         (forward-char 1))
       (lispy-mark-symbol))))
 
-(global-set-key (kbd "H-i") #'lispy-mode)
+(global-set-key
+ (kbd "H-i")
+ (defun mm/toggle-lispy ()
+   (interactive)
+   (magit-blame-mode -1)
+   (magit-blob-mode -1)
+   (lispy-mode
+    (if lispy-mode -1 1))
+   (message "lispy mode: %s" (if lispy-mode "on" "off"))))
 
 (add-hook
  'cider--debug-mode-hook
  (defun mm/disable-lispy-during-cider-debug ()
    (if (bound-and-true-p cider--debug-mode)
+       (lispy-mode -1)
+     (lispy-mode 1))))
+
+(add-hook
+ 'cider-storm-debugging-mode-hook
+ (defun mm/disable-lispy-during-flowstorm-debug ()
+   (if (bound-and-true-p cider-storm-debugging-mode)
        (lispy-mode -1)
      (lispy-mode 1))))
 
