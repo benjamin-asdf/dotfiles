@@ -304,12 +304,6 @@ This won't jump to the end of the buffer if there is no paren there."
 ;; (define-key lispy-mode-map-lispy (kbd "(") #'lispy-parens)
 (define-key lispy-mode-map-lispy (kbd "C-w") #'lispy-kill-at-point)
 
-(defun mm/join-below ()
-  (interactive)
-  (if (region-active-p)
-      (call-interactively #'join-line)
-    (join-line 'below)))
-
 (defun mm/embark-meow-keypad-desribe ()
   (interactive)
   (let ((kmap (meow--keypad-get-keymap-for-describe)))
@@ -443,7 +437,6 @@ when formatting with lispy."
 
 (add-hook 'mememacs/escape-functions #'lispy--cleanup-overlay)
 
-
 (defvar mm/c-c-c-j-map
   (let ((m (make-sparse-keymap
 	    "mememacs j map")))
@@ -458,8 +451,6 @@ when formatting with lispy."
   (when-let
       (k (key-binding (kbd "C-c C-c")))
     (call-interactively k)))
-
-
 
 (defun call-C-c-C-k ()
   (interactive)
