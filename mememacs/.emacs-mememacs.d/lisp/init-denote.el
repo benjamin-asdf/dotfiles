@@ -27,6 +27,9 @@
      :kill-buffer t
      :jump-to-captured t)))
 
+(defun files-sorted-by-date ()
+  (process-lines "ls" "-A" "-t"))
+
 (defun mm/scratch-denote (arg)
   (interactive "P")
   (let ((default-directory denote-directory))
@@ -37,12 +40,21 @@
          (lambda (it)
 	   (and (string-match-p "scratch" it)
 	        (not (string-match-p "#" it))))
-         (process-lines "ls" "-A" "-t")))))))
+         (files-sorted-by-date)))))))
 
 (defvar mm/org-dispatch-map
   (let ((m (make-sparse-keymap "mm org dispatch")))
     (define-key m (kbd "o") (defun mm/denote-dir () (interactive) (dired-jump nil denote-last-path)))
-    (define-key m (kbd "j") #'mm/scratch-denote)
+    (define-key m (kbd "s") #'mm/scratch-denote)
+    (define-key m (kbd "j") (defun mm/denote-latest ()
+                              (interactive)
+                              (let ((default-directory denote-directory))
+                                (find-file (car (files-sorted-by-date)))))
+                #'mm/scratch-denote)
+    (define-key m (kbd "J") (defun mm/denote-dired ()
+                              (interactive)
+                              (find-file denote-directory))
+                #'mm/scratch-denote)
     (define-key m (kbd "d") #'denote)
     (define-key m (kbd "T") (defun mm/denote-todo () (interactive) (denote "todo")))
     (define-key m (kbd "c") #'org-capture)
@@ -54,9 +66,9 @@
     (define-key m (kbd "l") #'org-store-link)
     (define-key m (kbd "RET") #'denote-rename-file)
     (define-key m (kbd "g")
-      (defun mm/consult-ripgrep-denote-titles-and-filetags ()
-        (interactive)
-        (consult-ripgrep denote-directory "\\(\\(+title:\\)\\|\\(+filetags:\\)\\) ")))
+                (defun mm/consult-ripgrep-denote-titles-and-filetags ()
+                  (interactive)
+                  (consult-ripgrep denote-directory "\\(\\(+title:\\)\\|\\(+filetags:\\)\\) ")))
     m))
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)

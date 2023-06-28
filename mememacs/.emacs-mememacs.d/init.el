@@ -138,7 +138,10 @@
   :straight nil
   :ensure nil
   :config
-  (setf dired-listing-switches "-alh"))
+  (setf dired-listing-switches "-alh")
+  (setq-default
+   dired-guess-shell-alist-user
+   '(("\\.mp4\\'" "mpv"))))
 
 (use-package consult
   :after orderless

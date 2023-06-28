@@ -1,3 +1,9 @@
+;; NOTE: keymap:
+;; holding down caps + a key is ctrl
+;; pressing and releasing caps is esc
+;; former left ctrl is hyper, so I can bind `H-l` for instance
+;; s- .. is super, my stumpwm config leaves keys left over for emacs to bind
+
 (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
       meow-use-cursor-position-hack t
       meow--kbd-undo "C-_"
@@ -475,8 +481,6 @@ when formatting with lispy."
   (define-key magit-status-mode-map (kbd "x") #'magit-discard)
   (define-key magit-status-mode-map (kbd "p") #'magit-push))
 (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
-
-
 (define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char)
 
 ;; lispy
@@ -688,9 +692,7 @@ when formatting with lispy."
                 (meow-cancel-selection))))
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
-
 (define-key help-map (kbd "c") #'describe-char)
-
 (global-set-key (kbd "H-<return>") #'save-buffer)
 
 (global-set-key (kbd "s-r") #'delete-other-windows)
