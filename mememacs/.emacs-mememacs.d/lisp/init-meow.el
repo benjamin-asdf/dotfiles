@@ -41,6 +41,16 @@
  '("9" . meow-digit-argument)
  '("0" . meow-digit-argument)
  '("bb" . consult-buffer)
+
+ (cons "bt"
+       (defun mm/make-editable-temp-copy-now ()
+         (interactive)
+         (let* ((filename (car (s-split ".~" (or buffer-file-name (buffer-name)))))
+                (ext (file-name-extension filename t))
+                (file (make-temp-file "editable-temp-copy" nil ext (buffer-string))))
+           (find-file file))))
+
+ 
  '("bc" . cider-repls-ibuffer)
  '("bh" . meow-last-buffer)
  (cons "bd"  (defun mm/kill-this-buffer ()
@@ -73,7 +83,22 @@
  '("/" . meow-keypad-describe-key)
  '("!" . flycheck-mode)
  '("?" . meow-cheatsheet)
- '("ag" . consult-git-grep)
+ (cons "ag"
+       (progn
+         ;; bit hacky
+         ;; I really want to end up at the beginning of the input
+         (add-hook
+          'minibuffer-setup-hook
+          (defun mm/move-point-when-git-grep ()
+            (when (re-search-backward "# -- " nil t) (forward-char) (insert " "))))
+
+         (defun mm/consult-git-grep (&optional dir)
+           (interactive "P")
+           (let ((initial
+                  (when
+                      (derived-mode-p 'prog-mode)
+                    (concat " -- -- ." (file-name-extension (buffer-name))))))
+             (consult-git-grep dir initial)))))
  '("aj" . avy-goto-char-timer)
  '("aw" . avy-goto-word-1)
  '("e" . string-edit-at-point)
@@ -275,7 +300,9 @@ This won't jump to the end of the buffer if there is no paren there."
                  (end-of-defun 1)
                  (re-search-backward lispy-right nil t)
                  (point-marker))))
-      (skip-chars-backward " \t\n()[]{}")
+      ;; (skip-chars-backward " \t\n()[]{}")
+      (skip-chars-backward " \t\n)]}")
+      (skip-chars-forward " ")
       (while (and
               (< (point) end)
               (lispy--in-string-or-comment-p))
@@ -387,31 +414,39 @@ This is the power I desired."
 
 
 (defvar mm/spc-map (let ((m (make-sparse-keymap)))
-		     (define-key m (kbd "f")
-		                 #'find-file)
-		     (define-key m (kbd "b")
-		                 #'consult-buffer)
-		     (define-key m (kbd "s")
-		                 #'magit-status)
-		     (define-key m (kbd "p")
-		                 project-prefix-map)
-		     (define-key m (kbd "/")
-		                 #'consult-ripgrep)
-		     (define-key m (kbd "wd")
-		                 #'delete-window)
-		     (define-key m (kbd "wu")
-		                 #'winner-undo)
-		     (define-key m (kbd "wU")
-		                 #'winner-redo)
-		     (define-key m (kbd "d") #'consult-dir)
-		     (define-key m (kbd "z") #'recenter)
-		     (define-key m (kbd "ju") #'link-hint-open-link)
-		     (define-key m (kbd "jl") #'avy-goto-line)
-		     (define-key m (kbd "jj") #'avy-goto-char-timer)
-		     (define-key m (kbd "ja") #'mm/lispy-ace-symbol-window)
-		     (define-key m (kbd "ns") #'mememacs/create-script)
-		     (define-key m (kbd "nS") #'mememacs/create-bb-script)
-		     m))
+                     (define-key m (kbd "f")
+                                 #'find-file)
+                     (define-key m (kbd "b")
+                                 #'consult-buffer)
+                     (define-key m (kbd "s")
+                                 #'magit-status)
+                     (define-key m (kbd "p")
+                                 project-prefix-map)
+                     (define-key m (kbd "/")
+
+                                 (defun mm/consult-ripgrep (&optional dir)
+                                   (interactive "P")
+                                   (let ((initial (when (derived-mode-p 'prog-mode)
+                                                    (concat
+                                                     " -- --glob *" (file-name-extension (buffer-name))))))
+                                     (consult-ripgrep dir initial)))
+                                 
+                                 #'consult-ripgrep)
+                     (define-key m (kbd "wd")
+                                 #'delete-window)
+                     (define-key m (kbd "wu")
+                                 #'winner-undo)
+                     (define-key m (kbd "wU")
+                                 #'winner-redo)
+                     (define-key m (kbd "d") #'consult-dir)
+                     (define-key m (kbd "z") #'recenter)
+                     (define-key m (kbd "ju") #'link-hint-open-link)
+                     (define-key m (kbd "jl") #'avy-goto-line)
+                     (define-key m (kbd "jj") #'avy-goto-char-timer)
+                     (define-key m (kbd "ja") #'mm/lispy-ace-symbol-window)
+                     (define-key m (kbd "ns") #'mememacs/create-script)
+                     (define-key m (kbd "nS") #'mememacs/create-bb-script)
+                     m))
 
 (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
 (define-key meow-motion-state-keymap (kbd "SPC") mm/spc-map)
@@ -585,6 +620,31 @@ when formatting with lispy."
   (interactive "p")
   (lispy-forward arg)
   (meow-insert))
+
+;; `lispy--multiline-1` and clojure commas
+;; 1) have a bug in some cases
+;; 2) do not look good anyway because it puts the commas on the new line
+;; 3) sine 'M' is my main formatting command, it makes more sense to remove commas.
+;; Commas are for printed data and the moment I
+;; format and edit the data it becomes something else
+(defun mm/lispy-remove-commas (expr)
+  (if
+      (not (listp expr))
+      expr
+    (mapcar
+     #'mm/lispy-remove-commas
+     (cl-remove-if
+      (lambda (e)
+        (pcase e
+          ('(ly-raw clojure-comma) t)
+          (`(ly-raw clojure-commas . ,s) t)))
+      expr))))
+
+(advice-add #'lispy--multiline-1
+            :filter-args
+            (defun mm/lispy--multiline-1-remove-commas-adv (args)
+              (list (mm/lispy-remove-commas (car args)) (cadr args))))
+
 
 ;; I hit this key accidentally 10 times per day
 

@@ -10,7 +10,9 @@
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
-      cider-merge-sessions nil
+      ;; cider-merge-sessions nil
+            cider-merge-sessions 'project
+
       cider-auto-jump-to-error nil
       cider-show-error-buffer nil
       cider-use-overlays t)
@@ -50,44 +52,6 @@
     (replace-regexp-in-region
      "[^/]\\(\\<\\w+\\>\\) {:mvn/version \\(.+\\)}"
      "\\1/\\1 {:mvn/version \\2}")))
-
-
-;; patch for nbb-or-scittle-or-joyride
-
-(cider-register-cljs-repl-type 'nbb-or-scittle-or-joyride "(+ 1 2 3)")
-
-(defun mm/cider-connected-hook ()
-  (when (eq 'nbb-or-scittle-or-joyride cider-cljs-repl-type)
-    (setq-local cider-show-error-buffer nil)
-    (cider-set-repl-type 'cljs)))
-(add-hook 'cider-connected-hook #'mm/cider-connected-hook)
-
-;; thank you corgi
-
-(defun corgi/cider-jack-in-babashka (&optional force)
-  "Start a utility CIDER REPL backed by Babashka, not related to a
-specific project."
-  (interactive)
-  (when-let ((cur (get-buffer "*babashka-scratch*")))
-    (if (or force (y-or-n-p "Kill current bb scratch? "))
-	(kill-buffer cur)
-	(user-error "There is already a bb scratch.")))
-  (let ((project-dir "~/scratch/"))
-    (nrepl-start-server-process
-     project-dir
-     "bb --nrepl-server 0"
-     (lambda (server-buffer)
-       (cider-nrepl-connect
-        (list :repl-buffer server-buffer
-              :repl-type 'clj
-              :host (plist-get nrepl-endpoint :host)
-              :port (plist-get nrepl-endpoint :port)
-              :project-dir project-dir
-              :session-name "babashka"
-              :repl-init-function (lambda ()
-                                    (setq-local cljr-suppress-no-project-warning t
-                                                cljr-suppress-middleware-warnings t)
-                                    (rename-buffer "*babashka-scratch*"))))))))
 
 (defun mememacs/babashka-scratch (&optional arg)
   (interactive)
@@ -315,13 +279,13 @@ focused."
                  ;; if the user wants to AND if the overlay succeeded.
                  'invisible t))))
 
+
 (add-hook 'clojure-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
 
 (add-hook
 'clojure-mode-hook
 (defun mm/add-keywords-to-imenu ()
   (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))
-
 
 (with-eval-after-load 'consult
 
@@ -344,5 +308,62 @@ focused."
     (consult-buffer
      (list
       cider-consult-repl-buffer-source))))
+
+(defun cider-popup-eval-handler (&optional buffer)
+  "Make a handler for printing evaluation results in popup BUFFER.
+This is used by pretty-printing commands."
+  ;; NOTE: cider-eval-register behavior is not implemented here for performance reasons.
+  ;; See https://github.com/clojure-emacs/cider/pull/3162
+  (let ((target-buff (current-buffer))
+        (end (line-end-position)))
+    (nrepl-make-response-handler
+     (or buffer (current-buffer))
+     (lambda (buffer value)
+       (cider-emit-into-popup-buffer buffer (ansi-color-apply value) nil t)
+       (display-buffer buffer))
+     (lambda (_buffer out)
+       (cider-emit-interactive-eval-output out))
+     (lambda (_buffer err)
+       (pop-to-buffer target-buff)
+       (when (or (not cider-show-error-buffer)
+                 (not (cider-connection-has-capability-p 'jvm-compilation-errors)))
+
+         ;; Display errors as temporary overlays
+         (let ((cider-result-use-clojure-font-lock nil))
+           (cider--display-interactive-eval-result
+            err
+            end
+            'cider-error-overlay-face)))
+       
+       ;; here
+       (cider-emit-interactive-eval-err-output err))
+     nil
+     nil
+     nil
+     (lambda (buffer warning)
+       (cider-emit-into-popup-buffer buffer warning 'font-lock-warning-face t)))))
+
+(defun cider--pprint-eval-form (form)
+  "Pretty print FORM in popup buffer."
+  (let* ((buffer (current-buffer))
+         (result-buffer (cider-make-popup-buffer cider-result-buffer 'clojure-mode 'ancillary))
+         (handler (cider-popup-eval-handler
+                   result-buffer)))
+    (with-current-buffer
+        buffer
+      (cider-interactive-eval
+       (when (stringp form) form)
+       handler
+       (when (consp form) form)
+       (cider--nrepl-print-request-map
+        fill-column)))))
+
+(defun mm/zprint-region ()
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (mark) (point) "zprint" (buffer-name) t)))
+
+;; isn't the mental surface area of retrieving a symbol from memory a fascinating concept
+(defalias 'mm/clojure-pprint-region-fmt-cljfmt-zprint-pretty-clj-print-format-fmt-buffer #'mm/zprint-region)
 
 (provide 'init-cider)

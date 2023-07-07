@@ -461,6 +461,74 @@ string).  It returns t if a new expansion is found, nil otherwise."
 	  (he-substitute-string expansion t)
 	  t))))
 
+
+  ;; you have banana in the buffer and you type :ba|
+  ;; -> :banana
+  (defun mm/hippy-lisp-keywords-other-way-around
+      (old)
+    (let ((expansion ()))
+      (when (not old)
+        (he-init-string (he-dabbrev-beg) (point))
+        (set-marker he-search-loc he-string-beg)
+        (setq he-search-bw t))
+      (when (not (equal he-search-string ""))
+        (save-excursion
+          (save-restriction
+	    (if hippie-expand-no-restriction
+	        (widen))
+	    ;; Try looking backward unless inhibited.
+	    (if he-search-bw
+	        (progn
+	          (setq expansion
+                        (or
+                         (when-let
+                             ((he-search-string
+                               (when (string-match-p "::.+" he-search-string)
+                                 (cl-subseq he-search-string 2))))
+                           (goto-char he-search-loc)
+                           (when-let ((s (he-dabbrev-search he-search-string t)))
+                             (concat "::" s)))
+                         (when-let
+                             ((he-search-string
+                               (when (string-match-p ":.+" he-search-string)
+                                 (cl-subseq he-search-string 1))))
+                           (goto-char he-search-loc)
+                           (when-let ((s (he-dabbrev-search he-search-string t)))
+                             (concat ":" s)))))
+	          (set-marker he-search-loc (point))
+	          (if (not expansion)
+		      (progn
+		        (set-marker he-search-loc he-string-end)
+		        (setq he-search-bw ())))))
+
+	    (if (not expansion)         ; Then look forward.
+	        (progn
+                  (setq expansion
+                        (or
+                         (when-let
+                             ((he-search-string
+                               (when (string-match-p "::.+" he-search-string)
+                                 (cl-subseq he-search-string 2))))
+                           (goto-char he-search-loc)
+                           (when-let ((s (he-dabbrev-search he-search-string)))
+                             (concat "::" s)))
+                         (when-let
+                             ((he-search-string
+                               (when (string-match-p ":.+" he-search-string)
+                                 (cl-subseq he-search-string 1))))
+                           (goto-char he-search-loc)
+                           (when-let ((s (he-dabbrev-search he-search-string)))
+                             (concat ":" s)))))
+	          (set-marker he-search-loc (point)))))))
+      (if (not expansion)
+	  (progn
+	    (if old (he-reset-string))
+	    ())
+        (progn
+	  (he-substitute-string expansion t)
+	  t))))
+  
+
   (setq hippie-expand-try-functions-list
         '(try-expand-dabbrev
           try-expand-dabbrev-all-buffers
@@ -472,13 +540,9 @@ string).  It returns t if a new expansion is found, nil otherwise."
           try-expand-all-abbrevs
           try-expand-list
           try-expand-line
-          mm/hippy-lisp-keywords)))
+          mm/hippy-lisp-keywords
+          mm/hippy-lisp-keywords-other-way-around)))
 
-;; figure out guix manifests
-;; figure out guix packages for clj kondo etc
-
-;; pretty print
-;; c-i and c-o should be more intuitive
 ;; Keep customization settings in a temporary file (thanks Ambrevar!)
 (setq custom-file
       (if (boundp 'server-socket-dir)
@@ -771,8 +835,8 @@ Example:
    chatgpt-additional-prompts
    (lambda ()
      `(((role . "system")
-        (content . ,(format
-                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
+        (content . ,(format 
+                     "The user is a progxrammer hacker engineer. He is thinking in Lisp and Clojure.
 You treat his time as precious. You do not repeat obvious things.
 You are intellectually curious and humble. You Give reasons why your answer might not be true,
 unless you have good reasons to think you are right.

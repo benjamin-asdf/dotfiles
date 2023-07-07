@@ -42,7 +42,8 @@
  ("RET" . vertico-directory-enter)
  ("DEL" . vertico-directory-delete-char)
  ("M-DEL" . vertico-directory-delete-word)
- ("C-k" . vertico-quick-exit)
+ ("C-l" . vertico-quick-exit)
+ ("C-k" . kill-line)
  ("M-q" . vertico-quick-insert)
  ("M-a" . vertico-quick-jump))
 

@@ -28,7 +28,7 @@
      :jump-to-captured t)))
 
 (defun files-sorted-by-date ()
-  (process-lines "ls" "-A" "-t"))
+  (process-lines "ls" "-t"))
 
 (defun mm/scratch-denote (arg)
   (interactive "P")
@@ -51,11 +51,11 @@
                               (let ((default-directory denote-directory))
                                 (find-file (car (files-sorted-by-date)))))
                 #'mm/scratch-denote)
-    (define-key m (kbd "J") (defun mm/denote-dired ()
+    (define-key m (kbd "d") (defun mm/denote-dired ()
                               (interactive)
                               (find-file denote-directory))
                 #'mm/scratch-denote)
-    (define-key m (kbd "d") #'denote)
+    (define-key m (kbd "n") #'denote)
     (define-key m (kbd "T") (defun mm/denote-todo () (interactive) (denote "todo")))
     (define-key m (kbd "c") #'org-capture)
     (define-key m (kbd "f") (defun mm/consult-file-notes ()
