@@ -1,68 +1,57 @@
-;;; This file enforces consistency in the visual style:
-;;; - doc, here-doc, comments, strings are in the same taint.
-;;; - search highlight, search lazy follow the same color code.
-;;; - diffs (ediff, smerge, etc.) follow the same color code.
-
-;;; To find the variable associated to a currently used color, place the cursor
-;;; on it and call `describe-face'. Or browse the `list-faces-display'.
-
-;; need to set mode line as well
-;; and tap seperator
+;; This theme is for apes and wizards. 
+;; Ideas, fruit and magic are colerful things.
 
 ;; https://imagecolorpicker.com/
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
+(defconst mememacs-visuals/bg		         "black")
+(defconst mememacs-visuals/woodsmoke-shade      "#121218")
+(defconst mememacs-visuals/woodsmoke-tint-1	 "#2e2d35")
+(defconst mememacs-visuals/scarpa-flow		 "#5d5c62")
+(defconst mememacs-visuals/scorpion		 "#625d5c")
+(defconst mememacs-visuals/tundora		 "#4e4a4a")
+(defconst mememacs-visuals/dune	         "#3b3837")
+(defconst mememacs-visuals/hint-of-red		 "#faf7f7")
+(defconst mememacs-visuals/brown		 "#543f2f")
+(defconst mememacs-visuals/sage	         "#95a178")
+(defconst mememacs-visuals/heliotrope		 "#F689FF")
+(defconst mememacs-visuals/heliotrope-shade	 "#311b33")
+(defconst mememacs-visuals/purple	         "#8e41e0")
+(defconst mememacs-visuals/metiorite	         "#3c2488")
+(defconst mememacs-visuals/wasabi	         "#708824")
+(defconst mememacs-visuals/fruit-salad	         "#479b59")
+(defconst mememacs-visuals/sweet-pink	         "#Fe9aa1")
+(defconst mememacs-visuals/sundown	         "#Feaeb4")
+(defconst mememacs-visuals/mint-bright		 "#a1fe9a")
+(defconst mememacs-visuals/mint-bright-1	 "#abfea5")
+(defconst mememacs-visuals/mint-bright-2	 "#b6feb1")
+(defconst mememacs-visuals/mint-bright-3	 "#c0febc")
+(defconst mememacs-visuals/mint-bright-4	 "#d5ffd2")
+(defconst mememacs-visuals/blue-chalk	         "#Fcd2ff")
+(defconst mememacs-visuals/lunar-green	         "#404c3f")
+(defconst mememacs-visuals/log-cabin	         "#131713")
+(defconst mememacs-visuals/mint-green		 "#96fe8f")
+(defconst mememacs-visuals/green-kelp		 "#1e331d"
+  "A dark shade of `mememacs-visuals/mint-green`")
+(defconst mememacs-visuals/anakiwa		 "#8fcefe")
+(defconst mememacs-visuals/water		 "#C7E7FF")
+(defconst mememacs-visuals/horison		 "#5F89A9")
+(defconst mememacs-visuals/glacier		 "#6da2bc")
+(defconst mememacs-visuals/gimbled		 "#bcb66d")
+(defconst mememacs-visuals/hit-pink		 "#feb48f")
+(defconst mememacs-visuals/amethyst-smoke	 "#Ac98bf")
+(defconst mememacs-visuals/lilly "#B8a0af")
+(defconst mememacs-visuals/summer-green "#a0b8a9")
+(defconst mememacs-visuals/cursor-default        "NavajoWhite")
 
-;; (defconst mindsape/woodsmoke		 "#17161e")
-(defconst mindsape/woodsmoke		 "black")
-(defconst mindsape/woodsmoke-shade       "#121218")
-(defconst mindsape/woodsmoke-tint-1	 "#2e2d35")
-(defconst mindsape/scarpa-flow		 "#5d5c62")
-(defconst mindsape/scorpion		 "#625d5c")
-(defconst mindsape/tundora		 "#4e4a4a")
-(defconst mindsape/dune	                 "#3b3837")
-(defconst mindsape/hint-of-red		 "#faf7f7")
-(defconst mindsape/brown		 "#543f2f")
-(defconst mindsape/sage			 "#95a178")
-(defconst mindsape/heliotrope		 "#F689FF")
-(defconst mindsape/heliotrope-shade	 "#311b33")
-(defconst mindsape/purple	         "#8e41e0")
-(defconst mindsape/metiorite	         "#3c2488")
-(defconst mindsape/wasabi	         "#708824")
-(defconst mindsape/fruit-salad	         "#479b59")
-(defconst mindsape/sweet-pink	         "#Fe9aa1")
-(defconst mindsape/sundown	         "#Feaeb4")
-(defconst mindsape/mint-bright		 "#a1fe9a")
-(defconst mindsape/mint-bright-1	 "#abfea5")
-(defconst mindsape/mint-bright-2	 "#b6feb1")
-(defconst mindsape/mint-bright-3	 "#c0febc")
-(defconst mindsape/mint-bright-4	 "#d5ffd2")
-(defconst mindsape/blue-chalk	         "#Fcd2ff")
-(defconst mindsape/lunar-green	         "#404c3f")
-(defconst mindsape/log-cabin	         "#131713")
-(defconst mindsape/mint-green		 "#96fe8f")
-(defconst mindsape/green-kelp		 "#1e331d"
-  "A dark shade of `mindsape/mint-green`")
-(defconst mindsape/anakiwa		 "#8fcefe")
-(defconst mindsape/water		 "#C7E7FF")
-(defconst mindsape/horison		 "#5F89A9")
-(defconst mindsape/glacier		 "#6da2bc")
-(defconst mindsape/gimbled		 "#bcb66d")
-(defconst mindsape/hit-pink		 "#feb48f")
-(defconst mindsape/amethyst-smoke	 "#Ac98bf")
-(defconst mindsape/lilly "#B8a0af")
-(defconst mindsape/summer-green "#a0b8a9")
-(defconst mindsape/cursor-default        "NavajoWhite")
-
-(set-face-background 'default "black" ;; mindsape/woodsmoke
-		     )
-(set-face-foreground 'default mindsape/hint-of-red)
+(set-face-background 'default mememacs-visuals/bg)
+(set-face-foreground 'default mememacs-visuals/hint-of-red)
 
 (set-face-attribute
 'cursor
  nil
- :foreground mindsape/cursor-default
- :background mindsape/cursor-default)
+ :foreground mememacs-visuals/cursor-default
+ :background mememacs-visuals/cursor-default)
 
 
 ;;; Programming
@@ -73,28 +62,28 @@
  :foreground "cyan"
  :italic nil)
 
-(set-face-foreground 'font-lock-comment-delimiter-face mindsape/scorpion)
+(set-face-foreground 'font-lock-comment-delimiter-face mememacs-visuals/scorpion)
 (set-face-foreground 'font-lock-comment-delimiter-face (face-foreground 'font-lock-comment-face))
 (set-face-foreground 'font-lock-doc-face "#84892f")
 
 (set-face-foreground 'font-lock-string-face "#abd1d0")
-(set-face-foreground 'font-lock-string-face mindsape/gimbled)
+(set-face-foreground 'font-lock-string-face mememacs-visuals/gimbled)
 
 
 ;; https://imagecolorpicker.com/color-code/febf8f
 (set-face-attribute
  'font-lock-function-name-face
  nil
- :foreground mindsape/mint-green
- :box `(:line-width 1 :color ,mindsape/mint-bright))
+ :foreground mememacs-visuals/mint-green
+ :box `(:line-width 1 :color ,mememacs-visuals/mint-bright))
 
 (set-face-attribute
  'font-lock-constant-face
  nil
- :foreground mindsape/heliotrope
+ :foreground mememacs-visuals/heliotrope
  :bold t
  :underline nil
- :box `(:line-width 2 :color ,mindsape/heliotrope-shade))
+ :box `(:line-width 2 :color ,mememacs-visuals/heliotrope-shade))
 
 (set-face-foreground 'font-lock-keyword-face "#febf8f")
 
@@ -102,9 +91,9 @@
  'match
  nil
  :box nil
- :background mindsape/woodsmoke
+ :background mememacs-visuals/bg
  :bold t
- :foreground mindsape/mint-bright)
+ :foreground mememacs-visuals/mint-bright)
 
 ;; (set-face-attribute nil :box t)
 
@@ -112,18 +101,18 @@
  'highlight
  nil
  :box
- `(:line-width 2 :color ,mindsape/heliotrope)
- :foreground mindsape/heliotrope
- :background mindsape/woodsmoke)
+ `(:line-width 2 :color ,mememacs-visuals/heliotrope)
+ :foreground mememacs-visuals/heliotrope
+ :background mememacs-visuals/bg)
 
 (set-face-attribute
  'font-lock-builtin-face
  nil
  :bold t
- :foreground mindsape/water
+ :foreground mememacs-visuals/water
  :overline "MediumPurple1")
 
-(set-face-foreground 'font-lock-builtin-face mindsape/anakiwa)
+(set-face-foreground 'font-lock-builtin-face mememacs-visuals/anakiwa)
 
 (set-face-attribute
  'region
@@ -134,13 +123,13 @@
  :underline nil)
 
 
-(set-face-background 'mode-line mindsape/brown)
+(set-face-background 'mode-line mememacs-visuals/brown)
 (set-face-background 'mode-line-inactive (face-background 'default))
 (set-face-foreground 'mode-line (face-foreground 'default))
 (set-face-attribute
  'font-lock-type-face
  nil
- :foreground mindsape/hit-pink
+ :foreground mememacs-visuals/hit-pink
  :italic t
  :bold t
  :underline nil)
@@ -149,7 +138,7 @@
  'minibuffer-prompt
  nil
  :foreground
- mindsape/fruit-salad
+ mememacs-visuals/fruit-salad
  :bold t)
 
 (when
@@ -158,7 +147,7 @@
   (set-face-attribute
    'separator-line
    nil
-   :background mindsape/woodsmoke))
+   :background mememacs-visuals/bg))
 
 (set-face-foreground 'escape-glyph "#8ffe93")
 
@@ -166,11 +155,11 @@
 (set-face-foreground 'link "goldenrod")
 (set-face-bold 'link t)
 
-(set-face-background 'fringe mindsape/woodsmoke)
-(set-face-background 'secondary-selection mindsape/brown)
-(set-face-foreground 'vertical-border mindsape/brown)
-(set-face-foreground 'internal-border mindsape/brown)
-(set-face-foreground 'window-divider mindsape/brown)
+(set-face-background 'fringe mememacs-visuals/bg)
+(set-face-background 'secondary-selection mememacs-visuals/brown)
+(set-face-foreground 'vertical-border mememacs-visuals/brown)
+(set-face-foreground 'internal-border mememacs-visuals/brown)
+(set-face-foreground 'window-divider mememacs-visuals/brown)
 
 (with-eval-after-load 'paren
   (set-face-foreground 'show-paren-match "White")
@@ -181,8 +170,8 @@
   (set-face-attribute
    'dired-directory
    nil
-   :background mindsape/woodsmoke-tint-1
-   :foreground mindsape/amethyst-smoke
+   :background mememacs-visuals/woodsmoke-tint-1
+   :foreground mememacs-visuals/amethyst-smoke
    :box t))
 
 (with-eval-after-load
@@ -191,83 +180,73 @@
    'vertico-group-title
    nil
    :slant 'italic
-   :foreground mindsape/hit-pink))
+   :foreground mememacs-visuals/hit-pink))
 
 (with-eval-after-load
     'vertico-quick
   (set-face-attribute
    'vertico-quick1
    nil
-   :background mindsape/hit-pink
-   :foreground mindsape/woodsmoke)
+   :background mememacs-visuals/hit-pink
+   :foreground mememacs-visuals/bg)
   (set-face-attribute
    'vertico-quick2
    nil
-   :background mindsape/glacier
-   :foreground mindsape/woodsmoke))
+   :background mememacs-visuals/glacier
+   :foreground mememacs-visuals/bg))
 
 (with-eval-after-load 'avy
   (set-face-attribute
    'avy-goto-char-timer-face
    nil
    :box nil
-   :background mindsape/hit-pink)
+   :background mememacs-visuals/hit-pink)
 
   (set-face-attribute
    'avy-lead-face
    nil
-   :foreground mindsape/hit-pink
-   :background mindsape/woodsmoke
+   :foreground mememacs-visuals/hit-pink
+   :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-1
    nil
-   :foreground mindsape/mint-bright-2
-   :background mindsape/woodsmoke
+   :foreground mememacs-visuals/mint-bright-2
+   :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-0
    nil
-   :foreground mindsape/mint-bright-1
-   :background mindsape/woodsmoke
+   :foreground mememacs-visuals/mint-bright-1
+   :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-2
    nil
-   :foreground mindsape/mint-bright-3
-   :background mindsape/woodsmoke
+   :foreground mememacs-visuals/mint-bright-3
+   :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-goto-char-timer-face
    nil
-   :background mindsape/mint-bright-4
-   :foreground mindsape/woodsmoke))
-
-;; (with-eval-after-load 'rainbow-delimiters
-
-;;   (set-face-attribute
-;;    'rainbow-delimiters-base-face
-;;    nil
-;;    :foreground mindsape/hint-of-red
-;;    ;; :box '(:line-width -1 :color mindsape/woodsmoke-tint-1)
-;;    ))
+   :background mememacs-visuals/mint-bright-4
+   :foreground mememacs-visuals/bg))
 
 (set-face-attribute 'fixed-pitch nil  :family "Monospace")
 (set-face-attribute 'fixed-pitch-serif nil  :family "Monospace")
 
 (setq-default x-stretch-cursor t)
 (setq-default visible-cursor nil)
-(set-cursor-color mindsape/mint-bright-1)
 (blink-cursor-mode -1)
 
 (set-face-attribute
  'lazy-highlight
  nil
- :background mindsape/woodsmoke
+ :background mememacs-visuals/bg
  :foreground "lawn green"
  :height 1.1
  :weight 'ultra-bold)
@@ -277,7 +256,7 @@
   (set-face-attribute
    'isearch
    nil
-   :background mindsape/lilly
+   :background mememacs-visuals/lilly
    :foreground "black"))
 
 (with-eval-after-load
@@ -285,24 +264,21 @@
   (set-face-attribute
    'cider-fringe-good-face
    nil
-   :foreground mindsape/horison
+   :foreground mememacs-visuals/horison
    :background nil)
   (set-face-attribute
    'cider-error-highlight-face
    nil
    :foreground nil
    :background nil
-   :underline `(:color ,mindsape/dune
+   :underline `(:color ,mememacs-visuals/dune
 		       :style wave)
-   :box nil)
-  ;; cider-instrumented-face
-  ;; cider-reader-conditional-face
-  )
+   :box nil))
 
 (set-face-attribute
  'success
  nil
- :foreground mindsape/mint-bright)
+ :foreground mememacs-visuals/mint-bright)
 
 (with-eval-after-load
     'markdown-mode
@@ -311,7 +287,7 @@
    nil
    :inherit 'default
    :foreground nil
-   :background mindsape/woodsmoke-shade))
+   :background mememacs-visuals/woodsmoke-shade))
 
 (with-eval-after-load
     'embark
@@ -325,7 +301,7 @@
   (set-face-attribute
    'org-block
    nil
-   :background mindsape/woodsmoke-shade
+   :background mememacs-visuals/woodsmoke-shade
    :inherit nil))
 
 (defun ambrevar/fontify-comment-tag ()
@@ -379,7 +355,7 @@
   (set-face-attribute
    'magit-process-ok
    nil
-   :foreground mindsape/mint-bright))
+   :foreground mememacs-visuals/mint-bright))
 
 (with-eval-after-load
     'lsp-mode
@@ -398,6 +374,6 @@
 
 (with-eval-after-load
     'ediff-init
-    (set-face-attribute 'ediff-current-diff-C nil :foreground "white"))
+  (set-face-attribute 'ediff-current-diff-C nil :foreground "white"))
 
 (provide 'visual)

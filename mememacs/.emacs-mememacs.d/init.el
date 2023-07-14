@@ -141,7 +141,9 @@
   (setf dired-listing-switches "-alh")
   (setq-default
    dired-guess-shell-alist-user
-   '(("\\.mp4\\'" "mpv"))))
+   '(("\\.mp4\\'" "mpv")
+     ("\\.m4a\\'" "mpv")
+     ("\\.pdf\\'" "zathura"))))
 
 (use-package consult
   :after orderless

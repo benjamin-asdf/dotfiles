@@ -224,6 +224,8 @@ When at an outline, eval the outline."
     (eval-error
      (lispy-message (cdr e)))))
 
+(defvar mm/cider-the-buffer-i-was-evaling-from nil)
+
 ;; e without prefix arg is the most important command, the quick-eval
 ;; e with prefix arg inserts into buffer
 (defun mm/lispy--eval (&optional arg)
@@ -238,6 +240,7 @@ When at an outline, eval the outline."
              (cider-eval-last-sexp nil)
            (progn
              (lispy-newline-and-indent-plain)
+             (setf mm/cider-the-buffer-i-was-evaling-from (current-buffer))
              (cider-eval-last-sexp t))))
         (t
          (if (eq arg 4)
@@ -266,9 +269,11 @@ When at an outline, eval the outline."
          (save-excursion
 	   (goto-char
 	    (cdr (lispy--bounds-dwim)))
-	   (if (eq arg 4)
-	       (cider-pprint-eval-last-sexp-to-comment nil)
-	     (cider-pprint-eval-last-sexp nil))))
+	   (progn
+             (setf mm/cider-the-buffer-i-was-evaling-from (current-buffer))
+             (if (eq arg 4)
+	         (cider-pprint-eval-last-sexp-to-comment nil)
+	       (cider-pprint-eval-last-sexp nil)))))
         (t
          (if (eq arg 4)
 	     (lispy-eval-and-insert)
@@ -628,9 +633,13 @@ when formatting with lispy."
 ;; Commas are for printed data and the moment I
 ;; format and edit the data it becomes something else
 (defun mm/lispy-remove-commas (expr)
-  (if
-      (not (listp expr))
-      expr
+  (cond
+   ((vectorp expr)
+    (apply #'vector
+           (mm/lispy-remove-commas
+            (mapcar #'identity expr))))
+   ((not (listp expr)) expr)
+   (t
     (mapcar
      #'mm/lispy-remove-commas
      (cl-remove-if
@@ -638,12 +647,43 @@ when formatting with lispy."
         (pcase e
           ('(ly-raw clojure-comma) t)
           (`(ly-raw clojure-commas . ,s) t)))
-      expr))))
+      expr)))))
+
 
 (advice-add #'lispy--multiline-1
             :filter-args
             (defun mm/lispy--multiline-1-remove-commas-adv (args)
               (list (mm/lispy-remove-commas (car args)) (cadr args))))
+
+
+;; slurp whitespace has a bug that I walk into for clojure forms with namespaced maps
+;; Ignore `slurp-whitespace'. Not sure when I needed that anyway.
+(defun lispy-interleave (x lst &optional step slurp-whitespace)
+  "Insert X in between each element of LST.
+Don't insert X when it's already there.
+When STEP is non-nil, insert in between each STEP elements instead.
+When SLURP-WHITESPACE is non-nil, add any whitespace following split into previous line."
+  (setq step (or step 1))
+  (setq slurp-whitespace nil)
+  (let ((res (nreverse (lispy-multipop lst step)))
+        item)
+    (if slurp-whitespace
+        (progn
+          (setq my-lst lst)
+          (setq my-res res)
+          (lispy--slurp-whitespace lst res)))
+    (while lst
+      (unless (equal (car res) x)
+        (push x res))
+      (unless (equal (car res)
+                     (car (setq item (lispy-multipop lst step))))
+        (when slurp-whitespace
+          (setq item (nreverse item))
+          (lispy--slurp-whitespace lst item)
+          (setq item (nreverse item)))
+        (setq res (nconc (nreverse item) res))))
+    (nreverse res)))
+
 
 
 ;; I hit this key accidentally 10 times per day
@@ -681,12 +721,12 @@ when formatting with lispy."
       (set-face-attribute
        'show-paren-match
        nil
-       :foreground mindsape/heliotrope
+       :foreground mememacs-visuals/heliotrope
        :underline t)
     (set-face-attribute
      'show-paren-match
      nil
-     :foreground mindsape/mint-bright-2
+     :foreground mememacs-visuals/mint-bright-2
      :underline t)))
 
 (setf

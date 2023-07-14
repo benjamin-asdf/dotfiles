@@ -90,26 +90,26 @@
 
 (defun mm/bb (form)
   (car (read-from-string
-	(shell-command-to-string
-	 (format
-	  "bb -e '%s'"
-	  (princ form))))))
+        (shell-command-to-string
+         (format
+          "bb -e '%s'"
+          (princ form))))))
 
 (defun mm/cider-jack-in-with-an-alias-from-deps ()
   (interactive)
   (if-let* ((root (project-root (project-current t)))
-	    (_ (file-exists-p (expand-file-name "deps.edn" root))))
+            (_ (file-exists-p (expand-file-name "deps.edn" root))))
       (let* ((default-directory root)
-	     (my-alias
-	      (completing-read
-	       "Cider jack in with alias: "
-	       (read-from-string
-		(shell-command-to-string
-		 (format "bb -e '%s'" (princ '(->> (slurp "\"deps.edn\"") read-string :aliases keys (map name))))))))
-	     (cider-clojure-cli-aliases
-	      (concat
-	       cider-clojure-cli-aliases ":" my-alias)))
-	(call-interactively #'cider-jack-in-clj))
+             (my-alias
+              (completing-read
+               "Cider jack in with alias: "
+               (read-from-string
+                (shell-command-to-string
+                 (format "bb -e '%s'" (princ '(->> (slurp "\"deps.edn\"") read-string :aliases keys (map name))))))))
+             (cider-clojure-cli-aliases
+              (concat
+               cider-clojure-cli-aliases ":" my-alias)))
+        (call-interactively #'cider-jack-in-clj))
     (user-error "no deps.edn file in project")))
 
 (defun clerk-show ()
@@ -133,14 +133,14 @@
 ;; as if I run out of buffers to create
 (defun mm/cleanup-cider-repls-and-do-not-reuse (&rest _)
   (let ((repls (seq-filter
-		(lambda (b)
-		  (with-current-buffer
-		      b
-		    (and (derived-mode-p
-			  'cider-repl-mode)
-			 (not (process-live-p
-			       (get-buffer-process b))))))
-		(buffer-list))))
+                (lambda (b)
+                  (with-current-buffer
+                      b
+                    (and (derived-mode-p
+                          'cider-repl-mode)
+                         (not (process-live-p
+                               (get-buffer-process b))))))
+                (buffer-list))))
     (mapc #'kill-buffer repls)
     '()))
 
@@ -149,16 +149,16 @@
 (defun mm/cider-connect-arcadia ()
   (interactive)
   (let ((port
-	 (or
-	  (when-let*
-	      ((d (project-root (project-current)))
-	       (default-directory d)
-	       (f (or (expand-file-name "configuration.edn")
-		      (expand-file-name "arcadia-configuration.edn")
-		      (expand-file-name "Assets/configuration.edn")))
-	       (f (when (file-exists-p f) f)))
-	    (mm/bb `(-> (slurp ,(format "\"%s\"" f)) read-string :nrepl)))
-	  3722)))
+         (or
+          (when-let*
+              ((d (project-root (project-current)))
+               (default-directory d)
+               (f (or (expand-file-name "configuration.edn")
+                      (expand-file-name "arcadia-configuration.edn")
+                      (expand-file-name "Assets/configuration.edn")))
+               (f (when (file-exists-p f) f)))
+            (mm/bb `(-> (slurp ,(format "\"%s\"" f)) read-string :nrepl)))
+          3722)))
     (cider-connect-clj `(:host "localhost" :port ,port))))
 
 (use-package gdscript-mode
@@ -279,7 +279,6 @@ focused."
                  ;; if the user wants to AND if the overlay succeeded.
                  'invisible t))))
 
-
 (add-hook 'clojure-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
 
 (add-hook
@@ -309,6 +308,40 @@ focused."
      (list
       cider-consult-repl-buffer-source))))
 
+
+(defun cider-eval-print-handler (&optional buffer)
+  "Make a handler for evaluating and printing result in BUFFER."
+  ;; NOTE: cider-eval-register behavior is not implemented here for performance reasons.
+  ;; See https://github.com/clojure-emacs/cider/pull/3162
+  (nrepl-make-response-handler (or buffer (current-buffer))
+                               (lambda (buffer value)
+                                 (with-current-buffer buffer
+                                   (insert
+                                    (if (derived-mode-p 'cider-clojure-interaction-mode)
+                                        (format "\n%s\n" value)
+                                      value))))
+                               (lambda (_buffer out)
+                                 (cider-emit-interactive-eval-output out))
+                               (lambda (_buffer err)
+
+                                 ;; I want this in my life
+                                 ;; should somehow be something on the level of
+                                 ;; cider-emit-interactive-eval-err-output, but that
+                                 ;; doesn't know about the buff right now
+                                 ;; so I wawnt to pass the buff...
+
+                                 (with-current-buffer
+                                     _buffer
+                                   (let ((end (point-at-eol)))
+                                     (let ((cider-result-use-clojure-font-lock nil))
+                                       (cider--display-interactive-eval-result
+                                        err
+                                        end
+                                        'cider-error-overlay-face))))
+
+                                 (cider-emit-interactive-eval-err-output err))
+                               ()))
+
 (defun cider-popup-eval-handler (&optional buffer)
   "Make a handler for printing evaluation results in popup BUFFER.
 This is used by pretty-printing commands."
@@ -325,17 +358,14 @@ This is used by pretty-printing commands."
        (cider-emit-interactive-eval-output out))
      (lambda (_buffer err)
        (pop-to-buffer target-buff)
-       (when (or (not cider-show-error-buffer)
-                 (not (cider-connection-has-capability-p 'jvm-compilation-errors)))
 
-         ;; Display errors as temporary overlays
-         (let ((cider-result-use-clojure-font-lock nil))
-           (cider--display-interactive-eval-result
-            err
-            end
-            'cider-error-overlay-face)))
-       
-       ;; here
+       ;; I want his
+       (let ((cider-result-use-clojure-font-lock nil))
+         (cider--display-interactive-eval-result
+          err
+          end
+          'cider-error-overlay-face))
+
        (cider-emit-interactive-eval-err-output err))
      nil
      nil
