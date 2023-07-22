@@ -49,7 +49,7 @@
     :after-open-fn #'lsp-grammarly--init
     :async-request-handlers
     (ht ("$/showError" #'lsp-grammarly--show-error)
-        ("$/updateDocumentState" #'lsp-grammarly--update-document-state)))))
+        ("$/updateDoc" #'lsp-grammarly--update-document-state)))))
 
 (use-package typescript-mode
   :config

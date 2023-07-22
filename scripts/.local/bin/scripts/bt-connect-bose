@@ -5,13 +5,14 @@ DEV="$1"
 
 # default-agent
 # agent on
+# remove $DEV
 
 bluetoothctl << EOF
 power on
 scan on
-remove $DEV
 pair $DEV
 trust $DEV
 connect $DEV
 quit
 EOF
+

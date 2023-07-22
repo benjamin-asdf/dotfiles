@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (setq cider-repl-display-help-banner nil
+      cider-repl-pop-to-buffer-on-connect nil
       cider-repl-display-in-current-window t
       cider-font-lock-reader-conditionals nil
       cider-babashka-parameters "nrepl-server 0"
@@ -11,7 +12,7 @@
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
       ;; cider-merge-sessions nil
-            cider-merge-sessions 'project
+      cider-merge-sessions 'project
 
       cider-auto-jump-to-error nil
       cider-show-error-buffer nil
@@ -395,5 +396,11 @@ This is used by pretty-printing commands."
 
 ;; isn't the mental surface area of retrieving a symbol from memory a fascinating concept
 (defalias 'mm/clojure-pprint-region-fmt-cljfmt-zprint-pretty-clj-print-format-fmt-buffer #'mm/zprint-region)
+
+;; schon cute irgendwie
+;; (global-prettify-symbols-mode 1)
+;; (mapc (lambda (m) (add-hook m (lambda () (push '("fn" . ?ƒ) prettify-symbols-alist))))
+;;       '(clojure-mode-hook clojurescript-mode-hook))
+
 
 (provide 'init-cider)

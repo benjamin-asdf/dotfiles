@@ -17,7 +17,7 @@
 
  ;; External dependencies
 
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}}
+ :deps {org.clojure/clojure {:mvn/version "1.12.0-alpha4"}}
 
  ;; :deps
 
@@ -49,6 +49,9 @@
                                                        :git/sha "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}
                          org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}}
 
+
+           ;; not needed anymore soon
+           ;; https://clojure.org/news/2023/04/14/clojure-1-12-alpha2
            :lib/tools-deps
            {:extra-deps {org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha"
                                                        :git/sha "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}}}
@@ -165,5 +168,9 @@
  ;; }
 
  :mvn/repos
- {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
-  "cognitect-dev-tools" {:url "https://dev-tools.cognitect.com/maven/releases/"}}}
+ {"clojars" {:url "https://repo.clojars.org/"}
+  "central" {:url "https://repo1.maven.org/maven2/"}
+  "datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
+  "cognitect-dev-tools" {:url "https://dev-tools.cognitect.com/maven/releases/"}
+  }
+}
