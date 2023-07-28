@@ -125,6 +125,8 @@
 
  '("," . meow-keypad)
 
+ '("C-'" . consult-global-mark)
+
  '("." . meow-bounds-of-thing)
  '("[" . meow-beginning-of-thing)
  '("]" . meow-end-of-thing)
