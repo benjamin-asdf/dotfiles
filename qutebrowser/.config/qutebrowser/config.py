@@ -14,11 +14,10 @@ c.new_instance_open_target = "window"
 c.tabs.show = "multiple"
 c.colors.webpage.preferred_color_scheme = "dark"
 
-
 c.content.cookies.accept = 'all'
 c.content.cookies.store = True
-
 c.content.javascript.enabled = True
+c.content.javascript.can_access_clipboard = True 
 
 
 # c.window.title_format = "{title}{title_sep}{host}"
@@ -61,10 +60,10 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://search.inetol.net/"
+c.url.default_page = "https://searxng.nicfab.eu/"
 
 c.url.searchengines = {
-    'DEFAULT': "https://search.inetol.net/?q={}a",
+    'DEFAULT': "https://searxng.nicfab.eu/?q={}a",
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",

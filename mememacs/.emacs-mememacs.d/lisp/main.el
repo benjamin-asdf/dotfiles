@@ -190,6 +190,6 @@
       (delete-window)
     (delete-frame)))
 
-(setq visible-bell t)
+(setq visible-bell nil)
 
 (provide 'main)

@@ -755,10 +755,20 @@ Example:
 	    (format
 	     "*async-shell-command %s*"
 	     (string-trim
-	      (substring buffname 0 (min (length buffname) 50))))))
+	      (substring buffname 0 (min (length buffname) 75))))))
       (apply f args)))
 
   (advice-add 'shell-command :around #'mm/put-command-in-async-buff-name)
+
+
+  ;; do not limit ourselves to a single compilation buffer - what the hell
+  (setq-default
+   compilation-buffer-name-function
+   (defun mm/compilation-buffer-name (_name-of-mode)
+     (let*
+         ((path-s (if default-directory (path-slug default-directory) "")))
+       (generate-new-buffer-name
+        (concat "*" "compilation -" (string-trim (substring path-s 0 (min (length path-s) 75))) "* ")))))
 
   (add-hook 'comint-mode-hook
 	    (defun mm/do-hack-dir-locals (&rest _)
@@ -778,7 +788,9 @@ Example:
               (defun mm/add-primary-to-kill-ring ()
                 (interactive)
                 (setf kill-ring
-                      (append kill-ring (gui-get-primary-selection))))))
+                      (append kill-ring (gui-get-primary-selection)))))
+
+  (setq-default compile-command "bb "))
 
 ;; elp
 ;; memory-use-counts
