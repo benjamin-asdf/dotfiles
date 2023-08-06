@@ -1,0 +1,13 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("~" (filename . "~/") (front-context-string . ".\n  drwxr-xr-x  ")
+ (rear-context-string . "0K Aug  6 15:16 ") (position . 59)
+ (last-modified 25807 40309 272325 321000))
+("stumpwm-init.lisp"
+ (filename . "~/dotfiles/stumpwm/.stumpwm.d/init.lisp")
+ (front-context-string . "\n(defmacro comme")
+ (rear-context-string . "ckage :stumpwm)\n") (position . 23)
+ (last-modified 25807 48729 168640 177000))
+)

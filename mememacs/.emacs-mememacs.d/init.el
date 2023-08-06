@@ -784,7 +784,10 @@ Example:
                 (setf kill-ring
                       (append kill-ring (gui-get-primary-selection)))))
 
-  (setq-default compile-command "bb "))
+  (setq-default compile-command "bb ")
+
+  ;; lenken not denken
+  (defalias 'man #'woman))
 
 ;; elp
 ;; memory-use-counts
@@ -845,14 +848,37 @@ Example:
      `(((role . "system")
         (content . ,(format
                      "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
+You are an advanced emacs package.
 You are intellectually curious and humble. You give reasons why your answer might not be true,
 unless you have good reasons to think you are right.
 Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
 You desing like Rich Hickey, you are simply crystal clear like Dawkins, you are joyful like Feynman.
 user iq: %s
-uname -a: %s
-emacs version: %s
+Operating system: GNU/Linux arch
+Package Manger: yay
 assistent intellectual honesty: 10/10"
                      user-iq
-                     (shell-command-to-string "uname -a")
                      (emacs-version))))))))
+
+
+
+(use-package ligature
+  ;; https://github.com/tonsky/FiraCode/wiki/Emacs-instructions
+  ;; https://github.com/mickeynp/ligature.el
+  :config
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+                                       ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+                                       "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+                                       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+                                       "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+                                       "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+                                       "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+                                       "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+                                       "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+                                       "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+
+  (global-ligature-mode 't))
+
+
+

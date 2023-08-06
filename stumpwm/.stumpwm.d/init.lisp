@@ -3,7 +3,7 @@
 (defmacro comment (&rest _)
   (declare (ignore _)))
 
-(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
+(set-font "-xos4-terminus-medium-r-normal-*-22-*-*-*-*-*-*-*")
 (defvar mm/avy-keys "adfjklophgb")
 
 (setf *frame-number-map* mm/avy-keys

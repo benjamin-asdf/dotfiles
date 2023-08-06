@@ -315,9 +315,12 @@
   (add-hook hook 'ambrevar/fontify-comment-tag))
 
 ;;; Font size
+
 (when (fboundp 'tool-bar-mode)
-  ;; (set-face-attribute 'default nil :height 100)
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12")))
+  (add-to-list 'default-frame-alist '(font . "Fira Code Retina-14"))
+  ;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12"))
+)
+
 
 (global-visual-line-mode)
 
