@@ -429,16 +429,14 @@ This is the power I desired."
                                  #'magit-status)
                      (define-key m (kbd "p")
                                  project-prefix-map)
-                     (define-key m (kbd "/")
-
+                     (define-key m
+                                 (kbd "/")
                                  (defun mm/consult-ripgrep (&optional dir)
                                    (interactive "P")
                                    (let ((initial (when (derived-mode-p 'prog-mode)
                                                     (concat
                                                      " -- --glob *" (file-name-extension (buffer-name))))))
-                                     (consult-ripgrep dir initial)))
-                                 
-                                 #'consult-ripgrep)
+                                     (consult-ripgrep dir initial))))
                      (define-key m (kbd "wd")
                                  #'delete-window)
                      (define-key m (kbd "wu")
@@ -453,6 +451,7 @@ This is the power I desired."
                      (define-key m (kbd "ja") #'mm/lispy-ace-symbol-window)
                      (define-key m (kbd "ns") #'mememacs/create-script)
                      (define-key m (kbd "nS") #'mememacs/create-bb-script)
+                     (define-key m (kbd "o") mm/org-dispatch-map)
                      m))
 
 (define-key meow-normal-state-keymap (kbd "SPC") mm/spc-map)
@@ -746,11 +745,10 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
  ("C-, m" . macrostep-expand))
 
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
-
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
-
 (global-set-key (kbd "/") #'self-insert-command)
-(meow-leader-define-key (cons "o" mm/org-dispatch-map))
+
+
 
 (defun mm/meow-right-or-avy ()
   (interactive)

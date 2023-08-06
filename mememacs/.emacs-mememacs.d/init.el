@@ -280,17 +280,11 @@
 
 ;; https://github.com/magnars/string-edit.el/issues/19
 (when
-    (or
-     (require
-      'string-edit-at-point
-      (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
-			mememacs/config-dir)
-      t)
-     (require
-      'string-edit-at-point
-      (expand-file-name "straight/repos/string-edit.el/string-edit.el"
-			mememacs/config-dir)
-      t)))
+    (require
+     'string-edit-at-point
+     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
+		       mememacs/config-dir)
+     t))
 
 (use-package ace-window
   :config

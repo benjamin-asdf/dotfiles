@@ -1,8 +1,5 @@
 source ~/.profile
 
-gsettings set org.gnome.desktop.interface color-scheme prefer-dark
-gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
-
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -14,14 +11,20 @@ setroot -cursor_name left_ptr
 # The  first  specifies  the  delay before autorepeat starts and the second specfies the repeat rate.
 xset r rate 120 250
 
-# xautolock -time 4 -locker best-lock.sh &
-setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win
-
-# https://askubuntu.com/questions/63681/how-can-i-make-xrandr-customization-permanent
-# I can advice you using arandr if you have trouble with screen names
 # https://wiki.archlinux.org/title/Xrandr
-xrandr --output HDMI-0 --right-of DP-0 --auto
-xrandr --output DVI-D-0 --left-of DP-0 --auto
+# used xlayoutdisplay
+xrandr \
+ --dpi 96 \
+ --output DVI-D-1 --mode 1920x1080 --rate 60 --pos 0x0  \
+ --output HDMI-1 --mode 1920x1080 --rate 60 --pos 1920x0 \
+ --output DP-1 --mode 2560x1440 --rate 60 --pos 3840x0 --primary
+
+# arandr helps
+xrandr --output HDMI-1 --right-of DP-1 --auto
+xrandr --output DVI-D-1 --left-of DP-1 --auto
+
+xautolock -time 4 -locker i3lock &
+setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win
 
 xcape -e 'Control_L=Escape'
 redshift -l 55.7:12.6 -t 2600:1800 -m randr &
@@ -29,6 +32,8 @@ flameshot &
 unclutter &
 dunst &
 
-/home/benj/repos/lisp/stumpwm/stumpwm
+xrdb -merge ~/.Xresources
+
+/home/benj/repos/stumpwm/stumpwm
 
 # xset r rate 200 180

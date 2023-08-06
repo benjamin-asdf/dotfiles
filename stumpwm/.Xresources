@@ -60,12 +60,8 @@ XTerm.vt100.metaSendsEscape: true
 Xcursor.theme: xcursor-breeze
 Xcursor.size:                     0
 
-URxvt.font:                       9x15,xft:TerminessTTFNerdFontMono
+xterm*font: -xos4-terminus-medium-r-normal--20-160-72-72-c-80-iso8859-1
 
-! alternative font settings with 'terminus':
-! URxvt.font:      -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
-! URxvt.bold.font: -xos4-terminus-bold-r-normal--16-160-72-72-c-80-iso10646-1
-!! terminus names see end of file!
 
 URxvt.depth:                      32
 URxvt.background:                 [100]#222D31

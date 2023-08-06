@@ -227,22 +227,6 @@
   ((kbd "d") "ratclick 1")
   ((kbd "c") "ratclick 3"))
 
-;; seriosly popping windows 10 times and then not fixing the fucking class
-;; 0 regards for the user, just money money splash screens
-(let ((lst
-        '((:class "Unity-editor")
-          (:title "(Importing)")
-          (:title "Unity")
-          (:title "Importing")
-          (:title "Hold on...")
-          (:title "Importing (iteration 2)")
-          (:title "Importing (iteration 3)")
-          (:title "Importing (iteration 4)")
-          (:title "Importing (iteration 5)")
-          (:title "Importing (iteration 6)"))))
-  (setf *deny-map-request* (append *deny-map-request* lst))
-  (setf *deny-raise-request* (append *deny-raise-request* lst)))
-
 (define-interactive-keymap
     mm/group-mode ()
   ((kbd "j") "gnext")
@@ -316,25 +300,11 @@ FORM should be a quoted list."
   "evaluate emacs lisp and collect it's output"
   `(eval-el-1 ',expression))
 
-(comment
- (macroexpand '(eval-el (+ 1 3 2)))
- (eval-el (+ 1 3 2))
- (eval-string-as-el "(current-buffer)" t)
- (eval-string-as-el "(message \"hi\")" t)
- (run-shell-command (string-downcase (format nil "timeout --signal=9 1m emacsclient --eval '~a'" "(+ 1)")) t)
- (eval-el-1 '(+ 1 3 2))
- (eval-el-1 '(message "hi"))
- (eval-el-1 '(current-buffer))
- (eval-el-1 '(message "hi"))
- (format nil "~a" '(message "hi")))
-
-(declaim (ftype
-          (function (string) (values string &optional))
-          emacs-winmove))
-
 (defun emacs-winmove (direction)
   "executes the emacs function winmove-DIRECTION where DIRECTION is a string"
-  (eval-string-as-el (concat "(windmove-" direction ")") t))
+  (eval-string-as-el
+   (concat "(mm/windmove \"" direction "\")") t))
+
 ;;; Window focusing
 
 (defun better-move-focus (ogdir)
@@ -342,9 +312,8 @@ FORM should be a quoted list."
   (declare (type (member :up :down :left :right) ogdir))
   (flet ((mv () (move-focus ogdir)))
     (if (emacsp (current-window))
-        (when ;; There is not emacs window in that direction
-            (length= (emacs-winmove (string-downcase (string ogdir)))
-                     1)
+        (when
+            (not (equal (emacs-winmove (string-downcase (string ogdir))) "ok"))
           (mv))
         (mv))))
 
@@ -381,55 +350,53 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
 ;;; SLY setup
+
 (ql:quickload :slynk)
 (defvar *slynk-port* slynk::default-server-port)
 (defparameter *stumpwm-slynk-session* nil)
 
 (defcommand start-slynk (&optional (port *slynk-port*)) ()
-  (handler-case
-      (progn
-        (defparameter *stumpwm-slynk-session*
-          (slynk:create-server
-           :dont-close t
-           :port port))
-        (echo "started slynk"))
-    (error (c)
-      (format *error-output* "Error starting slynk: ~a~%" c))))
+            (handler-case
+                (progn
+                  (defparameter *stumpwm-slynk-session*
+                                (slynk:create-server
+                                 :dont-close t
+                                 :port port))
+                  (echo "started slynk"))
+              (error (c)
+                     (format *error-output* "Error starting slynk: ~a~%" c))))
 
 (defcommand restart-slynk () ()
-  "Restart Slynk and reload source.
+            "Restart Slynk and reload source.
 This is needed if Sly updates while StumpWM is running"
-  (stop-slynk)
-  (start-slynk))
+            (stop-slynk)
+            (start-slynk))
 
 (defcommand stop-slynk () ()
-  "Restart Slynk and reload source.
+            "Restart Slynk and reload source.
 This is needed if Sly updates while StumpWM is running"
-  (slynk:stop-server *slynk-port*))
+            (slynk:stop-server *slynk-port*))
 
 (defcommand connect-to-sly () ()
-  (unless *stumpwm-slynk-session*
-    (start-slynk))
-  (exec-el (sly-connect "localhost" *slynk-port*)))
+            (unless *stumpwm-slynk-session*
+              (start-slynk))
+            (exec-el (sly-connect "localhost" *slynk-port*)))
 
 (define-key *root-map* (kbd "C-s") "connect-to-sly")
 
 (define-remapped-keys
-     '(("Nyxt"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up"))
-       ("jetbrains-rider"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up"))
-       ("teams-for-linux"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up"))
-       ("Slack"
-        ("M-n"   . "Down")
-        ("M-p"   . "Up"))))
-
-(comment
- (mapcan #'group-windows (group-list)))
+ '(("Nyxt"
+    ("M-n"   . "Down")
+    ("M-p"   . "Up"))
+   ("jetbrains-rider"
+    ("M-n"   . "Down")
+    ("M-p"   . "Up"))
+   ("teams-for-linux"
+    ("M-n"   . "Down")
+    ("M-p"   . "Up"))
+   ("Slack"
+    ("M-n"   . "Down")
+    ("M-p"   . "Up"))))
 
 (comment
  ;; (progn
@@ -444,6 +411,13 @@ This is needed if Sly updates while StumpWM is running"
 
  (window-list)
 
+ (when (not (equal (emacs-winmove (string-downcase (string "right"))) 'OK))
+   'foo)
+
+ (when (not (equal (emacs-winmove (string-downcase (string 'left))) 'OK))
+   'foo)
+ 
+ 
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
  (group-indicate-focus (current-group))

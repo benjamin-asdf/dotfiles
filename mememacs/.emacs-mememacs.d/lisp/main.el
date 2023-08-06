@@ -192,4 +192,10 @@
 
 (setq visible-bell nil)
 
+(defun mm/windmove (where)
+  (ignore-errors
+    (progn
+      (funcall (intern (concat "windmove-" where)))
+      "ok")))
+
 (provide 'main)
