@@ -17,16 +17,6 @@
             (lambda ()
               (setf (alist-get 'lsp-capf completion-category-defaults) '((styles . (orderless flex)))))))
 
-(use-package rust-mode
-  :ensure t :mode "\\.rs\\'"
-  :init
-  ;; scratchpad for rust
-  (setq lsp-rust-clippy-preference "on")
-  (use-package rust-playground :ensure t)
-  (setq rustic-lsp-client 'lsp))
-
-(use-package rustic)
-
 (use-package lsp-grammarly
   :config
   (setq-default lsp-grammarly-domain "academic")
@@ -51,6 +41,16 @@
     (ht ("$/showError" #'lsp-grammarly--show-error)
         ("$/updateDoc" #'lsp-grammarly--update-document-state)))))
 
+(use-package rust-mode
+  :ensure t :mode "\\.rs\\'"
+  :init
+  ;; scratchpad for rust
+  (setq lsp-rust-clippy-preference "on")
+  (use-package rust-playground :ensure t)
+  (setq rustic-lsp-client 'lsp))
+
+(use-package rustic)
+
 (use-package typescript-mode
   :config
   (add-hook 'typescript-mode-hook #'lsp-deferred))
@@ -61,11 +61,8 @@
 
 (use-package elixir-mode :config (add-hook 'elixir-mode-hook #'lsp))
 
-(lsp--load-default-session)
-
 (use-package yaml-mode)
 (use-package fsharp-mode)
-
 (use-package julia-mode
   :config
   ;; (add-to-list 'load-path "/home/benj/repos/julia-repl/")

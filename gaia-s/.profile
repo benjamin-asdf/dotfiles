@@ -5,10 +5,8 @@ export BROWSER=/usr/bin/qutebrowser
 
 # Adds `~/.local/bin/` and all subdirectories to $PATH
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
-PATH="$PATH:$HOME/go/bin"
+PATH="$PATH:$(du "$HOME/.babashka" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$HOME/cognitect/datomic-cli/"
-PATH="$PATH:$HOME/repos/clojure/bb-clis/bin/"
-PATH="$PATH:$HOME/.babashka/bbin/bin"
 
 export PATH
 export CHROME_EXECUTABLE="google-chrome-stable"

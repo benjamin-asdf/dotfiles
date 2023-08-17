@@ -57,9 +57,7 @@ PATH=$PATH:$ANDROID_HOME/tools
 PATH=$PATH:$ANDROID_HOME/tools/bin
 PATH=$PATH:$ANDROID_HOME/platform-tools
 
-
 alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
-
 
 _bb_complete() {
     BB_TASKS=$(bb tasks|bb -io '(->> *input* (drop 2) (map #(-> % (str/split #" ") first)))')

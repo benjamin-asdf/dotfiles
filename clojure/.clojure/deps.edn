@@ -90,12 +90,6 @@
                           :sha     "df552797a198b6701fb2d92390fce7c59205ea77"}}
             :main-opts  ["-m" "carve.main"]}
 
-           ;; flowstorm
-           :trace/flowstorm
-           {:extra-deps
-            {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.1.263"}
-             com.github.jpmonettas/flow-storm-inst {:mvn/version "3.1.263"}}}
-
 
            ;; Portal
            ;; Navigate data - edn, json, transit
@@ -171,6 +165,4 @@
  {"clojars" {:url "https://repo.clojars.org/"}
   "central" {:url "https://repo1.maven.org/maven2/"}
   "datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
-  "cognitect-dev-tools" {:url "https://dev-tools.cognitect.com/maven/releases/"}
-  }
-}
+  "cognitect-dev-tools" {:url "https://dev-tools.cognitect.com/maven/releases/"}}}

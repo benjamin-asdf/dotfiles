@@ -24,3 +24,4 @@
 /mememacs/.emacs-mememacs.d/.lsp-session-v1
 /mememacs/.emacs-mememacs.d/.cache/
 /mememacs/.emacs-mememacs.d/eln-cache/
+/clojure/.clojure/.cpcache/

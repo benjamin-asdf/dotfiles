@@ -107,7 +107,8 @@
  '("r" . vertico-repeat-last)
  '("R" . vertico-repeat-select)
 
- '("fr" . display-line-numbers-mode))
+ '("fr" . display-line-numbers-mode)
+ '("oj" . mm/denote-dired))
 
 (meow-normal-define-key
  '("0" . meow-expand-0)
@@ -419,7 +420,6 @@ This is the power I desired."
 
 (add-hook 'cider-inspector-mode-hook #'meow-motion-mode)
 
-
 (defvar mm/spc-map (let ((m (make-sparse-keymap)))
                      (define-key m (kbd "f")
                                  #'find-file)
@@ -650,12 +650,10 @@ when formatting with lispy."
           (`(ly-raw clojure-commas . ,s) t)))
       expr)))))
 
-
 (advice-add #'lispy--multiline-1
             :filter-args
             (defun mm/lispy--multiline-1-remove-commas-adv (args)
               (list (mm/lispy-remove-commas (car args)) (cadr args))))
-
 
 ;; slurp whitespace has a bug that I walk into for clojure forms with namespaced maps
 ;; Ignore `slurp-whitespace'. Not sure when I needed that anyway.
@@ -685,12 +683,8 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
         (setq res (nconc (nreverse item) res))))
     (nreverse res)))
 
-
-
 ;; I hit this key accidentally 10 times per day
-
 (define-key help-map (kbd "h") (defun mm/no-help-file () (interactive) (message "C-h h, lol")))
-
 (delete-selection-mode 1)
 
 (defvar-local mm/moew-last-normal nil)
@@ -747,8 +741,6 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
 (define-key flycheck-mode-map (kbd "C-c ! !") (defun mm/disable-flycheck-mode () (interactive) (flycheck-mode -1)))
 (define-key flycheck-mode-map (kbd "C-c ! ,") #'consult-flycheck)
 (global-set-key (kbd "/") #'self-insert-command)
-
-
 
 (defun mm/meow-right-or-avy ()
   (interactive)

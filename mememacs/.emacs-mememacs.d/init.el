@@ -575,20 +575,40 @@ string).  It returns t if a new expansion is found, nil otherwise."
   :config
   (add-hook 'after-save-hook #'backup-each-save)
   (setf make-backup-files nil)
+
+  (defun file-sha256 (filename)
+    "Compute the SHA256 of a file called FILENAME."
+    (with-temp-buffer
+      (call-process "sha256sum" nil t nil filename)
+      (car (split-string (buffer-string)))))
+  
+  (defun backup-each-save-compute-location (filename)
+    (let* ((containing-dir (file-name-directory filename))
+	   (basename (file-name-nondirectory filename))
+	   (backup-container
+	    (format "%s/%s"
+		    backup-each-save-mirror-location
+		    containing-dir))
+           (sha (file-sha256 filename)))
+      (when (not (file-exists-p backup-container))
+        (make-directory backup-container t))
+      (format "%s/%s-%s" backup-container sha basename)))
+
   (defun mm/jump-to-backup-dir ()
-  (interactive)
-  (let* ((backup-root-dir (expand-file-name "~/.backups"))
-         (buffer-file-path (buffer-file-name))
-         (backup-dir (concat
-                      backup-root-dir
-                      (if buffer-file-path
-                          (file-name-directory buffer-file-path)
-                        (error "Current buffer is not visiting a file.")))))
-    (if buffer-file-path
-        (progn
-          (make-directory backup-dir t)
-          (dired backup-dir))
-      (message "Current buffer is not visiting a file.")))))
+    (interactive)
+    (let* ((backup-root-dir (expand-file-name "~/.backups"))
+           (buffer-file-path (buffer-file-name))
+           (backup-dir (concat
+                        backup-root-dir
+                        (if buffer-file-path
+                            (file-name-directory buffer-file-path)
+                          (error "Current buffer is not visiting a file.")))))
+      (let ((default-directory backup-dir))
+        (if-let
+            ((file (car (process-lines "ls" "-t"))))
+            (find-file file)
+          (if (file-exists-p backup-dir) (dired backup-dir)
+            (user-error "Not a file: %s" backup-dir)))))))
 
 (defun load-mu4e ()
   (interactive)
@@ -789,6 +809,11 @@ Example:
   ;; lenken not denken
   (defalias 'man #'woman))
 
+;; hilarious when you run a spaceship on a super computer and it does silly optimizations from 30 years ago
+(use-package bookmark
+  :config
+  (defun bookmark-time-to-save-p (&rest _) t))
+
 ;; elp
 ;; memory-use-counts
 ;; instrument package
@@ -798,6 +823,25 @@ Example:
   meow
   :config (require 'init-meow)
   (meow-global-mode 1))
+
+(use-package ligature
+  ;; https://github.com/tonsky/FiraCode/wiki/Emacs-instructions
+  ;; https://github.com/mickeynp/ligature.el
+  :config
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures '(prog-mode org-mode)
+                          '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+                            ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+                            "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+                            "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+                            "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+                            "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+                            "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+                            "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+                            "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+                            "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+
+  (global-ligature-mode 't))
 
 (use-package openai-api
   :straight nil
@@ -847,8 +891,7 @@ Example:
    (lambda ()
      `(((role . "system")
         (content . ,(format
-                     "The user is a programmer hacker engineer. He is thinking in Lisp and Clojure.
-You are an advanced emacs package.
+                     "The user is a programmer hacker engineer using emacs. He is thinking in Lisp and Clojure.
 You are intellectually curious and humble. You give reasons why your answer might not be true,
 unless you have good reasons to think you are right.
 Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
@@ -859,26 +902,6 @@ Package Manger: yay
 assistent intellectual honesty: 10/10"
                      user-iq
                      (emacs-version))))))))
-
-
-
-(use-package ligature
-  ;; https://github.com/tonsky/FiraCode/wiki/Emacs-instructions
-  ;; https://github.com/mickeynp/ligature.el
-  :config
-  (ligature-set-ligatures 't '("www"))
-  (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
-                                       ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
-                                       "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
-                                       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
-                                       "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
-                                       "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
-                                       "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
-                                       "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
-                                       "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
-                                       "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
-
-  (global-ligature-mode 't))
 
 
 

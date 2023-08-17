@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sudo mkdir -p /run/postgresql
+sudo chown postgres:postgres /run/postgresql
+sudo chmod 2775 /run/postgresql
+
+sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/lib/postgres/data/logfile start

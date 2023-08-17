@@ -317,9 +317,10 @@
 ;;; Font size
 
 (when (fboundp 'tool-bar-mode)
-  (add-to-list 'default-frame-alist '(font . "Fira Code Retina-14"))
+  (add-to-list 'default-frame-alist '(font . "Fira Code-13"))
   ;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12"))
-)
+  )
+
 
 
 (global-visual-line-mode)
@@ -374,6 +375,9 @@
    :inherit nil
    :underline nil
    :bold t))
+
+;; figure out something for fira code
+(set-face-attribute 'italic nil :underline nil)
 
 (with-eval-after-load
     'ediff-init
