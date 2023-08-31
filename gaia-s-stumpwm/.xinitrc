@@ -15,13 +15,14 @@ xset r rate 120 250
 # used xlayoutdisplay
 xrandr \
  --dpi 96 \
- --output DVI-D-1 --mode 1920x1080 --rate 60 --pos 0x0  \
- --output HDMI-1 --mode 1920x1080 --rate 60 --pos 1920x0 \
- --output DP-1 --mode 2560x1440 --rate 60 --pos 3840x0 --primary
+ --output DVI-D-0 --mode 1920x1080 --rate 60 --pos 0x0  \
+ --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 \
+ --output DP-0 --mode 2560x1440 --rate 60 --pos 3840x0 --primary \
+ --output DP-1 --off
 
 # arandr helps
-xrandr --output HDMI-1 --right-of DP-1 --auto
-xrandr --output DVI-D-1 --left-of DP-1 --auto
+xrandr --output HDMI-0 --right-of DP-0 --auto
+xrandr --output DVI-D-0 --left-of DP-0 --auto
 
 xautolock -time 4 -locker i3lock &
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win

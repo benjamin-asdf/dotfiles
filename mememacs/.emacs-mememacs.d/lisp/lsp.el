@@ -41,6 +41,10 @@
     (ht ("$/showError" #'lsp-grammarly--show-error)
         ("$/updateDoc" #'lsp-grammarly--update-document-state)))))
 
+(use-package typescript-mode
+  :config
+  (add-hook 'typescript-mode-hook #'lsp-deferred))
+
 (use-package rust-mode
   :ensure t :mode "\\.rs\\'"
   :init
@@ -50,10 +54,6 @@
   (setq rustic-lsp-client 'lsp))
 
 (use-package rustic)
-
-(use-package typescript-mode
-  :config
-  (add-hook 'typescript-mode-hook #'lsp-deferred))
 
 (use-package go-mode
   :config

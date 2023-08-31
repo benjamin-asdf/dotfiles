@@ -17,10 +17,7 @@ c.colors.webpage.preferred_color_scheme = "dark"
 c.content.cookies.accept = 'all'
 c.content.cookies.store = True
 c.content.javascript.enabled = True
-c.content.javascript.can_access_clipboard = True 
-
-
-# c.window.title_format = "{title}{title_sep}{host}"
+c.content.javascript.clipboard = 'access'
 
 # lazy_restore does not work when idle.
 c.session.lazy_restore = True

@@ -899,9 +899,8 @@ You desing like Rich Hickey, you are simply crystal clear like Dawkins, you are 
 user iq: %s
 Operating system: GNU/Linux arch
 Package Manger: yay
-assistent intellectual honesty: 10/10"
+assistent intellectual honesty: 10/10
+User name: Benni"
                      user-iq
                      (emacs-version))))))))
-
-
 
