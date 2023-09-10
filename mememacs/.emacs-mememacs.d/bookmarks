@@ -2,7 +2,11 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("clojure" (filename . "~/repos/clojure/")
+(("org-capture-last-stored"
+ (filename . "~/notes/20230910T092132--my-art__clojure.org")
+ (front-context-string . "#+title:      my") (rear-context-string)
+ (position . 1) (last-modified 25853 28287 284691 155000))
+("clojure" (filename . "~/repos/clojure/")
  (front-context-string . ".\n  drwxr-xr-x 1")
  (rear-context-string . "0K Aug 20 14:31 ") (position . 73)
  (last-modified 25826 8197 210034 816000))

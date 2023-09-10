@@ -1,0 +1,9 @@
+#!/bin/bash
+
+FILE="/tmp/edit-qute-url"
+echo "$QUTE_URL" > "FILE"
+
+emacsclient -c --eval "(mm/edit-with-editor \"$FILE\")"
+
+echo "open $(cat $FILE)" >> "$QUTE_FIFO"
+

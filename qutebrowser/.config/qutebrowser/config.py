@@ -24,7 +24,6 @@ c.session.lazy_restore = True
 
 c.content.blocking.method = "both"
 
-
 config.bind('ye', ':spawn emacsclient --eval "(kill-new \\"{url}\\")"', mode='normal')
 config.bind(',r', ':spawn emacsclient --eval "(github-pull-readme \\"{url}\\")"', mode='normal')
 config.bind(',l', ':spawn emacsclient "org-protocol://store-link?url={url}" ', mode='normal')
