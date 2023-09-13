@@ -1,7 +1,7 @@
 #!/bin/bash
 
-FILE="/tmp/edit-qute-url"
-echo "$QUTE_URL" > "FILE"
+FILE=$(mktemp)
+echo "$QUTE_URL" > "$FILE"
 
 emacsclient -c --eval "(mm/edit-with-editor \"$FILE\")"
 

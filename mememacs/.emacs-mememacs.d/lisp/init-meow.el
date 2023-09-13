@@ -655,6 +655,24 @@ when formatting with lispy."
             (defun mm/lispy--multiline-1-remove-commas-adv (args)
               (list (mm/lispy-remove-commas (car args)) (cadr args))))
 
+;; turns out zprint is just superior in all cases!
+(when
+    (executable-find "zprint")
+    (advice-add
+     'lispy-alt-multiline
+     :around
+     (defun mm/lispy-multiline-use-zprint (f &rest args)
+       (or
+        (let ((end (point))
+              (beg (save-excursion (backward-list) (point))))
+          (when
+              (and
+               (derived-mode-p 'clojure-mode))
+            (save-excursion
+              (shell-command-on-region beg end "zprint" (buffer-name) t))
+            'zprint))
+        (apply f args)))))
+
 ;; slurp whitespace has a bug that I walk into for clojure forms with namespaced maps
 ;; Ignore `slurp-whitespace'. Not sure when I needed that anyway.
 (defun lispy-interleave (x lst &optional step slurp-whitespace)
