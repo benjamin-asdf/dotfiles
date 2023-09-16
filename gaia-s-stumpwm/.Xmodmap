@@ -1,3 +1,1 @@
-! Add a new Hyper_R modifier and move Hyper_L from mod4 to mod3
-add mod3 = Hyper_L Hyper_R
-add mod4 = Super_L Super_R
+keycode 112 = Alt_R

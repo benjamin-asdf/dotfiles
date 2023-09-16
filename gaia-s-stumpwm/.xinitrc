@@ -25,9 +25,42 @@ xrandr --output HDMI-0 --right-of DP-0 --auto
 xrandr --output DVI-D-0 --left-of DP-0 --auto
 
 xautolock -time 4 -locker i3lock &
+
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win
 
-xcape -e 'Control_L=Escape'
+# xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+
+# orig:
+# partial modifier_keys
+# xkb_symbols "hyper_capscontrol" {
+#     replace key <CAPS> { [ Control_L ], type[group1] = "ONE_LEVEL" };
+#     replace key <LCTL> { [ Hyper_L ] };
+#     modifier_map Control { <CAPS> };
+#     modifier_map Mod3    { <LCTL> };
+# };
+
+
+# modified to what i neede for kinesis
+# partial modifier_keys
+# xkb_symbols "hyper_capscontrol" {
+#     replace key <CAPS> { [ Super_L ], type[group1] = "ONE_LEVEL" };
+#     replace key <LCTL> { [ Hyper_L ] };
+#     modifier_map Mod4 { <CAPS> };
+#     modifier_map Mod3    { <LCTL> };
+# };
+
+xmodmap ~/.Xmodmap
+# xcape -e 'Control_L=Escape'
+# make escape a control  
+
+              spare_modifier="Hyper_R"
+              xmodmap -e "keycode 9 = $spare_modifier"
+              xmodmap -e "remove mod4 = $spare_modifier"
+              xmodmap -e "add Control = $spare_modifier"
+              xmodmap -e "keycode 93 = Escape"
+              xcape -e "$spare_modifier=Escape"
+
+
 redshift -l 55.7:12.6 -t 2600:1800 -m randr &
 flameshot &
 unclutter &
