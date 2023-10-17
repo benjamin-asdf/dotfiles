@@ -864,12 +864,13 @@ Example:
   (meow-leader-define-key
    `("." . ,openai-api-keymap)))
 
-(use-package chatgpt-shell
+(use-package
+  chatgpt-shell
   :straight nil
   :load-path "~/repos/chatgpt-shell/"
   :after openai-api
-  :config
-  (define-key openai-api-keymap (kbd "a") #'chatgpt-shell-shell-add-context-file)
+  :config (define-key openai-api-keymap (kbd "a")
+                      #'chatgpt-shell-shell-add-context-file)
   (define-key openai-api-keymap (kbd "A") #'chatgpt-clear-some-contexts)
   (define-key openai-api-keymap (kbd "RET") #'chatgpt-shell)
   (define-key openai-api-keymap (kbd "b") #'chatgpt-shell-ibuffer-buffers)
@@ -879,13 +880,14 @@ Example:
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
-            (or s (setf
-                   s
-                   (string-trim
-                    (shell-command-to-string
-                     ;; "pass sg-openai-api-key"
-                     "pass us-openai-test-key"
-                     )))))))
+            (if (or (s-blank? s)
+                    (equal s "gpg: decryption failed: No secret key"))
+                (setf
+                 s
+                 (string-trim
+                  (shell-command-to-string
+                   "pass us-openai-test-key")))
+              s))))
   (setq-default
    chatgpt-additional-prompts
    (lambda ()
