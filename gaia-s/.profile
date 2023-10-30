@@ -7,6 +7,7 @@ export BROWSER=/usr/bin/qutebrowser
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$(du "$HOME/.babashka" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$HOME/cognitect/datomic-cli/"
+PATH="$PATH:$HOME/go/bin"
 
 export PATH
 export CHROME_EXECUTABLE="google-chrome-stable"

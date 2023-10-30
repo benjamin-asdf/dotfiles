@@ -2,20 +2,31 @@
 
 ;; I load these manually when I desire an ide for some lang
 
-(use-package lsp-mode
+(use-package
+  lsp-mode
   :bind (:map lsp-mode-map
               ("M-<return>" . lsp-execute-code-action))
   :hook ((rust-mode . lsp-deferred))
   :commands (lsp lsp-deferred)
-  :init
-  (setq lsp-enable-indentation nil)
-  (setq lsp-diagnostics-provider :flycheck)
-  (setq lsp-headerline-breadcrumb-enable nil)
+  :init (setq lsp-enable-indentation
+              nil)
+  (setq lsp-diagnostics-provider
+        :flycheck)
+  (setq lsp-headerline-breadcrumb-enable
+        nil)
   (setq lsp-keymap-prefix "s-;")
-
-  (add-hook 'lsp-completion-mode-hook
-            (lambda ()
-              (setf (alist-get 'lsp-capf completion-category-defaults) '((styles . (orderless flex)))))))
+  (add-hook
+   'lsp-completion-mode-hook
+   (lambda ()
+     (setf
+      (alist-get
+       'lsp-capf
+       completion-category-defaults)
+      '((styles . (orderless flex))))))
+  (defun mm/clear-the-lsp-cache-bust-invalidate-chaches-lsp ()
+    (interactive)
+    (setq lsp--session
+          (lsp--load-default-session))))
 
 (use-package lsp-grammarly
   :config
@@ -45,15 +56,16 @@
   :config
   (add-hook 'typescript-mode-hook #'lsp-deferred))
 
-(use-package rust-mode
-  :ensure t :mode "\\.rs\\'"
-  :init
-  ;; scratchpad for rust
-  (setq lsp-rust-clippy-preference "on")
-  (use-package rust-playground :ensure t)
-  (setq rustic-lsp-client 'lsp))
+(progn
+  (use-package rust-mode
+    :ensure t :mode "\\.rs\\'"
+    :init
+    ;; scratchpad for rust
+    (setq lsp-rust-clippy-preference "on")
+    (use-package rust-playground :ensure t)
+    (setq rustic-lsp-client 'lsp))
 
-(use-package rustic)
+  (use-package rustic))
 
 (use-package go-mode
   :config
@@ -65,4 +77,27 @@
 (use-package fsharp-mode)
 
 (use-package glsl-mode)
+
+
+(progn
+  ;; https://github.com/idcrook/.emacs.d/blob/main/lisp/lang-cpp.el
+  (use-package cuda-mode)
+  (require 'cmake-mode)
+
+  )
+
+;; this preceedes emacs built in tree sitter
+;; doesn't support combobulate;; (progn
+;;   (use-package tree-sitter)
+;;   (use-package tree-sitter-langs)
+;;   ;; (add-hook 'rust-mode-hook #'tree-sitter-mode)
+;;   ;; (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+;;   (tree-sitter-require 'rust))
+
+
+(progn
+  (add-hook 'python-mode-hook #'lsp-deferred)
+  (remove-hook 'python-mode-hook 'lispy-mode)
+  (remove-hook 'python-mode-hook 'mm/add-lispy-python-capf))
+
 

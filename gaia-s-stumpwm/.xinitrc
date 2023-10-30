@@ -20,13 +20,13 @@ xrandr \
  --output DP-0 --mode 2560x1440 --rate 60 --pos 3840x0 --primary \
  --output DP-1 --off
 
-# arandr helps
-xrandr --output HDMI-0 --right-of DP-0 --auto
-xrandr --output DVI-D-0 --left-of DP-0 --auto
+# exported with arandr
+xrandr --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-3 --off --output DP-4 --off --output DP-5 --off
 
 xautolock -time 4 -locker i3lock &
 
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:menu_win
+
 
 # xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 
@@ -39,6 +39,7 @@ setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwi
 #     modifier_map Mod3    { <LCTL> };
 # };
 
+# /usr/share/X11/xkb/symbols/ctrl
 
 # modified to what i neede for kinesis
 # partial modifier_keys
@@ -53,13 +54,21 @@ xmodmap ~/.Xmodmap
 # xcape -e 'Control_L=Escape'
 # make escape a control  
 
-              spare_modifier="Hyper_R"
-              xmodmap -e "keycode 9 = $spare_modifier"
-              xmodmap -e "remove mod4 = $spare_modifier"
-              xmodmap -e "add Control = $spare_modifier"
-              xmodmap -e "keycode 93 = Escape"
-              xcape -e "$spare_modifier=Escape"
+spare_modifier="Hyper_R"
+xmodmap -e "keycode 9 = $spare_modifier"
+xmodmap -e "remove mod4 = $spare_modifier"
+xmodmap -e "add Control = $spare_modifier"
+xmodmap -e "keycode 93 = Escape"
+xcape -e "$spare_modifier=Escape"
 
+# make ; a cohtrol when pressed
+# eh has downsides and I want shift ; to be colon
+# spare_modifier="Alt_R"
+# xmodmap -e "keycode 47 = $spare_modifier"
+# xmodmap -e "remove mod1 = $spare_modifier"
+# xmodmap -e "add Control = $spare_modifier"
+# xmodmap -e "keycode 230 = semicolon"
+# xcape -e "$spare_modifier=semicolon"
 
 redshift -l 55.7:12.6 -t 2600:1800 -m randr &
 flameshot &

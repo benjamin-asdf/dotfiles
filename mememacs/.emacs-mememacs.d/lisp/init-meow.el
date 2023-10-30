@@ -123,11 +123,8 @@
  '("1" . meow-expand-1)
  '("-" . negative-argument)
  '(";" . meow-reverse)
-
  '("," . meow-keypad)
-
  '("C-'" . consult-global-mark)
-
  '("." . meow-bounds-of-thing)
  '("[" . meow-beginning-of-thing)
  '("]" . meow-end-of-thing)
@@ -138,13 +135,10 @@
  '("c" . meow-change)
  '("d" . meow-delete)
  '("D" . meow-backward-delete)
-
  '("\\" . meow-next-word)
  '("|" . meow-next-symbol)
-
  '("e" . special-lispy-eval)
  '("E" . special-lispy-eval-and-insert)
-
  '("f" . meow-find)
  '("g" . meow-cancel-selection)
  '("G" . meow-grab)
@@ -181,7 +175,16 @@
  '("C-z" . recenter)
  '("'" . repeat)
  '("<escape>" . ignore)
- '("/" . isearch-forward))
+ '("/" . isearch-forward)
+ (cons
+  "C-S-k"
+  (defun mm/kill-whole-line-or-lispy-kill ()
+    (interactive)
+    (if lispy-mode
+        (progn
+          (beginning-of-line)
+          (lispy-kill))
+      (kill-whole-line)))))
 
 (meow-define-keys 'insert
   '("C-j" . completion-at-point)
@@ -217,19 +220,19 @@ When at an outline, eval the outline."
                             (require 'cider nil t))
                         (when (equal buff (current-buffer))
                           (cider--display-interactive-eval-result
-                           res (cdr (lispy--bounds-dwim)))))
-                       ((or (fboundp 'eros--eval-overlay)
-                            (require 'eros nil t))
-                        (eros--eval-overlay
-                         res (cdr (lispy--bounds-dwim))))
+                           res
+                           'value
+                           (let ((p (cdr (lispy--bounds-dwim))))
+                             (save-excursion (goto-char p)
+                                             (point-marker))))))
                        (t
-                        (error "Please install CIDER >= 0.10 or eros to display overlay")))))))
+                        (error "Please install CIDER to display overlay")))))))
     (eval-error
      (lispy-message (cdr e)))))
 
 (defvar mm/cider-the-buffer-i-was-evaling-from nil)
 
-;; e without prefix arg is the most important command, the quick-eval
+;; e is the most important key in the whole setup
 ;; e with prefix arg inserts into buffer
 (defun mm/lispy--eval (&optional arg)
   (interactive "p")
@@ -285,7 +288,7 @@ When at an outline, eval the outline."
 (lispy-define-key meow-insert-state-keymap (kbd "e") 'mm/lispy--eval)
 (lispy-define-key meow-insert-state-keymap (kbd "E") 'mm/lispy--eval-and-insert)
 
-;; lispy-eval end
+;; ---- lispy-eval end ----
 
 
 ;; thanks https://github.com/noctuid/lispyville
@@ -662,16 +665,31 @@ when formatting with lispy."
      'lispy-alt-multiline
      :around
      (defun mm/lispy-multiline-use-zprint (f &rest args)
-       (or
-        (let ((end (point))
-              (beg (save-excursion (backward-list) (point))))
-          (when
-              (and
-               (derived-mode-p 'clojure-mode))
-            (save-excursion
-              (shell-command-on-region beg end "zprint" (buffer-name) t))
-            'zprint))
-        (apply f args)))))
+       (if
+           (derived-mode-p 'clojure-mode)
+           (let ((inhibit-read-only t)
+                 (bounds (or (when (region-active-p)
+                               (region-bounds))
+                             (when (lispy-right-p)
+                               (cons (save-excursion
+                                       (backward-list)
+                                       (point))
+                                     (point)))
+                             (when (lispy-left-p)
+                               (cons (point)
+                                     (save-excursion
+                                       (forward-list)
+                                       (point))))))
+                 (started-right (lispy-right-p)))
+             (save-excursion
+               (shell-command-on-region
+                (car bounds)
+                (cdr bounds)
+                "zprint"
+                (buffer-name)
+                t))
+             (when started-right (forward-list)))
+         (apply f args)))))
 
 ;; slurp whitespace has a bug that I walk into for clojure forms with namespaced maps
 ;; Ignore `slurp-whitespace'. Not sure when I needed that anyway.

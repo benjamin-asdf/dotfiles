@@ -871,17 +871,24 @@ Example:
   :after openai-api
   :config (define-key openai-api-keymap (kbd "a")
                       #'chatgpt-shell-shell-add-context-file)
-  (define-key openai-api-keymap (kbd "A") #'chatgpt-clear-some-contexts)
-  (define-key openai-api-keymap (kbd "RET") #'chatgpt-shell)
-  (define-key openai-api-keymap (kbd "b") #'chatgpt-shell-ibuffer-buffers)
-  (define-key openai-api-keymap (kbd "B") #'chatgpt-jump-to-context-shell)
-  (setq chatgpt-shell-model-version "gpt-3.5-turbo")
-  (setq chatgpt-shell-model-version "gpt-4")
+  (define-key openai-api-keymap (kbd "A")
+              #'chatgpt-clear-some-contexts)
+  (define-key openai-api-keymap (kbd "RET")
+              #'chatgpt-shell)
+  (define-key openai-api-keymap (kbd "b")
+              #'chatgpt-shell-ibuffer-buffers)
+  (define-key openai-api-keymap (kbd "B")
+              #'chatgpt-jump-to-context-shell)
+  (setq chatgpt-shell-model-version
+        "gpt-3.5-turbo")
+  (setq chatgpt-shell-model-version
+        "gpt-4")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
             (if (or (s-blank? s)
-                    (equal s "gpg: decryption failed: No secret key"))
+                    (equal s
+                           "gpg: decryption failed: No secret key"))
                 (setf
                  s
                  (string-trim
@@ -896,8 +903,11 @@ Example:
                      "The user is a programmer hacker engineer using emacs. He is thinking in Lisp and Clojure.
 You are intellectually curious and humble. You give reasons why your answer might not be true,
 unless you have good reasons to think you are right.
+You encourage the user doing hard things. Because doing hard things and gaining knowledge is what makes a
+programmer more powerful.
 Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
-You desing like Rich Hickey, you are simply crystal clear like Dawkins, you are joyful like Feynman.
+You desing like Rich Hickey, you are simple and crystal clear like Dawkins, you are joyful like Feynman.
+You are straightforward and imaginative like Minsky.
 user iq: %s
 Operating system: GNU/Linux arch
 Package Manger: yay

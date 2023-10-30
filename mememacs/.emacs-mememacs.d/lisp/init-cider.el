@@ -231,6 +231,10 @@
        (cider-preferred-build-tool . clojure-cli))))
 ")))
 
+
+
+
+
 ;; (defun mm/cider-clojure-load-deps ()
 ;;   (interactive)
 ;;   (cider-interactive-eval
@@ -249,13 +253,43 @@
 ;;    '{org.sg.get-currency-conversions/get-currency-conversions
 ;;      {:local/root \"../get-currency-conversions/\"}})"))
 
+;; some of the source code below is from
+;; https://github.com/clojure-emacs/cider
+
+
+;; Copyright © 2012-2013 Tim King, Phil Hagelberg, Bozhidar Batsov
+;; Copyright © 2013-2023 Bozhidar Batsov, Artur Malabarba and CIDER contributors
+;;
+;; Author: Tim King <kingtim@gmail.com>
+;;         Phil Hagelberg <technomancy@gmail.com>
+;;         Bozhidar Batsov <bozhidar@batsov.dev>
+;;         Artur Malabarba <bruce.connor.am@gmail.com>
+;;         Hugo Duncan <hugo@hugoduncan.org>
+;;         Steve Purcell <steve@sanityinc.com>
+;;         Arne Brasseur <arne@arnebraasseur.net>
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; This file is not part of GNU Emacs.
+
 
 ;; I want this to always make invisible messages
 ;; when I run shadow interactively this would end up printing all stderr
-
-(defun cider--display-interactive-eval-result (value &optional point overlay-face)
+(defun cider--display-interactive-eval-result (value value-type &optional point overlay-face)
   "Display the result VALUE of an interactive eval operation.
 VALUE is syntax-highlighted and displayed in the echo area.
+VALUE-TYPE is one of: `value', `error'.
 OVERLAY-FACE is the face applied to the overlay, which defaults to
 `cider-result-overlay-face' if nil.
 If POINT and `cider-use-overlays' are non-nil, it is also displayed in an
@@ -263,11 +297,16 @@ overlay at the end of the line containing POINT.
 Note that, while POINT can be a number, it's preferable to be a marker, as
 that will better handle some corner cases where the original buffer is not
 focused."
+  (cl-assert (symbolp value-type)) ;; We assert because for avoiding confusion with the optional args.
   (let* ((font-value (if cider-result-use-clojure-font-lock
                          (cider-font-lock-as-clojure value)
                        value))
          (font-value (string-trim-right font-value))
-         (used-overlay (when (and point cider-use-overlays)
+         (used-overlay (when (and point
+                                  cider-use-overlays
+                                  (if (equal 'error value-type)
+                                      t
+                                    (not (equal 'errors-only cider-use-overlays))))
                          (cider--make-result-overlay font-value
                            :where point
                            :duration cider-eval-result-duration
@@ -314,34 +353,36 @@ focused."
   "Make a handler for evaluating and printing result in BUFFER."
   ;; NOTE: cider-eval-register behavior is not implemented here for performance reasons.
   ;; See https://github.com/clojure-emacs/cider/pull/3162
-  (nrepl-make-response-handler (or buffer (current-buffer))
-                               (lambda (buffer value)
-                                 (with-current-buffer buffer
-                                   (insert
-                                    (if (derived-mode-p 'cider-clojure-interaction-mode)
-                                        (format "\n%s\n" value)
-                                      value))))
-                               (lambda (_buffer out)
-                                 (cider-emit-interactive-eval-output out))
-                               (lambda (_buffer err)
+  (nrepl-make-response-handler
+   (or buffer (current-buffer))
+   (lambda (buffer value)
+     (with-current-buffer buffer
+       (insert
+        (if (derived-mode-p 'cider-clojure-interaction-mode)
+            (format "\n%s\n" value)
+          value))))
+   (lambda (_buffer out)
+     (cider-emit-interactive-eval-output out))
+   (lambda (_buffer err)
 
-                                 ;; I want this in my life
-                                 ;; should somehow be something on the level of
-                                 ;; cider-emit-interactive-eval-err-output, but that
-                                 ;; doesn't know about the buff right now
-                                 ;; so I wawnt to pass the buff...
+     ;; I want this in my life
+     ;; should somehow be something on the level of
+     ;; cider-emit-interactive-eval-err-output, but that
+     ;; doesn't know about the buff right now
+     ;; so I wawnt to pass the buff...
 
-                                 (with-current-buffer
-                                     _buffer
-                                   (let ((end (point-at-eol)))
-                                     (let ((cider-result-use-clojure-font-lock nil))
-                                       (cider--display-interactive-eval-result
-                                        err
-                                        end
-                                        'cider-error-overlay-face))))
+     (with-current-buffer
+         _buffer
+       (let ((end (point-at-eol)))
+         (let ((cider-result-use-clojure-font-lock nil))
+           (cider--display-interactive-eval-result
+            err
+            'error
+            end
+            'cider-error-overlay-face))))
 
-                                 (cider-emit-interactive-eval-err-output err))
-                               ()))
+     (cider-emit-interactive-eval-err-output err))
+   ()))
 
 (defun cider-popup-eval-handler (&optional buffer)
   "Make a handler for printing evaluation results in popup BUFFER.
@@ -354,6 +395,8 @@ This is used by pretty-printing commands."
      (or buffer (current-buffer))
      (lambda (buffer value)
        (cider-emit-into-popup-buffer buffer (ansi-color-apply value) nil t)
+       (with-current-buffer buffer
+         (read-only-mode -1))
        (display-buffer buffer))
      (lambda (_buffer out)
        (cider-emit-interactive-eval-output out))
@@ -364,6 +407,7 @@ This is used by pretty-printing commands."
        (let ((cider-result-use-clojure-font-lock nil))
          (cider--display-interactive-eval-result
           err
+          'error
           end
           'cider-error-overlay-face))
 
@@ -394,13 +438,196 @@ This is used by pretty-printing commands."
   (save-excursion
     (shell-command-on-region (mark) (point) "zprint" (buffer-name) t)))
 
-;; isn't the mental surface area of retrieving a symbol from memory a fascinating concept
-(defalias 'mm/clojure-pprint-region-fmt-cljfmt-zprint-pretty-clj-print-format-fmt-buffer #'mm/zprint-region)
-
 ;; schon cute irgendwie
 ;; (global-prettify-symbols-mode 1)
 ;; (mapc (lambda (m) (add-hook m (lambda () (push '("fn" . ?ƒ) prettify-symbols-alist))))
 ;;       '(clojure-mode-hook clojurescript-mode-hook))
+
+
+;; ----
+
+;; edging out some perf
+;; See https://faster-than-light-memes.xyz/zappy-cider-eval-overlays.html
+(cl-defun cider--make-result-overlay
+    (value
+     &rest
+     props
+     &key
+     where
+     duration
+     (type 'result)
+     (format
+      (concat
+       " "
+       cider-eval-result-prefix
+       "%s "))
+     (prepend-face
+      'cider-result-overlay-face)
+     &allow-other-keys)
+  "Place an overlay displaying VALUE at the position determined by WHERE.
+      VALUE is used as the overlay's after-string property, meaning it is
+      displayed at the end of the overlay.
+      Return nil if the overlay was not placed or if it might not be visible, and
+      return the overlay otherwise.
+
+      Return the overlay if it was placed successfully, and nil if it failed.
+
+      This function takes some optional keyword arguments:
+
+        If WHERE is a number or a marker, apply the overlay as determined by
+        `cider-result-overlay-position'.  If it is a cons cell, the car and cdr
+        determine the start and end of the overlay.
+        DURATION takes the same possible values as the
+        `cider-eval-result-duration' variable.
+        TYPE is passed to `cider--make-overlay' (defaults to `result').
+        FORMAT is a string passed to `format'.  It should have
+        exactly one %s construct (for VALUE).
+
+      All arguments beyond these (PROPS) are properties to be used on the
+      overlay."
+  (declare (indent 1))
+  (while (keywordp (car props))
+    (setq props (cdr (cdr props))))
+  ;; If the marker points to a dead buffer, don't do anything.
+  (when-let
+      ((buffer
+        (cond ((markerp where)
+               (marker-buffer where))
+              ((markerp (car-safe where))
+               (marker-buffer (car where)))
+              (t (current-buffer)))))
+    (with-current-buffer
+        buffer
+      (save-excursion
+        (when (number-or-marker-p where)
+          (goto-char where))
+        ;; Make sure the overlay is actually at the end of the sexp.
+        (skip-chars-backward
+         "\r\n[:blank:]")
+        (let* ((beg (if (consp where)
+                        (car where)
+                      (save-excursion
+                        (clojure-backward-logical-sexp
+                         1)
+                        (point))))
+               (end (if (consp where)
+                        (cdr where)
+                      (pcase
+                          cider-result-overlay-position
+                        ('at-eol (line-end-position))
+                        ('at-point (point)))))
+               ;; Specify `default' face, otherwise unformatted text will
+               ;; inherit the face of the following text.
+               (display-string (format
+                                (propertize
+                                 format
+                                 'face
+                                 'default)
+                                value))
+               (o nil))
+          ;; Remove any overlay at the position we're creating a new one, if it
+          ;; exists.
+          (remove-overlays
+           beg
+           end
+           'category
+           type)
+          (funcall
+           (if cider-overlays-use-font-lock
+               #'font-lock-prepend-text-property
+             #'put-text-property)
+           0
+           (length display-string)
+           'face
+           prepend-face
+           display-string)
+          ;; If the display spans multiple lines or is very long, display it at
+          ;; the beginning of the next line.
+          (when (or (string-match
+                     "\n."
+                     display-string)
+                    (> (length display-string)
+                       (-
+                        (window-width)
+                        (current-column))))
+            (setq display-string
+                  (concat " \n" display-string)))
+          ;; Put the cursor property only once we're done manipulating the
+          ;; string, since we want it to be at the first char.
+          (put-text-property
+           0
+           1
+           'cursor
+           0
+           display-string)
+          (when (> (length display-string)
+                   (window-width))
+            (setq display-string
+                  (concat
+                   (substring
+                    display-string
+                    0
+                    (window-width))
+                   (substitute-command-keys
+                    "...
+Result truncated. Type `\\[cider-inspect-last-result]' to inspect it."))))
+          ;; Create the result overlay.
+          (setq o
+                (apply
+                 #'cider--make-overlay
+                 beg
+                 end
+                 type
+                 'after-string
+                 display-string
+                 props))
+          (pcase
+              duration
+            ((pred numberp)
+             (run-at-time
+              duration
+              nil
+              #'cider--delete-overlay
+              o))
+            (`command
+             ;; Since the previous overlay was already removed above, we should
+             ;; remove the hook to remove all overlays after this function
+             ;; ends. Otherwise, we would inadvertently remove the newly created
+             ;; overlay too.
+             (remove-hook
+              'post-command-hook
+              'cider--remove-result-overlay
+              'local)
+             ;; If inside a command-loop, tell `cider--remove-result-overlay'
+             ;; to only remove after the *next* command.
+             (if this-command
+                 (add-hook
+                  'post-command-hook
+                  #'cider--remove-result-overlay-after-command
+                  nil
+                  'local)
+               (cider--remove-result-overlay-after-command)))
+            (`change
+             (add-hook
+              'after-change-functions
+              #'cider--remove-result-overlay
+              nil
+              'local)))
+          (when-let*
+              ((win
+                (get-buffer-window buffer)))
+            ;; Left edge is visible.
+            (when (and (<= (window-start win)
+                           (point)
+                           (window-end win))
+                       ;; Right edge is visible. This is a little conservative
+                       ;; if the overlay contains line breaks.
+                       (or (< (+
+                               (current-column)
+                               (length value))
+                              (window-width win))
+                           (not truncate-lines)))
+              o)))))))
 
 
 (provide 'init-cider)
