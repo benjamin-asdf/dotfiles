@@ -230,8 +230,6 @@ When at an outline, eval the outline."
     (eval-error
      (lispy-message (cdr e)))))
 
-(defvar mm/cider-the-buffer-i-was-evaling-from nil)
-
 ;; e is the most important key in the whole setup
 ;; e with prefix arg inserts into buffer
 (defun mm/lispy--eval (&optional arg)
@@ -246,7 +244,6 @@ When at an outline, eval the outline."
              (cider-eval-last-sexp nil)
            (progn
              (lispy-newline-and-indent-plain)
-             (setf mm/cider-the-buffer-i-was-evaling-from (current-buffer))
              (cider-eval-last-sexp t))))
         (t
          (if (eq arg 4)
@@ -275,11 +272,9 @@ When at an outline, eval the outline."
          (save-excursion
 	   (goto-char
 	    (cdr (lispy--bounds-dwim)))
-	   (progn
-             (setf mm/cider-the-buffer-i-was-evaling-from (current-buffer))
-             (if (eq arg 4)
-	         (cider-pprint-eval-last-sexp-to-comment nil)
-	       (cider-pprint-eval-last-sexp nil)))))
+	   (if (eq arg 4)
+	       (cider-pprint-eval-last-sexp-to-comment nil)
+	     (cider-pprint-eval-last-sexp nil))))
         (t
          (if (eq arg 4)
 	     (lispy-eval-and-insert)
@@ -813,8 +808,8 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") #'eval-buffer)
 (define-key help-map (kbd "c") #'describe-char)
 (global-set-key (kbd "H-<return>") #'save-buffer)
-
 (global-set-key (kbd "s-r") #'delete-other-windows)
+
 (defun meow-start-isearch-with-last-search ()
   "Start an isearch using the last search string from `meow--push-search'."
   (interactive)

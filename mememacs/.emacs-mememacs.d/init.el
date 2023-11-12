@@ -639,7 +639,10 @@ string).  It returns t if a new expansion is found, nil otherwise."
             ("/[Gmail]/Drafts"    . ?d)
             ("/[Gmail]/All Mail"  . ?a)))))
 
-(add-hook 'artist-mode-hook #'artist-select-op-rectangle)
+(use-package artist
+  :ensure nil
+  :config
+  (add-hook 'artist-mode-hook #'artist-select-op-rectangle))
 
 (use-package shell
   :ensure nil
@@ -883,6 +886,8 @@ Example:
         "gpt-3.5-turbo")
   (setq chatgpt-shell-model-version
         "gpt-4")
+  (setq chatgpt-shell-model-version
+        "gpt-4-1106-preview")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
