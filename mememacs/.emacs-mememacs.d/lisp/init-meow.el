@@ -846,6 +846,11 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
  ("C-j" . nil)
  ("C-," . nil))
 
+(bind-keys
+ :map lispy-mode-map-special
+ ("e" . nil)
+ ("E" . nil))
+
 (lispy-set-key-theme lispy-key-theme)
 
 ;; See docstring of `meow-thing-register'

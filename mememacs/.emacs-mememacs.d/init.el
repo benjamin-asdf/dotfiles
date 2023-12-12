@@ -652,10 +652,16 @@ string).  It returns t if a new expansion is found, nil otherwise."
 	(window-buffer (car (window-list)))
       (apply f args)))
 
+  ;; (defvar-local mm/shell-activate "")
+  ;; (put 'mm/shell-activate 'risky-local-variable t)
+  
   (defun mm/shell-via-async-shell-command ()
     (let ((display-buffer-alist
            '((".*" display-buffer-same-window))))
-      (async-shell-command shell-file-name)))
+      (async-shell-command
+       (concat ;; mm/shell-activate
+               ;; "\n"
+               shell-file-name))))
 
   (advice-add #'mm/shell-via-async-shell-command :around #'mm/with-current-window-buffer)
 
@@ -671,10 +677,11 @@ string).  It returns t if a new expansion is found, nil otherwise."
   (setq iedit-toggle-key-default nil)
   :config
   (setq iedit-toggle-key-default (kbd "C-/"))
-  (let ((key iedit-toggle-key-default)) (define-key global-map key 'iedit-mode)
-       (define-key isearch-mode-map key 'iedit-mode-from-isearch)
-       (define-key esc-map key 'iedit-execute-last-modification)
-       (define-key help-map key 'iedit-mode-toggle-on-function))
+  (let ((key iedit-toggle-key-default))
+    (define-key global-map key 'iedit-mode)
+    (define-key isearch-mode-map key 'iedit-mode-from-isearch)
+    (define-key esc-map key 'iedit-execute-last-modification)
+    (define-key help-map key 'iedit-mode-toggle-on-function))
 
   (add-hook 'mememacs/escape-functions (defun mm/iedit-quit ()
 					 (when iedit-lib-quit-func (iedit--quit)))))
@@ -884,10 +891,8 @@ Example:
               #'chatgpt-jump-to-context-shell)
   (setq chatgpt-shell-model-version
         "gpt-3.5-turbo")
-  (setq chatgpt-shell-model-version
-        "gpt-4")
-  (setq chatgpt-shell-model-version
-        "gpt-4-1106-preview")
+  (setq chatgpt-shell-model-version "gpt-4")
+  (setq chatgpt-shell-model-version "gpt-4-1106-preview")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()

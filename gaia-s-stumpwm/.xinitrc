@@ -13,12 +13,12 @@ xset r rate 120 250
 
 # https://wiki.archlinux.org/title/Xrandr
 # used xlayoutdisplay
-xrandr \
- --dpi 96 \
- --output DVI-D-0 --mode 1920x1080 --rate 60 --pos 0x0  \
- --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 \
- --output DP-0 --mode 2560x1440 --rate 60 --pos 3840x0 --primary \
- --output DP-1 --off
+# xrandr \
+#  --dpi 96 \
+#  --output DVI-D-0 --mode 1920x1080 --rate 60 --pos 0x0  \
+#  --output HDMI-0 --mode 1920x1080 --rate 60 --pos 1920x0 \
+#  --output DP-0 --mode 2560x1440 --rate 60 --pos 3840x0 --primary \
+#  --output DP-1 --off
 
 # exported with arandr
 xrandr --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-3 --off --output DP-4 --off --output DP-5 --off

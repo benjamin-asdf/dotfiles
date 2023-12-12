@@ -71,3 +71,7 @@ complete -f -F _bb_complete bb
 # and that is asking for trouble if there is any err in bb
 # e.g. with broken bb.edn also it needs to pull bbin stuff sometimes
 # complete -W "$(bbin commands)" bbin
+
+
+alias a="[[ -f ./activate.sh ]] && source ./activate.sh
+[[ -f ./venv/bin/activate ]] && source ./venv/bin/activate"
