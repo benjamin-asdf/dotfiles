@@ -25,3 +25,4 @@
 /mememacs/.emacs-mememacs.d/.cache/
 /mememacs/.emacs-mememacs.d/eln-cache/
 /clojure/.clojure/.cpcache/
+/mememacs/.emacs-mememacs.d/racket-mode/

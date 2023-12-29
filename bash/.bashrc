@@ -51,6 +51,8 @@ ex ()
 
 if [ -f ~/.ssh/id_ed25519 ]; then
     eval `keychain -q --eval id_rsa id_ed25519`
+else
+    eval `keychain -q --eval id_rsa`
 fi
     
 
