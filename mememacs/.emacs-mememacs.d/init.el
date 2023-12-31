@@ -26,7 +26,6 @@
 
 (setf native-comp-async-report-warnings-errors 'silent)
 
-(defvar mememacs/guile-enabled t)
 (defvar mememacs/enable-guix nil)
 
 (straight-use-package 'use-package)
@@ -67,7 +66,7 @@
 (use-package vundo
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols
-	vundo-compact-display t))
+        vundo-compact-display t))
 
 (use-package hydra)
 
@@ -110,8 +109,8 @@
   (setq git-commit-summary-max-length fill-column)
   (with-eval-after-load 'git-commit-mode
     (add-hook 'git-commit-mode-hook
-	      (defun mm/disable-visual-line-mode ()
-	        (visual-line-mode -1))))
+              (defun mm/disable-visual-line-mode ()
+                (visual-line-mode -1))))
   (define-key magit-blob-mode-map "n" nil)
   (define-key magit-blob-mode-map (kbd "C-n") nil))
 
@@ -165,7 +164,7 @@
 (use-package marginalia
   :bind
   (:map minibuffer-local-map
-	("M-A" . marginalia-cycle))
+        ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
@@ -211,16 +210,16 @@
     (when (sly-connected-p)
       (let  ((beg (sly-symbol-start-pos))
              (end (sly-symbol-end-pos)))
-	(when-let*
-	    ((completion
-	      (car (sly--completion-request-completions
-		    (buffer-substring beg end)
-		    'slynk-completion:flex-completions))))
-	  (list
-	   beg
-	   end
-	   (completion-table-dynamic
-	    (lambda (_) completion)))))))
+        (when-let*
+            ((completion
+              (car (sly--completion-request-completions
+                    (buffer-substring beg end)
+                    'slynk-completion:flex-completions))))
+          (list
+           beg
+           end
+           (completion-table-dynamic
+            (lambda (_) completion)))))))
 
   (sly-symbol-completion-mode -1)
   (remove-hook 'sly-mode-hook 'sly--setup-completion)
@@ -264,6 +263,7 @@
   (scheme-mode . lispy-mode)
   (clojure-mode . lispy-mode)
   (python-mode . lispy-mode)
+  (racket-mode . lispy-mode)
   ;; (python-mode . mm/enable-le-python)
   )
 
@@ -279,17 +279,21 @@
   (require 'init-project))
 
 ;; https://github.com/magnars/string-edit.el/issues/19
-(when
+(or
     (require
      'string-edit-at-point
-     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el"
-		       mememacs/config-dir)
+     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el" mememacs/config-dir)
+     t)
+    (require
+     'string-edit-at-point
+     (expand-file-name "straight/repos/string-edit.el/string-edit.el"
+                       mememacs/config-dir)
      t))
 
 (use-package ace-window
   :config
   (setq aw-keys mememacs/avy-keys
-	aw-background nil))
+        aw-background nil))
 
 (use-package cider
   :config
@@ -304,7 +308,6 @@
   :after cider)
 
 (use-package geiser
-  :when mememacs/guile-enabled
   :config
   (with-eval-after-load 'geiser-mode
     (bind-keys :map geiser-mode-map ("C-."))))
@@ -314,20 +317,28 @@
   (add-hook 'cider-mode-hook #'macrostep-geiser-setup)
   (add-hook 'geiser-mode-hook #'macrostep-geiser-setup))
 
-(use-package geiser-guile
-  :when mememacs/guile-enabled
+;; (use-package geiser-guile
+;;   :when mememacs/guile-enabled
+;;   :config
+;;   (setf
+;;    geiser-scheme-implementation 'guile
+;;    geiser-guile-binary "guile"
+;;    geiser-guile-load-path
+;;    (list "/lib/guile/2.2/")))
+
+(use-package geiser-racket
   :config
-  (setf
-   geiser-scheme-implementation 'guile
-   geiser-guile-binary "guile"
-   geiser-guile-load-path
-   (list "/lib/guile/2.2/")))
+  (setf geiser-scheme-implementation 'racket)
+  (add-hook
+   'scheme-mode-hook
+   (defun mm/set-racket-impl ()
+     (setq-local geiser-impl--implementation 'racket))))
 
 (use-package avy
   :config
   (setf avy-timeout-seconds 0.18
-	avy-keys mememacs/avy-keys
-	avy-style 'words)
+        avy-keys mememacs/avy-keys
+        avy-style 'words)
   (add-to-list 'avy-ignored-modes 'cider-repl-mode)
   ;; better not start witch chars from
   ;; avy-dispatch-alist
@@ -380,7 +391,7 @@
    'mememacs/escape-functions
    (defun mm/so-remove-all ()
      (call-interactively #'symbol-overlay-remove-all)))
-  
+
   (define-key symbol-overlay-map (kbd "h") nil))
 
 (use-package link-hint)
@@ -411,12 +422,12 @@ string).  It returns t if a new expansion is found, nil otherwise."
       (when (not (equal he-search-string ""))
         (save-excursion
           (save-restriction
-	    (if hippie-expand-no-restriction
-	        (widen))
-	    ;; Try looking backward unless inhibited.
-	    (if he-search-bw
-	        (progn
-	          (setq expansion
+            (if hippie-expand-no-restriction
+                (widen))
+            ;; Try looking backward unless inhibited.
+            (if he-search-bw
+                (progn
+                  (setq expansion
                         (or
                          (let ((he-search-string (concat ":" he-search-string)))
                            (progn
@@ -428,15 +439,15 @@ string).  It returns t if a new expansion is found, nil otherwise."
                              (goto-char he-search-loc)
                              (when-let ((exp (he-dabbrev-search he-search-string t)))
                                (cl-subseq exp 2))))))
-	          (set-marker he-search-loc (point))
-	          (if (not expansion)
-		      (progn
-		        (set-marker he-search-loc he-string-end)
-		        (setq he-search-bw ())))))
+                  (set-marker he-search-loc (point))
+                  (if (not expansion)
+                      (progn
+                        (set-marker he-search-loc he-string-end)
+                        (setq he-search-bw ())))))
 
-	    (if (not expansion)         ; Then look forward.
-	        (progn
-	          (setq expansion
+            (if (not expansion)         ; Then look forward.
+                (progn
+                  (setq expansion
                         (or
                          (let ((he-search-string (concat ":" he-search-string)))
                            (progn
@@ -448,14 +459,14 @@ string).  It returns t if a new expansion is found, nil otherwise."
                              (goto-char he-search-loc)
                              (when-let ((exp (he-dabbrev-search he-search-string)))
                                (cl-subseq exp 2))))))
-	          (set-marker he-search-loc (point)))))))
+                  (set-marker he-search-loc (point)))))))
       (if (not expansion)
-	  (progn
-	    (if old (he-reset-string))
-	    ())
+          (progn
+            (if old (he-reset-string))
+            ())
         (progn
-	  (he-substitute-string expansion t)
-	  t))))
+          (he-substitute-string expansion t)
+          t))))
 
 
   ;; you have banana in the buffer and you type :ba|
@@ -470,12 +481,12 @@ string).  It returns t if a new expansion is found, nil otherwise."
       (when (not (equal he-search-string ""))
         (save-excursion
           (save-restriction
-	    (if hippie-expand-no-restriction
-	        (widen))
-	    ;; Try looking backward unless inhibited.
-	    (if he-search-bw
-	        (progn
-	          (setq expansion
+            (if hippie-expand-no-restriction
+                (widen))
+            ;; Try looking backward unless inhibited.
+            (if he-search-bw
+                (progn
+                  (setq expansion
                         (or
                          (when-let
                              ((he-search-string
@@ -491,14 +502,14 @@ string).  It returns t if a new expansion is found, nil otherwise."
                            (goto-char he-search-loc)
                            (when-let ((s (he-dabbrev-search he-search-string t)))
                              (concat ":" s)))))
-	          (set-marker he-search-loc (point))
-	          (if (not expansion)
-		      (progn
-		        (set-marker he-search-loc he-string-end)
-		        (setq he-search-bw ())))))
+                  (set-marker he-search-loc (point))
+                  (if (not expansion)
+                      (progn
+                        (set-marker he-search-loc he-string-end)
+                        (setq he-search-bw ())))))
 
-	    (if (not expansion)         ; Then look forward.
-	        (progn
+            (if (not expansion)         ; Then look forward.
+                (progn
                   (setq expansion
                         (or
                          (when-let
@@ -515,15 +526,15 @@ string).  It returns t if a new expansion is found, nil otherwise."
                            (goto-char he-search-loc)
                            (when-let ((s (he-dabbrev-search he-search-string)))
                              (concat ":" s)))))
-	          (set-marker he-search-loc (point)))))))
+                  (set-marker he-search-loc (point)))))))
       (if (not expansion)
-	  (progn
-	    (if old (he-reset-string))
-	    ())
+          (progn
+            (if old (he-reset-string))
+            ())
         (progn
-	  (he-substitute-string expansion t)
-	  t))))
-  
+          (he-substitute-string expansion t)
+          t))))
+
 
   (setq hippie-expand-try-functions-list
         '(try-expand-dabbrev
@@ -542,8 +553,8 @@ string).  It returns t if a new expansion is found, nil otherwise."
 ;; Keep customization settings in a temporary file (thanks Ambrevar!)
 (setq custom-file
       (if (boundp 'server-socket-dir)
-	  (expand-file-name "custom.el" server-socket-dir)
-	(expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+          (expand-file-name "custom.el" server-socket-dir)
+        (expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
 
 (load custom-file t)
 
@@ -581,14 +592,14 @@ string).  It returns t if a new expansion is found, nil otherwise."
     (with-temp-buffer
       (call-process "sha256sum" nil t nil filename)
       (car (split-string (buffer-string)))))
-  
+
   (defun backup-each-save-compute-location (filename)
     (let* ((containing-dir (file-name-directory filename))
-	   (basename (file-name-nondirectory filename))
-	   (backup-container
-	    (format "%s/%s"
-		    backup-each-save-mirror-location
-		    containing-dir))
+           (basename (file-name-nondirectory filename))
+           (backup-container
+            (format "%s/%s"
+                    backup-each-save-mirror-location
+                    containing-dir))
            (sha (file-sha256 filename)))
       (when (not (file-exists-p backup-container))
         (make-directory backup-container t))
@@ -623,7 +634,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
     ;; Refresh mail using isync every 10 minutes
     (setq mu4e-update-interval ;; (* 10 60)
-	  nil)
+          nil)
     (setq mu4e-get-mail-command "mbsync -a")
     (setq mu4e-maildir "~/mail")
 
@@ -649,12 +660,12 @@ string).  It returns t if a new expansion is found, nil otherwise."
   :config
   (defun mm/with-current-window-buffer (f &rest args)
     (with-current-buffer
-	(window-buffer (car (window-list)))
+        (window-buffer (car (window-list)))
       (apply f args)))
 
   ;; (defvar-local mm/shell-activate "")
   ;; (put 'mm/shell-activate 'risky-local-variable t)
-  
+
   (defun mm/shell-via-async-shell-command ()
     (let ((display-buffer-alist
            '((".*" display-buffer-same-window))))
@@ -684,7 +695,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
     (define-key help-map key 'iedit-mode-toggle-on-function))
 
   (add-hook 'mememacs/escape-functions (defun mm/iedit-quit ()
-					 (when iedit-lib-quit-func (iedit--quit)))))
+                                         (when iedit-lib-quit-func (iedit--quit)))))
 
 (use-package elfeed
   :defer t
@@ -759,27 +770,27 @@ Example:
 (path-slug \"/foo/bar/hello\")
 => \"f/b/hello\" "
     (let* ((path (replace-regexp-in-string "\\." "" dir))
-	   (path (split-string path "/" t))
-	   (path-s (mapconcat
-		    (lambda (it)
-		      (cl-subseq it 0 1))
-		    (nbutlast (copy-sequence path) 1)
-		    "/"))
-	   (path-s (concat
-		    path-s
-		    "/"
-		    (car (last path)))))
+           (path (split-string path "/" t))
+           (path-s (mapconcat
+                    (lambda (it)
+                      (cl-subseq it 0 1))
+                    (nbutlast (copy-sequence path) 1)
+                    "/"))
+           (path-s (concat
+                    path-s
+                    "/"
+                    (car (last path)))))
       path-s))
 
   (defun mm/put-command-in-async-buff-name (f &rest args)
     (let* ((path-s (if default-directory (path-slug default-directory) ""))
-	   (command (car args))
-	   (buffname (concat path-s " " command))
-	   (shell-command-buffer-name-async
-	    (format
-	     "*async-shell-command %s*"
-	     (string-trim
-	      (substring buffname 0 (min (length buffname) 75))))))
+           (command (car args))
+           (buffname (concat path-s " " command))
+           (shell-command-buffer-name-async
+            (format
+             "*async-shell-command %s*"
+             (string-trim
+              (substring buffname 0 (min (length buffname) 75))))))
       (apply f args)))
 
   (advice-add 'shell-command :around #'mm/put-command-in-async-buff-name)
@@ -795,8 +806,8 @@ Example:
         (concat "*" "compilation -" (string-trim (substring path-s 0 (min (length path-s) 75))) "* ")))))
 
   (add-hook 'comint-mode-hook
-	    (defun mm/do-hack-dir-locals (&rest _)
-	      (hack-dir-local-variables-non-file-buffer)))
+            (defun mm/do-hack-dir-locals (&rest _)
+              (hack-dir-local-variables-non-file-buffer)))
 
   ;; it logs a warning when you hack a local
   ;; Making process-environment buffer-local while locally let-bound!
@@ -804,7 +815,7 @@ Example:
   (advice-add #'start-process-shell-command :before #'mm/do-hack-dir-locals)
 
   (advice-add 'compile :filter-args
-	      (defun mm/always-use-comint-for-compile (args) `(,(car args) t)))
+              (defun mm/always-use-comint-for-compile (args) `(,(car args) t)))
 
   (add-to-list 'auto-mode-alist '("\\.mjs" . javascript-mode))
 
@@ -852,6 +863,29 @@ Example:
                             "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
 
   (global-ligature-mode 't))
+
+(use-package
+  copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :config
+
+  (defun rk/copilot-tab ()
+    (interactive)
+    (when (copilot-accept-completion)
+      (indent-for-tab-command)))
+
+  (add-to-list
+   'copilot-major-mode-alist
+   '("python-mode" . "python"))
+  (bind-keys
+   :map prog-mode-map
+   ("TAB" . rk/copilot-tab)
+   ("C-, c" . copilot-mode)
+   ("C-, l" . copilot-accept-completion-by-line)
+   ("C-, w" . copilot-accept-completion-by-word)
+   ("C-, RET" . copilot-accept-completion-by-paragraph)
+   ("C-, n" . copilot-next-completion)
+   ("C-, p" . copilot-previous-completion)))
 
 (use-package openai-api
   :straight nil
@@ -925,4 +959,3 @@ assistent intellectual honesty: 10/10
 User name: Benni"
                      user-iq
                      (emacs-version))))))))
-

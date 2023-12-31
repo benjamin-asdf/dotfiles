@@ -49,7 +49,12 @@ ex ()
   fi
 }
 
-eval `keychain -q --eval id_rsa id_ed25519`
+if [ -f ~/.ssh/id_ed25519 ]; then
+    eval `keychain -q --eval id_rsa id_ed25519`
+else
+    eval `keychain -q --eval id_rsa`
+fi
+    
 
 export ANDROID_HOME=$HOME/Android/Sdk
 PATH=$PATH:$ANDROID_HOME/emulator

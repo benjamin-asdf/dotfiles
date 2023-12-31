@@ -191,6 +191,7 @@
     (delete-frame)))
 
 (setq visible-bell nil)
+(setq ring-bell-function #'ignore)
 
 (defun mm/windmove (where)
   (ignore-errors
