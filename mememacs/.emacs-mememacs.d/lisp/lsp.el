@@ -96,6 +96,9 @@
 
 
 (progn
+  ;; -*- lexical-binding: t; -*-
+  (add-to-list 'auto-mode-alist '("\\.cu\\'" nil c++-mode))
+
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'python-mode-hook
             (defun mm/no-python-mode-eldoc ()

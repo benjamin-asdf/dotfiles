@@ -674,7 +674,7 @@ string).  It returns t if a new expansion is found, nil otherwise."
 
 (use-package iedit
   :init
-  (setq iedit-toggle-key-default nil)
+  (defvar iedit-toggle-key-default nil)
   :config
   (setq iedit-toggle-key-default (kbd "C-/"))
   (let ((key iedit-toggle-key-default))
