@@ -16,7 +16,10 @@
 
       cider-auto-jump-to-error nil
       cider-show-error-buffer nil
-      cider-use-overlays t)
+      cider-use-overlays t
+
+      cider-enrich-classpath t
+      )
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -628,6 +631,85 @@ Result truncated. Type `\\[cider-inspect-last-result]' to inspect it."))))
                               (window-width win))
                            (not truncate-lines)))
               o)))))))
+
+;; ===================
+;; cider-repls
+;; ===================
+;;
+;; 1. For perf, remember the current repl.
+;; when I have remote connections, perf is abysmall, because sesman subroutine calls
+;; filename or something recursively
+;;
+;; 2. Only return a single repl, I don't need the dual cljc concept.
+;;
+;; 3. I select a cider repl by making the desired connection buffer (repl) active,
+;; then I revert-buffer to clear curr-cider-repls
+;; viola - curr-cider-repls will be set to my desired repl buffer.
+
+;; this scheme has served me well.
+;; The downside is that there is a local state, buffer local, curr-cider-repls
+;; Which you sort of need to be aware of.
+;; The benefit is, I am selecting the repl I want per buffer, with my user intent.
+;;
+
+(defvar-local curr-cider-repls nil)
+
+(defun cider-repls (&optional type ensure)
+  "Return cider REPLs of TYPE from the current session.
+If TYPE is nil or multi, return all REPLs.  If TYPE is a list of types,
+return only REPLs of type contained in the list.  If ENSURE is non-nil,
+throw an error if no linked session exists."
+  (or (-filter
+       #'buffer-live-p
+       curr-cider-repls)
+      (setf
+       curr-cider-repls
+       (let ((type (cond ((listp type)
+                          (mapcar
+                           #'cider-maybe-intern
+                           type))
+                         ((cider-maybe-intern type))))
+             (repls (pcase
+                        cider-merge-sessions
+                      ('host
+                       (if ensure
+                           (or (cider--extract-connections
+                                (cider--get-sessions-with-same-host
+                                 (sesman-current-session 'CIDER)
+                                 (sesman-current-sessions
+                                  'CIDER)))
+                               (user-error
+                                "No linked %s sessions"
+                                'CIDER))
+                         (cider--extract-connections
+                          (cider--get-sessions-with-same-host
+                           (sesman-current-session 'CIDER)
+                           (sesman-current-sessions
+                            'CIDER)))))
+                      ('project
+                       (if ensure
+                           (or (cider--extract-connections
+                                (sesman-current-sessions
+                                 'CIDER))
+                               (user-error
+                                "No linked %s sessions"
+                                'CIDER))
+                         (cider--extract-connections
+                          (sesman-current-sessions
+                           'CIDER))))
+                      (_
+                       (cdr (if ensure
+                                (sesman-ensure-session 'CIDER)
+                              (sesman-current-session 'CIDER)))))))
+         (or (let ((r (seq-filter
+                       (lambda (b)
+                         (unless (cider-cljs-pending-p b)
+                           (cider--match-repl-type type b)))
+                       repls)))
+               (when r (list (car r))))
+             (when ensure
+               (cider--no-repls-user-error
+                type)))))))
 
 
 (provide 'init-cider)

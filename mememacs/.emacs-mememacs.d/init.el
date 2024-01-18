@@ -663,16 +663,10 @@ string).  It returns t if a new expansion is found, nil otherwise."
         (window-buffer (car (window-list)))
       (apply f args)))
 
-  ;; (defvar-local mm/shell-activate "")
-  ;; (put 'mm/shell-activate 'risky-local-variable t)
-
   (defun mm/shell-via-async-shell-command ()
     (let ((display-buffer-alist
            '((".*" display-buffer-same-window))))
-      (async-shell-command
-       (concat ;; mm/shell-activate
-               ;; "\n"
-               shell-file-name))))
+      (async-shell-command shell-file-name)))
 
   (advice-add #'mm/shell-via-async-shell-command :around #'mm/with-current-window-buffer)
 
@@ -930,9 +924,8 @@ Example:
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
-            (if (or (s-blank? s)
-                    (equal s
-                           "gpg: decryption failed: No secret key"))
+            (if
+                (not (s-starts-with? "sk-" s))
                 (setf
                  s
                  (string-trim

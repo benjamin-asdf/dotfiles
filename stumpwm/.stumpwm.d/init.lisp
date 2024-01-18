@@ -140,8 +140,6 @@
 
 (defcommand run-or-raise-teams () ()
   (run-or-raise "teams-for-linux" '(:class "teams-for-linux")))
-(define-key *top-map* (kbd "s-s") "run-or-raise-teams")
-
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
 
@@ -170,9 +168,11 @@
     ;;   (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
     
-    (stumpwm:define-key m (kbd "s") "slack")
+    (stumpwm:define-key m (kbd "s") "run-or-raise-teams")
     (stumpwm:define-key m (kbd "a") "pull-window-across-groups")
     m))
+
+(define-key *top-map* (kbd "s-s") "slack")
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
@@ -416,7 +416,6 @@ This is needed if Sly updates while StumpWM is running"
 
  (when (not (equal (emacs-winmove (string-downcase (string 'left))) 'OK))
    'foo)
- 
  
  (exec-el (message "hi2"))
  (eval-el (current-bufferr))
