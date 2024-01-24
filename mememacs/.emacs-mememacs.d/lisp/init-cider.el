@@ -18,8 +18,7 @@
       cider-show-error-buffer nil
       cider-use-overlays t
 
-      cider-enrich-classpath t
-      )
+      cider-enrich-classpath t)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map
@@ -36,7 +35,6 @@
  nil
  :background "DarkGreen"
  :foreground "white")
-
 
 (define-key cider-mode-map (kbd "C-c X") #'cider-selector)
 
@@ -126,7 +124,6 @@
      (concat "(nextjournal.clerk/show! \"" filename "\")"))))
 
 
-
 
 (advice-add
  #'cider-eldoc :before-while
@@ -234,28 +231,6 @@
        (cider-preferred-build-tool . clojure-cli))))
 ")))
 
-
-
-
-
-;; (defun mm/cider-clojure-load-deps ()
-;;   (interactive)
-;;   (cider-interactive-eval
-;;    (with-current-buffer
-;;        (find-file-noselect
-;;         (expand-file-name "deps.edn"
-;;                           (project-root (project-current))))
-;;      (goto-char (point-min))
-;;      (let ((m (parseedn-read)))
-;;        (defvar foo
-;;          (parseedn-print-          (gethash :deps m))))))
-;;   (insert
-;;    "(comment
-;;  (require '[clojure.tools.deps.alpha.repl :refer [add-libs]]))
-;;   (add-libs
-;;    '{org.sg.get-currency-conversions/get-currency-conversions
-;;      {:local/root \"../get-currency-conversions/\"}})"))
-
 ;; some of the source code below is from
 ;; https://github.com/clojure-emacs/cider
 
@@ -314,13 +289,7 @@ focused."
                            :where point
                            :duration cider-eval-result-duration
                            :prepend-face (or overlay-face 'cider-result-overlay-face)))))
-    (message
-     "%s"
-     (propertize (format "%s%s" cider-eval-result-prefix font-value)
-                 ;; The following hides the message from the echo-area, but
-                 ;; displays it in the Messages buffer. We only hide the message
-                 ;; if the user wants to AND if the overlay succeeded.
-                 'invisible t))))
+    nil))
 
 (add-hook 'clojure-mode-hook #'ambrevar/turn-on-delete-trailing-whitespace)
 
@@ -387,6 +356,74 @@ focused."
      (cider-emit-interactive-eval-err-output err))
    ()))
 
+(defun cider-interactive-eval-handler (&optional buffer place)
+  "Make an interactive eval handler for BUFFER.
+PLACE is used to display the evaluation result.
+If non-nil, it can be the position where the evaluated sexp ends,
+or it can be a list with (START END) of the evaluated region.
+Update the cider-inspector buffer with the evaluation result
+when `cider-auto-inspect-after-eval' is non-nil."
+
+  (let* ((eval-buffer (current-buffer))
+         (beg (car-safe place))
+         (end (or (car-safe (cdr-safe place)) place))
+         (beg (when beg (copy-marker beg)))
+         (end (when end (copy-marker end)))
+         (fringed nil)
+         (res "")
+         (error-phase-requested nil)) ;; avoid requesting the phase more than once - can happen if there are errors during the phase nrepl sync request.
+    (nrepl-make-response-handler (or buffer eval-buffer)
+                                 ;; value handler:
+                                 (lambda (_buffer value)
+                                   (setq res (concat res value))
+                                   (cider--display-interactive-eval-result res 'value end))
+                                 ;; stdout handler:
+                                 (lambda (_buffer out)
+                                   (cider-emit-interactive-eval-output out))
+                                 ;; stderr handler:
+                                 (lambda (buffer err)
+                                   (cider-emit-interactive-eval-err-output err)
+
+
+                                   ;; ------------------------------        
+                                   ;; I wanted this 👈 👈
+                                   (when nrepl-err-handler
+                                     (funcall nrepl-err-handler))
+                                   ;; This is so it populates the stacktrace buffer
+                                   ;; ------------------------------
+
+                                   
+                                   (let ((phase (if
+                                                    error-phase-requested
+                                                    nil
+                                                  (setq error-phase-requested t)
+                                                  (cider--error-phase-of-last-exception buffer))))
+
+                                     (cider--maybe-display-error-as-overlay phase err end)
+
+                                     (cider-handle-compilation-errors err
+                                                                      eval-buffer
+                                                                      ;; we prevent jumping behavior on compilation errors,
+                                                                      ;; because lines tend to be spurious (e.g. 0:0)
+                                                                      ;; and because on compilation errors, normally
+                                                                      ;; the error is 'right there' in the current line
+                                                                      ;; and needs no jumping:
+                                                                      phase)))
+                                 ;; done handler:
+                                 (lambda (buffer)
+                                   (if beg
+                                       (unless fringed
+                                         (cider--make-fringe-overlays-for-region beg end)
+                                         (setq fringed t))
+                                     (cider--make-fringe-overlay end))
+                                   (when (and cider-auto-inspect-after-eval
+                                              (boundp 'cider-inspector-buffer)
+                                              (windowp (get-buffer-window cider-inspector-buffer 'visible)))
+                                     (cider-inspect-last-result)
+                                     (select-window (get-buffer-window buffer)))
+                                   (when cider-eval-register
+                                     (set-register cider-eval-register res))))))
+
 (defun cider-popup-eval-handler (&optional buffer)
   "Make a handler for printing evaluation results in popup BUFFER.
 This is used by pretty-printing commands."
@@ -425,8 +462,7 @@ This is used by pretty-printing commands."
   "Pretty print FORM in popup buffer."
   (let* ((buffer (current-buffer))
          (result-buffer (cider-make-popup-buffer cider-result-buffer 'clojure-mode 'ancillary))
-         (handler (cider-popup-eval-handler
-                   result-buffer)))
+         (handler (cider-popup-eval-handler result-buffer)))
     (with-current-buffer
         buffer
       (cider-interactive-eval
