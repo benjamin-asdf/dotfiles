@@ -1,1 +1,3 @@
-{:map {:comma? false :sort-in-code? true :sort? true}}
+{:width 60
+ :map
+ {:comma? false :sort-in-code? true :sort? true}}

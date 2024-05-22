@@ -56,10 +56,10 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://searxng.nicfab.eu/"
+c.url.default_page = "https://searx.hu/"
 
 c.url.searchengines = {
-    'DEFAULT': "https://searxng.nicfab.eu/?q={}",
+    'DEFAULT': "https://searx.hu/?q={}",
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",

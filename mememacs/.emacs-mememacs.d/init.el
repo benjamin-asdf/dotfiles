@@ -55,19 +55,6 @@
 
 (defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
-(use-package keychain-environment
-  :straight  (:host github :repo "tarsius/keychain-environment")
-  :init
-  (keychain-refresh-environment)
-  (auth-source-pass-enable))
-
-(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
-
-(use-package vundo
-  :config
-  (setq vundo-glyph-alist vundo-unicode-symbols
-        vundo-compact-display t))
-
 (use-package hydra)
 
 (use-package debug
@@ -917,10 +904,9 @@ Example:
               #'chatgpt-shell-ibuffer-buffers)
   (define-key openai-api-keymap (kbd "B")
               #'chatgpt-jump-to-context-shell)
-  (setq chatgpt-shell-model-version
-        "gpt-3.5-turbo")
-  (setq chatgpt-shell-model-version "gpt-4")
-  (setq chatgpt-shell-model-version "gpt-4-1106-preview")
+
+  (setq chatgpt-shell-model-version "gpt-3.5-turbo")
+  
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
@@ -929,8 +915,8 @@ Example:
                 (setf
                  s
                  (string-trim
-                  (shell-command-to-string
-                   "pass us-openai-test-key")))
+                  (shell-command-to-string "pass openai-api")
+                  ))
               s))))
   (setq-default
    chatgpt-additional-prompts
@@ -952,3 +938,5 @@ assistent intellectual honesty: 10/10
 User name: Benni"
                      user-iq
                      (emacs-version))))))))
+
+;; 

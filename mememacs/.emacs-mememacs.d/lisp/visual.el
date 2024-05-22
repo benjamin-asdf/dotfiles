@@ -378,9 +378,13 @@
 
 ;; figure out something for fira code
 (set-face-attribute 'italic nil :underline nil)
-
 (with-eval-after-load
     'ediff-init
   (set-face-attribute 'ediff-current-diff-C nil :foreground "white"))
 
+(with-eval-after-load 'markdown 
+(set-face-attribute 'markdown-line-break-face nil :underline nil)
+)
+
 (provide 'visual)
+

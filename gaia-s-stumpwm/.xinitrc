@@ -21,7 +21,10 @@ xset r rate 120 250
 #  --output DP-1 --off
 
 # exported with arandr
-xrandr --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-3 --off --output DP-4 --off --output DP-5 --off
+# xrandr --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-3 --off --output DP-4 --off --output DP-5 --off
+
+
+xrandr --output DVI-D-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off
 
 xautolock -time 4 -locker i3lock &
 
@@ -31,6 +34,8 @@ setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwi
 # xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 
 # orig:
+# // Make the left Ctrl key a left Hyper,
+# // and the CapsLock key a left Control.
 # partial modifier_keys
 # xkb_symbols "hyper_capscontrol" {
 #     replace key <CAPS> { [ Control_L ], type[group1] = "ONE_LEVEL" };

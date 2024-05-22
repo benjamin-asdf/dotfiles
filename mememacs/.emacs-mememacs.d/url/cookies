@@ -1,0 +1,21 @@
+;; Emacs-W3 HTTP cookies file
+;; Automatically generated file!!! DO NOT EDIT!!!
+
+(setq url-cookie-storage
+ 'nil
+)
+(setq url-cookie-secure-storage
+ '(("github.com"
+  [url-cookie "_octo" "GH1.1.710794688.1706634004"
+              "Thu, 30 Jan 2025 17:00:04 GMT" "/" "github.com" t]
+  [url-cookie "logged_in" "no" "Thu, 30 Jan 2025 17:00:04 GMT" "/"
+              "github.com" t]))
+)
+
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; coding: utf-8-emacs-unix
+;; End:
+
+;;; cookies ends here

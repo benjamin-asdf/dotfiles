@@ -320,6 +320,7 @@ This won't jump to the end of the buffer if there is no paren there."
 (defun mm/c-l ()
   (interactive)
   (cond
+   (artist-mode (artist-select-op-line))
    ((region-active-p)
     (if (meow--direction-forward-p)
         (progn (avy-goto-line-below) (end-of-line))
@@ -333,6 +334,11 @@ This won't jump to the end of the buffer if there is no paren there."
 
 (meow-normal-define-key '("C-l" . mm/c-l))
 (meow-define-keys 'insert '("C-l" . mm/c-l))
+
+;; (bind-keys
+;;  :map artist-mode-map
+;;  ("C-c C-a r" . artist-select-op-rectangle)
+;;  ("C-c C-a l" . artist-select-op-line))
 
 (defun mm/meow-insert (&rest _) (meow-insert))
 (advice-add #'lispy-right-nostring :after #'mm/meow-insert)

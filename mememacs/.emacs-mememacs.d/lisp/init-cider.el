@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
-(setq cider-repl-display-help-banner nil
-      cider-repl-pop-to-buffer-on-connect nil
+(setq cider-erepl-display-help-banner nil
+      cider-repl-pop-to-buffer-on-connect t
       cider-repl-display-in-current-window t
       cider-font-lock-reader-conditionals nil
       cider-babashka-parameters "nrepl-server 0"
@@ -11,8 +11,8 @@
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
       cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
-      ;; cider-merge-sessions nil
-      cider-merge-sessions 'project
+      cider-merge-sessions nil
+      ;; cider-merge-sessions 'project
 
       cider-auto-jump-to-error nil
       cider-show-error-buffer nil
@@ -316,10 +316,13 @@ focused."
 
   (defun cider-repl-consult ()
     (interactive)
-    (consult-buffer
-     (list
-      cider-consult-repl-buffer-source))))
-
+    (let ((start-buff (current-buffer)))
+      (consult-buffer
+       (list
+        cider-consult-repl-buffer-source))
+      (unless (equal start-buff (current-buffer))
+        (let ((b (current-buffer)))
+          (with-current-buffer start-buff (setq-local curr-cider-repls (list b))))))))
 
 (defun cider-eval-print-handler (&optional buffer)
   "Make a handler for evaluating and printing result in BUFFER."
@@ -690,62 +693,77 @@ Result truncated. Type `\\[cider-inspect-last-result]' to inspect it."))))
 
 (defvar-local curr-cider-repls nil)
 
+(defun sort-latest-buffer (buffs)
+  "Return the latest used buffer from BUFFS."
+  (car
+   (mapcar #'cdr (sort (mapcan
+                        (lambda (b)
+                          (with-current-buffer b
+                            (if-let ((w (get-buffer-window b)))
+                                (list (cons (window-use-time w)
+                                            (current-buffer))))))
+                        buffs)
+                       (lambda (a b) (> (car a) (car b)))))))
+
 (defun cider-repls (&optional type ensure)
   "Return cider REPLs of TYPE from the current session.
 If TYPE is nil or multi, return all REPLs.  If TYPE is a list of types,
 return only REPLs of type contained in the list.  If ENSURE is non-nil,
 throw an error if no linked session exists."
-  (or (-filter
-       #'buffer-live-p
-       curr-cider-repls)
-      (setf
-       curr-cider-repls
-       (let ((type (cond ((listp type)
-                          (mapcar
-                           #'cider-maybe-intern
-                           type))
-                         ((cider-maybe-intern type))))
-             (repls (pcase
-                        cider-merge-sessions
-                      ('host
-                       (if ensure
-                           (or (cider--extract-connections
-                                (cider--get-sessions-with-same-host
-                                 (sesman-current-session 'CIDER)
-                                 (sesman-current-sessions
-                                  'CIDER)))
-                               (user-error
-                                "No linked %s sessions"
-                                'CIDER))
-                         (cider--extract-connections
-                          (cider--get-sessions-with-same-host
-                           (sesman-current-session 'CIDER)
-                           (sesman-current-sessions
-                            'CIDER)))))
-                      ('project
-                       (if ensure
-                           (or (cider--extract-connections
-                                (sesman-current-sessions
-                                 'CIDER))
-                               (user-error
-                                "No linked %s sessions"
-                                'CIDER))
-                         (cider--extract-connections
-                          (sesman-current-sessions
-                           'CIDER))))
-                      (_
-                       (cdr (if ensure
-                                (sesman-ensure-session 'CIDER)
-                              (sesman-current-session 'CIDER)))))))
-         (or (let ((r (seq-filter
-                       (lambda (b)
-                         (unless (cider-cljs-pending-p b)
-                           (cider--match-repl-type type b)))
-                       repls)))
-               (when r (list (car r))))
-             (when ensure
-               (cider--no-repls-user-error
-                type)))))))
-
+  (if (eq curr-cider-repls 'none)
+      nil
+    (or (-filter #'buffer-live-p curr-cider-repls)
+        (setf
+         curr-cider-repls
+         (let ((type (cond ((listp type)
+                            (mapcar
+                             #'cider-maybe-intern
+                             type))
+                           ((cider-maybe-intern type))))
+               (repls (pcase
+                          cider-merge-sessions
+                        ('host
+                         (if ensure
+                             (or (cider--extract-connections
+                                  (cider--get-sessions-with-same-host
+                                   (sesman-current-session 'CIDER)
+                                   (sesman-current-sessions
+                                    'CIDER)))
+                                 (user-error
+                                  "No linked %s sessions"
+                                  'CIDER))
+                           (cider--extract-connections
+                            (cider--get-sessions-with-same-host
+                             (sesman-current-session 'CIDER)
+                             (sesman-current-sessions
+                              'CIDER)))))
+                        ('project
+                         (if ensure
+                             (or (cider--extract-connections
+                                  (sesman-current-sessions
+                                   'CIDER))
+                                 (user-error
+                                  "No linked %s sessions"
+                                  'CIDER))
+                           (cider--extract-connections
+                            (sesman-current-sessions
+                             'CIDER))))
+                        (_
+                         (cdr (if ensure
+                                  (sesman-ensure-session 'CIDER)
+                                (sesman-current-session 'CIDER)))))))
+           (or (let ((r (seq-filter
+                         (lambda (b)
+                           (unless (cider-cljs-pending-p b)
+                             (cider--match-repl-type type b)))
+                         repls)))
+                 r
+                 ;; (list (sort-latest-buffer r))
+                 )
+               (when ensure
+                 (cider--no-repls-user-error
+                  type))))))))
 
 (provide 'init-cider)
+
+

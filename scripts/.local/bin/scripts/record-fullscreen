@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 [ -f /tmp/recordingpid ] && (kill "$(cat /tmp/recordingpid)" ; rm -f /tmp/recordingpid ; exit 0) && exit 0
 
 outfile="$HOME/Pictures/screen-$(date '+%y%m%d-%H%M-%S').mp4"
