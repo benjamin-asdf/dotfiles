@@ -26,7 +26,26 @@
   (defun mm/clear-the-lsp-cache-bust-invalidate-chaches-lsp ()
     (interactive)
     (setq lsp--session
-          (lsp--load-default-session))))
+          (lsp--load-default-session)))
+  (defun my-lsp-resolve-all ()
+    (interactive)
+    (let ((actions (save-mark-and-excursion
+                     (goto-char (point-min))
+                     (set-mark (point))
+                     (goto-char (point-max))
+                     (lsp-code-actions-at-point))))
+      (-each
+          (-remove
+           (lambda (hasht)
+             (s-starts-with?
+              "Dismiss"
+              (gethash "title" hasht)))
+           actions)
+        (lambda (action)
+          (lsp--execute-code-action
+           (lsp-request
+            "codeAction/resolve"
+            action)))))))
 
 (use-package lsp-grammarly
   :config

@@ -115,6 +115,43 @@
   :straight (:host github :repo "emacs-straight/org-mode")
   :config (require 'init-org))
 
+(use-package
+  el-easydraw
+  :straight (:host github
+                   :repo "misohena/el-easydraw")
+  :config
+  (setf
+   edraw-default-shape-properties
+   `((rect
+      (fill . ,edraw-package-default-fill)
+      (stroke . ,edraw-package-default-stroke)
+      (stroke-width . 2))
+     (ellipse
+      (fill . ,edraw-package-default-fill)
+      (stroke . ,edraw-package-default-stroke)
+      (stroke-width . 2))
+     (path
+      (fill . "none")
+      (stroke . ,edraw-package-default-stroke)
+      (stroke-width . 2)
+      (marker-end . "arrow"))
+     (text
+      (fill . ,edraw-package-default-stroke)
+      ;; Not edraw-package-default-fill
+      (font-size . 25)
+      (font-family . "sans-serif")
+      (text-anchor . "middle"))
+     (image)))
+  (with-eval-after-load
+      'org
+    (require 'edraw-org)
+    (edraw-org-setup-default))
+  (with-eval-after-load
+      "ox"
+    (require 'edraw-org)
+    (edraw-org-setup-exporter)))
+
+
 (use-package savehist
   :after vertico
   :init
@@ -904,19 +941,17 @@ Example:
               #'chatgpt-shell-ibuffer-buffers)
   (define-key openai-api-keymap (kbd "B")
               #'chatgpt-jump-to-context-shell)
-
   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
-  
+  (setq chatgpt-shell-model-version "gpt-4o")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()
-            (if
-                (not (s-starts-with? "sk-" s))
+            (if (not (s-starts-with? "sk-" s))
                 (setf
                  s
                  (string-trim
-                  (shell-command-to-string "pass openai-api")
-                  ))
+                  (shell-command-to-string
+                   "pass openai-api-1")))
               s))))
   (setq-default
    chatgpt-additional-prompts
