@@ -120,6 +120,7 @@
   :straight (:host github
                    :repo "misohena/el-easydraw")
   :config
+  (require 'edraw)
   (setf
    edraw-default-shape-properties
    `((rect
@@ -135,13 +136,16 @@
       (stroke . ,edraw-package-default-stroke)
       (stroke-width . 2)
       (marker-end . "arrow"))
+     
      (text
       (fill . ,edraw-package-default-stroke)
       ;; Not edraw-package-default-fill
-      (font-size . 25)
+      (font-size . 18)
       (font-family . "sans-serif")
       (text-anchor . "middle"))
      (image)))
+
+  
   (with-eval-after-load
       'org
     (require 'edraw-org)
@@ -943,6 +947,7 @@ Example:
               #'chatgpt-jump-to-context-shell)
   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
   (setq chatgpt-shell-model-version "gpt-4o")
+  (setq chatgpt-shell-model-version "gpt-4")
   (setq chatgpt-shell-openai-key
         (let ((s))
           (lambda ()

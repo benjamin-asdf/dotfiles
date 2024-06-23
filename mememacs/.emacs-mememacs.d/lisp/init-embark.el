@@ -67,6 +67,7 @@
 
 (defun mememacs/dragon (file)
   (interactive "FDragon drag and drop: ")
+  (message file)
   (start-process-shell-command
    "dragon"
    (get-buffer-create "*dragon*")

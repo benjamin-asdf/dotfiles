@@ -1,0 +1,4 @@
+#!/bin/sh
+
+parec -d "alsa_output.usb-Razer_Inc._Razer_Seiren_Pro_UC1637132408924-00.analog-stereo.monitor" | ffplay -f s16le -channels 2 -ar 44100 -
+

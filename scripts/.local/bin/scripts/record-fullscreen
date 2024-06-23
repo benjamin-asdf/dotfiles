@@ -5,9 +5,17 @@
 
 outfile="$HOME/Pictures/screen-$(date '+%y%m%d-%H%M-%S').mp4"
 
+# ffmpeg -report -f x11grab -video_size 2560x1440 -framerate 25 -i ":0.0+1920,0" \
+#        -f pulse -i "alsa_input.usb-Razer_Inc._Razer_Seiren_Pro_UC1637132408924-00.analog-stereo" -c:a flac \
+#        -ac 2 -async 1 -vsync 1 "$outfile" &
+
+
 ffmpeg -report -f x11grab -video_size 2560x1440 -framerate 25 -i ":0.0+1920,0" \
-       -f pulse -i "alsa_input.usb-Razer_Inc._Razer_Seiren_Pro_UC1637132408924-00.analog-stereo" -c:a flac \
+       -f pulse -i "alsa_input.usb-Razer_Inc._Razer_Seiren_Pro_UC1637132408924-00.analog-stereo" \
+       -f pulse -i "alsa_output.usb-Razer_Inc._Razer_Seiren_Pro_UC1637132408924-00.analog-stereo.monitor" \
+       -filter_complex "[1:a][2:a]amerge=inputs=2[a]" -map 0 -map "[a]" -c:a flac \
        -ac 2 -async 1 -vsync 1 "$outfile" &
+
 
 
 echo $! > /tmp/recordingpid

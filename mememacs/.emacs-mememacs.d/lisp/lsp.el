@@ -75,7 +75,6 @@
   :config
   (add-hook 'typescript-mode-hook #'lsp-deferred))
 
-
 (progn
   (use-package rust-mode
     :ensure t :mode "\\.rs\\'"

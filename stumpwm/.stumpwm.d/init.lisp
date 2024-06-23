@@ -1,5 +1,7 @@
 (in-package :stumpwm)
 
+
+
 (defmacro comment (&rest _)
   (declare (ignore _)))
 
@@ -9,6 +11,7 @@
 (setf *frame-number-map* mm/avy-keys
       *group-number-map* mm/avy-keys
       *window-number-map* mm/avy-keys)
+
 
 
 (bind "k" "move-window up")
