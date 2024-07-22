@@ -144,8 +144,6 @@
       (font-family . "sans-serif")
       (text-anchor . "middle"))
      (image)))
-
-  
   (with-eval-after-load
       'org
     (require 'edraw-org)

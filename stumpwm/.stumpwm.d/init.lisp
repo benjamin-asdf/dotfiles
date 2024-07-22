@@ -1,7 +1,5 @@
 (in-package :stumpwm)
 
-
-
 (defmacro comment (&rest _)
   (declare (ignore _)))
 
