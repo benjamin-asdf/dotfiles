@@ -1,6 +1,6 @@
 source ~/.profile
 
-# export XDG_SESSION_TYPE=X11
+export XDG_SESSION_TYPE=X11
 
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit

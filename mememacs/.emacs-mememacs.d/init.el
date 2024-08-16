@@ -117,8 +117,7 @@
 
 (use-package
   el-easydraw
-  :straight (:host github
-                   :repo "misohena/el-easydraw")
+  :straight (:host github :repo "misohena/el-easydraw")
   :config
   (require 'edraw)
   (setf
@@ -136,7 +135,6 @@
       (stroke . ,edraw-package-default-stroke)
       (stroke-width . 2)
       (marker-end . "arrow"))
-     
      (text
       (fill . ,edraw-package-default-stroke)
       ;; Not edraw-package-default-fill
@@ -894,6 +892,8 @@ Example:
     (when (copilot-accept-completion)
       (indent-for-tab-command)))
 
+  (add-to-list 'warning-suppress-types '((copilot copilot-no-mode-indent)))
+  
   (add-to-list
    'copilot-major-mode-alist
    '("python-mode" . "python"))
