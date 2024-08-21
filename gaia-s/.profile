@@ -3,6 +3,8 @@
 
 export BROWSER=/usr/bin/qutebrowser
 
+PATH="$HOME/.local/bin/pathoverride/:$PATH"
+
 # Adds `~/.local/bin/` and all subdirectories to $PATH
 PATH="$PATH:$(du "$HOME/.local/bin/" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 PATH="$PATH:$(du "$HOME/.babashka" -L | cut -f2 | tr '\n' ':' | sed 's/:*$//')"

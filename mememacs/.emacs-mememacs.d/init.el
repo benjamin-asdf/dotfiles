@@ -105,7 +105,22 @@
   :init
   (vertico-mode)
   :config
-  (require 'init-vertico))
+  (require 'init-vertico)
+
+  ;; instead of saying 'match required' remove a char
+  ;; make it water my friends.
+  ;;
+  (defun vertico--match-p (input)
+    "Return t if INPUT is a valid match."
+    (let ((rm minibuffer--require-match))
+      (or (memq rm '(nil confirm-after-completion))
+          (equal "" input) ;; Null completion, returns default value
+          (and (functionp rm) (funcall rm input)) ;; Emacs 29 supports functions
+          (test-completion input minibuffer-completion-table minibuffer-completion-predicate)
+          (if (eq rm 'confirm) (eq (ignore-errors (read-char "Confirm")) 13)
+            (delete-char -1)
+            ;; (minibuffer-message "Match required")
+            nil)))))
 
 (use-package orderless)
 
@@ -115,6 +130,8 @@
   :straight (:host github :repo "emacs-straight/org-mode")
   :config (require 'init-org))
 
+;; not sure something is wrong with this config
+;; I always need to manually load it atm.
 (use-package
   el-easydraw
   :straight (:host github :repo "misohena/el-easydraw")
@@ -143,14 +160,9 @@
       (text-anchor . "middle"))
      (image)))
   (with-eval-after-load
-      'org
-    (require 'edraw-org)
-    (edraw-org-setup-default))
-  (with-eval-after-load
       "ox"
     (require 'edraw-org)
     (edraw-org-setup-exporter)))
-
 
 (use-package savehist
   :after vertico
@@ -893,7 +905,7 @@ Example:
       (indent-for-tab-command)))
 
   (add-to-list 'warning-suppress-types '((copilot copilot-no-mode-indent)))
-  
+
   (add-to-list
    'copilot-major-mode-alist
    '("python-mode" . "python"))
@@ -977,4 +989,4 @@ User name: Benni"
                      user-iq
                      (emacs-version))))))))
 
-;; 
+;;
