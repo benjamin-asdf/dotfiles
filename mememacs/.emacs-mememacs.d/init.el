@@ -1,5 +1,24 @@
 ;; -*- lexical-binding: t; -*-
 
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+
+
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
 ;;; see COPYING in the root of this repo
@@ -909,34 +928,36 @@ Example:
    ("C-, n" . copilot-next-completion)
    ("C-, p" . copilot-previous-completion)))
 
-(use-package openai-api
-  :straight nil
-  :load-path "~/repos/openai-api.el/"
-  :config
-  (setq openai-api-key
-        (let ((s))
-          (lambda ()
-            (or s (setf
-                   s
-                   (auth-source-pick-first-password
-                    :host "openai-api"))))))
-  (define-key openai-api-keymap (kbd "i")
-              (defun mm/insert-todo ()
-                (interactive)
-                (insert "TODO: ")
-                (comment-line 1)))
-  (with-eval-after-load 'git-commit-mode
-    (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg))
-  (meow-leader-define-key
-   `("." . ,openai-api-keymap)))
+;; (use-package openai-api
+;;   :straight nil
+;;   :load-path "~/repos/openai-api.el/"
+;;   :config
+;;   (setq openai-api-key
+;;         (let ((s))
+;;           (lambda ()
+;;             (or s (setf
+;;                    s
+;;                    (auth-source-pick-first-password
+;;                     :host "openai-api"))))))
+;;   (define-key openai-api-keymap (kbd "i")
+;;               (defun mm/insert-todo ()
+;;                 (interactive)
+;;                 (insert "TODO: ")
+;;                 (comment-line 1)))
+;;   (with-eval-after-load 'git-commit-mode
+;;     (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg))
+;;   (meow-leader-define-key
+;;    `("." . ,openai-api-keymap)))
 
 (use-package
   chatgpt-shell
   :straight nil
   :load-path "~/repos/chatgpt-shell/"
-  :after openai-api
-  :config (define-key openai-api-keymap (kbd "a")
-                      #'chatgpt-shell-shell-add-context-file)
+  ;; :after openai-api
+  :config
+  (defvar openai-api-keymap (make-sparse-keymap))
+  (define-key openai-api-keymap (kbd "a")
+              #'chatgpt-shell-shell-add-context-file)
   (define-key openai-api-keymap (kbd "A")
               #'chatgpt-clear-some-contexts)
   (define-key openai-api-keymap (kbd "RET")
@@ -945,6 +966,7 @@ Example:
               #'chatgpt-shell-ibuffer-buffers)
   (define-key openai-api-keymap (kbd "B")
               #'chatgpt-jump-to-context-shell)
+  (meow-leader-define-key `("." . ,openai-api-keymap))
   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
   (setq chatgpt-shell-model-version "gpt-4o")
   (setq chatgpt-shell-model-version "gpt-4")
