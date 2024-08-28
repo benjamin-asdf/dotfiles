@@ -1,5 +1,7 @@
 source ~/.profile
 
+export XDG_SESSION_TYPE=X11
+
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -20,11 +22,12 @@ xset r rate 120 250
 #  --output DP-0 --mode 2560x1440 --rate 60 --pos 3840x0 --primary \
 #  --output DP-1 --off
 
-# exported with arandr
-# xrandr --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-3 --off --output DP-4 --off --output DP-5 --off
+# 3 monitors
+# xrandr --output DVI-D-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off
 
+# middle and right
+xrandr --output DVI-D-0 --off --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off
 
-xrandr --output DVI-D-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off
 
 xautolock -time 4 -locker i3lock &
 

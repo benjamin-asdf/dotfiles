@@ -20,7 +20,22 @@
 ;; (kill! "8080")
 (comment
 
-  (shell/sh "lsof" (str "-i:" 40800) "-n" "-P" "-t")
+
+  (shell/sh "lsof" (str "-i:" 5173) "-n" "-P" "-t")
+  (let
+      [port 5173] (str/split-lines
+                   (:out
+                    (shell/sh
+                     "lsof"
+                     (str "-i:" port)
+                     "-n"
+                     "-P"
+                     "-t"))))
+
+
+
+
+
   (shell/sh "lsof" (str "-i:" 33242) "-n" "-P" "-t")
   (shell/sh "lsof" (str "-i:" 8080) "-n" "-P" "-t")
   {:exit 0, :out "77563\n", :err ""}

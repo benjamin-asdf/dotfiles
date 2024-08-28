@@ -8,7 +8,7 @@ export AWS_DEFAULT_REGION=us-east-1
 
 name="$(uuidgen)-$(basename "$1")"
 bucket_name="$(pass cos-attch-bucket-name)"
-content_type="$(mimetype --brief "$1")"
+content_type="$(file --mime-type "$1")"
 
 url=https://s3.eu-central-1.amazonaws.com/$bucket_name/ShareX/ben/"$name"
 
