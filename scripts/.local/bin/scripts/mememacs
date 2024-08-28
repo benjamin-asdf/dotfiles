@@ -1,0 +1,3 @@
+#!/bin/sh
+
+emacs --init-dir .emacs-mememacs.d
