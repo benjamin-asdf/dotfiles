@@ -51,3 +51,4 @@ xrdb -merge ~/.Xresources
 export SBCL_HOME="/usr/lib/sbcl/"
 
 /home/benj/repos/stumpwm/stumpwm
+
