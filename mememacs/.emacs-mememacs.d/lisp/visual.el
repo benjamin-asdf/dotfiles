@@ -40,8 +40,8 @@
 (defconst mememacs-visuals/gimbled		 "#bcb66d")
 (defconst mememacs-visuals/hit-pink		 "#feb48f")
 (defconst mememacs-visuals/amethyst-smoke	 "#Ac98bf")
-(defconst mememacs-visuals/lilly "#B8a0af")
-(defconst mememacs-visuals/summer-green "#a0b8a9")
+(defconst mememacs-visuals/lilly                 "#B8a0af")
+(defconst mememacs-visuals/summer-green          "#a0b8a9")
 (defconst mememacs-visuals/cursor-default        "NavajoWhite")
 
 (set-face-background 'default mememacs-visuals/bg)

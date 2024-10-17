@@ -1,6 +1,6 @@
 source ~/.profile
 
-export XDG_SESSION_TYPE=X11
+# export XDG_SESSION_TYPE=X11
 
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
@@ -26,7 +26,7 @@ xset r rate 120 250
 # xrandr --output DVI-D-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off
 
 # middle and right
-xrandr --output DVI-D-0 --off --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off
+# xrandr --output DVI-D-0 --off --output HDMI-0 --mode 1920x1080 --pos 4480x0 --rotate normal --output DP-0 --primary --mode 2560x1440 --pos 1920x0 --rotate normal --output DP-1 --off
 
 
 xautolock -time 4 -locker i3lock &
@@ -59,7 +59,7 @@ setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwi
 # };
 
 xmodmap ~/.Xmodmap
-# xcape -e 'Control_L=Escape'
+
 # make escape a control  
 
 spare_modifier="Hyper_R"
@@ -85,6 +85,4 @@ dunst &
 
 xrdb -merge ~/.Xresources
 
-/home/benj/repos/stumpwm/stumpwm
-
-# xset r rate 200 180
+exec /home/benj/repos/stumpwm/stumpwm

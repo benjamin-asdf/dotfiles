@@ -88,3 +88,14 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+
+append_path() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$PATH:$1"
+    fi
+
+}
+
+
+  

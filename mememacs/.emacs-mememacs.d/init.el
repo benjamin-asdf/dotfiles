@@ -1,6 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -16,8 +15,6 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-
 
 ;; borrowed with love from
 ;;; https://gitlab.com/ambrevar/dotfiles
@@ -156,6 +153,10 @@
   :straight (:host github :repo "misohena/el-easydraw")
   :config
   (require 'edraw)
+  (with-eval-after-load
+      'org
+    (require 'edraw-org)
+    (edraw-org-setup-default))
   (setf
    edraw-default-shape-properties
    `((rect
@@ -451,9 +452,9 @@
 
 (use-package link-hint)
 
-(use-package guix
-  :when mememacs/enable-guix
-  :defer t)
+;; (use-package guix
+;;   :when mememacs/enable-guix
+;;   :defer t)
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
@@ -635,7 +636,20 @@ string).  It returns t if a new expansion is found, nil otherwise."
   (add-hook
    'sh-mode-hook
    (defun mm/add-bash-completion ()
-     (add-hook 'completion-at-point-functions #'bash-completion-capf nil t))))
+     (add-hook 'completion-at-point-functions #'bash-completion-capf nil t)))
+  
+  (with-eval-after-load
+      'comint
+    (add-hook
+     'comint-mode-hook
+     (defun mm/setup-bash-completion-comint ()
+       (add-hook
+        'completion-at-point-functions
+        #'bash-completion-capf
+        nil
+        t)))
+    (define-key comint-mode-map (kbd "TAB")
+                #'completion-at-point)))
 
 (use-package backup-each-save
   :config

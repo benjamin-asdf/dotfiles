@@ -78,7 +78,7 @@
  '("fj" . save-buffer)
  '("ff" . consult-find)
  '("l" . consult-line)
- '("L" . mm/consult-line-stay-in-dired)
+ '("L" . consult-line-multi)
  '("s" . meow-visit)
  '("/" . meow-keypad-describe-key)
  '("!" . flycheck-mode)

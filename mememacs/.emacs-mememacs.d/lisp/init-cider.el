@@ -712,7 +712,9 @@ return only REPLs of type contained in the list.  If ENSURE is non-nil,
 throw an error if no linked session exists."
   (if (eq curr-cider-repls 'none)
       nil
-    (or (-filter #'buffer-live-p curr-cider-repls)
+    (or (-filter
+         #'buffer-live-p
+         curr-cider-repls)
         (setf
          curr-cider-repls
          (let ((type (cond ((listp type)
@@ -722,7 +724,7 @@ throw an error if no linked session exists."
                            ((cider-maybe-intern type))))
                (repls (pcase
                           cider-merge-sessions
-                        ('host
+                        ('hostv
                          (if ensure
                              (or (cider--extract-connections
                                   (cider--get-sessions-with-same-host
@@ -763,6 +765,43 @@ throw an error if no linked session exists."
                (when ensure
                  (cider--no-repls-user-error
                   type))))))))
+
+
+;; -----------------------------------------------------------
+
+
+;; Also count 'do' as honary ignore toplevel
+
+(defun clojure-beginning-of-defun-function (&optional n)
+  "Go to top level form.
+Set as `beginning-of-defun-function' so that these generic
+operators can be used.  Given a positive N it will do it that
+many times."
+  (let ((beginning-of-defun-function nil))
+    (if (and clojure-toplevel-inside-comment-form
+             (or
+              (clojure-top-level-form-p "comment")
+              (clojure-top-level-form-p "do")) ;; 👈
+             )
+        (condition-case nil
+            (save-match-data
+              (let ((original-position (point))
+                    clojure-comment-end)
+                (beginning-of-defun-raw)
+                (end-of-defun)
+                (setq clojure-comment-end (point))
+                (beginning-of-defun-raw)
+                (forward-char 1) ;; skip paren so we start at comment
+                (clojure-forward-logical-sexp) ;; skip past the comment form itself
+                (if-let ((sexp-start (clojure-find-first (lambda (beg-pos)
+                                                           (< beg-pos original-position))
+                                                         (clojure-sexp-starts-until-position
+                                                          clojure-comment-end))))
+                    (progn (goto-char sexp-start) t)
+                  (beginning-of-defun-raw n))))
+          (scan-error (beginning-of-defun-raw n)))
+      (beginning-of-defun-raw n))))
+
 
 (provide 'init-cider)
 

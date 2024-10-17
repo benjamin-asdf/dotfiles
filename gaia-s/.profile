@@ -15,6 +15,7 @@ export PATH
 export CHROME_EXECUTABLE="google-chrome-stable"
 
 export SBCL_HOME=/usr/lib/sbcl/
+# export SBCL_HOME="/home/benj/.local/sbcl/lib/sbcl/"
 
 export ALTERNATE_EDITOR="vim"
 export EDITOR="emacsclient"
@@ -22,10 +23,6 @@ export VISUAL="emacsclient"
 
 # zsh
 export ZDOTDIR="$HOME/.config/zsh/"
-
-# idlegame
-export COSDIR="$HOME/idlegame"
-export IDLEGAMEDIR="$COSDIR/IdleGame"
 
 # less/man colors
 export LESS=-R
@@ -44,18 +41,5 @@ export LESS_TERMCAP_us
 LESS_TERMCAP_ue="$(printf '%b' '[0m')"; a="${a%_}"
 export LESS_TERMCAP_ue
 
-
-# If we are running bash, source bashrc
-
 # shellcheck disable=SC1091
 [ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . "$HOME/.bashrc"
-
-# guix on foreign  distro
-GUIX_PROFILE="$HOME/.config/guix/current"
-export GUIX_PROFILE
-GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
-export GUIX_LOCPATH
-
-[ -e "$HOME/.guix-profile" ] \
-    &&  . "$HOME/.guix-profile/etc/profile" \
-    && . "$HOME/.config/guix/current/etc/profile"

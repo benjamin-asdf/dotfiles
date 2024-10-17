@@ -55,7 +55,8 @@
 (define-key *top-map* (kbd "s-n") "nyxt")
 
 (defcommand pull-emacs () ()
-  (run-or-pull "emacs" '(:class "Emacs")))
+            ;; (run-or-pull "emacs" '(:class "Emacs"))
+            (run-or-pull "/home/benj/repos/emacs/src/emacs" '(:class "Emacs")))
 
 (define-key *top-map* (kbd "s-E") "pull-emacs")
 (define-key *top-map* (kbd "s-9")  "lock")
