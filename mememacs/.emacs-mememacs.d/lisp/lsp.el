@@ -88,9 +88,7 @@
 
 (use-package go-mode
   :config
-  (add-hook 'go-mode-ho :ok 'lsp-deferred)
-  
-  )
+  (add-hook 'go-mode-ho :ok 'lsp-deferred))
 
 (use-package elixir-mode :config (add-hook 'elixir-mode-hook #'lsp))
 
