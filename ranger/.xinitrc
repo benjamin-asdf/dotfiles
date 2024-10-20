@@ -11,14 +11,6 @@ xset r rate 140 220
 
 xautolock -time 4 -locker i3lock &
 
-# setxkbmap -layout us -option ctrl:hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
-
-# xmodmap ~/.Xmodmap
-
-# setxkbmap -layout us -option ctrl:nocaps,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
-
-#setxkbmap -layout us -option ctrl:nocaps_hyper_capscontrol,nodeadkeys,nbsp:level3,altwin:prtsc_rwin
-
 # I am using orig, Mod3 is Hyper_L
 # orig:
 # // Make the left Ctrl key a left Hyper,
@@ -36,19 +28,20 @@ xautolock -time 4 -locker i3lock &
 # nodeadkeys
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nbsp:level3,altwin:prtsc_rwin
 
-# /usr/share/X11/xkb/symbols/ctrl
-
 xcape -e 'Control_L=Escape'
 
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
-
 unclutter &
 dunst &
 
+sxhkd & 
+
 xrdb -merge ~/.Xresources
 
+# export SBCL_HOME="/usr/lib/sbcl/"
+# exec stumpwm 
+# exec /home/benj/repos/stumpwm/stumpwm.bak
+# exec bspwm
 
-export SBCL_HOME="/usr/lib/sbcl/"
-
-/home/benj/repos/stumpwm/stumpwm
+exec /home/benj/repos/stumpwm/stumpwm
 
