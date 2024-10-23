@@ -382,6 +382,11 @@ FORM should be a quoted list."
     ("M-n"   . "Down")
     ("M-p"   . "Up"))))
 
+
+;; (load-module "battery-portable")
+;; (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
+
+
 (comment
  ;; (progn
  ;;   (load-module "stumptray")

@@ -28,20 +28,19 @@ xautolock -time 4 -locker i3lock &
 # nodeadkeys
 setxkbmap -layout us -option ctrl:hyper_capscontrol,nbsp:level3,altwin:prtsc_rwin
 
+# for kinesis, I remapped esc to capslock then it worked
+
 xcape -e 'Control_L=Escape'
 
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
 unclutter &
 dunst &
 
-sxhkd & 
+
 
 xrdb -merge ~/.Xresources
 
-# export SBCL_HOME="/usr/lib/sbcl/"
-# exec stumpwm 
-# exec /home/benj/repos/stumpwm/stumpwm.bak
-# exec bspwm
+
 
 exec /home/benj/repos/stumpwm/stumpwm
 
