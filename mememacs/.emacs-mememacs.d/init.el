@@ -146,13 +146,9 @@
   :straight (:host github :repo "emacs-straight/org-mode")
   :config (require 'init-org))
 
-;; not sure something is wrong with this config
-;; I always need to manually load it atm.
-(use-package
-  el-easydraw
+(use-package edraw
   :straight (:host github :repo "misohena/el-easydraw")
   :config
-  (require 'edraw)
   (with-eval-after-load
       'org
     (require 'edraw-org)
@@ -783,16 +779,17 @@ string).  It returns t if a new expansion is found, nil otherwise."
   :config
   (setf repeat-too-dangerous '()))
 
-(use-package emacs
-  :config
-  (setq save-abbrevs 'silently
-        find-file-suppress-same-file-warnings t)
+(use-package
+  emacs
+  :config (setq save-abbrevs
+                'silently
+                find-file-suppress-same-file-warnings
+                t)
   (setf create-lockfiles nil)
-
   ;; Unify Marks
   (setq global-mark-ring-max 256)
-  (setq set-mark-command-repeat-pop 256)
-
+  (setq set-mark-command-repeat-pop
+        256)
   (defun push-mark (&optional location nomsg activate)
     "Set mark at LOCATION (point, by default) and push old mark on mark ring.
 If the last global mark pushed was not in the current buffer,
@@ -806,24 +803,34 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
     (when (mark t)
       (let ((old (nth mark-ring-max mark-ring))
             (history-delete-duplicates nil))
-        (add-to-history 'mark-ring (copy-marker (mark-marker)) mark-ring-max t)
-        (when old
-          (set-marker old nil))))
-    (set-marker (mark-marker) (or location (point)) (current-buffer))
+        (add-to-history
+         'mark-ring
+         (copy-marker (mark-marker))
+         mark-ring-max
+         t)
+        (when old (set-marker old nil))))
+    (set-marker
+     (mark-marker)
+     (or location (point))
+     (current-buffer))
     (let ((old (nth global-mark-ring-max global-mark-ring))
           (history-delete-duplicates nil))
       (add-to-history
-       'global-mark-ring (copy-marker (mark-marker)) global-mark-ring-max t)
-      (when old
-        (set-marker old nil)))
-    (or nomsg executing-kbd-macro (> (minibuffer-depth) 0)
+       'global-mark-ring
+       (copy-marker (mark-marker))
+       global-mark-ring-max
+       t)
+      (when old (set-marker old nil)))
+    (or nomsg
+        executing-kbd-macro
+        (> (minibuffer-depth) 0)
         (message "Mark set"))
-    (if (or activate (not transient-mark-mode))
+    (if (or activate
+            (not transient-mark-mode))
         (set-mark (mark t)))
     nil)
-
-  (setq async-shell-command-buffer 'new-buffer)
-
+  (setq async-shell-command-buffer
+        'new-buffer)
   (defun path-slug (dir)
     "Returns the initials of `dir`s path,
 with the last part appended fully
@@ -832,65 +839,86 @@ Example:
 
 (path-slug \"/foo/bar/hello\")
 => \"f/b/hello\" "
-    (let* ((path (replace-regexp-in-string "\\." "" dir))
+    (let* ((path (replace-regexp-in-string
+                  "\\."
+                  ""
+                  dir))
            (path (split-string path "/" t))
            (path-s (mapconcat
                     (lambda (it)
                       (cl-subseq it 0 1))
-                    (nbutlast (copy-sequence path) 1)
+                    (nbutlast
+                     (copy-sequence path)
+                     1)
                     "/"))
            (path-s (concat
                     path-s
                     "/"
                     (car (last path)))))
       path-s))
-
   (defun mm/put-command-in-async-buff-name (f &rest args)
-    (let* ((path-s (if default-directory (path-slug default-directory) ""))
+    (let* ((path-s (if default-directory
+                       (path-slug default-directory)
+                     ""))
            (command (car args))
            (buffname (concat path-s " " command))
-           (shell-command-buffer-name-async
-            (format
-             "*async-shell-command %s*"
-             (string-trim
-              (substring buffname 0 (min (length buffname) 75))))))
+           (shell-command-buffer-name-async (format
+                                             "*async-shell-command %s*"
+                                             (string-trim
+                                              (substring
+                                               buffname
+                                               0
+                                               (min (length buffname) 75))))))
       (apply f args)))
-
-  (advice-add 'shell-command :around #'mm/put-command-in-async-buff-name)
-
-
+  (advice-add
+   'shell-command
+   :around #'mm/put-command-in-async-buff-name)
   ;; do not limit ourselves to a single compilation buffer - what the hell
   (setq-default
    compilation-buffer-name-function
    (defun mm/compilation-buffer-name (_name-of-mode)
-     (let*
-         ((path-s (if default-directory (path-slug default-directory) "")))
+     (let* ((path-s (if default-directory
+                        (path-slug default-directory)
+                      "")))
        (generate-new-buffer-name
-        (concat "*" "compilation -" (string-trim (substring path-s 0 (min (length path-s) 75))) "* ")))))
-
-  (add-hook 'comint-mode-hook
-            (defun mm/do-hack-dir-locals (&rest _)
-              (hack-dir-local-variables-non-file-buffer)))
-
+        (concat
+         "*"
+         "compilation -"
+         (string-trim
+          (substring
+           path-s
+           0
+           (min (length path-s) 75)))
+         "* ")))))
+  (add-hook
+   'comint-mode-hook
+   (defun mm/do-hack-dir-locals (&rest _)
+     (hack-dir-local-variables-non-file-buffer)))
   ;; it logs a warning when you hack a local
   ;; Making process-environment buffer-local while locally let-bound!
   ;; It is sort of want I want though
-  (advice-add #'start-process-shell-command :before #'mm/do-hack-dir-locals)
-
-  (advice-add 'compile :filter-args
-              (defun mm/always-use-comint-for-compile (args) `(,(car args) t)))
-
-  (add-to-list 'auto-mode-alist '("\\.mjs" . javascript-mode))
-
-  (advice-add 'yank-pop :before
-              (defun mm/add-primary-to-kill-ring ()
-                (interactive)
-                (setf kill-ring
-                      (append kill-ring (gui-get-primary-selection)))))
-
-  (setq-default compile-command "bb ")
-
-  ;; lenken not denken
+  (advice-add
+   #'start-process-shell-command
+   :before #'mm/do-hack-dir-locals)
+  (advice-add
+   'compile
+   :filter-args (defun mm/always-use-comint-for-compile (args)
+                  `(,(car args) t)))
+  (add-to-list
+   'auto-mode-alist
+   '("\\.mjs" . javascript-mode))
+  (advice-add
+   'yank-pop
+   :before (defun mm/add-primary-to-kill-ring ()
+             (interactive)
+             (setf
+              kill-ring
+              (append
+               kill-ring
+               (gui-get-primary-selection)))))
+  (setq-default
+   compile-command
+   "bb ")
   (defalias 'man #'woman))
 
 ;; hilarious when you run a spaceship on a super computer and it does silly optimizations from 30 years ago
@@ -973,56 +1001,56 @@ Example:
 ;;   (meow-leader-define-key
 ;;    `("." . ,openai-api-keymap)))
 
-(use-package
-  chatgpt-shell
-  :straight nil
-  :load-path "~/repos/chatgpt-shell/"
-  ;; :after openai-api
-  :config
-  (defvar openai-api-keymap (make-sparse-keymap))
-  (define-key openai-api-keymap (kbd "a")
-              #'chatgpt-shell-shell-add-context-file)
-  (define-key openai-api-keymap (kbd "A")
-              #'chatgpt-clear-some-contexts)
-  (define-key openai-api-keymap (kbd "RET")
-              #'chatgpt-shell)
-  (define-key openai-api-keymap (kbd "b")
-              #'chatgpt-shell-ibuffer-buffers)
-  (define-key openai-api-keymap (kbd "B")
-              #'chatgpt-jump-to-context-shell)
-  (meow-leader-define-key `("." . ,openai-api-keymap))
-  (setq chatgpt-shell-model-version "gpt-3.5-turbo")
-  (setq chatgpt-shell-model-version "gpt-4o")
-  (setq chatgpt-shell-model-version "gpt-4")
-  (setq chatgpt-shell-openai-key
-        (let ((s))
-          (lambda ()
-            (if (not (s-starts-with? "sk-" s))
-                (setf
-                 s
-                 (string-trim
-                  (shell-command-to-string
-                   "pass openai-api-1")))
-              s))))
-  (setq-default
-   chatgpt-additional-prompts
-   (lambda ()
-     `(((role . "system")
-        (content . ,(format
-                     "The user is a programmer hacker engineer using emacs. He is thinking in Lisp and Clojure.
-You are intellectually curious and humble. You give reasons why your answer might not be true,
-unless you have good reasons to think you are right.
-You encourage the user doing hard things. Because doing hard things and gaining knowledge is what makes a
-programmer more powerful.
-Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
-You desing like Rich Hickey, you are simple and crystal clear like Dawkins, you are joyful like Feynman.
-You are straightforward and imaginative like Minsky.
-user iq: %s
-Operating system: GNU/Linux arch
-Package Manger: yay
-assistent intellectual honesty: 10/10
-User name: Benni"
-                     user-iq
-                     (emacs-version))))))))
+;; (use-package
+;;   chatgpt-shell
+;;   :straight nil
+;;   :load-path "~/repos/chatgpt-shell/"
+;;   ;; :after openai-api
+;;   :config
+;;   (defvar openai-api-keymap (make-sparse-keymap))
+;;   (define-key openai-api-keymap (kbd "a")
+;;               #'chatgpt-shell-shell-add-context-file)
+;;   (define-key openai-api-keymap (kbd "A")
+;;               #'chatgpt-clear-some-contexts)
+;;   (define-key openai-api-keymap (kbd "RET")
+;;               #'chatgpt-shell)
+;;   (define-key openai-api-keymap (kbd "b")
+;;               #'chatgpt-shell-ibuffer-buffers)
+;;   (define-key openai-api-keymap (kbd "B")
+;;               #'chatgpt-jump-to-context-shell)
+;;   (meow-leader-define-key `("." . ,openai-api-keymap))
+;;   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
+;;   (setq chatgpt-shell-model-version "gpt-4o")
+;;   (setq chatgpt-shell-model-version "gpt-4")
+;;   (setq chatgpt-shell-openai-key
+;;         (let ((s))
+;;           (lambda ()
+;;             (if (not (s-starts-with? "sk-" s))
+;;                 (setf
+;;                  s
+;;                  (string-trim
+;;                   (shell-command-to-string
+;;                    "pass openai-api-1")))
+;;               s))))
+;;   (setq-default
+;;    chatgpt-additional-prompts
+;;    (lambda ()
+;;      `(((role . "system")
+;;         (content . ,(format
+;;                      "The user is a programmer hacker engineer using emacs. He is thinking in Lisp and Clojure.
+;; You are intellectually curious and humble. You give reasons why your answer might not be true,
+;; unless you have good reasons to think you are right.
+;; You encourage the user doing hard things. Because doing hard things and gaining knowledge is what makes a
+;; programmer more powerful.
+;; Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
+;; You desing like Rich Hickey, you are simple and crystal clear like Dawkins, you are joyful like Feynman.
+;; You are straightforward and imaginative like Minsky.
+;; user iq: %s
+;; Operating system: GNU/Linux arch
+;; Package Manger: yay
+;; assistent intellectual honesty: 10/10
+;; User name: Benni"
+;;                      user-iq
+;;                      (emacs-version))))))))
 
 ;;

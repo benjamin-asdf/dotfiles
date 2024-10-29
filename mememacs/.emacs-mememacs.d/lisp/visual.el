@@ -321,8 +321,6 @@
   ;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-12"))
   )
 
-
-
 (global-visual-line-mode)
 
 (with-eval-after-load

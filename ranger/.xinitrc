@@ -40,7 +40,5 @@ dunst &
 
 xrdb -merge ~/.Xresources
 
-
-
-exec /home/benj/repos/stumpwm/stumpwm
+exec stumpwm
 

@@ -1,4 +1,4 @@
-Xft.dpi:       96
+Xft.dpi:       160
 Xft.antialias: true
 Xft.hinting:   true
 Xft.rgba:      rgb
@@ -9,7 +9,7 @@ Xft.lcdfilter: lcddefault
 emacs*useXIM: off
 
 XTerm*faceName:          Fixed
-XTerm*faceSize:          17
+XTerm*faceSize:          18
 XTerm*reverseVideo:      on
 XTerm*selectToClipboard: true
 XTerm.vt100.backarrowKey: false

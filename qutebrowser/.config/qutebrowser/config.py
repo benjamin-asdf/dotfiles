@@ -17,7 +17,7 @@ c.colors.webpage.preferred_color_scheme = "dark"
 c.content.cookies.accept = 'all'
 c.content.cookies.store = True
 c.content.javascript.enabled = True
-c.content.javascript.clipboard = 'access'
+c.content.javascript.clipboard = 'access-paste'
 
 # lazy_restore does not work when idle.
 c.session.lazy_restore = True
@@ -56,7 +56,7 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://searx.hu/"
+c.url.default_page = "https://search.inetol.net/"
 
 c.url.searchengines = {
     'DEFAULT': "https://searx.hu/?q={}",
