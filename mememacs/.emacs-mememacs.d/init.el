@@ -69,7 +69,11 @@
 (setf user-mail-address "Benjamin.Schwerdtner@gmail.com")
 (setf user-iq 140)
 
-(defvar mememacs/avy-keys '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
+;; 
+;; You should make sure that `aw-dispatch-alist' doesn't overlap
+;; 
+(defvar mememacs/avy-keys
+  '(?a ?d ?f ?j ?k ?l ?o ?p ?h ?g ?b))
 
 (use-package hydra)
 
@@ -314,7 +318,7 @@
   (common-lisp-mode . lispy-mode)
   (scheme-mode . lispy-mode)
   (clojure-mode . lispy-mode)
-  (python-mode . lispy-mode)
+  ;; (python-mode . lispy-mode)
   (racket-mode . lispy-mode)
   ;; (python-mode . mm/enable-le-python)
   )
@@ -345,7 +349,23 @@
 (use-package ace-window
   :config
   (setq aw-keys mememacs/avy-keys
-        aw-background nil))
+        aw-background nil)
+  (setf aw-dispatch-alist
+    '((?x aw-delete-window "Delete Window")
+      (?m aw-swap-window "Swap Windows")
+      (?M aw-move-window "Move Window")
+      (?c aw-copy-window "Copy Window")
+      (?J aw-switch-buffer-in-window "Select Buffer")
+      (?n aw-flip-window)
+      (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+      (?e aw-execute-command-other-window "Execute Command Other Window")
+      (?F aw-split-window-fair "Split Fair Window")
+      (?v aw-split-window-vert "Split Vert Window")
+      (?B aw-split-window-horz "Split Horz Window")
+      (?O delete-other-windows "Delete Other Windows")
+      (?T aw-transpose-frame "Transpose Frame")
+      ;; ?i ?r ?t are used by hyperbole.el
+      (?? aw-show-dispatch-help))))
 
 (use-package cider
   :config
@@ -951,9 +971,10 @@ Example:
                             "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
                             "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
                             "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
-                            "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+                            "<~" " <~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
 
   (global-ligature-mode 't))
+
 
 (use-package
   copilot

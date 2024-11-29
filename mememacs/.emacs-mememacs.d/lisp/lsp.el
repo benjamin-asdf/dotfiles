@@ -125,3 +125,13 @@
               ))
   (remove-hook 'python-mode-hook 'lispy-mode)
   (remove-hook 'python-mode-hook 'mm/add-lispy-python-capf))
+
+
+;; 
+;; https://github.com/
+
+(use-package idris2-mode
+  :straight (:host github :repo "idris-community/idris2-mode"))
+
+
+
