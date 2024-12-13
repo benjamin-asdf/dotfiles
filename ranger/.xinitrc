@@ -11,6 +11,11 @@ xset r rate 140 220
 
 xautolock -time 4 -locker i3lock &
 
+xrandr --auto
+
+[ -f .screenlayout/layout.sh ] && .screenlayout/layout.sh
+
+
 # I am using orig, Mod3 is Hyper_L
 # orig:
 # // Make the left Ctrl key a left Hyper,

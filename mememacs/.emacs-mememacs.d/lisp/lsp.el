@@ -130,8 +130,20 @@
 ;; 
 ;; https://github.com/
 
-(use-package idris2-mode
-  :straight (:host github :repo "idris-community/idris2-mode"))
+
+(use-package idris2-mode :straight (:host github :repo "idris-community/idris2-mode"))
+
+(setf lsp-idris2-lsp-path "/home/benj/.pack/bin/idris2-lsp")
+
+
+;; -----
+
+(use-package haskell-mode
+  :config
+  (add-hook 'haskell-mode-hook #'lsp))
+
+
+
 
 
 

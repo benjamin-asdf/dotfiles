@@ -5,17 +5,19 @@
 ;; https://external-preview.redd.it/Z9UDrTfwrGa89JgPw-CrtYbgO9WuZulccPJZfZbExC4.jpg?auto=webp&s=cd43fed947bdc62db92383ee75d50c44822493ff
 
 (defconst mememacs-visuals/bg		         "black")
-(defconst mememacs-visuals/woodsmoke-shade      "#121218")
+(defconst mememacs-visuals/woodsmoke-shade       "#121218")
 (defconst mememacs-visuals/woodsmoke-tint-1	 "#2e2d35")
 (defconst mememacs-visuals/scarpa-flow		 "#5d5c62")
 (defconst mememacs-visuals/scorpion		 "#625d5c")
 (defconst mememacs-visuals/tundora		 "#4e4a4a")
-(defconst mememacs-visuals/dune	         "#3b3837")
+(defconst mememacs-visuals/dune	                 "#3b3837")
 (defconst mememacs-visuals/hint-of-red		 "#faf7f7")
 (defconst mememacs-visuals/brown		 "#543f2f")
-(defconst mememacs-visuals/sage	         "#95a178")
+(defconst mememacs-visuals/sage	                 "#95a178")
 (defconst mememacs-visuals/heliotrope		 "#F689FF")
 (defconst mememacs-visuals/heliotrope-shade	 "#311b33")
+(defconst mememacs-visuals/white-pointer	 "#fde7ff")
+(defconst mememacs-visuals/mauve         	 "#F8A0FF")
 (defconst mememacs-visuals/purple	         "#8e41e0")
 (defconst mememacs-visuals/metiorite	         "#3c2488")
 (defconst mememacs-visuals/wasabi	         "#708824")
@@ -35,6 +37,8 @@
   "A dark shade of `mememacs-visuals/mint-green`")
 (defconst mememacs-visuals/anakiwa		 "#8fcefe")
 (defconst mememacs-visuals/water		 "#C7E7FF")
+(defconst mememacs-visuals/peach-orange          "#ffd2a0")
+(defconst mememacs-visuals/aquamarine 		 "#a0ffd2")
 (defconst mememacs-visuals/horison		 "#5F89A9")
 (defconst mememacs-visuals/glacier		 "#6da2bc")
 (defconst mememacs-visuals/gimbled		 "#bcb66d")
@@ -53,7 +57,6 @@
  :foreground mememacs-visuals/cursor-default
  :background mememacs-visuals/cursor-default)
 
-
 ;;; Programming
 
 (set-face-attribute
@@ -70,12 +73,27 @@
 (set-face-foreground 'font-lock-string-face mememacs-visuals/gimbled)
 
 
+
 ;; https://imagecolorpicker.com/color-code/febf8f
 (set-face-attribute
  'font-lock-function-name-face
  nil
  :foreground mememacs-visuals/mint-green
  :box `(:line-width 1 :color ,mememacs-visuals/mint-bright))
+
+(set-face-attribute
+ 'font-lock-variable-name-face
+ nil
+ :underline nil
+ :box nil
+ :weight 'bold
+ :slant 'italic
+ :background nil
+ ;; "white"
+ :foreground "honeydew"
+ ;; "honeydew"
+ ;; "ivory"
+ )
 
 (set-face-attribute
  'font-lock-constant-face
@@ -109,10 +127,11 @@
  'font-lock-builtin-face
  nil
  :bold t
- :foreground mememacs-visuals/water
- :overline "MediumPurple1")
+ :foreground "MediumPurple1"
+ ;; :overline  mememacs-visuals/aquamarine
+ :overline nil)
 
-(set-face-foreground 'font-lock-builtin-face mememacs-visuals/anakiwa)
+;; (set-face-foreground 'font-lock-builtin-face mememacs-visuals/anakiwa)
 
 (set-face-attribute
  'region
