@@ -9,7 +9,7 @@ setroot -cursor_name left_ptr
 
 xset r rate 140 220
 
-xautolock -time 4 -locker i3lock &
+# xautolock -time 4 -locker i3lock &
 
 xrandr --auto
 
