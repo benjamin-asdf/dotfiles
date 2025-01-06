@@ -18,7 +18,8 @@
       cider-show-error-buffer nil
       cider-use-overlays t
 
-      cider-enrich-classpath t)
+      cider-enrich-classpath t
+      cider-enable-nrepl-jvmti-agent t)
 
 (defvar mm/cider-mode-maps
   '(cider-mode-map

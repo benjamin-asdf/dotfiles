@@ -1077,12 +1077,12 @@ Example:
 ;;
 
 
-(add-to-list 'load-path "/home/benj/repos/metta-mode-alpha/")
+;; (add-to-list 'load-path "/home/benj/repos/metta-mode-alpha/")
 
-(when (require 'metta-mode nil t)
-  (set-face-attribute
-   'metta-operators-face
-   nil
-   :bold t
-   :foreground nil
-   :box nil))
+;; (when (require 'metta-mode nil t)
+;;   (set-face-attribute
+;;    'metta-operators-face
+;;    nil
+;;    :bold t
+;;    :foreground nil
+;;    :box nil))
