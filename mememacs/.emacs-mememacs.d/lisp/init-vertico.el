@@ -26,11 +26,6 @@
   ("M-f g" . beginning-of-buffer)
   ("M-f G" . end-of-buffer))
 
-(add-to-list
- 'load-path
- (concat mememacs/config-dir
-	 "/straight/repos/vertico/extensions/"))
-
 (require 'vertico-directory)
 
 (add-hook 'rfn-eshadow-update-overlay #'vertico-directory-tidy)
@@ -55,20 +50,5 @@
 (require 'vertico-repeat)
 
 (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
-
-(when nil
-  (defun mememacs/vertico-select-when-single (&rest args)
-    (interactive)
-    (ignore args)
-    (when
-	(and
-	 (eq 1 (length vertico--candidates))
-	 (eq 0 vertico--index))
-      (minibuffer-force-complete-and-exit)))
-
-  (advice-add
-   #'vertico--update-candidates
-   :after
-   #'mememacs/vertico-select-when-single))
 
 (provide 'init-vertico)
