@@ -121,8 +121,7 @@
   (add-hook 'python-mode-hook #'lsp-deferred)
   (add-hook 'python-mode-hook
             (defun mm/no-python-mode-eldoc ()
-              (remove-hook 'eldoc-documentation-functions #'python-eldoc-function t)
-              ))
+              (remove-hook 'eldoc-documentation-functions #'python-eldoc-function t)))
   (remove-hook 'python-mode-hook 'lispy-mode)
   (remove-hook 'python-mode-hook 'mm/add-lispy-python-capf))
 

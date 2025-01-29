@@ -10,7 +10,7 @@ moco https://unitedsignals.mocoapp.com/activities
 runner http://localhost:4000/?application=18fb7611-7534-4664-96cb-0e0acb297254
 des http://localhost:3000/#/applications
 dev http://localhost:3002/
-ncp https://github.com/orgs/UnitedSignals/projects/9/views/2
+ncp https://github.com/UnitedSignals/nc-platform/pulls
 dca http://localhost:3002/
 ncpm https://github.com/UnitedSignals/nc-platform/pulls/@me
 bankkk https://www.v-mn.de/privatkunden.html
@@ -28,3 +28,6 @@ act https://www.astralcodexten.com/
 bs https://benjamin-schwerdtner.de/
 mmc https://chat.singularitynet.io/chat/channels/town-square
 usmm https://outlook.office.com/mail/
+proda https://app.flowniq.com/about.json
+upsa https://wwwapps.ups.com/apps/pickup/processstatusrequest?ordernumber=29KEA7RBLBH&loc=de_DE&WT.z_eCTAid=ct1_eml_CheckPickupStatus__ct1_eml_pickup_dayof&WT.z_edatesent=01172025
+bls https://bsky.app/profile/ftl-mentality.bsky.social
