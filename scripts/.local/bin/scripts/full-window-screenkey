@@ -1,0 +1,3 @@
+#!/bin/sh
+
+screenkey --opacity 0  --window --font "fira code mono"

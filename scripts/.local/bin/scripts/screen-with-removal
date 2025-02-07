@@ -1,0 +1,12 @@
+#!/bin/bash
+
+VIDEO_DEVICE="/dev/video0"
+
+# Configure webcam settings
+v4l2-ctl --device=/dev/video0 --set-fmt-video=width=1280,height=720,pixelformat=YUYV
+
+# Use ffmpeg to capture, process, and output video
+ffmpeg -f v4l2 -i /dev/video0 \
+    -vf "chromakey=color=0x00FF00:similarity=0.3:blend=0.1" \
+    -pix_fmt yuv420p \
+    -f v4l2 "$VIDEO_DEVICE"
