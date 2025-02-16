@@ -224,35 +224,35 @@
   (set-face-attribute
    'avy-lead-face
    nil
-   :foreground mememacs-visuals/hit-pink
+   :foreground "red"
    :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-1
    nil
-   :foreground mememacs-visuals/mint-bright-2
+   :foreground "DarkOrange1"
    :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-0
    nil
-   :foreground mememacs-visuals/mint-bright-1
+   :foreground "Orange1"
    :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-lead-face-2
    nil
-   :foreground mememacs-visuals/mint-bright-3
+   :foreground mememacs-visuals/hit-pink
    :background mememacs-visuals/bg
    :box t)
 
   (set-face-attribute
    'avy-goto-char-timer-face
    nil
-   :background mememacs-visuals/mint-bright-4
+   :background mememacs-visuals/mint-bright
    :foreground mememacs-visuals/bg))
 
 (set-face-attribute 'fixed-pitch nil  :family "Monospace")

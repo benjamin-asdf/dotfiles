@@ -51,4 +51,8 @@
 
 (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
+;; (add-hook 'minibuffer-setup-hook (defun mm/insert-region-when-active ()))
+
 (provide 'init-vertico)
+
+
