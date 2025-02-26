@@ -1031,29 +1031,70 @@ Example:
    ("C-, p" . copilot-previous-completion)))
 
 
-
 (when
-    (use-package request :ensure t)
-  (require
-   'gemini-quick
-   "/home/benj/repos/gemini-quick.el/gemini-quick.el")
+    (progn
+      (use-package request :ensure t)
+      (require 'gemini-quick
+               "/home/benj/repos/gemini-quick.el/gemini-quick.el"))
   (meow-leader-define-key
-   '("H" . gemini-quick-chat))
+   '(". c" . gemini-quick-chat))
+
   (setf
-   gemini-api-key
+   gemini-quick-api-key
    (let ((s))
      (lambda ()
        (or s
            (setf
             s
             (shell-command-to-string
-             "pass gai/api-key-2")))))))
+             "pass gai/api-key-2"))))))
+  
 
-
-
-
-
-
+  ;; TODO: share
+  (defun gemini-quick--stream (input)
+    (let* ((default-directory "/home/benj/repos/gemini-chat/")
+           (id (s-trim (shell-command-to-string "uuidgen")))
+           (file (concat
+                  "/tmp/gemini-quick--stream-"
+                  id))
+           (command (format
+                     "bb -x gemini-chat/stream-chat --file '%s'"
+                     file))
+           (shell-command-buffer-name-async (concat "*gemini" "-" id "*")))
+      (with-temp-buffer
+        (insert input)
+        (write-region
+         (point-min)
+         (point-max)
+         file))
+      (let ((pb (window-buffer
+                 (async-shell-command command))))
+        ;; (with-current-buffer
+        ;;     pb
+        ;;   ;; that's from https://github.com/benjamin-asdf/gemini-quick.el
+        ;;   (while (accept-process-output
+        ;;           (get-buffer-process
+        ;;            (current-buffer)))
+        ;;     (sit-for 0.1))
+        ;;   (gemini-quick-chat-mode))
+        )))
+  
+  (defun gemini-quick-chat (arg)
+    (interactive "P")
+    (let* ((text (if (use-region-p)
+                     (buffer-substring-no-properties
+                      (region-beginning)
+                      (region-end))
+                   (buffer-substring-no-properties
+                    (point-min)
+                    (point-max))))
+           (text (concat
+                  text
+                  (when arg
+                    (concat
+                     "\n"
+                     (read-string "Q: "))))))
+      (gemini-quick--stream text))))
 
 
 

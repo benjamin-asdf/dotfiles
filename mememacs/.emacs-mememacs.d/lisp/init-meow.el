@@ -336,6 +336,8 @@ This won't jump to the end of the buffer if there is no paren there."
 (meow-normal-define-key '("C-l" . mm/c-l))
 (meow-define-keys 'insert '("C-l" . mm/c-l))
 
+;; (advice-add #'special-pop-tag-mark :override #'ignore)
+
 ;; (bind-keys
 ;;  :map artist-mode-map
 ;;  ("C-c C-a r" . artist-select-op-rectangle)
