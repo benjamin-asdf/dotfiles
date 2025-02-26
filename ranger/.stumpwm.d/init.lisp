@@ -1,7 +1,6 @@
 (in-package :stumpwm)
 
 
-
 (defmacro comment (&rest _)
   (declare (ignore _)))
 
@@ -11,8 +10,6 @@
 (setf *frame-number-map* mm/avy-keys
       *group-number-map* mm/avy-keys
       *window-number-map* mm/avy-keys)
-
-
 
 (bind "k" "move-window up")
 (bind "j" "move-window down")
@@ -64,6 +61,7 @@
 
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
+
 (defcommand phone () ()
   (window-send-string (string-trim '(#\Newline) (run-shell-command "cat ~/phone-number" t))))
 (defcommand my-first-name () ()
@@ -342,7 +340,7 @@ FORM should be a quoted list."
 (defcommand make-emacs-or-shell () ()
   (if (emacsp (current-window))
       (exec-el (mm/shell-via-async-shell-command))
-      (exec-el (make-frame))))
+    (exec-el (make-frame))))
 
 (defcommand mm-kill-window-or-in-emacs () ()
   (if (emacsp (current-window))
@@ -363,9 +361,6 @@ FORM should be a quoted list."
 ;;(ql:quickload :slynk)
 ;;(defvar *slynk-port* slynk::default-server-port)
 ;;(defparameter *stumpwm-slynk-session* nil)
-
-
-
 
 
 (define-remapped-keys
