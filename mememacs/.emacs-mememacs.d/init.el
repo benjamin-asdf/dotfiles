@@ -334,17 +334,8 @@
 (when (require 'project nil t)
   (require 'init-project))
 
-;; https://github.com/magnars/string-edit.el/issues/19
-(or
-    (require
-     'string-edit-at-point
-     (expand-file-name "straight/repos/string-edit.el/string-edit-at-point.el" mememacs/config-dir)
-     t)
-    (require
-     'string-edit-at-point
-     (expand-file-name "straight/repos/string-edit.el/string-edit.el"
-                       mememacs/config-dir)
-     t))
+(use-package string-edit-at-point)
+
 
 (use-package ace-window
   :config
@@ -455,7 +446,46 @@
              (signal 'user-error (list "Mouse event not handled" char)))
             (t
              (message "No such candidate: %s, hit `C-g' to quit."
-                      (if (characterp char) (string char) char)))))))
+                      (if (characterp char) (string char) char))))))
+
+
+
+  ;; temp test if this is better
+  (defun avy--line-cands (&optional arg beg end bottom-up)
+    "Get candidates for selecting a line.
+The window scope is determined by `avy-all-windows'.
+When ARG is non-nil, do the opposite of `avy-all-windows'.
+BEG and END narrow the scope where candidates are searched.
+When BOTTOM-UP is non-nil, display avy candidates from top to bottom"
+    (let (candidates)
+      (avy-dowindows arg
+        (let ((ws (or beg (window-start))))
+          (save-excursion
+            (save-restriction
+              (narrow-to-region ws (or end (window-end (selected-window) t)))
+              (goto-char (point-min))
+              (while (< (point) (point-max))
+                (when (member (get-char-property
+                               (max (1- (point)) ws) 'invisible) '(nil org-link))
+                  (push (cons
+                         (if (eq avy-style 'post)
+                             (line-end-position)
+                           (save-excursion
+                             (when avy-indent-line-overlay
+                               (skip-chars-forward " \t"))
+                             (point)))
+                         (selected-window)) candidates))
+                ;; ---------------
+                ;; I commented this out - Benjamin
+                ;; (if visual-line-mode
+                ;;     (line-move-visual 1 t)
+                ;;   (forward-line 1))
+                ;; ---------------------
+                (forward-line 1)
+                )))))
+      (if bottom-up
+          candidates
+        (nreverse candidates)))))
 
 (use-package symbol-overlay
   :config
@@ -975,7 +1005,6 @@ Example:
 
   (global-ligature-mode 't))
 
-
 (use-package
   copilot
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
@@ -1001,88 +1030,82 @@ Example:
    ("C-, n" . copilot-next-completion)
    ("C-, p" . copilot-previous-completion)))
 
-;; (use-package openai-api
-;;   :straight nil
-;;   :load-path "~/repos/openai-api.el/"
-;;   :config
-;;   (setq openai-api-key
-;;         (let ((s))
-;;           (lambda ()
-;;             (or s (setf
-;;                    s
-;;                    (auth-source-pick-first-password
-;;                     :host "openai-api"))))))
-;;   (define-key openai-api-keymap (kbd "i")
-;;               (defun mm/insert-todo ()
-;;                 (interactive)
-;;                 (insert "TODO: ")
-;;                 (comment-line 1)))
-;;   (with-eval-after-load 'git-commit-mode
-;;     (define-key git-commit-mode-map (kbd "C-c i") #'openai-current-commit-msg))
-;;   (meow-leader-define-key
-;;    `("." . ,openai-api-keymap)))
 
-;; (use-package
-;;   chatgpt-shell
-;;   :straight nil
-;;   :load-path "~/repos/chatgpt-shell/"
-;;   ;; :after openai-api
-;;   :config
-;;   (defvar openai-api-keymap (make-sparse-keymap))
-;;   (define-key openai-api-keymap (kbd "a")
-;;               #'chatgpt-shell-shell-add-context-file)
-;;   (define-key openai-api-keymap (kbd "A")
-;;               #'chatgpt-clear-some-contexts)
-;;   (define-key openai-api-keymap (kbd "RET")
-;;               #'chatgpt-shell)
-;;   (define-key openai-api-keymap (kbd "b")
-;;               #'chatgpt-shell-ibuffer-buffers)
-;;   (define-key openai-api-keymap (kbd "B")
-;;               #'chatgpt-jump-to-context-shell)
-;;   (meow-leader-define-key `("." . ,openai-api-keymap))
-;;   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
-;;   (setq chatgpt-shell-model-version "gpt-4o")
-;;   (setq chatgpt-shell-model-version "gpt-4")
-;;   (setq chatgpt-shell-openai-key
-;;         (let ((s))
-;;           (lambda ()
-;;             (if (not (s-starts-with? "sk-" s))
-;;                 (setf
-;;                  s
-;;                  (string-trim
-;;                   (shell-command-to-string
-;;                    "pass openai-api-1")))
-;;               s))))
-;;   (setq-default
-;;    chatgpt-additional-prompts
-;;    (lambda ()
-;;      `(((role . "system")
-;;         (content . ,(format
-;;                      "The user is a programmer hacker engineer using emacs. He is thinking in Lisp and Clojure.
-;; You are intellectually curious and humble. You give reasons why your answer might not be true,
-;; unless you have good reasons to think you are right.
-;; You encourage the user doing hard things. Because doing hard things and gaining knowledge is what makes a
-;; programmer more powerful.
-;; Skip saying open terminal. You can say \"run\". Or just output shell snippets and terminal is implicit.
-;; You desing like Rich Hickey, you are simple and crystal clear like Dawkins, you are joyful like Feynman.
-;; You are straightforward and imaginative like Minsky.
-;; user iq: %s
-;; Operating system: GNU/Linux arch
-;; Package Manger: yay
-;; assistent intellectual honesty: 10/10
-;; User name: Benni"
-;;                      user-iq
-;;                      (emacs-version))))))))
+(when
+    (progn
+      (use-package request :ensure t)
+      (require 'gemini-quick
+               "/home/benj/repos/gemini-quick.el/gemini-quick.el"))
+  (meow-leader-define-key
+   '(". c" . gemini-quick-chat))
 
-;;
+  (setf
+   gemini-quick-api-key
+   (let ((s))
+     (lambda ()
+       (or s
+           (setf
+            s
+            (shell-command-to-string
+             "pass gai/api-key-2"))))))
+  
+
+  ;; TODO: share
+  (defun gemini-quick--stream (input)
+    (let* ((default-directory "/home/benj/repos/gemini-chat/")
+           (id (s-trim (shell-command-to-string "uuidgen")))
+           (file (concat
+                  "/tmp/gemini-quick--stream-"
+                  id))
+           (command (format
+                     "bb -x gemini-chat/stream-chat --file '%s'"
+                     file))
+           (shell-command-buffer-name-async (concat "*gemini" "-" id "*")))
+      (with-temp-buffer
+        (insert input)
+        (write-region
+         (point-min)
+         (point-max)
+         file))
+      (let ((pb (window-buffer
+                 (async-shell-command command))))
+        ;; (with-current-buffer
+        ;;     pb
+        ;;   ;; that's from https://github.com/benjamin-asdf/gemini-quick.el
+        ;;   (while (accept-process-output
+        ;;           (get-buffer-process
+        ;;            (current-buffer)))
+        ;;     (sit-for 0.1))
+        ;;   (gemini-quick-chat-mode))
+        )))
+  
+  (defun gemini-quick-chat (arg)
+    (interactive "P")
+    (let* ((text (if (use-region-p)
+                     (buffer-substring-no-properties
+                      (region-beginning)
+                      (region-end))
+                   (buffer-substring-no-properties
+                    (point-min)
+                    (point-max))))
+           (text (concat
+                  text
+                  (when arg
+                    (concat
+                     "\n"
+                     (read-string "Q: "))))))
+      (gemini-quick--stream text))))
 
 
-;; (add-to-list 'load-path "/home/benj/repos/metta-mode-alpha/")
 
-;; (when (require 'metta-mode nil t)
-;;   (set-face-attribute
-;;    'metta-operators-face
-;;    nil
-;;    :bold t
-;;    :foreground nil
-;;    :box nil))
+;; gems I forget:
+
+;; - avy features
+;; - consult-line-multi
+
+
+
+
+
+
+

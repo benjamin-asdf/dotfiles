@@ -56,10 +56,10 @@ c.tabs.position = "left"
 c.tabs.max_width = 7
 c.tabs.show = "never"
 
-c.url.default_page = "https://search.inetol.net/"
+c.url.default_page = "https://search.brave.com/"
 
 c.url.searchengines = {
-    'DEFAULT': "https://searx.hu/?q={}",
+    'DEFAULT': "https://search.brave.com/search?q={}",
     'duck'   : 'https://duckduckgo.com/?q={}',
     'wa'     : 'https://wiki.archlinux.org/?search={}',
     "so"     : "http://stackoverflow.com/search?q={}",

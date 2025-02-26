@@ -5,11 +5,13 @@ export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
 export GDK_CORE_DEVICE_EVENTS=1
 
-setroot -cursor_name left_ptr
+# setroot -cursor_name left_ptr
 
 xset r rate 140 220
 
-# xautolock -time 4 -locker i3lock &
+# lock after 5 minutes
+xautolock -time 5 -locker i3lock &
+
 
 xrandr --auto
 

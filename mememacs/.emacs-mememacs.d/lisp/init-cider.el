@@ -804,6 +804,17 @@ many times."
       (beginning-of-defun-raw n))))
 
 
+
+;; https://youtu.be/c69BnacEKVs?si=V3lDCOMdZbmB9Hgr
+(add-hook
+ 'cider-test-report-mode-hook
+ (defun my-setup-revert-buffer-cider-rerun-test ()
+   (setq-local
+    revert-buffer-function
+    (defun my-cider-rerun-test-revert-buffer (ignore-auto noconfirm)
+      (cider-test-rerun-test)))))
+
+
 (provide 'init-cider)
 
 

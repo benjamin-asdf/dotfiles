@@ -26,6 +26,8 @@
 (bind "C-h" '*help-map*)
 
 (setf  *help-keys* '("?" "H-h"))
+
+;; todo when emacs thee maximize
 (define-key *top-map* (kbd "s-f") "fullscreen")
 (define-key *top-map* (kbd "s-w") "fselect")
 (define-key *top-map* (kbd "s-d") "delete-window")
@@ -37,7 +39,8 @@
 
 (define-key *top-map* (kbd "s-g") '*groups-map*)
 (defcommand flameshot-gui () ()
-            (run-shell-command "flameshot gui"))
+            ;; (run-shell-command "flameshot gui")
+            (run-shell-command "flameshot-clipboard"))
 
 (define-key *top-map* (kbd "s-p") "flameshot-gui")
 

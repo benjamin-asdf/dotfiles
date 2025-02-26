@@ -84,21 +84,22 @@
  '("!" . flycheck-mode)
  '("?" . meow-cheatsheet)
  (cons "ag"
-       (progn
-         ;; bit hacky
-         ;; I really want to end up at the beginning of the input
-         (add-hook
-          'minibuffer-setup-hook
-          (defun mm/move-point-when-git-grep ()
-            (when (re-search-backward "# -- " nil t) (forward-char) (insert " "))))
-
-         (defun mm/consult-git-grep (&optional dir)
-           (interactive "P")
-           (let ((initial
-                  (when
-                      (derived-mode-p 'prog-mode)
-                    (concat " -- -- ." (file-name-extension (buffer-name))))))
-             (consult-git-grep dir initial)))))
+       (defun mm/consult-git-grep (&optional dir)
+         (interactive "P")
+         (let ((initial
+                (if
+                    (region-active-p)
+                    (concat
+                     (buffer-substring-no-properties
+                      (region-beginning)
+                      (region-end))
+                     " ")
+                  " ")
+                ;; (when
+                ;;     (derived-mode-p 'prog-mode)
+                ;;   (concat " -- -- ." (file-name-extension (buffer-name))))
+                ))
+           (consult-git-grep dir initial))))
  '("aj" . avy-goto-char-timer)
  '("aw" . avy-goto-word-1)
  '("e" . string-edit-at-point)
@@ -335,6 +336,8 @@ This won't jump to the end of the buffer if there is no paren there."
 (meow-normal-define-key '("C-l" . mm/c-l))
 (meow-define-keys 'insert '("C-l" . mm/c-l))
 
+;; (advice-add #'special-pop-tag-mark :override #'ignore)
+
 ;; (bind-keys
 ;;  :map artist-mode-map
 ;;  ("C-c C-a r" . artist-select-op-rectangle)
@@ -350,7 +353,7 @@ This won't jump to the end of the buffer if there is no paren there."
 (defun mm/embark-meow-keypad-desribe ()
   (interactive)
   (let ((kmap (meow--keypad-get-keymap-for-describe)))
-    (meow-keyboard-quit)
+    ;; (meow-keyboard-quit)
     (embark-bindings-in-keymap kmap)))
 
 (define-key meow-keypad-state-keymap (kbd "?") #'mm/embark-meow-keypad-desribe)
@@ -799,7 +802,9 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
 
 (global-set-key (kbd "H-n") #'meow-normal-mode)
 (global-set-key (kbd "H-j") #'meow-end-or-call-kmacro)
-(global-set-key (kbd "H-k") #'meow-start-kmacro-or-insert-counter)
+
+(global-set-key (kbd "H-k") #'kmacro-start-macro-or-insert-counter)
+
 
 (global-set-key (kbd "C-x C-e") #'mm/lispy-eval-mark-last-or-consult)
 (define-key cider-mode-map (kbd "C-c C-e") #'mm/lispy-eval-mark-last-or-consult)
@@ -866,6 +871,19 @@ When SLURP-WHITESPACE is non-nil, add any whitespace following split into previo
 ;; See docstring of `meow-thing-register'
 (meow-thing-register 'quoted '(regexp "`" "`\\|'") '(regexp "`" "`\\|'"))
 (add-to-list 'meow-char-thing-table '(?` . quoted))
+
+;; ----------------------
+
+(defun ediff-buffers-quick ()
+  (interactive)
+  (let
+      ((buffs (--remove
+               (equal it (get-buffer " *Minibuf-1*"))
+               (buffer-list))))
+    (ediff-buffers
+     (car buffs)
+     (cadr buffs))))
+
 
 (provide 'init-meow)
 
