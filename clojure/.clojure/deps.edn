@@ -42,6 +42,11 @@
            :env/dev
            {:extra-paths ["dev"]}
 
+
+           :dev/snitch
+           {:extra-deps {org.clojars.abhinav/snitch {:mvn/version "0.1.16"}}}
+
+
            ;; alpha state software as API has not been finalized however the code works reliably
            ;; Latest commit on add-lib3 branch, don't update with :project/outdated
            ;; Set logging implementation to no-operation
