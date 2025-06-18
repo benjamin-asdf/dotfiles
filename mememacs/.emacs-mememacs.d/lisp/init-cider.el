@@ -10,7 +10,8 @@
       clojure-toplevel-inside-comment-form t
       cider-scratch-initial-message ";; It's not funny, it's powerfull"
       cider-eldoc-display-context-dependent-info t
-      cider-clojure-cli-aliases ":lib/tools-deps+slf4j-nop:trace/flowstorm"
+      cider-clojure-cli-aliases
+      ":lib/tools-deps+slf4j-nop:dev/snitch"
       cider-merge-sessions nil
       ;; cider-merge-sessions 'project
 
@@ -387,32 +388,25 @@ when `cider-auto-inspect-after-eval' is non-nil."
                                  ;; stderr handler:
                                  (lambda (buffer err)
                                    (cider-emit-interactive-eval-err-output err)
-
-
+                                   
                                    ;; ------------------------------        
                                    ;; I wanted this 👈 👈
-                                   (when nrepl-err-handler
-                                     (funcall nrepl-err-handler))
+                                   ;; ??
+                                   ;; something isn't a string
+                                   
+                                   ;; (when nrepl-err-handler
+                                   ;;   (funcall nrepl-err-handler))
                                    ;; This is so it populates the stacktrace buffer
                                    ;; ------------------------------
+                                   ;; (cider--display-interactive-eval-result err 'error end)
 
-                                   
-                                   (let ((phase (if
-                                                    error-phase-requested
-                                                    nil
-                                                  (setq error-phase-requested t)
-                                                  (cider--error-phase-of-last-exception buffer))))
-
-                                     (cider--maybe-display-error-as-overlay phase err end)
-
-                                     (cider-handle-compilation-errors err
-                                                                      eval-buffer
-                                                                      ;; we prevent jumping behavior on compilation errors,
-                                                                      ;; because lines tend to be spurious (e.g. 0:0)
-                                                                      ;; and because on compilation errors, normally
-                                                                      ;; the error is 'right there' in the current line
-                                                                      ;; and needs no jumping:
-                                                                      phase)))
+                                   ;; (cider-handle-compilation-errors
+                                   ;;  err eval-buffer
+                                   ;;  ;; Disable jumping behavior when compiling a single form because
+                                   ;;  ;; lines tend to be spurious (e.g. 0:0) and the jump brings us to
+                                   ;;  ;; the beginning of the same form anyway.
+                                   ;;  t)
+                                   )
                                  ;; done handler:
                                  (lambda (buffer)
                                    (if beg
@@ -428,53 +422,69 @@ when `cider-auto-inspect-after-eval' is non-nil."
                                    (when cider-eval-register
                                      (set-register cider-eval-register res))))))
 
-(defun cider-popup-eval-handler (&optional buffer)
-  "Make a handler for printing evaluation results in popup BUFFER.
+(defun cider-popup-eval-handler (&optional buffer _bounds _source-buffer)
+  "Make a handler for printing evaluation results in popup BUFFER,
+_BOUNDS representing the buffer bounds of the evaled input,
+and _SOURCE-BUFFER the original buffer
+
 This is used by pretty-printing commands."
   ;; NOTE: cider-eval-register behavior is not implemented here for performance reasons.
   ;; See https://github.com/clojure-emacs/cider/pull/3162
-  (let ((target-buff (current-buffer))
-        (end (line-end-position)))
+  (let ((chosen-buffer (or buffer (current-buffer))))
     (nrepl-make-response-handler
-     (or buffer (current-buffer))
+     chosen-buffer
+     ;; value handler:
      (lambda (buffer value)
-       (cider-emit-into-popup-buffer buffer (ansi-color-apply value) nil t)
-       (with-current-buffer buffer
-         (read-only-mode -1))
-       (display-buffer buffer))
+       (cider-emit-into-popup-buffer buffer (ansi-color-apply value) nil t))
+     ;; stdout handler:
      (lambda (_buffer out)
        (cider-emit-interactive-eval-output out))
+     ;; stderr handler:
      (lambda (_buffer err)
-       (pop-to-buffer target-buff)
+       (cider-emit-interactive-eval-err-output err))
+     ;; done handler:
+     nil
+     ;; eval-error handler:
+     (lambda (buffer)
+       (when (and (buffer-live-p chosen-buffer)
+                  (member (buffer-name chosen-buffer)
+                          cider-ancillary-buffers))
+         (with-selected-window (get-buffer-window chosen-buffer)
+           (cider-popup-buffer-quit-function t)))
+       ;; also call the default nrepl-err-handler, so that our custom behavior doesn't void the base behavior:
+       (when nrepl-err-handler
+         (funcall nrepl-err-handler buffer))
+
 
        ;; I want his
-       (let ((cider-result-use-clojure-font-lock nil))
-         (cider--display-interactive-eval-result
-          err
-          'error
-          end
-          'cider-error-overlay-face))
+       ;; (let ((cider-result-use-clojure-font-lock nil))
+       ;;   (cider--display-interactive-eval-result
+       ;;    err
+       ;;    'error
+       ;;    end
+       ;;    'cider-error-overlay-face))
 
-       (cider-emit-interactive-eval-err-output err))
+       
+       )
+     ;; content type handler:
      nil
-     nil
-     nil
+     ;; truncated handler:
      (lambda (buffer warning)
        (cider-emit-into-popup-buffer buffer warning 'font-lock-warning-face t)))))
 
-(defun cider--pprint-eval-form (form)
-  "Pretty print FORM in popup buffer."
-  (let* ((buffer (current-buffer))
-         (result-buffer (cider-make-popup-buffer cider-result-buffer 'clojure-mode 'ancillary))
-         (handler (cider-popup-eval-handler result-buffer)))
-    (with-current-buffer
-        buffer
-      (cider-interactive-eval
-       (when (stringp form) form)
-       handler
-       (when (consp form) form)
-       (cider--nrepl-print-request-map
-        fill-column)))))
+
+;; (defun cider--pprint-eval-form (form)
+;;   "Pretty print FORM in popup buffer."
+;;   (let* ((buffer (current-buffer))
+;;          (result-buffer (cider-make-popup-buffer cider-result-buffer 'clojure-mode 'ancillary))
+;;          (handler (cider-popup-eval-handler result-buffer)))
+;;     (with-current-buffer
+;;         buffer
+;;       (cider-interactive-eval
+;;        (when (stringp form) form)
+;;        handler
+;;        (when (consp form) form)
+;;        (cider--nrepl-print-request-plist fill-column)))))
 
 (defun mm/zprint-region ()
   (interactive)
@@ -813,6 +823,12 @@ many times."
     revert-buffer-function
     (defun my-cider-rerun-test-revert-buffer (ignore-auto noconfirm)
       (cider-test-rerun-test)))))
+
+(advice-add
+ #'cider-make-popup-buffer
+ :after
+ (defun my/cider-non-readonly-result-buffer (&rest args)
+   (read-only-mode -1)))
 
 
 (provide 'init-cider)

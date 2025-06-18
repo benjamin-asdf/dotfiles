@@ -47,6 +47,9 @@
             "codeAction/resolve"
             action)))))))
 
+(add-hook 'clojure-mode-hook #'lsp-mode)
+
+
 (use-package lsp-grammarly
   :config
   (setq-default lsp-grammarly-domain "academic")

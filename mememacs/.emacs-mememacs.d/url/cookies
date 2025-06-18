@@ -6,10 +6,10 @@
 )
 (setq url-cookie-secure-storage
  '(("github.com"
-  [url-cookie "_octo" "GH1.1.710794688.1706634004"
-              "Thu, 30 Jan 2025 17:00:04 GMT" "/" "github.com" t]
-  [url-cookie "logged_in" "no" "Thu, 30 Jan 2025 17:00:04 GMT" "/"
-              "github.com" t]))
+    [url-cookie "_octo" "GH1.1.145834261.1742808804"
+                "Tue, 24 Mar 2026 09:33:24 GMT" "/" "github.com" t]
+    [url-cookie "logged_in" "no" "Tue, 24 Mar 2026 09:33:24 GMT" "/"
+                "github.com" t]))
 )
 
 ;; Local Variables:

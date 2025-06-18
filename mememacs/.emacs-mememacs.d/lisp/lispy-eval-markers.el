@@ -1,4 +1,4 @@
-;;; lispy-eval-markers.el --- Remember last lispy eval markers
+;;; lispy-eval-markers.el --- Remember last lispy eval markers  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;;; Functions
 
 ;;; Notes on mark and region: to get a consistent behaviour regardless of

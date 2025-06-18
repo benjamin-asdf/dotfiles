@@ -1,4 +1,4 @@
-;; This theme is for apes and wizards. 
+;; This theme is for apes and wizards.  -*- lexical-binding: t; -*- 
 ;; Ideas, fruit and magic are colerful things.
 
 ;; https://imagecolorpicker.com/

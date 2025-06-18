@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;; NOTE: keymap:
 ;; holding down caps + a key is ctrl
 ;; pressing and releasing caps is esc
@@ -441,13 +443,14 @@ This is the power I desired."
                      (define-key m (kbd "p")
                                  project-prefix-map)
                      (define-key m
-                                 (kbd "/")
-                                 (defun mm/consult-ripgrep (&optional dir)
-                                   (interactive "P")
-                                   (let ((initial (when (derived-mode-p 'prog-mode)
-                                                    (concat
-                                                     " -- --glob *" (file-name-extension (buffer-name))))))
-                                     (consult-ripgrep dir initial))))
+                                 (kbd "/") #'consult-ripgrep
+                                 ;; (defun mm/consult-ripgrep (&optional dir)
+                                 ;;   (interactive "P")
+                                 ;;   (let ((initial (when (derived-mode-p 'prog-mode)
+                                 ;;                    (concat
+                                 ;;                     " -- --glob *" (file-name-extension (buffer-name))))))
+                                 ;;     (consult-ripgrep dir initial)))
+                                 )
                      (define-key m (kbd "wd")
                                  #'delete-window)
                      (define-key m (kbd "wu")
@@ -667,6 +670,7 @@ when formatting with lispy."
               (list (mm/lispy-remove-commas (car args)) (cadr args))))
 
 ;; turns out zprint is just superior in all cases!
+
 (when
     (executable-find "zprint")
     (advice-add

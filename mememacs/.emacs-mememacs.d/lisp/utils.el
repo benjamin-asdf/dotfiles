@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defmacro in (obj &rest things)
   `(or
     ,@(cl-mapcar

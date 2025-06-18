@@ -42,8 +42,6 @@
 
 (setf native-comp-async-report-warnings-errors 'silent)
 
-(defvar mememacs/enable-guix nil)
-
 (straight-use-package 'use-package)
 (require 'use-package)
 
@@ -63,6 +61,9 @@
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")
         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+
+
 
 (defconst mememacs/config-dir user-emacs-directory)
 
@@ -485,7 +486,9 @@ When BOTTOM-UP is non-nil, display avy candidates from top to bottom"
                 )))))
       (if bottom-up
           candidates
-        (nreverse candidates)))))
+        (nreverse candidates))))
+
+  (keymap-set isearch-mode-map "C-j" #'avy-isearch))
 
 (use-package symbol-overlay
   :config
@@ -1030,15 +1033,14 @@ Example:
    ("C-, n" . copilot-next-completion)
    ("C-, p" . copilot-previous-completion)))
 
-
 (when
     (progn
       (use-package request :ensure t)
-      (require 'gemini-quick
-               "/home/benj/repos/gemini-quick.el/gemini-quick.el"))
+      (require 'gemini-quick "/home/benj/repos/gemini-quick.el/gemini-quick.el")
+      ;; (require 'gemini-quick-stream "/home/benj/repos/gemini-chat/")
+      )
   (meow-leader-define-key
    '(". c" . gemini-quick-chat))
-
   (setf
    gemini-quick-api-key
    (let ((s))
@@ -1048,12 +1050,13 @@ Example:
             s
             (shell-command-to-string
              "pass gai/api-key-2"))))))
-  
 
   ;; TODO: share
   (defun gemini-quick--stream (input)
     (let* ((default-directory "/home/benj/repos/gemini-chat/")
-           (id (s-trim (shell-command-to-string "uuidgen")))
+           (id (s-trim
+                (shell-command-to-string
+                 "uuidgen")))
            (file (concat
                   "/tmp/gemini-quick--stream-"
                   id))
@@ -1078,7 +1081,6 @@ Example:
         ;;     (sit-for 0.1))
         ;;   (gemini-quick-chat-mode))
         )))
-  
   (defun gemini-quick-chat (arg)
     (interactive "P")
     (let* ((text (if (use-region-p)
@@ -1093,19 +1095,20 @@ Example:
                   (when arg
                     (concat
                      "\n"
-                     (read-string "Q: "))))))
+                     (gemini-quick-read-string))))))
       (gemini-quick--stream text))))
 
+(use-package wolfram-mode
+  :config
+  (add-to-list
+   'auto-mode-alist '("\\.m\\'" . wolfram-mode))
+  (add-to-list
+   'auto-mode-alist '("\\.wl\\'" . wolfram-mode)))
 
+;; todo
+;; https://aur.archlinux.org/packages?O=0&K=jujutsu
 
 ;; gems I forget:
 
 ;; - avy features
 ;; - consult-line-multi
-
-
-
-
-
-
-

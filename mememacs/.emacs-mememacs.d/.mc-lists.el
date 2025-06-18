@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        ignore
         lispy-braces
         lispy-brackets
         lispy-delete

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-hook
    'org-mode-hook
    (defun mm/org-set-electric-pair ()

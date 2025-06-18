@@ -1,4 +1,4 @@
-;;; Main options
+;;; Main options  -*- lexical-binding: t; -*-
 
 (require 'functions)
 

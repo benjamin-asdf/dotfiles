@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (setq vertico-cycle t)
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t

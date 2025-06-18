@@ -33,3 +33,4 @@ upsa https://wwwapps.ups.com/apps/pickup/processstatusrequest?ordernumber=29KEA7
 bls https://bsky.app/profile/ftl-mentality.bsky.social
 cn https://claude.ai/new
 nca https://github.com/UnitedSignals/nc-platform/actions
+ncim https://github.com/UnitedSignals/nc-platform/issues?q=is%3Aissue%20state%3Aopen%20assignee%3A%40me

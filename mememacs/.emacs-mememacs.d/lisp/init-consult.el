@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (setq-default completion-in-region-function #'consult-completion-in-region)
 
 (define-key isearch-mode-map (kbd "H-/") #'consult-line)

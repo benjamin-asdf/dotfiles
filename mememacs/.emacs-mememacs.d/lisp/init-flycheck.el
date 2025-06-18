@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun mememacs/flycheck-disable-err-at-point ()
   (interactive)
   (let ((err-id (flycheck-error-id
