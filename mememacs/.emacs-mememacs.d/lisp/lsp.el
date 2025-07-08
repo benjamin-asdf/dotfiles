@@ -49,7 +49,6 @@
 
 (add-hook 'clojure-mode-hook #'lsp-mode)
 
-
 (use-package lsp-grammarly
   :config
   (setq-default lsp-grammarly-domain "academic")
@@ -97,7 +96,6 @@
 
 (use-package yaml-mode)
 (use-package fsharp-mode)
-
 (use-package glsl-mode)
 
 
@@ -127,6 +125,55 @@
               (remove-hook 'eldoc-documentation-functions #'python-eldoc-function t)))
   (remove-hook 'python-mode-hook 'lispy-mode)
   (remove-hook 'python-mode-hook 'mm/add-lispy-python-capf))
+
+
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection
+                                   (lambda ()
+                                     (list "sh" "-c" ". /home/benj/repos/foorepo/activate.sh && pylsp")))
+                  :activation-fn (lsp-activate-on "python")
+                  :priority 20
+                  :server-id 'pylsp
+                  :library-folders-fn (lambda (_workspace) lsp-clients-pylsp-library-directories)
+                  :initialized-fn (lambda (workspace)
+                                    (with-lsp-workspace workspace
+                                      (lsp--set-configuration (lsp-configuration-section "pylsp"))))))
+
+
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection
+                   (list "sh" "-c" ". /home/benj/repos/foorepo/activate.sh && ruff server")
+                   )
+  :activation-fn (lsp-activate-on "python")
+  :server-id 'ruff
+  :priority -2
+  :add-on? t
+  :initialization-options
+  (lambda ()
+    (list :settings
+          (list :logLevel lsp-ruff-log-level
+                :showNotifications lsp-ruff-show-notifications
+                :organizeImports (lsp-json-bool lsp-ruff-advertize-organize-imports)
+                :fixAll (lsp-json-bool lsp-ruff-advertize-fix-all)
+                :importStrategy lsp-ruff-import-strategy)))))
+
+
+
+
+
+(setf lsp--session nil)
+(delete-file lsp-session-file)
+(setf lsp-disabled-clients '(ruff))
+
+
+
+
+
+
+
+
+
 
 
 ;; 

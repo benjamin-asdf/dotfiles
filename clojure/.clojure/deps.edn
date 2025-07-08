@@ -43,6 +43,15 @@
            {:extra-paths ["dev"]}
 
 
+           :mcp
+
+           {:deps {org.slf4j/slf4j-nop {:mvn/version "2.0.16"} ;; Required for stdio server
+                   com.bhauman/clojure-mcp
+                   {:git/url "https://github.com/bhauman/clojure-mcp.git"
+                    :git/sha "6751a0a3f24aae584e242eaa4b4a785e170d897e"}}
+            :exec-fn clojure-mcp.main/start-mcp-server
+            :exec-args {:port 7888}}
+
            :dev/snitch
            {:extra-deps {org.clojars.abhinav/snitch {:mvn/version "0.1.16"}}}
 

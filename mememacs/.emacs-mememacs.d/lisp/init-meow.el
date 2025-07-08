@@ -42,7 +42,7 @@
  '("8" . meow-digit-argument)
  '("9" . meow-digit-argument)
  '("0" . meow-digit-argument)
- '("bb" . consult-buffer)
+ '("bb" . consult-bookmark)
 
  (cons "bt"
        (defun mm/make-editable-temp-copy-now ()
@@ -64,7 +64,7 @@
  '("bs" . mm/scratch-el)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
- '("bR" . cider-repl-consult)
+ '("bR" . mm/cider-repl-consult)
  '("by" . mememacs/kill-buffer-name)
 
  '("wd" . delete-window)

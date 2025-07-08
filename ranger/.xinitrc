@@ -12,7 +12,6 @@ xset r rate 140 220
 # lock after 5 minutes
 xautolock -time 5 -locker i3lock &
 
-
 xrandr --auto
 
 [ -f .screenlayout/layout.sh ] && .screenlayout/layout.sh

@@ -314,9 +314,9 @@ focused."
                           (or (sesman--linked-sessions 'CIDER 'sort)
                               (sesman--friendly-sessions 'CIDER 'sort))))
                      (mapcar #'buffer-name (mapcar #'cadr sessions)))))
-    "Candidate source for `cider-repl-consult'.")
+    "Candidate source for `mm/cider-repl-consult'.")
 
-  (defun cider-repl-consult ()
+  (defun mm/cider-repl-consult ()
     (interactive)
     (let ((start-buff (current-buffer)))
       (consult-buffer
@@ -695,8 +695,11 @@ Result truncated. Type `\\[cider-inspect-last-result]' to inspect it."))))
 ;; 3. I select a cider repl by making the desired connection buffer (repl) active,
 ;; then I revert-buffer to clear curr-cider-repls
 ;; viola - curr-cider-repls will be set to my desired repl buffer.
+;;
+;; 3b. Introduce another powerful way to select the curr-repl - `mm/cider-repl-consult'.
 
 ;; this scheme has served me well.
+;; 
 ;; The downside is that there is a local state, buffer local, curr-cider-repls
 ;; Which you sort of need to be aware of.
 ;; The benefit is, I am selecting the repl I want per buffer, with my user intent.
