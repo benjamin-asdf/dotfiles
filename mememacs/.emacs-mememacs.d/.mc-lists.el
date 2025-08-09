@@ -88,5 +88,7 @@
       '(
         lispy-cursor-down
         meow-insert-exit
+        meow-next
+        meow-search
         meow-undo
         ))

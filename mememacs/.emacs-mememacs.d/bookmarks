@@ -2,12 +2,30 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("repos"
-  (filename . "~/repos/")
-  (front-context-string . "clojure\n  drwxr-")
-  (rear-context-string . "0K Aug 20 14:31 ")
-  (position . 331)
-  (last-modified 25826 8193 590958 89000))
+(("e"
+  (filename . "~/repos/nc-platform/bases/designer-backend/src/nc_platform/routes/external_api.clj")
+  (front-context-string . "-user-id new-use")
+  (rear-context-string . "en\n         :new")
+  (position . 3439)
+  (last-modified 26742 27041 676570 587000))
+("u"
+ (filename . "~/repos/nc-platform/development/src/user.clj")
+ (front-context-string . "\n  (mount/stop)\n")
+ (rear-context-string . "estart-app :all)")
+ (position . 6667)
+ (last-modified 26740 55665 498572 89000))
+("j"
+ (filename . "~/repos/nc-platform/bases/designer-backend/src/nc_platform/routes/application.clj")
+ (front-context-string . "tion-routes [& c")
+ (rear-context-string . ")\n\n(defn applica")
+ (position . 7565)
+ (last-modified 26740 44713 711732 980000))
+("repos"
+ (filename . "~/repos/")
+ (front-context-string . "clojure\n  drwxr-")
+ (rear-context-string . "0K Aug 20 14:31 ")
+ (position . 331)
+ (last-modified 25826 8193 590958 89000))
 ("~"
  (filename . "~/")
  (front-context-string . ".\n  drwxr-xr-x  ")

@@ -147,9 +147,11 @@
 
 ;; org is early
 ;; see note 20220826T155813--org-file-name-concat__code_issue.org
-(use-package org
-  :straight (:host github :repo "emacs-straight/org-mode")
-  :config (require 'init-org))
+
+
+;; (use-package org
+;;   :straight (:host github :repo "emacs-straight/org-mode")
+;;   :config (require 'init-org))
 
 (use-package edraw
   :straight (:host github :repo "misohena/el-easydraw")
@@ -712,12 +714,15 @@ string).  It returns t if a new expansion is found, nil otherwise."
       (car (split-string (buffer-string)))))
 
   (defun backup-each-save-compute-location (filename)
+    ;; (let ((filename (buffer-file-name)))
+    ;;   (file-name-directory filename))
     (let* ((containing-dir (file-name-directory filename))
            (basename (file-name-nondirectory filename))
            (backup-container
-            (format "%s/%s"
+            (format "%s/%s/%s"
                     backup-each-save-mirror-location
-                    containing-dir))
+                    containing-dir
+                    basename))
            (sha (file-sha256 filename)))
       (when (not (file-exists-p backup-container))
         (make-directory backup-container t))

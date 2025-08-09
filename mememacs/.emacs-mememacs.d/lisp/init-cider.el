@@ -827,11 +827,49 @@ many times."
     (defun my-cider-rerun-test-revert-buffer (ignore-auto noconfirm)
       (cider-test-rerun-test)))))
 
-(advice-add
- #'cider-make-popup-buffer
- :after
- (defun my/cider-non-readonly-result-buffer (&rest args)
-   (read-only-mode -1)))
+;; (advice-add
+;;  #'cider-make-popup-buffer
+;;  :after
+;;  (defun my/cider-non-readonly-result-buffer (&rest args)
+;;    (read-only-mode -1)))
+
+(defun cider-make-popup-buffer (name &optional mode ancillary)
+  "Create a temporary buffer called NAME using major MODE (if specified).
+If ANCILLARY is non-nil, the buffer is added to `cider-ancillary-buffers'
+and automatically removed when killed."
+  (with-current-buffer (get-buffer-create name)
+    (kill-all-local-variables)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    (when mode
+      (funcall mode))
+    (cider-popup-buffer-mode 1)
+    (setq cider-popup-output-marker (point-marker))
+    ;; (setq buffer-read-only t)
+    (when ancillary
+      (add-to-list 'cider-ancillary-buffers name)
+      (add-hook 'kill-buffer-hook
+                (lambda ()
+                  (setq cider-ancillary-buffers
+                        (remove name cider-ancillary-buffers)))
+                nil 'local))
+    (current-buffer)))
+
+(defun cider-popup-buffer-display (buffer-name &optional select)
+  (display-buffer buffer-name)
+  (get-buffer buffer-name))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 (provide 'init-cider)
