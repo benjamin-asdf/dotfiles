@@ -1,4 +1,4 @@
 #!/bin/sh
 
 mkdir -p ~/Pictures/screenshots/
-flameshot gui -r -p ~/Pictures/screenshots/ | xclip -selection clipboard -t image/png
+QT_ENABLE_HIGHDPI_SCALING=0  flameshot gui -r -p ~/Pictures/screenshots/ | xclip -selection clipboard -t image/png

@@ -27,3 +27,5 @@
 /clojure/.clojure/.cpcache/
 /mememacs/.emacs-mememacs.d/racket-mode/
 /mememacs/.emacs-mememacs.d/request/
+/clojure/.clojure/.clj-kondo/
+/clojure/.clojure/.lsp/

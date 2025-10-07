@@ -1,8 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 (setq-default completion-in-region-function #'consult-completion-in-region)
 
-(define-key isearch-mode-map (kbd "H-/") #'consult-line)
-
 (define-key minibuffer-mode-map (kbd "M-h") #'consult-history)
 (define-key minibuffer-mode-map (kbd "M-i") #'completion-at-point)
 
@@ -12,8 +10,8 @@
   ("H-m b" . consult-bookmark))
 
 (bind-keys
-  ("H-SPC" . consult-line)
-  ("H-m ." . (lambda () (interactive) (push-mark))))
+ ("H-SPC" . consult-line)
+ ("H-m ." . (lambda () (interactive) (push-mark))))
 
 (bind-keys
   ("M-y" . yank-pop)

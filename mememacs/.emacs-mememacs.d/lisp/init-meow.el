@@ -42,7 +42,7 @@
  '("8" . meow-digit-argument)
  '("9" . meow-digit-argument)
  '("0" . meow-digit-argument)
- '("bb" . consult-bookmark)
+
 
  (cons "bt"
        (defun mm/make-editable-temp-copy-now ()
@@ -438,6 +438,8 @@ This is the power I desired."
                                  #'find-file)
                      (define-key m (kbd "b")
                                  #'consult-buffer)
+                     (define-key m (kbd "a")
+                                 #'consult-bookmark)
                      (define-key m (kbd "s")
                                  #'magit-status)
                      (define-key m (kbd "p")

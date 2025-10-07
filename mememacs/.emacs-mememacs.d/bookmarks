@@ -2,12 +2,36 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("e"
-  (filename . "~/repos/nc-platform/bases/designer-backend/src/nc_platform/routes/external_api.clj")
-  (front-context-string . "-user-id new-use")
-  (rear-context-string . "en\n         :new")
-  (position . 3439)
-  (last-modified 26742 27041 676570 587000))
+(("kl"
+  (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
+  (front-context-string . "ation-opts\n  [{:")
+  (rear-context-string . "(defn page-navig")
+  (position . 32154)
+  (last-modified 26836 64315 707423 672000))
+("k"
+ (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
+ (front-context-string . "ation-opts\n  [{:")
+ (rear-context-string . "(defn page-navig")
+ (position . 32154)
+ (last-modified 26836 64303 97913 603000))
+("a"
+ (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/page_layout.cljs")
+ (front-context-string . " nav-opts\n\n     ")
+ (rear-context-string . "              ()")
+ (position . 3790)
+ (last-modified 26836 64291 659927 695000))
+("page_navigation.cljs"
+ (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
+ (front-context-string . "[:div (:finished")
+ (rear-context-string . "                ")
+ (position . 30015)
+ (last-modified 26834 49748 901160 852000))
+("e"
+ (filename . "~/repos/nc-platform/bases/designer-backend/src/nc_platform/routes/external_api.clj")
+ (front-context-string . "-user-id new-use")
+ (rear-context-string . "en\n         :new")
+ (position . 3439)
+ (last-modified 26742 27041 676570 587000))
 ("u"
  (filename . "~/repos/nc-platform/development/src/user.clj")
  (front-context-string . "\n  (mount/stop)\n")
@@ -15,11 +39,11 @@
  (position . 6667)
  (last-modified 26740 55665 498572 89000))
 ("j"
- (filename . "~/repos/nc-platform/bases/designer-backend/src/nc_platform/routes/application.clj")
- (front-context-string . "tion-routes [& c")
- (rear-context-string . ")\n\n(defn applica")
- (position . 7565)
- (last-modified 26740 44713 711732 980000))
+ (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
+ (front-context-string . "ger\n  [_]\n  (fn ")
+ (rear-context-string . " mobile-full-bur")
+ (position . 31529)
+ (last-modified 26836 64287 666512 134000))
 ("repos"
  (filename . "~/repos/")
  (front-context-string . "clojure\n  drwxr-")
