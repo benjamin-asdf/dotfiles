@@ -2,12 +2,18 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("kl"
-  (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
-  (front-context-string . "ation-opts\n  [{:")
-  (rear-context-string . "(defn page-navig")
-  (position . 32154)
-  (last-modified 26836 64315 707423 672000))
+(("addr"
+  (filename . "~/notes/apartment/aufdemm/dat.org")
+  (front-context-string . "* Addr\n\nBenjamin")
+  (rear-context-string)
+  (position . 1)
+  (last-modified 26854 4628 182871 740000))
+("kl"
+ (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
+ (front-context-string . "ation-opts\n  [{:")
+ (rear-context-string . "(defn page-navig")
+ (position . 32154)
+ (last-modified 26836 64315 707423 672000))
 ("k"
  (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
  (front-context-string . "ation-opts\n  [{:")
