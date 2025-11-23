@@ -33,14 +33,17 @@
 (define-key *top-map* (kbd "s-d") "delete-window")
 (define-key *top-map* (kbd "s-o") "only")
 
+
+
 (define-key *top-map* (kbd "s-e") "emacs")
 (define-key *top-map* (kbd "s-m") "mode-line")
 (define-key *top-map* (kbd "s-i") "pull-from-windowlist")
 
 (define-key *top-map* (kbd "s-g") '*groups-map*)
+
 (defcommand flameshot-gui () ()
-            ;; (run-shell-command "flameshot gui")
-            (run-shell-command "flameshot-clipboard"))
+  ;; (run-shell-command "flameshot gui")
+  (run-shell-command "flameshot-clipboard"))
 
 (define-key *top-map* (kbd "s-p") "flameshot-gui")
 
@@ -214,6 +217,11 @@
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
+
+(defcommand cmd-xkill () () (run-shell-command "xkill"))
+(define-key *top-map* (kbd "s-]") "cmd-xkill")
+
+
 (load-module "pass")
 
 (define-key *top-map* (kbd "s-a") "pass-copy")
