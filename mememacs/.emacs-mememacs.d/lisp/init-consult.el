@@ -137,4 +137,42 @@
       orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
       orderless-style-dispatchers '(+orderless-dispatch))
 
+
+;; --------------------------------------
+
+;; Displaying large outputs was taxing so I cut it to 50 characters.
+
+(defun consult--insertion-preview (start end)
+  "State function for previewing a candidate in a specific region.
+The candidates are previewed in the region from START to END.  This function is
+used as the `:state' argument for `consult--read' in the `consult-yank' family
+of functions and in `consult-completion-in-region'."
+  (unless (or (minibufferp)
+              ;; Disable preview if anything odd is going on with the markers.
+              ;; Otherwise we get "Marker points into wrong buffer errors".  See
+              ;; gh:minad/consult#375, where Org mode source blocks are
+              ;; completed in a different buffer than the original buffer.  This
+              ;; completion is probably also problematic in my Corfu completion
+              ;; package.
+              (not (eq (window-buffer) (current-buffer)))
+              (and (markerp start) (not (eq (marker-buffer start) (current-buffer))))
+              (and (markerp end) (not (eq (marker-buffer end) (current-buffer)))))
+    (let (ov)
+      (lambda (action cand)
+        (cond
+         ((and (not cand) ov)
+          (delete-overlay ov)
+          (setq ov nil))
+         ((and (eq action 'preview) cand)
+          (unless ov
+            (setq ov (consult--make-overlay start end
+                                            'invisible t
+                                            'window (selected-window))))
+          ;; Use `add-face-text-property' on a copy of "cand in order to merge face properties
+          (setq cand (substring cand 0 (min 50 (length cand))))
+          (add-face-text-property 0 (length cand) 'consult-preview-insertion t cand)
+          ;; Use the `before-string' property since the overlay might be empty.
+          (overlay-put ov 'before-string cand)))))))
+
 (provide 'init-consult)
+

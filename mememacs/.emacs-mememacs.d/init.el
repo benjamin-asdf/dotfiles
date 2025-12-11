@@ -1110,6 +1110,12 @@ Example:
   (add-to-list
    'auto-mode-alist '("\\.wl\\'" . wolfram-mode)))
 
+(add-to-list 'load-path "/home/benj/repos/datastar.el/")
+(require 'datastar "datastar.el")
+
+
+
+
 ;; todo
 ;; https://aur.archlinux.org/packages?O=0&K=jujutsu
 
