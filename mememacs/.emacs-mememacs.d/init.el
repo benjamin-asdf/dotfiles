@@ -1038,70 +1038,94 @@ Example:
    ("C-, n" . copilot-next-completion)
    ("C-, p" . copilot-previous-completion)))
 
+
+
+;; (when
+;;     (progn
+;;       (use-package request :ensure t)
+;;       (require 'gemini-quick "/home/benj/repos/gemini-quick.el/gemini-quick.el")
+;;       ;; (require 'gemini-quick-stream "/home/benj/repos/gemini-chat/")
+;;       )
+;;   (meow-leader-define-key
+;;    '(". c" . gemini-quick-chat))
+;;   (setf
+;;    gemini-quick-api-key
+;;    (let ((s))
+;;      (lambda ()
+;;        (or s
+;;            (setf
+;;             s
+;;             (shell-command-to-string
+;;              "pass gai/api-key-2"))))))
+
+;;   ;; TODO: share
+;;   (defun gemini-quick--stream (input)
+;;     (let* ((default-directory "/home/benj/repos/gemini-chat/")
+;;            (id (s-trim
+;;                 (shell-command-to-string
+;;                  "uuidgen")))
+;;            (file (concat
+;;                   "/tmp/gemini-quick--stream-"
+;;                   id))
+;;            (command (format
+;;                      "bb -x gemini-chat/stream-chat --file '%s'"
+;;                      file))
+;;            (shell-command-buffer-name-async (concat "*gemini" "-" id "*")))
+;;       (with-temp-buffer
+;;         (insert input)
+;;         (write-region
+;;          (point-min)
+;;          (point-max)
+;;          file))
+;;       (let ((pb (window-buffer
+;;                  (async-shell-command command))))
+;;         ;; (with-current-buffer
+;;         ;;     pb
+;;         ;;   ;; that's from https://github.com/benjamin-asdf/gemini-quick.el
+;;         ;;   (while (accept-process-output
+;;         ;;           (get-buffer-process
+;;         ;;            (current-buffer)))
+;;         ;;     (sit-for 0.1))
+;;         ;;   (gemini-quick-chat-mode))
+;;         )))
+;;   (defun gemini-quick-chat (arg)
+;;     (interactive "P")
+;;     (let* ((text (if (use-region-p)
+;;                      (buffer-substring-no-properties
+;;                       (region-beginning)
+;;                       (region-end))
+;;                    (buffer-substring-no-properties
+;;                     (point-min)
+;;                     (point-max))))
+;;            (text (concat
+;;                   text
+;;                   (when arg
+;;                     (concat
+;;                      "\n"
+;;                      (gemini-quick-read-string))))))
+;;       (gemini-quick--stream text))))
+
 (when
     (progn
       (use-package request :ensure t)
-      (require 'gemini-quick "/home/benj/repos/gemini-quick.el/gemini-quick.el")
-      ;; (require 'gemini-quick-stream "/home/benj/repos/gemini-chat/")
-      )
+      (require 'mistral-quick "/home/benj/repos/mistral-quick.el/mistral-quick.el"))
   (meow-leader-define-key
-   '(". c" . gemini-quick-chat))
+   '(". c" . mistral-quick-chat))
   (setf
-   gemini-quick-api-key
+   mistral-quick-api-key
    (let ((s))
      (lambda ()
        (or s
            (setf
             s
-            (shell-command-to-string
-             "pass gai/api-key-2"))))))
+            (string-trim (shell-command-to-string
+                          "pass bjs/mistral-key"))))))))
 
-  ;; TODO: share
-  (defun gemini-quick--stream (input)
-    (let* ((default-directory "/home/benj/repos/gemini-chat/")
-           (id (s-trim
-                (shell-command-to-string
-                 "uuidgen")))
-           (file (concat
-                  "/tmp/gemini-quick--stream-"
-                  id))
-           (command (format
-                     "bb -x gemini-chat/stream-chat --file '%s'"
-                     file))
-           (shell-command-buffer-name-async (concat "*gemini" "-" id "*")))
-      (with-temp-buffer
-        (insert input)
-        (write-region
-         (point-min)
-         (point-max)
-         file))
-      (let ((pb (window-buffer
-                 (async-shell-command command))))
-        ;; (with-current-buffer
-        ;;     pb
-        ;;   ;; that's from https://github.com/benjamin-asdf/gemini-quick.el
-        ;;   (while (accept-process-output
-        ;;           (get-buffer-process
-        ;;            (current-buffer)))
-        ;;     (sit-for 0.1))
-        ;;   (gemini-quick-chat-mode))
-        )))
-  (defun gemini-quick-chat (arg)
-    (interactive "P")
-    (let* ((text (if (use-region-p)
-                     (buffer-substring-no-properties
-                      (region-beginning)
-                      (region-end))
-                   (buffer-substring-no-properties
-                    (point-min)
-                    (point-max))))
-           (text (concat
-                  text
-                  (when arg
-                    (concat
-                     "\n"
-                     (gemini-quick-read-string))))))
-      (gemini-quick--stream text))))
+
+
+
+
+
 
 (use-package wolfram-mode
   :config

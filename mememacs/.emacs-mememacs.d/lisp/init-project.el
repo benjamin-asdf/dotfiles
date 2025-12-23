@@ -41,9 +41,14 @@ to directory DIR."
       (interactive)
       (find-file project-list-file))
 
+(defun mm/project-xterm ()
+  (interactive)
+  (async-shell-command "xterm"))
+
 (bind-keys
  :map project-prefix-map
  ("l" . recompile)
+ ("a" . mm/project-xterm)
  ("P" . mm/project-switch-project-find-file)
  ("." . mm/project-list-file)
  ("f" . consult-project-buffer)

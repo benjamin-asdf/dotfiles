@@ -29,3 +29,9 @@
 /mememacs/.emacs-mememacs.d/request/
 /clojure/.clojure/.clj-kondo/
 /clojure/.clojure/.lsp/
+/bbin/.babashka/bbin/bin/clj-nrepl-eval
+/bbin/.babashka/bbin/bin/clj-paren-repair
+/bbin/.babashka/bbin/bin/clj-paren-repair-claude-hook
+/scripts/.local/bin/parinfer-rust
+/.clj-kondo/
+/.lsp/
