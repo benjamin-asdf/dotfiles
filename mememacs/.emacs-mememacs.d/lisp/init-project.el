@@ -41,9 +41,22 @@ to directory DIR."
       (interactive)
       (find-file project-list-file))
 
-(defun mm/project-xterm ()
-  (interactive)
-  (async-shell-command "xterm"))
+(defun mm/project-xterm (dir)
+  (interactive (list
+                (or
+                 (consult--project-root)
+                 (project-prompt-project-dir))))
+  (let ((default-directory dir))
+    (async-shell-command "xterm")))
+
+
+(defun mm/project-git-init (dir)
+  (interactive (list
+                (or (consult--project-root)
+                    (project-prompt-project-dir))))
+  (let ((default-directory dir))
+    (async-shell-command
+     "git init && git add -- . && git commit -m initial")))
 
 (bind-keys
  :map project-prefix-map
@@ -51,6 +64,7 @@ to directory DIR."
  ("a" . mm/project-xterm)
  ("P" . mm/project-switch-project-find-file)
  ("." . mm/project-list-file)
+ ("i" . mm/project-git-init)
  ("f" . consult-project-buffer)
  ("m" . magit-status)
  ("/" . consult-ripgrep)
