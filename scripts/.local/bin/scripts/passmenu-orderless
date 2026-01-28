@@ -9,8 +9,8 @@
 set -euo pipefail
 
 PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
-DMENU_OPTS="${DMENU_OPTS:--i -l 20}"
 CLIP_TIME="${PASSWORD_STORE_CLIP_TIME:-45}"
+DMENU_OPTS="${DMENU_OPTS:--i -l 20}"
 
 # Get all password entries
 get_entries() {

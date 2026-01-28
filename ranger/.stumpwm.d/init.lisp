@@ -222,9 +222,14 @@
 (define-key *top-map* (kbd "s-]") "cmd-xkill")
 
 
-(load-module "pass")
+(defcommand passmenu () ()
+  (run-shell-command "passmenu-orderless"))
 
-(define-key *top-map* (kbd "s-a") "pass-copy")
+(defcommand passmenu-type () ()
+  (run-shell-command "passmenu-orderless --type"))
+
+(define-key *top-map* (kbd "s-a") "passmenu")
+(define-key *top-map* (kbd "s-A") "passmenu-type")
 (defcommand kill-unclutter () ()
   (run-shell-command "pkill unclutter"))
 
