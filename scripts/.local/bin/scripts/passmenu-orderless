@@ -1,0 +1,186 @@
+#!/usr/bin/env bash
+# passmenu-orderless: dmenu interface for pass with orderless matching
+# Type space-separated terms that match in any order
+# e.g., "github token" matches "tokens/github" or "github/personal-token"
+#
+# The script shows dmenu repeatedly: type a query and press Enter to filter,
+# or select an entry directly to use it.
+
+set -euo pipefail
+
+PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+DMENU_OPTS="${DMENU_OPTS:--i -l 20}"
+CLIP_TIME="${PASSWORD_STORE_CLIP_TIME:-45}"
+
+# Get all password entries
+get_entries() {
+    find "$PASSWORD_STORE_DIR" -name '*.gpg' -type f 2>/dev/null | \
+        sed -e "s|^$PASSWORD_STORE_DIR/||" -e 's|\.gpg$||' | \
+        sort
+}
+
+# Orderless filter: all space-separated terms must match (any order)
+# Each term is treated as a regex pattern
+orderless_filter() {
+    local input="$1"
+
+    if [[ -z "$input" ]]; then
+        cat
+        return
+    fi
+
+    # Build awk program that checks all terms match
+    local awk_prog='BEGIN { IGNORECASE=1 } '
+    local match_all='1'
+
+    for term in $input; do
+        # Escape special regex chars for safety, but allow basic patterns
+        local escaped_term
+        escaped_term=$(printf '%s' "$term" | sed 's/[.[\*^$()+?{|]/\\&/g')
+        match_all="$match_all && /$escaped_term/"
+    done
+
+    awk_prog+="$match_all { print }"
+
+    awk "$awk_prog"
+}
+
+# Orderless dmenu loop
+# Shows filtered results, user can:
+#   - Select an entry (if it exists in password store)
+#   - Type a query and press Enter to filter further
+dmenu_orderless() {
+    local all_entries
+    all_entries=$(get_entries)
+    local query=""
+    local prompt="pass"
+
+    while true; do
+        local filtered
+        filtered=$(echo "$all_entries" | orderless_filter "$query")
+
+        local count
+        count=$(echo "$filtered" | grep -c . || echo 0)
+
+        if [[ "$count" -eq 0 ]]; then
+            # No matches, let user refine query
+            prompt="pass [$query] (no matches)"
+            filtered=":: clear query"
+        elif [[ "$count" -eq 1 ]] && [[ -n "$query" ]]; then
+            # Single match with active query - auto-select
+            echo "$filtered"
+            return 0
+        else
+            if [[ -n "$query" ]]; then
+                prompt="pass [$query] ($count)"
+            else
+                prompt="pass ($count)"
+            fi
+        fi
+
+        local selection
+        selection=$(printf '%s\n' "$filtered" | dmenu $DMENU_OPTS -p "$prompt") || return 1
+
+        # Handle special commands
+        if [[ "$selection" == ":: clear query" ]]; then
+            query=""
+            continue
+        fi
+
+        # Check if selection is an actual entry
+        if echo "$all_entries" | grep -qxF "$selection"; then
+            echo "$selection"
+            return 0
+        fi
+
+        # Otherwise treat selection as additional query terms
+        if [[ -n "$query" ]]; then
+            query="$query $selection"
+        else
+            query="$selection"
+        fi
+    done
+}
+
+# Main
+main() {
+    local typeit=0
+    local show=0
+    local field=""
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --type|-t) typeit=1; shift ;;
+            --show|-s) show=1; shift ;;
+            --otp|-o) field="otp"; shift ;;
+            --user|-u) field="user"; shift ;;
+            --help|-h)
+                cat <<EOF
+Usage: passmenu-orderless [OPTIONS]
+
+Options:
+  --type, -t   Type password using xdotool instead of copying
+  --show, -s   Show password in notification (careful!)
+  --otp,  -o   Get OTP code instead of password
+  --user, -u   Get username (line starting with 'user:' or 'username:')
+  --help, -h   Show this help
+
+Orderless matching:
+  Type space-separated terms that match in any order.
+  Example: "git work" matches "work/github" or "github/work-account"
+
+  Press Enter on typed text to filter, or select an entry to use it.
+
+Environment:
+  PASSWORD_STORE_DIR   Password store location (default: ~/.password-store)
+  PASSWORD_STORE_CLIP_TIME  Clipboard clear time (default: 45)
+  DMENU_OPTS           Additional dmenu options (default: -i -l 20)
+EOF
+                exit 0
+                ;;
+            *) shift ;;
+        esac
+    done
+
+    local entry
+    entry=$(dmenu_orderless) || exit 1
+
+    if [[ -z "$entry" ]]; then
+        exit 1
+    fi
+
+    local password
+    case "$field" in
+        otp)
+            password=$(pass otp "$entry" 2>/dev/null) || {
+                notify-send -u critical "pass" "No OTP configured for $entry"
+                exit 1
+            }
+            ;;
+        user)
+            password=$(pass show "$entry" | grep -iE '^(user|username|login):' | head -1 | cut -d: -f2- | xargs)
+            if [[ -z "$password" ]]; then
+                notify-send -u critical "pass" "No username found in $entry"
+                exit 1
+            fi
+            ;;
+        *)
+            password=$(pass show "$entry" | head -1)
+            ;;
+    esac
+
+    if [[ $show -eq 1 ]]; then
+        notify-send -u critical -t 5000 "$entry" "$password"
+    elif [[ $typeit -eq 1 ]]; then
+        # Small delay to allow dmenu to close and focus to return
+        sleep 0.1
+        printf '%s' "$password" | xdotool type --clearmodifiers --delay 12 --file -
+    else
+        printf '%s' "$password" | xclip -selection clipboard
+        notify-send -t 3000 "pass" "Copied $entry to clipboard for ${CLIP_TIME}s"
+        # Clear clipboard after timeout
+        (sleep "$CLIP_TIME" && printf '' | xclip -selection clipboard) &
+    fi
+}
+
+main "$@"
