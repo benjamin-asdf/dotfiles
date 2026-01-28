@@ -29,7 +29,7 @@ config.bind(',r', ':spawn emacsclient --eval "(github-pull-readme \\"{url}\\")"'
 config.bind(',l', ':spawn emacsclient "org-protocol://store-link?url={url}" ', mode='normal')
 config.bind(',c', ':spawn emacsclient "org-protocol://capture?url={url}" ', mode='normal')
 
-config.bind('tb', 'config-cycle statusbar.hide true false')
+config.bind('tb', 'config-cycle statusbar.show always never')
 config.bind("tt", 'config-cycle tabs.show never always')
 config.bind('<Ctrl-Shift-j>', 'tab-next')
 config.bind('<Ctrl-Shift-k>', 'tab-prev')
@@ -85,6 +85,9 @@ if os.path.exists(work_config_path):
     exec(open(work_config_path).read())
 
 c.editor.command = ['emacsclient', "-c", "--eval", "(mm/edit-with-editor \"{file}\")" ]
+
+# Font
+c.fonts.default_size = "14pt"
 
 # Mememacs color scheme (from visual.el)
 bg = "black"
