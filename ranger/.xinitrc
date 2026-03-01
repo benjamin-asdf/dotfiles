@@ -1,5 +1,4 @@
 source ~/.profile
-
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1

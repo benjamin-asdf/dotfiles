@@ -142,6 +142,7 @@
  '("|" . meow-next-symbol)
  '("e" . special-lispy-eval)
  '("E" . special-lispy-eval-and-insert)
+ '("T" . lispy-ace-paren)
  '("f" . meow-find)
  '("g" . meow-cancel-selection)
  '("G" . meow-grab)

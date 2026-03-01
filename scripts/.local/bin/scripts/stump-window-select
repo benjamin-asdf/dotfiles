@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# stump-window-select: dmenu with orderless matching for StumpWM windows
+# Reads /tmp/stumpwm-windows (tab-separated: id\tdisplay)
+# Outputs selected window ID
+
+set -euo pipefail
+
+WINDOW_FILE="/tmp/stumpwm-windows"
+DMENU_OPTS="${DMENU_OPTS:--i -l 20}"
+
+if [[ ! -f "$WINDOW_FILE" ]]; then
+    exit 1
+fi
+
+get_entries() {
+    cut -f2- "$WINDOW_FILE"
+}
+
+orderless_filter() {
+    local input="$1"
+    if [[ -z "$input" ]]; then
+        cat
+        return
+    fi
+    local awk_prog='BEGIN { IGNORECASE=1 } '
+    local match_all='1'
+    for term in $input; do
+        local escaped_term
+        escaped_term=$(printf '%s' "$term" | sed 's/[.[\*^$()+?{|]/\\&/g')
+        match_all="$match_all && /$escaped_term/"
+    done
+    awk_prog+="$match_all { print }"
+    awk "$awk_prog"
+}
+
+main() {
+    local all_entries
+    all_entries=$(get_entries)
+    local query=""
+    local prompt="win"
+
+    while true; do
+        local filtered
+        filtered=$(echo "$all_entries" | orderless_filter "$query")
+
+        local count
+        count=$(echo "$filtered" | grep -c . || echo 0)
+
+        if [[ "$count" -eq 0 ]]; then
+            prompt="win [$query] (no matches)"
+            filtered=":: clear query"
+        elif [[ "$count" -eq 1 ]] && [[ -n "$query" ]]; then
+            grep -F "$filtered" "$WINDOW_FILE" | head -1 | cut -f1
+            return 0
+        else
+            if [[ -n "$query" ]]; then
+                prompt="win [$query] ($count)"
+            else
+                prompt="win ($count)"
+            fi
+        fi
+
+        local selection
+        selection=$(printf '%s\n' "$filtered" | dmenu $DMENU_OPTS -p "$prompt") || return 1
+
+        if [[ "$selection" == ":: clear query" ]]; then
+            query=""
+            continue
+        fi
+
+        if echo "$all_entries" | grep -qxF "$selection"; then
+            grep -F "$selection" "$WINDOW_FILE" | head -1 | cut -f1
+            return 0
+        fi
+
+        if [[ -n "$query" ]]; then
+            query="$query $selection"
+        else
+            query="$selection"
+        fi
+    done
+}
+
+main

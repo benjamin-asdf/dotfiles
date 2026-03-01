@@ -99,6 +99,7 @@ fruit_salad = "#479b59"
 hit_pink = "#feb48f"
 woodsmoke_tint = "#2e2d35"
 anakiwa = "#8fcefe"
+horison = "#5F89A9"
 sweet_pink = "#fe9aa1"
 
 # Completion
@@ -113,8 +114,8 @@ c.colors.completion.item.selected.fg = heliotrope
 c.colors.completion.item.selected.bg = bg
 c.colors.completion.item.selected.border.top = heliotrope
 c.colors.completion.item.selected.border.bottom = heliotrope
-c.colors.completion.item.selected.match.fg = mint_green
-c.colors.completion.match.fg = mint_green
+c.colors.completion.item.selected.match.fg = horison
+c.colors.completion.match.fg = horison
 c.colors.completion.scrollbar.fg = heliotrope
 c.colors.completion.scrollbar.bg = bg
 
@@ -133,9 +134,10 @@ c.colors.downloads.stop.bg = mint_green
 c.colors.downloads.error.fg = sweet_pink
 
 # Hints
-c.colors.hints.fg = bg
-c.colors.hints.bg = hit_pink
-c.colors.hints.match.fg = heliotrope
+c.colors.hints.fg = fg              # hint letters: hint-of-red
+c.colors.hints.bg = bg              # background: black
+c.colors.hints.match.fg = heliotrope # already typed: heliotrope
+c.hints.border = f"1px solid {heliotrope}"
 
 # Keyhint
 c.colors.keyhint.fg = fg
@@ -163,10 +165,10 @@ c.colors.prompts.selected.bg = bg
 # Statusbar
 c.colors.statusbar.normal.fg = fg
 c.colors.statusbar.normal.bg = bg
-c.colors.statusbar.insert.fg = bg
-c.colors.statusbar.insert.bg = mint_green
-c.colors.statusbar.passthrough.fg = bg
-c.colors.statusbar.passthrough.bg = anakiwa
+c.colors.statusbar.insert.fg = fg
+c.colors.statusbar.insert.bg = bg
+c.colors.statusbar.passthrough.fg = fg
+c.colors.statusbar.passthrough.bg = bg
 c.colors.statusbar.private.fg = fg
 c.colors.statusbar.private.bg = woodsmoke_tint
 c.colors.statusbar.command.fg = fg

@@ -177,7 +177,7 @@ EOF
         printf '%s' "$password" | xdotool type --clearmodifiers --delay 12 --file -
     else
         printf '%s' "$password" | xclip -selection clipboard
-        notify-send -t 3000 "pass" "Copied $entry to clipboard for ${CLIP_TIME}s"
+        # notify-send -t 3000 "pass" "Copied $entry to clipboard for ${CLIP_TIME}s"
         # Clear clipboard after timeout
         (sleep "$CLIP_TIME" && printf '' | xclip -selection clipboard) &
     fi
