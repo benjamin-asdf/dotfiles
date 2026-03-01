@@ -5,6 +5,7 @@
 COLOR_BG="black"
 COLOR_FG="#faf7f7"           # hint-of-red
 COLOR_SEL_FG="#F689FF"       # heliotrope
+DMENU_WRAP_AROUND="true"
 
 exec /usr/bin/dmenu \
     -l 20 \
