@@ -150,12 +150,36 @@
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
 
+(defun mm/select-window-dmenu ()
+  "Select a window across all groups using dmenu. Returns the window or nil."
+  (let* ((windows (apply #'append
+                         (mapcar #'group-windows
+                                 (screen-groups (current-screen)))))
+         (tmpfile "/tmp/stumpwm-windows"))
+    (with-open-file (s tmpfile :direction :output :if-exists :supersede)
+      (dolist (w windows)
+        (format s "~d~c[~a] ~a: ~a~%"
+                (window-id w)
+                #\Tab
+                (group-name (window-group w))
+                (window-class w)
+                (window-title w))))
+    (let ((result (string-trim '(#\Newline #\Space #\Tab)
+                               (run-shell-command "stump-window-select" t))))
+      (when (and result (not (string= result "")))
+        (let* ((id (parse-integer result :junk-allowed t)))
+          (when id (find id windows :key #'window-id)))))))
+
 (defcommand pull-window-across-groups () ()
-  (let* ((windows (apply #'append (mapcar #'group-windows (screen-groups (current-screen)))))
-         (window (select-window-from-menu windows *window-format*)))
+  (let ((window (mm/select-window-dmenu)))
     (when window
-      (switch-to-group (window-group window))
+      (move-window-to-group window (current-group))
       (pull-window window))))
+
+(defcommand mm/find-window () ()
+  (let ((win (mm/select-window-dmenu)))
+    (when win
+      (focus-all win))))
 
 (defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
@@ -176,7 +200,10 @@
     (stumpwm:define-key m (kbd "n") "normie-mode")
     
     (stumpwm:define-key m (kbd "s") "run-or-raise-teams")
-    (stumpwm:define-key m (kbd "a") "pull-window-across-groups")
+    
+    (stumpwm:define-key m (kbd "a") "mm/find-window")
+    (stumpwm:define-key m (kbd "A") "pull-window-across-groups")
+    
     m))
 
 (define-key *top-map* (kbd "s-s") "slack")
@@ -374,9 +401,9 @@ FORM should be a quoted list."
 
 ;;; SLY setup
 
-;;(ql:quickload :slynk)
-;;(defvar *slynk-port* slynk::default-server-port)
-;;(defparameter *stumpwm-slynk-session* nil)
+;; (ql:quickload :slynk)
+;; (defvar *slynk-port* slynk::default-server-port)
+;; (defparameter *stumpwm-slynk-session* nil)
 
 
 (define-remapped-keys
