@@ -2,8 +2,35 @@ Getting shit done with emacs. I strive for simplicity and harmony in my practice
 Lisp is my home.
 Clojure is my spaceship.
 
-* singularity group
-see [[sg-setup-notes.org][setup notes]] for linux setup help
+* The Setup
+
+A maximalist Lisp hacker's environment — the entire computer as a programmable Lisp machine.
+
+** Stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| WM | StumpWM (Common Lisp) | Why would my window manager NOT be written in Lisp? |
+| Editor | Mememacs (custom Emacs distro) | Not Doom. Not Spacemacs. My own. |
+| Modal editing | Meow | Not even Evil  |
+| Browser | qutebrowser | Keyboard-driven, Emacs-integrated |
+| Primary lang | Clojure | The functional Lisp on the JVM |
+| Scripting | Babashka | Even shell scripts are Clojure |
+| Shell | Bash | It just works |
+
+** Philosophy
+
+- *Everything flows through Emacs.* Qutebrowser has bindings to yank URLs into Emacs kill ring, capture pages via org-protocol, edit URLs with emacsclient. StumpWM windows are queryable from Emacs. It's Emacs all the way down.
+
+- *Lisp at every layer.* Common Lisp (StumpWM), Clojure (work), Elisp (editor), Babashka (scripting). Lisps coexisting peacefully.
+
+- *REPL-driven development* is the core workflow — deep CIDER integration, live eval, instant feedback. Don't compile-and-run, converse with the running program.
+
+- *Keyboard-first.* Every tool is keyboard-driven. Vi-bindings everywhere. Minimal mouse usage.
+
+- *Automate everything.* 70+ custom shell scripts for everything from battery monitoring to game engine log aggregation to S3 uploads. If you do it twice, script it.
+
+- *Aesthetically opinionated.* Custom color scheme with names like "heliotrope", "fruit-salad", and "sweet-pink". Dark background, hint-of-red foreground. Applied consistently across Emacs, qutebrowser, dunst, and terminals.
 
 * Acknowledgments
   thanks to
