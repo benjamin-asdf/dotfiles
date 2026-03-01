@@ -7,7 +7,15 @@ COLOR_FG="#faf7f7"           # hint-of-red
 COLOR_SEL_FG="#F689FF"       # heliotrope
 DMENU_WRAP_AROUND="true"
 
+MONITOR=$(~/.stumpwm.d/modules/util/stumpish/stumpish eval '(write-to-string (stumpwm::head-number (current-head)))' 2>/dev/null | tr -d '"')
+MONITOR=${MONITOR:-0}
+
+if [ "$MONITOR" = "1" ]; then
+    MONITOR=0
+fi
+
 exec /usr/bin/dmenu \
+    -m "$MONITOR" \
     -l 20 \
     -fn "monospace:size=18" \
     -nb "$COLOR_BG" \
@@ -15,3 +23,4 @@ exec /usr/bin/dmenu \
     -sb "$COLOR_BG" \
     -sf "$COLOR_SEL_FG" \
     "$@"
+
