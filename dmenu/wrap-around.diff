@@ -1,0 +1,24 @@
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -471,6 +471,10 @@
+ 		if (sel && sel->left && (sel = sel->left)->right == curr) {
+ 			curr = prev;
+ 			calcoffsets();
++		} else if (sel && !sel->left) {
++			sel = matchend;
++			curr = matchend;
++			calcoffsets();
+ 		}
+ 		break;
+ 	case XK_Next:
+@@ -511,6 +515,10 @@
+ 		if (sel && sel->right && (sel = sel->right) == next) {
+ 			curr = next;
+ 			calcoffsets();
++		} else if (sel && !sel->right) {
++			sel = matches;
++			curr = matches;
++			calcoffsets();
+ 		}
+ 		break;
+ 	case XK_Tab:
