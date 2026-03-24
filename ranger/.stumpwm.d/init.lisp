@@ -158,17 +158,23 @@
          (tmpfile "/tmp/stumpwm-windows"))
     (with-open-file (s tmpfile :direction :output :if-exists :supersede)
       (dolist (w windows)
-        (format s "~d~c[~a] ~a: ~a~%"
-                (window-id w)
+        (format s "~d~c~d [~a] ~a: ~a~%"
+                (xlib:window-id (window-xwin w))
                 #\Tab
+                (xlib:window-id (window-xwin w))
                 (group-name (window-group w))
                 (window-class w)
                 (window-title w))))
     (let ((result (string-trim '(#\Newline #\Space #\Tab)
-                               (run-shell-command "stump-window-select" t))))
+                               (run-shell-command
+                                (format nil "stump-window-select ~d"
+                                        (head-number (current-head)))
+                                t))))
       (when (and result (not (string= result "")))
-        (let* ((id (parse-integer result :junk-allowed t)))
-          (when id (find id windows :key #'window-id)))))))
+        (let* ((xid (parse-integer result :junk-allowed t)))
+          (when xid
+            (find xid windows
+                  :key (lambda (w) (xlib:window-id (window-xwin w))))))))))
 
 (defcommand pull-window-across-groups () ()
   (let ((window (mm/select-window-dmenu)))

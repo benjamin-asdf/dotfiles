@@ -5,6 +5,12 @@
 
 set -euo pipefail
 
+# Optional first argument: monitor number for dmenu
+if [[ "${1:-}" =~ ^[0-9]+$ ]]; then
+    export DMENU_MONITOR="$1"
+    shift
+fi
+
 WINDOW_FILE="/tmp/stumpwm-windows"
 DMENU_OPTS="${DMENU_OPTS:--i -l 20}"
 
