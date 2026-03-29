@@ -187,6 +187,44 @@
     (when win
       (focus-all win))))
 
+(defun mm/write-stumpwm-windows ()
+  "Write window list to /tmp/stumpwm-windows."
+  (let ((windows (apply #'append
+                        (mapcar #'group-windows
+                                (screen-groups (current-screen))))))
+    (with-open-file (s "/tmp/stumpwm-windows" :direction :output :if-exists :supersede)
+      (dolist (w windows)
+        (format s "~d~c~d [~a] ~a: ~a~%"
+                (xlib:window-id (window-xwin w))
+                #\Tab
+                (xlib:window-id (window-xwin w))
+                (group-name (window-group w))
+                (window-class w)
+                (window-title w))))
+    windows))
+
+;; (defcommand mm/visual-find-window () ()
+;;   "Visual window switcher with screenshot previews. Non-blocking."
+;;   (let ((windows (mm/write-stumpwm-windows)))
+;;     (sb-thread:make-thread
+;;      (lambda ()
+;;        (let ((result (string-trim
+;;                       '(#\Newline #\Space #\Tab)
+;;                       (run-shell-command
+;;                        "timeout 30 /home/benj/repos/clj-windowswitcher/windowswitcher"
+;;                        t))))
+;;          (when (and result (not (string= result "")))
+;;            (let ((xid (parse-integer result :junk-allowed t)))
+;;              (when xid
+;;                (call-in-main-thread
+;;                 (lambda ()
+;;                   (let ((win (find xid windows
+;;                                    :key (lambda (w)
+;;                                           (xlib:window-id (window-xwin w))))))
+;;                     (when win
+;;                       (focus-all win)))))))))))))
+
+
 (defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "m") "mail")
@@ -208,11 +246,13 @@
     (stumpwm:define-key m (kbd "s") "run-or-raise-teams")
     
     (stumpwm:define-key m (kbd "a") "mm/find-window")
+    ;; (stumpwm:define-key m (kbd "v") "mm/visual-find-window")
     (stumpwm:define-key m (kbd "A") "pull-window-across-groups")
     
     m))
 
 (define-key *top-map* (kbd "s-s") "slack")
+(define-key *top-map* (kbd "s-t") "run-or-raise-teams")
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
 
@@ -480,11 +520,123 @@ FORM should be a quoted list."
  (group-windows (current-group)))
 
 
-;; windowlist then go thought the same class wouuld be nice
-;; also window list fitler same class
-;; window hook or sth to put qutebro
-;; I don't want to hit tab if there is only 1 thing in the
-;; selection list
+;;; Window picker: temporary tiled view of all windows
 
-;; replace flameshot maybe
-;; no drawing stuff though
+(defvar *window-picker-saved-dump* nil)
+(defvar *window-picker-saved-window* nil)
+(defvar *window-picker-selected* nil)
+(defvar *window-picker-fullscreen-windows* nil)
+
+(defun mm/only-head (group head)
+  "Collapse HEAD to a single frame, like `only' but for a specific head."
+  (let* ((windows (remove-if (lambda (w) (typep w 'float-window))
+                             (head-windows group head)))
+         (frame (copy-frame head)))
+    (when windows
+      (mapc (lambda (w)
+              (hide-window w)
+              (setf (window-frame w) frame))
+            windows)
+      (setf (frame-window frame) (car windows)
+            (tile-group-frame-head group head) frame
+            (tile-group-current-frame group) frame))))
+
+(defun mm/recursive-tile-head (n group head)
+  "Like recursive-tile but only splits frames belonging to HEAD."
+  (unless (<= n 1)
+    (let* ((frames (head-frames group head))
+           (areas (mapcar (lambda (f) (* (frame-width f) (frame-height f)))
+                          frames))
+           (idx (position (reduce #'max areas) areas))
+           (frame (nth idx frames))
+           (w (frame-width frame))
+           (h (frame-height frame)))
+      (focus-frame group frame)
+      (if (< w h) (vsplit) (hsplit)))
+    (mm/recursive-tile-head (- n 1) group head)))
+
+(defun mm/expose-tile-per-head (group)
+  "Tile windows per head, keeping each window on its original screen."
+  (dolist (head (group-heads group))
+    (let* ((windows (head-windows group head))
+           (n (length windows)))
+      (when (> n 1)
+        (mm/only-head group head)
+        (mm/recursive-tile-head (min *expose-n-max* n) group head)))))
+
+(defun mm/sort-windows-by-frame-position (group)
+  "Sort group windows by frame position (top-to-bottom, left-to-right)."
+  (let ((sorted (sort (copy-list (group-windows group))
+                      (lambda (a b)
+                        (let ((fa (window-frame a))
+                              (fb (window-frame b)))
+                          (or (< (frame-y fa) (frame-y fb))
+                              (and (= (frame-y fa) (frame-y fb))
+                                   (< (frame-x fa) (frame-x fb)))))))))
+    (setf (slot-value group 'stumpwm::windows) sorted)))
+
+(defun window-picker-enter ()
+  (let ((group (current-group)))
+    (setf *window-picker-saved-dump* (dump-group group)
+          *window-picker-saved-window* (group-current-window group)
+          *window-picker-selected* nil
+          *window-picker-fullscreen-windows*
+          (loop for w in (group-windows group)
+                when (window-fullscreen w)
+                collect w
+                and do (deactivate-fullscreen w)))
+    (mm/sort-windows-by-frame-position group)
+    (mm/expose-tile-per-head group)))
+
+(defun window-picker-exit ()
+  (let ((group (current-group))
+        (target (or *window-picker-selected* *window-picker-saved-window*)))
+    (when *window-picker-saved-dump*
+      (restore-group group *window-picker-saved-dump*)
+      (dolist (w *window-picker-fullscreen-windows*)
+        (when (find w (group-windows group))
+          (activate-fullscreen w)))
+      (when target
+        (group-focus-window group target))
+      (setf *window-picker-saved-dump* nil
+            *window-picker-saved-window* nil
+            *window-picker-selected* nil
+            *window-picker-fullscreen-windows* nil))))
+
+(defcommand window-picker-select () ()
+  (setf *window-picker-selected* (group-current-window (current-group))))
+
+(defcommand window-picker-move (dir fallback) ((:direction "Dir: ")
+                                                (:direction "Fallback: "))
+  "Move focus in DIR, falling back to FALLBACK if no neighbour."
+  (let* ((group (current-group))
+         (frame (tile-group-current-frame group))
+         (frames (group-frames group)))
+    (if (neighbour dir frame frames)
+        (move-focus dir)
+        (when (neighbour fallback frame frames)
+          (move-focus fallback)))))
+
+(define-interactive-keymap (window-picker tile-group)
+    (:on-enter #'window-picker-enter
+     :on-exit #'window-picker-exit
+     :exit-on ((kbd "ESC") (kbd "C-g")))
+  ((kbd "s-l")    "move-focus right")
+  ((kbd "s-h")    "move-focus left")
+  ((kbd "s-k")    "window-picker-move up right")
+  ((kbd "s-j")    "window-picker-move down right")
+  ((kbd "s-n")    "window-picker-move down right")
+  ((kbd "s-p")    "window-picker-move up right")
+  ((kbd "Right")  "move-focus right")
+  ((kbd "Left")   "move-focus left")
+  ((kbd "Up")     "window-picker-move up right")
+  ((kbd "Down")   "window-picker-move down right")
+  ((kbd "l")      "move-focus right")
+  ((kbd "h")      "move-focus left")
+  ((kbd "k")      "window-picker-move up right")
+  ((kbd "j")      "window-picker-move down right")
+  ((kbd "n")      "fnext")
+  ((kbd "p")      "fprev")
+  ((kbd "RET")    "window-picker-select" t))
+
+(define-key *top-map* (kbd "s-w") "window-picker")
