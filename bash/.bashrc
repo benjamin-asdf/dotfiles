@@ -81,6 +81,8 @@ complete -f -F _bb_complete bb
 alias a="[[ -f ./activate.sh ]] && source ./activate.sh
 [[ -f ./venv/bin/activate ]] && source ./venv/bin/activate"
 
+alias cc='claude --dangerously-skip-permissions'
+
 # pnpm
 export PNPM_HOME="/home/benj/.local/share/pnpm"
 case ":$PATH:" in
