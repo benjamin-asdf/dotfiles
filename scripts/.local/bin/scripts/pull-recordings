@@ -1,0 +1,30 @@
+#!/bin/sh
+# Pick audio files from the phone's Recorder folder via dmenu and pull them
+# into ~/audios/. Multi-select supported via dmenu's enter-after-each loop —
+# pick a file, it gets pulled, dmenu reopens until you cancel (Esc) or pick
+# the "*done*" entry.
+
+set -eu
+
+REMOTE_DIR="${REMOTE_DIR:-/sdcard/Music/Signal/}"
+LOCAL_DIR="${LOCAL_DIR:-$HOME/audios}"
+
+mkdir -p "$LOCAL_DIR"
+
+list_remote() {
+    adb shell "ls -1 '$REMOTE_DIR' 2>/dev/null" | tr -d '\r' | grep -v '^$' || true
+}
+
+while :; do
+    files=$(list_remote)
+    if [ -z "$files" ]; then
+        printf 'No files in %s\n' "$REMOTE_DIR" >&2
+        exit 0
+    fi
+
+    pick=$(printf '*done*\n%s\n' "$files" | dmenu -i -l 20 -p "recording > ~/audios:") || exit 0
+    [ "$pick" = "*done*" ] && exit 0
+    [ -z "$pick" ] && exit 0
+
+    adb pull "$REMOTE_DIR$pick" "$LOCAL_DIR/" >&2
+done
