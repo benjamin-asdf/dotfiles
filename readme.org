@@ -34,8 +34,21 @@ A maximalist Lisp hacker's environment — the entire computer as a programmable
 
 * Stow packages
 
-Each top-level dir is a stow package. Per-machine selection is manual
-(`stow <pkg>`); shared packages live alongside machine-specific overlays.
+Each top-level dir is a stow package. Per-machine selection is manual;
+shared packages live alongside machine-specific overlays.
+
+** Install
+
+#+begin_src sh
+cd ~/dotfiles
+stow bash mememacs qutebrowser ranger scripts \
+     flameshot dunst mpv gtk dmenu \
+     clojure dot-clojure bb bbin .clj-kondo .lsp calva \
+     git-pack
+#+end_src
+
+If a target file already exists (e.g. distro-provided ~/.bash_profile),
+move it aside first: `mv ~/.bash_profile ~/.bash_profile.pre-stow.bak`.
 
 ** Active
 
@@ -61,7 +74,7 @@ Each top-level dir is a stow package. Per-machine selection is manual
 | zsh | 2022 | replaced by bash |
 | farstar | 2021 | old laptop |
 | stumpwm | 2024-11 | empty .stumpwm.d, superseded by ranger/.stumpwm.d |
-| gaia-s, gaia-s-stumpwm | 2024-10 | machine retired? — confirm before deleting |
+| gaia-s, gaia-s-stumpwm | 2024-10 | machine retired |
 
 * Acknowledgments
   thanks to
