@@ -3,11 +3,11 @@
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("addr"
-  (filename . "~/notes/apartment/aufdemm/dat.org")
-  (front-context-string . "* Addr\n\nBenjamin")
-  (rear-context-string)
-  (position . 1)
-  (last-modified 26854 4628 182871 740000))
+ (filename . "~/notes/apartment/aufdemm/dat.org")
+ (front-context-string . "* Addr\n\nBenjamin")
+ (rear-context-string)
+ (position . 1)
+ (last-modified 26854 4628 182871 740000))
 ("kl"
  (filename . "~/repos/nc-platform/components/runner-frontend/src/nc_platform/runner/form/nav/page_navigation.cljs")
  (front-context-string . "ation-opts\n  [{:")

@@ -62,6 +62,7 @@ to directory DIR."
  :map project-prefix-map
  ("l" . recompile)
  ("a" . mm/project-xterm)
+ ;; ("a" . mm/project-xterm)
  ("P" . mm/project-switch-project-find-file)
  ("." . mm/project-list-file)
  ("i" . mm/project-git-init)

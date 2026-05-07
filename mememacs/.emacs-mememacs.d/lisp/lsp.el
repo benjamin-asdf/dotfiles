@@ -8,12 +8,10 @@
               ("M-<return>" . lsp-execute-code-action))
   :hook ((rust-mode . lsp-deferred))
   :commands (lsp lsp-deferred)
-  :init (setq lsp-enable-indentation
-              nil)
-  (setq lsp-diagnostics-provider
-        :flycheck)
-  (setq lsp-headerline-breadcrumb-enable
-        nil)
+  :init
+  (setq lsp-enable-indentation nil)
+  (setq lsp-diagnostics-provider :flycheck)
+  (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-keymap-prefix "s-;")
   (add-hook
    'lsp-completion-mode-hook

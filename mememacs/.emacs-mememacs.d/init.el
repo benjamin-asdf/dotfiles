@@ -120,7 +120,9 @@
               (defun mm/disable-visual-line-mode ()
                 (visual-line-mode -1))))
   (define-key magit-blob-mode-map "n" nil)
-  (define-key magit-blob-mode-map (kbd "C-n") nil))
+  (define-key magit-blob-mode-map (kbd "C-n") nil)
+  (add-hook 'magit-mode-hook
+            (lambda () (setq-local long-line-threshold nil))))
 
 (use-package vertico
   :init
