@@ -49,18 +49,23 @@ ex ()
   fi
 }
 
-if [ -f ~/.ssh/id_ed25519 ]; then
-    eval `keychain -q --eval id_rsa id_ed25519`
-else
-    eval `keychain -q --eval id_rsa`
-fi
-    
+# keychain agent vars are exported once per login by .bash_profile; here we
+# just pick up the cached env so non-login interactive shells (terminal
+# emulators spawned by the WM) inherit SSH_AUTH_SOCK without re-running
+# keychain on every prompt.
+[ -f "$HOME/.keychain/$HOSTNAME-sh" ] && . "$HOME/.keychain/$HOSTNAME-sh" >/dev/null
+
+append_path() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$PATH:$1"
+    fi
+}
 
 export ANDROID_HOME=$HOME/Android/Sdk
-PATH=$PATH:$ANDROID_HOME/emulator
-PATH=$PATH:$ANDROID_HOME/tools
-PATH=$PATH:$ANDROID_HOME/tools/bin
-PATH=$PATH:$ANDROID_HOME/platform-tools
+append_path "$ANDROID_HOME/emulator"
+append_path "$ANDROID_HOME/tools"
+append_path "$ANDROID_HOME/tools/bin"
+append_path "$ANDROID_HOME/platform-tools"
 
 alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
 
@@ -81,7 +86,7 @@ complete -f -F _bb_complete bb
 alias a="[[ -f ./activate.sh ]] && source ./activate.sh
 [[ -f ./venv/bin/activate ]] && source ./venv/bin/activate"
 
-alias cc='claude --dangerously-skip-permissions'
+alias c='claude --dangerously-skip-permissions'
 
 # pnpm
 export PNPM_HOME="/home/benj/.local/share/pnpm"
@@ -90,13 +95,3 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-
-
-append_path() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        export PATH="$PATH:$1"
-    fi
-
-}
-
-# setfont ter-132b
