@@ -64,6 +64,7 @@
 
 (define-key *top-map* (kbd "s-E") "pull-emacs")
 (define-key *top-map* (kbd "s-9")  "lock")
+(define-key *top-map* (kbd "s-z") "suspend")
 
 (defcommand mail () ()
   (window-send-string "Benjamin.Schwerdtner@gmail.com"))
@@ -290,6 +291,9 @@
 
 (defcommand lock () ()
   (run-shell-command "best-lock.sh"))
+
+(defcommand suspend () ()
+  (run-shell-command "xterm -e 'sudo systemctl suspend'"))
 
 (defcommand cmd-xkill () () (run-shell-command "xkill"))
 (define-key *top-map* (kbd "s-]") "cmd-xkill")
@@ -522,6 +526,7 @@ FORM should be a quoted list."
 
 ;;; Window picker: temporary tiled view of all windows
 
+(defvar *expose-n-max* 9)
 (defvar *window-picker-saved-dump* nil)
 (defvar *window-picker-saved-window* nil)
 (defvar *window-picker-selected* nil)
@@ -557,12 +562,26 @@ FORM should be a quoted list."
 
 (defun mm/expose-tile-per-head (group)
   "Tile windows per head, keeping each window on its original screen."
-  (dolist (head (group-heads group))
-    (let* ((windows (head-windows group head))
-           (n (length windows)))
-      (when (> n 1)
-        (mm/only-head group head)
-        (mm/recursive-tile-head (min *expose-n-max* n) group head)))))
+  ;; Snapshot window assignments per head before modifying frame trees,
+  ;; so that vsplit/hsplit side-effects cannot leak windows across heads.
+  (let ((head-windows-alist
+         (loop for head in (group-heads group)
+               collect (cons head
+                             (remove-if (lambda (w) (typep w 'float-window))
+                                        (head-windows group head))))))
+    (dolist (entry head-windows-alist)
+      (let* ((head (car entry))
+             (windows (cdr entry))
+             (n (length windows)))
+        (when (> n 1)
+          (mm/only-head group head)
+          (mm/recursive-tile-head (min *expose-n-max* n) group head)
+          ;; Re-assign windows to this head's frames, undoing any cross-head pulls.
+          (let ((frames (head-frames group head)))
+            (loop for w in windows
+                  for f in frames
+                  do (setf (window-frame w) f
+                           (frame-window f) w))))))))
 
 (defun mm/sort-windows-by-frame-position (group)
   "Sort group windows by frame position (top-to-bottom, left-to-right)."
@@ -585,8 +604,10 @@ FORM should be a quoted list."
                 when (window-fullscreen w)
                 collect w
                 and do (deactivate-fullscreen w)))
+    (mm/expose-tile-per-head group)
     (mm/sort-windows-by-frame-position group)
-    (mm/expose-tile-per-head group)))
+    (when *window-picker-saved-window*
+      (focus-frame group (window-frame *window-picker-saved-window*)))))
 
 (defun window-picker-exit ()
   (let ((group (current-group))
@@ -606,15 +627,15 @@ FORM should be a quoted list."
 (defcommand window-picker-select () ()
   (setf *window-picker-selected* (group-current-window (current-group))))
 
-(defcommand window-picker-move (dir fallback) ((:direction "Dir: ")
-                                                (:direction "Fallback: "))
+(defcommand window-picker-move (dir &optional fallback) ((:direction "Dir: ")
+                                                         (:direction "Fallback: "))
   "Move focus in DIR, falling back to FALLBACK if no neighbour."
   (let* ((group (current-group))
          (frame (tile-group-current-frame group))
          (frames (group-frames group)))
     (if (neighbour dir frame frames)
         (move-focus dir)
-        (when (neighbour fallback frame frames)
+        (when (and fallback (neighbour fallback frame frames))
           (move-focus fallback)))))
 
 (define-interactive-keymap (window-picker tile-group)
@@ -629,8 +650,8 @@ FORM should be a quoted list."
   ((kbd "s-p")    "window-picker-move up right")
   ((kbd "Right")  "move-focus right")
   ((kbd "Left")   "move-focus left")
-  ((kbd "Up")     "window-picker-move up right")
-  ((kbd "Down")   "window-picker-move down right")
+  ((kbd "Up")     "window-picker-move up")
+  ((kbd "Down")   "window-picker-move down")
   ((kbd "l")      "move-focus right")
   ((kbd "h")      "move-focus left")
   ((kbd "k")      "window-picker-move up right")
