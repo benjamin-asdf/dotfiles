@@ -32,6 +32,37 @@ A maximalist Lisp hacker's environment — the entire computer as a programmable
 
 - *Aesthetically opinionated.* Custom color scheme with names like "heliotrope", "fruit-salad", and "sweet-pink". Dark background, hint-of-red foreground. Applied consistently across Emacs, qutebrowser, dunst, and terminals.
 
+* Stow packages
+
+Each top-level dir is a stow package. Per-machine selection is manual
+(`stow <pkg>`); shared packages live alongside machine-specific overlays.
+
+** Active
+
+| Package | Purpose |
+|---|---|
+| bash | shell config (rc + profile) |
+| mememacs | personal Emacs distro |
+| qutebrowser | browser config + bookmarks |
+| ranger | StumpWM init + per-host bits for the "ranger" laptop |
+| scripts | ~/.local/bin scripts |
+| flameshot, dunst, mpv, gtk, dmenu | desktop apps |
+| clojure, dot-clojure (submodule), bb, bbin, .clj-kondo, .lsp, calva | Clojure toolchain |
+| git-pack | shared git config |
+| applications, voidrice-scripts, mail, jetbrains, unity, nvim | occasional use |
+
+** Retired (kept for reference, not stowed on any current machine)
+
+| Package | Last touched | Notes |
+|---|---|---|
+| nyxt | 2022 | replaced by qutebrowser |
+| exwm | 2022 | replaced by StumpWM |
+| i3 | 2022 | replaced by StumpWM |
+| zsh | 2022 | replaced by bash |
+| farstar | 2021 | old laptop |
+| stumpwm | 2024-11 | empty .stumpwm.d, superseded by ranger/.stumpwm.d |
+| gaia-s, gaia-s-stumpwm | 2024-10 | machine retired? — confirm before deleting |
+
 * Acknowledgments
   thanks to
   https://gitlab.com/ambrevar/dotfiles
