@@ -54,6 +54,26 @@ export GTK_IM_MODULE=fcitx
 
 fcitx5 &
 
+# Tag the session as a plain X11 desktop. Without these, systemd sees
+# XDG_SESSION_TYPE=tty (started from a console) and XDG_CURRENT_DESKTOP is
+# empty, so portals and other graphical user services can't identify the env.
+export XDG_SESSION_TYPE=x11
+export XDG_CURRENT_DESKTOP=stumpwm
+
+# Push X display + desktop vars into BOTH the D-Bus activation environment and
+# the systemd --user manager (--systemd) so user services and D-Bus-activated
+# portals (e.g. xdg-desktop-portal-gtk, which renders browser file pickers)
+# can open a display instead of dying with "cannot open display:". This
+# supersedes a plain `systemctl --user import-environment`.
+dbus-update-activation-environment --systemd \
+    DISPLAY XAUTHORITY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
+
+# StumpWM isn't launched by a systemd session manager, so nothing pulls in
+# graphical-session.target (it refuses manual start). This custom target
+# Wants it, satisfying the Requisite= gate on xdg-desktop-portal.service so
+# the GTK file-picker portal can activate. (Flameshot bypasses the portal via
+# useX11LegacyScreenshot — there's no Screenshot backend for a bare X11 WM.)
+systemctl --user start stumpwm-session.target
 
 exec stumpwm
 

@@ -1,0 +1,9 @@
+[Unit]
+Description=StumpWM graphical session
+# StumpWM is launched from .xinitrc, not by a systemd session manager, so
+# nothing pulls in graphical-session.target. That target refuses manual
+# start ("may be requested by dependency only"), so we Want it from here and
+# start *this* target from .xinitrc. Activating graphical-session.target
+# satisfies the Requisite= gate on xdg-desktop-portal.service, letting the
+# GTK file-picker portal activate for browser/GTK file dialogs.
+Wants=graphical-session.target
