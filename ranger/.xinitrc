@@ -68,6 +68,12 @@ export XDG_CURRENT_DESKTOP=stumpwm
 dbus-update-activation-environment --systemd \
     DISPLAY XAUTHORITY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
 
+# KDE Connect (phone integration). In a full Plasma session the daemon
+# autostarts via /etc/xdg/autostart/org.kde.kdeconnect.daemon.desktop, but
+# StumpWM doesn't process XDG autostart files, so launch it by hand. Started
+# after the dbus activation env is set so it picks up DISPLAY + the session bus.
+kdeconnectd &
+
 # StumpWM isn't launched by a systemd session manager, so nothing pulls in
 # graphical-session.target (it refuses manual start). This custom target
 # Wants it, satisfying the Requisite= gate on xdg-desktop-portal.service so
