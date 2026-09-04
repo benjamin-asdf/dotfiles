@@ -25,8 +25,13 @@ xrate-slow
 
 # Wispr Flow shouldn't listen while the screen is locked: stop it (and its
 # Hub-parking timer) before locking, relaunch once i3lock returns on unlock.
+# The timer's own first tick is 5s out, so also fire the park oneshot
+# directly -- otherwise the Hub window sits on-screen at its default spawn
+# position for up to 5s after every unlock.
 systemctl --user stop wispr-hub-park.timer wispr-start.service
 i3lock -n
 systemctl --user start wispr-start.service wispr-hub-park.timer
+sleep 1
+systemctl --user start wispr-hub-park.service
 
 xrate-fast
