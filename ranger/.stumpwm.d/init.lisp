@@ -63,6 +63,24 @@
   (run-or-pull "emacs" '(:class "Emacs")))
 
 (define-key *top-map* (kbd "s-E") "pull-emacs")
+
+(defcommand notification-dismiss () ()
+  (run-shell-command "dunstctl close"))
+
+(defcommand notification-dismiss-and-replay () ()
+  (run-shell-command "sh -c 'sh \"$(ls -t /tmp/mail-notify/actions/*.sh | head -1)\"; dunstctl close'"))
+
+(defcommand notification-history () ()
+  (run-shell-command "bb /home/benj/repos/game/src/game/mail_notify_history.bb"))
+
+(defparameter *notification-map*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (stumpwm:define-key m (kbd "q") "notification-dismiss")
+    (stumpwm:define-key m (kbd "r") "notification-dismiss-and-replay")
+    (stumpwm:define-key m (kbd "h") "notification-history")
+    m))
+
+(define-key *top-map* (kbd "s-r") '*notification-map*)
 (define-key *top-map* (kbd "s-9")  "lock")
 (define-key *top-map* (kbd "s-z") "suspend")
 
@@ -290,10 +308,14 @@
 
 
 (defcommand lock () ()
-  (run-shell-command "best-lock.sh"))
+  (run-shell-command "lock-screen.sh"))
 
 (defcommand suspend () ()
   (run-shell-command "xterm -e 'sudo systemctl suspend'"))
+
+(defcommand pc () ()
+  (run-shell-command "xterm -e bash -ic 'cd ~/repos/game && pc'"))
+(define-key *top-map* (kbd "s-c") "pc")
 
 (defcommand cmd-xkill () () (run-shell-command "xkill"))
 (define-key *top-map* (kbd "s-]") "cmd-xkill")
@@ -661,3 +683,8 @@ FORM should be a quoted list."
   ((kbd "RET")    "window-picker-select" t))
 
 (define-key *top-map* (kbd "s-w") "window-picker")
+
+(defcommand verstanden () ()
+  (set-x-selection "〰️ Verstanden." '(:primary :clipboard)))
+
+(define-key *top-map* (kbd "s-v") "verstanden")

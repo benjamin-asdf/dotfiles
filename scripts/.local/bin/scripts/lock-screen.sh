@@ -22,5 +22,11 @@
 # xlock -startCmd "xrate-slow" -endCmd "xrate-fast"
 
 xrate-slow
+
+# Wispr Flow shouldn't listen while the screen is locked: stop it (and its
+# Hub-parking timer) before locking, relaunch once i3lock returns on unlock.
+systemctl --user stop wispr-hub-park.timer wispr-start.service
 i3lock -n
+systemctl --user start wispr-start.service wispr-hub-park.timer
+
 xrate-fast

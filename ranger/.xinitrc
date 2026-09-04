@@ -1,4 +1,13 @@
 source ~/.profile
+
+# Take this session's cgroup off systemd-oomd's shortlist. Xorg and StumpWM run
+# in session-N.scope, and oomd's swap rule considers every descendant cgroup and
+# kills whichever holds the most swap -- on 2026-09-03 that was this scope, at
+# 6.8G, so the entire desktop died to reclaim memory a JVM had allocated. The
+# helper sets user.oomd_avoid on the scope, making it a candidate of last resort.
+# `|| true`: a missing sudoers entry must never block the session from starting.
+sudo -n /usr/local/sbin/oomd-avoid-session || true
+
 # Fix java apps with tiling WMs
 export AWT_TOOLKIT=MToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -9,7 +18,7 @@ export GDK_CORE_DEVICE_EVENTS=1
 xset r rate 140 220
 
 # lock after 5 minutes
-xautolock -time 5 -locker i3lock &
+xautolock -time 5 -locker lock-screen.sh &
 
 xrandr --auto
 
