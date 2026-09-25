@@ -35,6 +35,11 @@
  ;;     :classpath-overrides - map of lib to path that overrides the result of resolving deps
 
  :aliases {
+           ;; Heap cap injected automatically by the clj/clojure wrapper in
+           ;; ~/.local/bin/pathoverride/. Injected in first alias position, so a
+           ;; project alias or a -J-Xmx flag still overrides it.
+           :mem {:jvm-opts ["-Xmx8g"]}
+
            ;; :deps {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.11.922"}}}
            ;; :test {:extra-paths ["test"]}
 

@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# Run a command inside its own systemd user scope with a hard memory ceiling.
+#
+# Why: a *global* OOM freezes this machine. Anonymous memory eats everything,
+# the page cache collapses to a few MB, and every code page fault goes back to
+# disk -- so Xorg and the input stack wedge long before the kernel OOM killer
+# gets around to acting. A cgroup-local limit turns the same overrun into an
+# immediate kill of just this process tree, with the rest of the system never
+# under pressure at all.
+#
+# Scopes land in jvm.slice by default, which carries an *aggregate* ceiling
+# (see ~/.config/systemd/user/jvm.slice). That second cap is what stops three
+# individually-well-behaved REPLs from exhausting RAM between them -- the
+# failure mode that took down the WM on 2026-09-03. It also keeps every scope
+# out of session-N.scope, where Xorg and StumpWM live, so a runaway here can
+# never make the desktop the most attractive thing for oomd to kill.
+#
+# Bonus: the JVM reads the cgroup limit (UseContainerSupport, on by default),
+# so inside `mem-scope -m 12G` the default max heap becomes 25% of 12G = 3G
+# instead of 25% of physical RAM = 15.5G. Pass -XX:MaxRAMPercentage=70 if you
+# want the JVM to actually use the budget you gave it.
+#
+# Usage:
+#   mem-scope [-m MAX] [-s SWAP_MAX] [-H HIGH] [-S SLICE] [-n NAME] -- cmd [args...]
+#
+#   -m, --max        hard ceiling; exceeding it kills the tree   (default 12G)
+#   -s, --swap-max   swap this tree may use                      (default 2G)
+#   -H, --high       throttle threshold. NOT set by default, on purpose -- see below
+#   -S, --slice      parent slice, sets the aggregate budget     (default jvm)
+#   -n, --name       scope unit name                             (default from command)
+#
+# On -H / MemoryHigh: measured on this machine, MemoryMax=256M alone killed a
+# runaway allocation in 0.107s, while adding MemoryHigh=217M made the same
+# allocation thrash for over 100 seconds without ever being killed. memory.high
+# throttles and reclaims rather than killing, and with little or no swap it
+# keeps "succeeding" by evicting the process's own executable pages -- a
+# cgroup-scale replay of the freeze this wrapper exists to prevent. Only pass
+# -H if you specifically want a soft brake and are watching systemd-cgtop.
+#
+# On -S / --slice: anything sharing the default jvm.slice shares its aggregate
+# budget. That is deliberate -- the point is to bound total heavy work, not
+# JVMs specifically. Pass `-S ''` to park a scope directly under app.slice with
+# no aggregate cap, or another slice name to give it a separate budget.
+#
+# Examples:
+#   mem-scope -- clojure -M:dev
+#   mem-scope -m 24G -n nrepl-nc -- clojure -M:dev:+default
+#   mem-scope -m 4G -S '' -- npm run build
+
+set -euo pipefail
+
+max=12G
+swap_max=2G
+high=
+slice=jvm
+name=
+
+die() { printf 'mem-scope: %s\n' "$1" >&2; exit 2; }
+
+# Print the header block above, minus the leading '# '. Derived from the file
+# rather than a hardcoded line range so editing the header cannot desync it.
+usage() {
+    awk '/^set -euo/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0"
+    exit "${1:-0}"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -m|--max)      max=${2:?--max needs a value}; shift 2 ;;
+        -s|--swap-max) swap_max=${2:?--swap-max needs a value}; shift 2 ;;
+        -H|--high)     high=${2:?--high needs a value}; shift 2 ;;
+        -S|--slice)    slice=${2-}; shift 2 ;;
+        -n|--name)     name=${2:?--name needs a value}; shift 2 ;;
+        -h|--help)     usage 0 ;;
+        --)            shift; break ;;
+        -*)            die "unknown option: $1" ;;
+        *)             break ;;
+    esac
+done
+
+[ $# -gt 0 ] || usage 2
+
+if [ -z "$name" ]; then
+    # Sanitise in bash, not through `tr -c`: command substitution strips a
+    # trailing newline, but tr turns it into a '-' first, so a piped version
+    # yields "ms-clj-tmp--123" with a stray dash.
+    base=$(basename -- "$1")
+    name="ms-${base//[^[:alnum:]_-]/-}-$$"
+fi
+
+# OOMPolicy=kill sets memory.oom.group=1 on the scope. Without it, a cap breach
+# anywhere in the subtree kills the single fattest *task*, which for a JVM is
+# one thread of many and leaves a half-dead process behind; with it the whole
+# tree goes at once. It also makes this scope resolve as one victim when the
+# parent slice's aggregate cap trips.
+props=(-p MemoryAccounting=yes -p MemoryMax="$max" -p MemorySwapMax="$swap_max"
+       -p OOMPolicy=kill)
+[ -n "$high" ] && props+=(-p MemoryHigh="$high")
+[ -n "$slice" ] && props+=("--slice=$slice")
+
+printf 'mem-scope: %s  MemoryMax=%s MemorySwapMax=%s%s%s\n' \
+       "$name" "$max" "$swap_max" "${high:+ MemoryHigh=$high}" \
+       "${slice:+ slice=$slice}" >&2
+
+# Tells wrappers further down (notably the clj/clojure pathoverride) that they
+# are already inside a scope and must not create another. Without this,
+# `mem-scope -m 24G -- clojure -M:dev` re-enters the clojure wrapper, which
+# calls mem-scope again with its own defaults -- and because
+# `systemd-run --slice=jvm` attaches the new scope to jvm.slice rather than
+# nesting it inside this one, the JVM leaves this cgroup altogether and the
+# -m 24G asked for here is silently replaced by the wrapper's 12G default.
+export MEM_SCOPE="$name"
+
+set +e
+systemd-run --user --scope --collect --unit="$name" "${props[@]}" -- "$@"
+rc=$?
+set -e
+
+# 137 = SIGKILL, which for a scope with MemoryMax set almost always means the
+# cgroup hit its ceiling -- either this scope's own -m, or the aggregate cap on
+# the parent slice. Point at the evidence rather than leaving a bare 137.
+if [ "$rc" -eq 137 ]; then
+    printf '\nmem-scope: %s was killed (SIGKILL) -- hit MemoryMax=%s' "$name" "$max" >&2
+    printf '%s.\n' "${slice:+, or the aggregate cap on $slice.slice}" >&2
+    printf 'mem-scope: check with: journalctl -b 0 -k --grep "Memory cgroup out of memory"\n' >&2
+    printf 'mem-scope: live budget: systemd-cgtop -m --depth=2 /user.slice/user-%s.slice/user@%s.service\n' \
+           "$(id -u)" "$(id -u)" >&2
+fi
+
+exit "$rc"

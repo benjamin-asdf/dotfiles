@@ -1,0 +1,47 @@
+[Unit]
+Description=Capped slice for JVMs and other memory-hungry jobs
+Documentation=man:systemd.resource-control(5)
+# Why this exists: per-process caps do not compose. On 2026-09-03 every JVM
+# was individually bounded (-Xmx8g via the :mem alias) and the box still hit
+# 56G of anonymous memory, because nothing bounded their *sum*. This slice is
+# the aggregate ceiling; mem-scope puts each JVM in its own scope underneath.
+#
+# Two independent kills, both landing on exactly one JVM:
+#   - one JVM overruns          -> its own scope's MemoryMax kills that tree
+#   - several swell together    -> this slice's MemoryMax trips, and the kernel
+#                                  picks the fattest task in the subtree. Each
+#                                  scope sets OOMPolicy=kill (memory.oom.group
+#                                  =1), so that resolves to one whole JVM tree
+#                                  rather than a random thread of one.
+#
+# Xorg and StumpWM live in session-N.scope, a sibling of user@1000.service and
+# therefore entirely outside this slice. Neither kill path can reach them.
+
+[Slice]
+MemoryAccounting=yes
+# 32G of 62G. Leaves ~30G for the desktop (Chrome, Emacs, Electron apps) and
+# the 10G reserve this machine's CLAUDE.md asks to keep free at all times.
+MemoryMax=32G
+# Swap is 8G of zram total. Capping the JVM share at 4G keeps the system-wide
+# swap figure away from oomd's SwapUsedLimit=90%, which is the rule that killed
+# the session scope on 2026-09-03. Bounding the cause beats surviving it.
+MemorySwapMax=4G
+
+# The CPU counterpart to MemoryMax, and it exists for the same reason: the
+# clj wrapper's -XX:ActiveProcessorCount bounds one JVM's thread count, nothing
+# bounds their sum, and the nc-platform workflow routinely has three or four
+# JVMs up at once (nrepl + shadow-cljs watch + a test run). Per-process caps do
+# not compose; this is the aggregate backstop. It also catches the case the
+# flag cannot: a project that hardcodes its own thread pool.
+#
+# Unlike MemoryMax, this costs nothing when the box is idle. CPUWeight is a
+# share of *contended* CPU only, and unused share is redistributed -- a lone
+# JVM in this slice still gets all 20 cores no matter what this is set to. That
+# is precisely why it is a weight and not a CPUQuota: a quota is enforced even
+# against an idle machine, which would mean giving up peak throughput to buy
+# desktop latency. This gives up neither.
+#
+# 50 against the default 100 that app.slice (Chrome, wispr-flow) and the rest
+# of user@1000.service carry: JVMs yield roughly 2:1 when, and only when, the
+# machine is actually oversubscribed.
+CPUWeight=50

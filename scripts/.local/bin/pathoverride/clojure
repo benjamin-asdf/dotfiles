@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+# Wrapper for clj / clojure that does three independent things:
+#
+#   1. runs the JVM in its own capped cgroup (mem-scope -> jvm.slice),
+#   2. injects the :mem alias (~/.clojure/deps.edn, -Xmx8g) as a heap default,
+#   3. caps the JVM's *view* of the CPU count, as a parallelism default.
+#
+# (1) is the load-bearing one. (2) is advisory -- anything can override -Xmx,
+# and on 2026-09-03 something did: `cider-jack-in` passes -Sdeps, which the
+# previous version of this wrapper treated as "not an application JVM" and
+# skipped entirely. Every CIDER REPL therefore started with the uncapped
+# default MaxHeapSize = 15.6G (a quarter of 62G). Several of those, plus Emacs
+# and Chrome, reached 56G of anonymous memory in session-1.scope -- the same
+# cgroup as Xorg and StumpWM -- and systemd-oomd killed the whole scope,
+# taking the desktop with it. A cgroup ceiling cannot be argued with by a
+# command line, which is why scoping is now the primary mechanism and the
+# alias is only a default.
+#
+# The two decisions are separate because the flags that rule them out differ:
+# `-T:build uber` starts a perfectly real JVM worth capping, but has no alias
+# slot to inject into (-T takes exactly one tool name). Conflating them is
+# what created the -Sdeps hole in the first place.
+#
+# :mem goes in FIRST alias position, because with multiple aliases the last
+# -Xmx wins (measured: -M:a:b with a=8g b=2g yields 2g). So it acts as an
+# overridable default: a project alias's own -Xmx wins over it, and -J-Xmx
+# wins over everything.
+#
+# Escape hatches:
+#   NO_MEM_ALIAS=1 clj ...   skip alias injection
+#   NO_MEM_SCOPE=1 clj ...   skip the cgroup scope (for debugging the wrapper)
+#   clj -J-Xmx16g ...        override the heap, both still apply
+#
+# Scoping is skipped automatically when there is no user systemd/D-Bus session
+# to create a scope in (cron, `ssh host clj ...`), falling back to the previous
+# unscoped behaviour rather than failing.
+
+set -euo pipefail
+
+case "$(basename -- "$0")" in
+    clj) real=/usr/bin/clj ;;
+    *)   real=/usr/bin/clojure ;;
+esac
+
+# Guard against double work if some clj resolves `clojure` via PATH, or if we
+# are already running inside the mem-scope we spawned.
+if [ -n "${CLJ_MEM_ALIAS_APPLIED:-}" ]; then
+    exec "$real" "$@"
+fi
+
+# ---------------------------------------------------------------- classify ---
+# skip_all    -- starts no application JVM, or exits after printing. Neither
+#                capping nor injecting is useful; -Spath/-Stree/-P and friends
+#                are short-lived dependency queries.
+# skip_inject -- starts a real JVM (so still worth scoping) but has no usable
+#                alias slot, or reads no user deps.edn for :mem to come from.
+skip_all=
+skip_inject=
+for a in "$@"; do
+    case "$a" in
+        -h|--help|-\?|--version|-version)
+            skip_all=1 ;;
+        -Spath|-Stree|-Strace|-Sdescribe|-Spom|-Sstale|-Sresolve-tags|-P)
+            skip_all=1 ;;
+        # -Srepro ignores ~/.clojure/deps.edn, so :mem would resolve to nothing
+        # but a warning. -T takes exactly one tool name; ":mem:foo" is invalid.
+        -Srepro|-T|-T*)
+            skip_inject=1 ;;
+    esac
+done
+
+if [ -n "$skip_all" ]; then
+    exec "$real" "$@"
+fi
+
+# ------------------------------------------------------------- inject :mem ---
+args=()
+if [ -n "$skip_inject" ] || [ -n "${NO_MEM_ALIAS:-}" ]; then
+    args=("$@")
+else
+    injected=
+    skip_next=
+    for a in "$@"; do
+        # -Sdeps EDN, -Scp CP and -Sthreads N take a value; never treat that
+        # value as a flag, however much it may look like one.
+        if [ -n "$skip_next" ]; then
+            skip_next=; args+=("$a"); continue
+        fi
+        case "$a" in
+            -Sdeps|-Scp|-Sthreads) skip_next=1; args+=("$a"); continue ;;
+        esac
+        if [ -z "$injected" ]; then
+            case "$a" in
+                -M|-A|-X)   args+=("$a:mem"); injected=1; continue ;;
+                -M:*|-A:*|-X:*)
+                            args+=("${a:0:2}:mem${a:2}"); injected=1; continue ;;
+            esac
+        fi
+        args+=("$a")
+    done
+
+    # No -M/-A/-X at all (bare REPL, or plain -e/-m): -A carries jvm-opts fine.
+    if [ -z "$injected" ]; then
+        args=(-A:mem "$@")
+    fi
+fi
+
+export CLJ_MEM_ALIAS_APPLIED=1
+
+# --------------------------------------------------------------- cpu count ---
+# -XX:ActiveProcessorCount caps what Runtime.availableProcessors() reports, and
+# that number is what every JVM parallelism heuristic sizes itself from:
+# clojure.core/pmap is (+ 2 availableProcessors) (core.clj:7168),
+# ForkJoinPool.commonPool is (- availableProcessors 1), and core.async,
+# reducers/fold and parallel streams all sit on one of those two. So one flag
+# reaches code none of us is going to edit.
+#
+# Why a thread cap and not a cgroup CPU limit: on 2026-09-22 the push-vehicles
+# arena ran pmap over its population for 3h31m and averaged 13.9 of 20 cores.
+# The desktop was never short of its *share* -- session-1.scope is a sibling of
+# user@1000.service, so it was entitled to half the machine -- it was short of
+# an idle core to wake Xorg on. 22 runnable threads on 20 cores saturates every
+# one of them, and Xorg logged "event processing lagging behind ... your system
+# is too slow" for the whole run. A CPUQuota would buy that headroom back by
+# leaving cores idle even when nothing else wants them; capping the thread
+# count leaves those cores free to be *used*, by this JVM or anything else.
+#
+# It is here rather than in each project because the GP/GA repos are a family
+# and they all reach for pmap. A per-project :parallelism key would have to be
+# added, and remembered, once per repo.
+#
+# Advisory, not enforced: a project that hardcodes a 32-thread pool still gets
+# 32. The aggregate backstop for that (and for several JVMs at once, which this
+# per-JVM flag cannot compose) is CPUWeight on jvm.slice.
+#
+# -J wins: /usr/bin/clojure:493 builds the command as
+#   $JAVA_OPTS "${jvm_cache_opts[@]}" "${jvm_opts[@]}"
+# i.e. alias jvm-opts first, -J last, and for a duplicated JVM flag the last
+# occurrence wins. So this beats a project alias, and an explicit -J further
+# right on the command line beats this -- the same override direction as :mem.
+#
+# Escape hatches:
+#   CPU_MAX=1 clj ...     every core; pmap back to 22 threads (the old default)
+#   CPU_COUNT=6 clj ...   an explicit count
+cpu_args=()
+if [ -z "${CPU_MAX:-}" ]; then
+    cores=$(nproc)
+    # Leave 6 cores of headroom for the desktop. pmap adds its 2 back on top of
+    # whatever this says, so on a 20-core box the real ceiling is 16 threads.
+    cpu_args=("-J-XX:ActiveProcessorCount=${CPU_COUNT:-$(( cores > 7 ? cores - 6 : 1 ))}")
+fi
+
+# ------------------------------------------------------------------- scope ---
+# A user scope needs the per-user systemd manager and its bus. Probing the bus
+# socket is cheap; actually asking systemd-run would add a unit start to every
+# clj invocation.
+can_scope() {
+    [ -z "${NO_MEM_SCOPE:-}" ]                      || return 1
+    # Already inside a mem-scope: scoping again would attach the JVM to
+    # jvm.slice instead of nesting it, escaping the caller's explicit -m.
+    [ -z "${MEM_SCOPE:-}" ]                         || return 1
+    [ -n "${XDG_RUNTIME_DIR:-}" ]                   || return 1
+    [ -S "$XDG_RUNTIME_DIR/bus" ] ||
+        [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]      || return 1
+    command -v mem-scope    >/dev/null 2>&1         || return 1
+    command -v systemd-run  >/dev/null 2>&1         || return 1
+}
+
+if ! can_scope; then
+    exec "$real" "${cpu_args[@]}" "${args[@]}"
+fi
+
+# Name the scope after the project directory, so `systemd-cgtop` and the kill
+# message in the journal say which REPL died instead of "ms-clj-1234".
+proj=$(basename -- "$PWD")
+exec mem-scope --slice jvm -n "ms-clj-${proj//[^[:alnum:]_-]/-}-$$" -- "$real" "${cpu_args[@]}" "${args[@]}"
