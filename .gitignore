@@ -12,6 +12,7 @@
 /bb/.local/bin/bb-scripts/.nrepl-port
 /scripts/.local/bin/scripts/.nrepl-port
 /gaia-s-stumpwm/.stumpwm.d/stumpwm.log.1
+/ranger/.stumpwm.d/stumpwm.log.1
 /stumpwm/.stumpwm.d/stumpwm.log.1
 /stumpwm/.stumpwm.d/init.fasl
 /mememacs/.emacs-mememacs.d/history
@@ -35,3 +36,13 @@
 /scripts/.local/bin/parinfer-rust
 /.clj-kondo/
 /.lsp/
+
+# Babashka pod cache: 67M of downloaded platform binaries, re-fetched on
+# demand. Nothing here is authored.
+/bbin/.babashka/pods/
+# Compiled binary, not a dotfile.
+/scripts/.local/bin/mrml
+# Shims pointing at machine-local checkouts (~/repos/weave-kb, uv's tool dir);
+# the symlink is meaningless on any other box.
+/scripts/.local/bin/weave
+/scripts/.local/bin/whisper
