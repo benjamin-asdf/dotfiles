@@ -15,43 +15,28 @@ export GDK_CORE_DEVICE_EVENTS=1
 
 # setroot -cursor_name left_ptr
 
-xset r rate 140 220
-
-# lock after 5 minutes
-xautolock -time 5 -locker lock-screen.sh &
+# The idle locker now lives in xautolock.service (pulled in by
+# stumpwm-session.target), not here. Backgrounding it from .xinitrc left it
+# unsupervised: on 2026-09-04 the instance started here died and lingered as a
+# zombie child of StumpWM, while a hand-started replacement -- orphaned to
+# PID 1, cwd ~/repos/game, DISPLAY=:0.0 -- was what actually locked the screen.
+# systemd gives it one owner, a restart policy, and a predictable environment.
 
 xrandr --auto
 
 [ -f .screenlayout/layout.sh ] && .screenlayout/layout.sh
 
 
-# I am using orig, Mod3 is Hyper_L
-# orig:
-# // Make the left Ctrl key a left Hyper,
-# // and the CapsLock key a left Control.
-# partial modifier_keys
-# xkb_symbols "hyper_capscontrol" {
-#     replace key <CAPS> { [ Control_L ], type[group1] = "ONE_LEVEL" };
-#     replace key <LCTL> { [ Hyper_L ] };
-#     modifier_map Control { <CAPS> };
-#     modifier_map Mod3    { <LCTL> };
-# };
-
-
-# not sure what nodeadkeys does
-# nodeadkeys
-setxkbmap -layout us -option ctrl:hyper_capscontrol,nbsp:level3,altwin:prtsc_rwin
-
-# for kinesis, I remapped esc to capslock then it worked
-
-xcape -e 'Control_L=Escape'
+# Autorepeat, layout + xkb options, xcape and ~/.Xmodmap all live in one
+# idempotent script now, so the keymap can be restored mid-session (after
+# replugging the Kinesis, say) without picking lines out of this file.
+keyboard-setup.sh
 
 redshift -l 55.7:12.6 -t 2200:1600 -m randr &
 unclutter &
 dunst &
 
 xrdb -merge ~/.Xresources
-xmodmap ~/.Xmodmap
 
 
 

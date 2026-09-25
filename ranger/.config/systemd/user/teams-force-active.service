@@ -1,0 +1,6 @@
+[Unit]
+Description=Force teams-for-linux presence to active
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/scripts/teams-force-active.sh

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Mark the caller's own logind session scope as a last-resort oomd candidate.
+#
+# Why this exists: on 2026-09-03 systemd-oomd killed session-1.scope -- RAM at
+# 95%, swap at 90% -- and Xorg + StumpWM live in that scope, so the whole
+# desktop died to reclaim memory a runaway JVM had allocated. oomd's swap rule
+# (ManagedOOMSwap=kill on -.slice) considers every descendant cgroup and picks
+# whichever holds the most swap; that was this scope, at 6.8G. Setting
+# user.oomd_avoid makes oomd select it only when no other candidate is viable.
+#
+# Deliberately still a candidate of last resort rather than 'omit': if the
+# session scope really is holding all of RAM, killing it beats freezing the box.
+#
+# Why root: session-N.scope's cgroup directory is owned by root:root, and
+# systemd-oomd only honours user.oomd_avoid on the *swap* code path when the
+# cgroup is root-owned (systemd.resource-control(5), ManagedOOMPreference=).
+# Both facts together mean benj cannot set this directly -- hence the single
+# NOPASSWD sudoers entry that invokes this script.
+#
+# Why it takes no arguments: it reads /proc/self/cgroup, i.e. the cgroup of
+# *this* process. sudo does not move a process between cgroups, so that is the
+# caller's own session scope and nothing else. There is no parameter to point
+# it at an arbitrary cgroup, which is what keeps the sudoers entry from being a
+# general-purpose "set xattrs anywhere as root" primitive.
+#
+# INSTALL AS A ROOT-OWNED COPY, NOT A SYMLINK TO THIS FILE:
+#
+#   sudo install -o root -g root -m 0755 \
+#       ~/dotfiles/scripts/.local/bin/scripts/oomd-avoid-session /usr/local/sbin/
+#
+# A NOPASSWD sudo target that the invoking user can rewrite is a root shell,
+# and everything under ~/dotfiles is writable by benj. The copy in
+# /usr/local/sbin is what sudo runs; this file is only the version-controlled
+# source. Re-run the install command above after editing it.
+#
+# Called from ~/.xinitrc via `sudo -n`, guarded with `|| true` so a missing
+# sudoers entry can never block the session from starting.
+
+set -euo pipefail
+
+cg=$(awk -F: '$1 == "0" { print $3 }' /proc/self/cgroup)
+
+case "$cg" in
+    /user.slice/user-*.slice/session-*.scope) ;;
+    *)  printf 'oomd-avoid-session: refusing, not a logind session scope: %s\n' \
+            "${cg:-<none>}" >&2
+        exit 1 ;;
+esac
+
+dir=/sys/fs/cgroup$cg
+[ -d "$dir" ] || {
+    printf 'oomd-avoid-session: no such cgroup directory: %s\n' "$dir" >&2
+    exit 1
+}
+
+setfattr -n user.oomd_avoid -v 1 -- "$dir"
+printf 'oomd-avoid-session: user.oomd_avoid=1 on %s\n' "$cg"

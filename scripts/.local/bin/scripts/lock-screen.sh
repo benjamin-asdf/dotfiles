@@ -28,7 +28,15 @@ xrate-slow
 # The timer's own first tick is 5s out, so also fire the park oneshot
 # directly -- otherwise the Hub window sits on-screen at its default spawn
 # position for up to 5s after every unlock.
-systemctl --user stop wispr-hub-park.timer wispr-start.service
+#
+# --no-block is essential: Wispr Flow is Electron and dies on SIGTERM with
+# signal 5/TRAP. A blocking stop waits for the kernel to finish piping its
+# core to systemd-coredump, which on 2026-09-07 took 51 seconds -- so the
+# screen went black almost a minute after xautolock decided to lock, landing
+# on top of a user who had come back and started typing (the first keystrokes
+# went into i3lock's password prompt). Fire the stop asynchronously and lock
+# immediately; the mic goes quiet a beat after the screen does.
+systemctl --user stop --no-block wispr-hub-park.timer wispr-start.service
 i3lock -n
 systemctl --user start wispr-start.service wispr-hub-park.timer
 sleep 1

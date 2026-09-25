@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically force teams-for-linux presence to active
+
+[Timer]
+OnBootSec=15s
+OnUnitActiveSec=60s
+
+[Install]
+WantedBy=timers.target

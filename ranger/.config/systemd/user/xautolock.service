@@ -1,0 +1,36 @@
+[Unit]
+Description=Idle screen locker (xautolock)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+
+# xautolock feeds both -locker and -notifier to /bin/sh, and the locker calls
+# xrate-slow / xrate-fast / i3lock by name. The systemd user manager's PATH
+# does not include ~/.local/bin*, so spell it out here.
+Environment=PATH=%h/.local/bin/scripts:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+
+# -time 15: was 5, which is brutal for a workflow with reading, thinking and
+#   voice dictation -- and xautolock 2.2 under-counts activity on top of that.
+#   Its main loop is `queryIdleTime; queryPointer; evaluateTriggers; sleep(1)`,
+#   so the poll period is strictly over a second, while queryIdleTime only
+#   resets the countdown when it catches the X idle counter below 1000 ms
+#   (engine.c:54). Pointer movement is edge-detected across polls and so is
+#   always seen; keyboard input is only level-detected inside that one-second
+#   window, so keyboard-only bursts can go unnoticed and the lock fires early.
+# -notify 30 / -notifier: 30 seconds of warning before the screen goes.
+# -detectsleep: resets the lock timer when the clock jumps more than 3s, so a
+#   resume from suspend does not fire a countdown that expired while asleep.
+ExecStart=/usr/bin/xautolock \
+    -time 15 \
+    -locker %h/.local/bin/scripts/lock-screen.sh \
+    -detectsleep \
+    -notify 30 \
+    -notifier "notify-send -u critical -t 25000 -i system-lock-screen 'Screen locks in 30s' 'Move the mouse or press a key to cancel.'"
+
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=stumpwm-session.target

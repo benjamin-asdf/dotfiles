@@ -3,4 +3,7 @@
 ! add mod4 = Super_L Super_R
 
 
-keycode 112 = Insert
+!! keycode 112 is Page Up. It used to be remapped to Insert because the
+!! Adv360 has no Insert key anywhere in its default layout. Insert now
+!! lives on Fn + PgUp (function1 layer, profile 4) instead, so Page Up is free.
+! keycode 112 = Insert
