@@ -142,6 +142,14 @@ With prefix arg make a new file."
   (interactive "P")
   (mm/scratch arg "el"))
 
+(defun mm/scratch-org-german (&optional arg)
+  "Visit (or create with prefix arg) a scratch .org file with german-prefix input method."
+  (interactive "P")
+  (let ((buff (mm/scratch arg "org")))
+    (with-current-buffer buff
+      (set-input-method "german-prefix"))
+    buff))
+
 (defun mememacs/process-menu-switch-to-buffer ()
   (interactive)
   (when-let*

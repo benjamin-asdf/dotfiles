@@ -86,19 +86,22 @@ to directory DIR."
        "\0"
        t))))
 
-(defun mememacs/fd-files ()
-  (mm/cmd->lines "fd --hidden --exclude=.git --type=f . --print0"))
+(defun mememacs/fd-files (&optional no-ignore)
+  (mm/cmd->lines
+   (concat "fd --hidden --exclude=.git --type=f"
+           (when no-ignore " --no-ignore")
+           " . --print0")))
 
 (defun mememacs/git-ls-files ()
   (mm/cmd->lines "git ls-files --full-name -z"))
 
-(defun mememacs/fd-find-file ()
-  (interactive)
+(defun mememacs/fd-find-file (arg)
+  (interactive "P")
   (find-file
    (consult--read
-    (mememacs/fd-files)
+    (mememacs/fd-files arg)
     :category 'file
-    :prompt "find file: "
+    :prompt (if arg "find file (all): " "find file: ")
     :state (consult--file-preview)
     :history 'file-name-history)))
 

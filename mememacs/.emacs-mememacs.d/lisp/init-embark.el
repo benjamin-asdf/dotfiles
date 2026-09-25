@@ -79,9 +79,14 @@
     " "
     "--and-exit")))
 
+(defun mm/find-file-directory (file)
+  (interactive "fFile: ")
+  (find-file (file-name-directory (expand-file-name file))))
+
 (bind-keys
  :map embark-file-map
  ("S"  . sudo-find-file)
+ ("u"  . mm/find-file-directory)
  (">" . mememacs/dragon))
 
 (defun mememacs-find-file-dwim (&optional f)

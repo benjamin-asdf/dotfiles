@@ -1151,3 +1151,51 @@ Example:
 
 ;; - avy features
 ;; - consult-line-multi
+
+;; ── KDE Connect: send files / text to the phone (Pixel 8a) ──────────────────
+(defvar kdeconnect-device "d9c5c60f6ed84328bb0614de603ef910"
+  "KDE Connect device id; nil => erstes erreichbares.")
+
+(defun kdeconnect--device ()
+  (or kdeconnect-device
+      (car (split-string (shell-command-to-string "kdeconnect-cli -a --id-only")))))
+
+(defun kdeconnect--notify (msg)
+  (if (fboundp 'notifications-notify)
+      (notifications-notify :title "KDE Connect" :body msg :timeout 3000)
+    (start-process "notify-send" nil "notify-send" "KDE Connect" msg)))
+
+(defun kdeconnect-send-files (files)
+  (let ((exe (executable-find "kdeconnect-cli")) (device (kdeconnect--device)))
+    (unless exe (user-error "kdeconnect-cli nicht im exec-path"))
+    (unless files (user-error "Keine Datei"))
+    (dolist (f files)
+      (start-process "kdeconnect-share" "*kdeconnect-send*"
+                     exe "--share" (expand-file-name f) "-d" device))
+    (kdeconnect--notify (format "%d Datei(en) -> Handy" (length files)))))
+
+(defun kdeconnect-send-file (file)
+  (interactive "fDatei: ") (kdeconnect-send-files (list file)))
+
+(defun dired-kdeconnect-send ()
+  (interactive) (kdeconnect-send-files (dired-get-marked-files)))
+
+(defun kdeconnect-send-text ()
+  "Region (sonst letzter Kill) als Text ans Handy."
+  (interactive)
+  (let ((text (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (current-kill 0))))
+    (when (or (null text) (string-empty-p text)) (user-error "Kein Text"))
+    (start-process "kdeconnect-text" "*kdeconnect-send*"
+                   (executable-find "kdeconnect-cli") "--share-text" text
+                   "-d" (kdeconnect--device))
+    (kdeconnect--notify (format "Text -> Handy (%d Z.)" (length text)))))
+
+(global-set-key (kbd "C-c C-y") #'kdeconnect-send-text)
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-c C-k") #'dired-kdeconnect-send))
+
+(with-eval-after-load 'embark
+  (define-key embark-file-map (kbd "K") #'kdeconnect-send-file))

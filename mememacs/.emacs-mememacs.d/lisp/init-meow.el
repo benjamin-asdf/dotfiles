@@ -62,6 +62,7 @@
  '("bk" . hydra-buffer/previous-buffer)
  '("bj" . hydra-buffer/next-buffer)
  '("bs" . mm/scratch-el)
+ '("ba" . mm/scratch-org-german)
  '("bS" . mm/scratch)
  '("br" . revert-buffer)
  '("bR" . mm/cider-repl-consult)
