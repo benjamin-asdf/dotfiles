@@ -20,8 +20,12 @@
 ;; (kill! "8080")
 (comment
 
+  (kill! 3000)
 
   (shell/sh "lsof" (str "-i:" 5173) "-n" "-P" "-t")
+  (shell/sh "lsof" (str "-i:" 3000) "-n" "-P" "-t")
+
+
   (let
       [port 5173] (str/split-lines
                    (:out

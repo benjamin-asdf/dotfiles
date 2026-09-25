@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Wrapper for qutebrowser that forces Qt's xcb plugin off XInput2
+# (QT_XCB_NO_XI2=1), so the mouse wheel keeps working in long-lived instances.
+#
+# The problem, measured 2026-09-22 on a qutebrowser that had been up since
+# 2026-09-21 09:12:27 (qutebrowser 3.7.0, Qt 6.11.2, QtWebEngine/Chromium 140):
+# the wheel did nothing. 27 wheel presses over a page changed zero pixels and
+# left the statusbar reading [top], while the hover highlight still tracked the
+# pointer -- so motion and buttons were being delivered and only scroll was
+# dropped. Everything below Qt was healthy: libinput fine, and `xinput
+# test-xi2` showed valuator 3 "Rel Vert Scroll" delivering exactly 120.00 per
+# detent against an increment of 120, with emulated buttons 4/5 alongside, and
+# the master pointer correctly inheriting XIScrollClass from the slave.
+#
+# The split that identifies it: a synthetic XTEST click (legacy core button
+# 4/5, no valuator) scrolled that same process ~220px on demand. So Qt's core
+# pointer path worked and only its XI2 scroll path was dead.
+#
+# Cause: that process had lived through six USB input hotplugs -- a Kinesis
+# Adv360 re-enumeration on 09-21 at 17:17 and 17:21 that recycled X device IDs,
+# and an FDUCE SL40 HID device added 09-22 08:22. Qt caches scrolling devices
+# keyed by device ID and rebuilds them on XI2 HierarchyChanged;
+# libQt6XcbQpa.so.6 carries the matching strings "scroll event from
+# unregistered device" and "scrolling device %lld no longer present". When that
+# lookup misses, xi2HandleScrollEvent returns without emitting a QWheelEvent,
+# which is silent and affects nothing else. Restarting qutebrowser clears it --
+# until the next hotplug.
+#
+# QT_XCB_NO_XI2=1 makes Qt use core X11 pointer events instead, i.e. the button
+# 4/5 path that was measured working, which has no per-device cache to go
+# stale. The cost is real: no XI2 means no smooth/high-resolution scrolling
+# (wheel moves in whole detents), and no touch or tablet input. For a mouse and
+# a Kinesis that is not a trade worth thinking about; on a machine with a
+# touchscreen or a Wacom it would be.
+#
+# Caveat, recorded honestly: the hotplug link is inference from the timeline
+# plus Qt's own error strings, not something observed inside the running
+# process, and QT_XCB_NO_XI2 was reasoned to the core-pointer path rather than
+# confirmed against the real mouse. If the wheel still dies with this in place,
+# the premise is wrong -- drop the wrapper and look at Qt/QtWebEngine instead.
+# Worth retesting after a qt6-base bump; this should not be permanent.
+#
+# Escape hatch:
+#   QUTE_KEEP_XI2=1 qutebrowser ...   run with XI2 as upstream intends
+#
+# Lives in pathoverride/ and not plain ~/.local/bin/ because .profile puts
+# pathoverride first in PATH while ~/.local/bin/ lands after /usr/bin, so only
+# this directory actually shadows /usr/bin/qutebrowser.
+
+set -euo pipefail
+
+real=/usr/bin/qutebrowser
+
+# Respect an explicit choice from the caller in either direction: an opt-out,
+# or a QT_XCB_NO_XI2 the environment already set to something deliberate.
+if [ -z "${QUTE_KEEP_XI2:-}" ] && [ -z "${QT_XCB_NO_XI2:-}" ]; then
+    export QT_XCB_NO_XI2=1
+fi
+
+exec "$real" "$@"

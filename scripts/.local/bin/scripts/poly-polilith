@@ -6,4 +6,5 @@ while [ "$1" != "" ] ; do
  shift
 done
 
-exec "/usr/bin/java" $JVM_OPTS "-jar" "/home/benj/tmp/poly-0.2.13-alpha.jar" $ARGS
+exec "/usr/bin/java" $JVM_OPTS "-jar" "/home/benj/tmp//poly-0.3.32.jar" $ARGS
+

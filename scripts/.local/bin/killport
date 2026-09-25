@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# killport <port> [port...] - kill whatever LISTENs on a TCP port.
+#
+#   killport 3000          # SIGTERM, confirms first when on a tty
+#   killport -9 3000        # SIGKILL
+#   killport -s HUP 3000    # any signal
+#   killport -y 3000 3001   # no prompt, several ports
+#   killport -n 3000        # dry run: just show the listeners
+#
+# lsof -t prints bare PIDs; -sTCP:LISTEN keeps client sockets on the same
+# port out of the kill list. Killing a listener can take down more than the
+# one port (a JVM often holds several), hence the confirmation and the -n
+# preview.
+
+set -uo pipefail
+
+prog=${0##*/}
+sig=TERM
+assume_yes=0
+dry_run=0
+
+usage() {
+    cat >&2 <<EOF
+usage: $prog [-9] [-s SIGNAL] [-y] [-n] <port> [port...]
+
+  -9          same as -s KILL
+  -s SIGNAL   signal to send (default TERM)
+  -y          don't ask for confirmation
+  -n          dry run - list listeners, kill nothing
+EOF
+    exit 2
+}
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -9)         sig=KILL; shift ;;
+        -s)         [[ $# -ge 2 ]] || usage; sig=$2; shift 2 ;;
+        -s*)        sig=${1#-s}; shift ;;
+        -y|--yes)   assume_yes=1; shift ;;
+        -n|--dry-run) dry_run=1; shift ;;
+        -h|--help)  usage ;;
+        --)         shift; break ;;
+        -*)         echo "$prog: unknown option: $1" >&2; usage ;;
+        *)          break ;;
+    esac
+done
+
+[[ $# -ge 1 ]] || usage
+
+command -v lsof >/dev/null || { echo "$prog: lsof not found" >&2; exit 127; }
+
+status=0
+
+for port in "$@"; do
+    if [[ ! $port =~ ^[0-9]+$ ]] || (( port < 1 || port > 65535 )); then
+        echo "$prog: not a port number: $port" >&2
+        status=2
+        continue
+    fi
+
+    mapfile -t pids < <(lsof -t -iTCP:"$port" -sTCP:LISTEN 2>/dev/null)
+
+    if (( ${#pids[@]} == 0 )); then
+        echo "$prog: nothing listening on $port" >&2
+        status=1
+        continue
+    fi
+
+    lsof -nP -iTCP:"$port" -sTCP:LISTEN
+
+    (( dry_run )) && continue
+
+    if (( ! assume_yes )) && [[ -t 0 ]]; then
+        read -r -p "send SIG$sig to ${pids[*]}? [y/N] " reply
+        [[ $reply == [yY]* ]] || { echo "$prog: skipped $port" >&2; status=1; continue; }
+    fi
+
+    kill -s "$sig" "${pids[@]}" || status=1
+done
+
+exit $status

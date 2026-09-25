@@ -30,8 +30,25 @@ ssh_keys=()
 for k in id_rsa id_ed25519; do
     [ -f "$HOME/.ssh/$k" ] && ssh_keys+=("$k")
 done
+# Only let keychain attempt to unlock/add keys from a real interactive
+# terminal. Without a tty and without an ssh-askpass binary, `keychain
+# --eval` on an encrypted key falls through to ssh-add opening /dev/tty
+# directly; in a non-interactive login shell (e.g. every Claude Code Bash
+# tool call, which sources this file fresh each time) nothing can answer
+# that prompt, so ssh-add hangs forever holding keychain's activation
+# lock, wedging every later invocation with "could not acquire activation
+# lock". Non-interactive shells skip the add attempt and just re-export
+# the cached agent env instead (same file .bashrc sources for interactive
+# child shells below), so they can still use whatever key a real login
+# already unlocked into the shared agent.
 if [ ${#ssh_keys[@]} -gt 0 ]; then
-    eval "$(keychain -q --eval "${ssh_keys[@]}")"
+    if [ -t 0 ]; then
+        eval "$(keychain -q --eval "${ssh_keys[@]}")"
+    else
+        kc_env="$HOME/.keychain/$HOSTNAME-sh"
+        [ -f "$kc_env" ] && . "$kc_env" >/dev/null
+        unset kc_env
+    fi
 fi
 unset ssh_keys k
 

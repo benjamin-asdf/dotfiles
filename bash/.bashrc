@@ -69,24 +69,29 @@ append_path "$ANDROID_HOME/platform-tools"
 
 alias deflate="perl -MCompress::Zlib -e 'undef $/; $\ = qq{\n}; print uncompress(<>)'"
 
-_bb_complete() {
-    BB_TASKS=$(bb tasks|bb -io '(->> *input* (drop 2) (map #(-> % (str/split #" ") first)))')
-    BB_HELP=$(bb help|bb -io '(->> *input* (map #(->> % (re-find #"^  ([-a-z]+)") second)) (filter some?))')
-    COMPREPLY=($(compgen -W "$BB_TASKS $BB_HELP" -- "${COMP_WORDS[$COMP_CWORD]}"))
+# Lazy bb completion: the heavy work (running `bb tasks` / `bb help`) only
+# happens the first time Tab is pressed on `bb`, so a broken bb.edn in cwd
+# at shell startup can't poison the prompt.
+_bb_complete_real() {
+    local cur="${COMP_WORDS[$COMP_CWORD]}"
+    local bb_tasks bb_help
+    bb_tasks=$(bb tasks 2>/dev/null | bb -io '(->> *input* (drop 2) (map #(-> % (str/split #" ") first)))' 2>/dev/null)
+    bb_help=$(bb help 2>/dev/null | bb -io '(->> *input* (map #(->> % (re-find #"^  ([-a-z]+)") second)) (filter some?))' 2>/dev/null)
+    COMPREPLY=($(compgen -W "$bb_tasks $bb_help" -- "$cur"))
+}
+_bb_complete_init() {
+    complete -f -F _bb_complete_real bb
+    _bb_complete_real "$@"
+}
+complete -f -F _bb_complete_init bb
+
+a() {
+    [[ -f ./activate.sh ]] && source ./activate.sh
+    [[ -f ./venv/bin/activate ]] && source ./venv/bin/activate
 }
 
-complete -f -F _bb_complete bb
-# can I not make this a functoin so I only do this on demand?
-# this is not how I want it. It run when I start bash
-# and that is asking for trouble if there is any err in bb
-# e.g. with broken bb.edn also it needs to pull bbin stuff sometimes
-# complete -W "$(bbin commands)" bbin
-
-
-alias a="[[ -f ./activate.sh ]] && source ./activate.sh
-[[ -f ./venv/bin/activate ]] && source ./venv/bin/activate"
-
 alias c='claude --dangerously-skip-permissions'
+alias pc='CLAUDE_CONFIG_DIR=~/.claude-personal claude --dangerously-skip-permissions'
 
 # pnpm
 export PNPM_HOME="/home/benj/.local/share/pnpm"
