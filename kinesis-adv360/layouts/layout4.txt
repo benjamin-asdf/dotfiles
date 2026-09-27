@@ -34,7 +34,7 @@
 [g]>[h]
 
 <function1>
-[spc]>[lshf]
+[spc]>[f18]
 [pgup]>[ins]
 [p]>[up]
 [l]>[rght]
