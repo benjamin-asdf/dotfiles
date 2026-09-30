@@ -12,7 +12,11 @@
 	"clojure"
 	"science"
         "biology")
-      denote-directory "~/notes/")
+      ;; Private notes first (new notes go there); blog posts live in the blog repo.
+      denote-directory '("~/notes/" "~/repos/faster-than-light-memes/posts/"))
+
+(defvar mm/denote-home "~/notes/"
+  "Main denote dir, for commands that want a single directory.")
 
 (with-eval-after-load
     'org-capture
@@ -32,7 +36,7 @@
 
 (defun mm/scratch-denote (arg)
   (interactive "P")
-  (let ((default-directory denote-directory))
+  (let ((default-directory mm/denote-home))
     (if arg (denote nil '("scratch"))
       (find-file
        (car
@@ -47,17 +51,17 @@
     (define-key m (kbd "s") #'mm/scratch-denote)
     (define-key m (kbd "j") (defun mm/denote-latest ()
                               (interactive)
-                              (let ((default-directory denote-directory))
+                              (let ((default-directory mm/denote-home))
                                 (find-file (car (files-sorted-by-date))))))
     (define-key m (kbd "d") (defun mm/denote-dired ()
                               (interactive)
-                              (find-file denote-directory)))
+                              (find-file mm/denote-home)))
     (define-key m (kbd "n") #'denote)
     (define-key m (kbd "T") (defun mm/denote-todo () (interactive) (denote "todo")))
     (define-key m (kbd "c") #'org-capture)
     (define-key m (kbd "f") (defun mm/consult-file-notes ()
 			      (interactive)
-			      (let ((default-directory denote-directory))
+			      (let ((default-directory mm/denote-home))
 				(call-interactively #'consult-project-buffer))))
     (define-key m (kbd "c") #'org-capture)
     (define-key m (kbd "l") #'org-store-link)
@@ -65,7 +69,7 @@
     (define-key m (kbd "g")
                 (defun mm/consult-ripgrep-denote-titles-and-filetags ()
                   (interactive)
-                  (consult-ripgrep denote-directory "\\(\\(+title:\\)\\|\\(+filetags:\\)\\) ")))
+                  (consult-ripgrep (denote-directories) "\\(\\(+title:\\)\\|\\(+filetags:\\)\\) ")))
     m))
 
 (define-key org-mode-map (kbd "C-c t") #'org-todo)
