@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Kill qutebrowser, even when it is hung.
+#
+# A wedged qutebrowser (main thread stuck in a futex, windows not repainting
+# until you switch StumpWM groups) ignores SIGTERM, because qutebrowser only
+# acts on signals from its Qt event loop. So: ask nicely, wait a few seconds,
+# then SIGKILL the main process and any QtWebEngineProcess children left over.
+#
+# A SIGKILLed qutebrowser does not save its session on exit; with
+# auto_save.session = True the last periodic autosave is what gets restored.
+#
+# Usage: qute-kill [seconds-to-wait-before-SIGKILL]   (default 5)
+
+wait_s=${1:-5}
+
+pids=$(pgrep -f '^(/usr/bin/)?python3? /usr/bin/qutebrowser')
+if [ -z "$pids" ]; then
+	echo "qutebrowser is not running"
+	exit 0
+fi
+
+kill -TERM $pids 2>/dev/null
+
+i=0
+while [ "$i" -lt "$((wait_s * 2))" ]; do
+	pgrep -f '^(/usr/bin/)?python3? /usr/bin/qutebrowser' >/dev/null || break
+	sleep 0.5
+	i=$((i + 1))
+done
+
+if pgrep -f '^(/usr/bin/)?python3? /usr/bin/qutebrowser' >/dev/null; then
+	echo "qutebrowser ignored SIGTERM for ${wait_s}s, sending SIGKILL"
+	kill -KILL $pids 2>/dev/null
+	sleep 0.5
+else
+	echo "qutebrowser exited cleanly"
+fi
+
+pkill -KILL -f 'QtWebEngineProcess.*--application-name=qutebrowser' 2>/dev/null
+exit 0
