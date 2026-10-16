@@ -3,7 +3,7 @@ c.auto_save.session = True
 c.completion.shrink = True
 c.confirm_quit = ["downloads"]
 c.content.cache.size = 5242880
-c.downloads.location.directory = "~/tmp"
+c.downloads.location.directory = "~/Downloads"
 c.downloads.location.prompt = False
 c.downloads.location.remember = True
 c.hints.scatter = False
@@ -89,6 +89,7 @@ if os.path.exists(work_config_path):
 c.editor.command = ['emacsclient', "-c", "--eval", "(mm/edit-with-editor \"{file}\")" ]
 
 # Font
+c.fonts.default_family = "Fira Code"
 c.fonts.default_size = "14pt"
 
 # Mememacs color scheme (from visual.el)
