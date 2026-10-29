@@ -1,0 +1,4 @@
+# Notes and build files, not dotfiles. The old Gmail .mbsyncrc is kept for reference (aerc talks IMAP itself).
+^/note\.org
+^/emacs-dummy-pkg
+^/\.mbsyncrc
