@@ -1,0 +1,14 @@
+[Unit]
+Description=Re-apply keyboard-setup.sh when a keyboard is plugged in
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+Environment=PATH=%h/.local/bin/scripts:/usr/local/bin:/usr/bin
+ExecStart=%h/.local/bin/scripts/keyboard-hotplug.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=stumpwm-session.target
