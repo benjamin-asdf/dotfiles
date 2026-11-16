@@ -10,6 +10,8 @@
 # repeat rate. Deliberately different from xrate-fast (120 250), which is
 # the post-unlock setting in lock-screen.sh.
 xset r rate 140 220
+# The rate alone does not switch repeat back on once something turned it off.
+xset r on
 
 # ctrl:hyper_capscontrol comes from a custom symbols block (see below):
 # CapsLock becomes Control_L, left Control becomes Hyper_L on Mod3.
