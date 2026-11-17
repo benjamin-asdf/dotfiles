@@ -10,8 +10,9 @@
 # A SIGKILLed qutebrowser does not save its session on exit; with
 # auto_save.session = True the last periodic autosave is what gets restored.
 #
-# Before killing, saves per-thread states and the SIGUSR1 Python stack dump
-# (qutebrowser's stderr, redirected in config.py) to ~/.local/state/qute-hangs/.
+# Before killing, saves per-thread states, the SIGUSR1 Python stack dump
+# (qutebrowser's stderr, redirected in config.py), native stacks and a core
+# dump (the two newest are kept) to ~/.local/state/qute-hangs/.
 # QUTE_KILL_NO_DIAG=1 skips that.
 #
 # Usage: qute-kill [seconds-to-wait-before-SIGKILL]   (default 5)
@@ -38,9 +39,9 @@ collect_hang_info() {
 	done >"$dir/threads.txt" 2>&1
 	for pid in $pids; do
 		kill -USR1 "$pid"
-		timeout 60 eu-stack -m -s -p "$pid" >"$dir/native-$pid.txt" 2>&1
-		grep -q '^TID' "$dir/native-$pid.txt" ||
-			timeout 60 sudo -n eu-stack -m -s -p "$pid" >>"$dir/native-$pid.txt" 2>&1
+		DEBUGINFOD_URLS= timeout 30 eu-stack -m -s -p "$pid" >"$dir/native-$pid.txt" 2>&1
+		DEBUGINFOD_URLS= timeout 120 gdb -batch -nx -p "$pid" \
+			-ex "gcore $dir/core.$pid" >"$dir/gcore-$pid.log" 2>&1
 		ss -xp | grep -E "pid=$pid," >"$dir/sockets-$pid.txt"
 	done
 	timeout 3 xprop -root _NET_ACTIVE_WINDOW >"$dir/x-responsive.txt" 2>&1 ||
@@ -48,6 +49,7 @@ collect_hang_info() {
 	pgrep -a picom >"$dir/picom.txt"
 	sleep 1
 	tail -c +"$((offset + 1))" "$log" >"$dir/stderr-tail.txt" 2>/dev/null
+	ls -d ~/.local/state/qute-hangs/*/core.* 2>/dev/null | head -n -2 | xargs -r rm -f
 	echo "hang info: $dir"
 }
 
