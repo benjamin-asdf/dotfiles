@@ -46,6 +46,6 @@ xrate-fast
 
 # gamelap: the Mac screen (VNC second monitor) doesn't come back cleanly
 # after a lock; restart it. Workaround for now.
-if [ "$(hostname)" = benjlap2 ]; then
+if [ "$(hostname)" = benjlap2 ] && mac-display status | grep -q 'x11vnc running'; then
     (mac-display off && mac-display on) >/dev/null 2>&1 &
 fi
