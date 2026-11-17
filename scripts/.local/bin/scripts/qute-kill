@@ -10,6 +10,10 @@
 # A SIGKILLed qutebrowser does not save its session on exit; with
 # auto_save.session = True the last periodic autosave is what gets restored.
 #
+# Before killing, saves per-thread states and the SIGUSR1 Python stack dump
+# (qutebrowser's stderr, redirected in config.py) to ~/.local/state/qute-hangs/.
+# QUTE_KILL_NO_DIAG=1 skips that.
+#
 # Usage: qute-kill [seconds-to-wait-before-SIGKILL]   (default 5)
 
 wait_s=${1:-5}
@@ -19,6 +23,29 @@ if [ -z "$pids" ]; then
 	echo "qutebrowser is not running"
 	exit 0
 fi
+
+collect_hang_info() {
+	dir=~/.local/state/qute-hangs/$(date +%Y-%m-%dT%H-%M-%S)
+	mkdir -p "$dir"
+	log=~/.local/state/qutebrowser/stderr.log
+	offset=$(stat -c %s "$log" 2>/dev/null || echo 0)
+	for pid in $pids $(pgrep -f 'QtWebEngineProcess.*--application-name=qutebrowser'); do
+		echo "== $pid $(tr '\0' ' ' </proc/$pid/cmdline | cut -c1-150)"
+		for t in /proc/$pid/task/*; do
+			printf '%s\t%s\t%s\t%s\n' "${t##*/}" "$(cat $t/comm)" \
+				"$(cut -d' ' -f3 $t/stat)" "$(cat $t/wchan)"
+		done
+	done >"$dir/threads.txt" 2>&1
+	for pid in $pids; do
+		kill -USR1 "$pid"
+		sudo -n eu-stack -p "$pid" >"$dir/native-$pid.txt" 2>&1 || rm -f "$dir/native-$pid.txt"
+	done
+	sleep 1
+	tail -c +"$((offset + 1))" "$log" >"$dir/stderr-tail.txt" 2>/dev/null
+	echo "hang info: $dir"
+}
+
+[ "${QUTE_KILL_NO_DIAG:-}" ] || collect_hang_info
 
 kill -TERM $pids 2>/dev/null
 

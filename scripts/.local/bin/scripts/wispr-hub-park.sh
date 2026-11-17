@@ -14,7 +14,7 @@
 # at the same root-relative coordinates, which only land on the primary
 # monitor if that monitor happens to start at 0,0.
 
-primary_geom=$(xrandr --query 2>/dev/null | awk '/ primary /{print $4; exit}')
+primary_geom=$(xrandr --current 2>/dev/null | awk '/ primary /{print $4; exit}')
 primary_x=$(echo "$primary_geom" | sed -n 's/^[0-9]*x[0-9]*+\([0-9]*\)+\([0-9]*\)$/\1/p')
 primary_y=$(echo "$primary_geom" | sed -n 's/^[0-9]*x[0-9]*+\([0-9]*\)+\([0-9]*\)$/\2/p')
 primary_w=$(echo "$primary_geom" | sed -n 's/^\([0-9]*\)x[0-9]*+[0-9]*+[0-9]*$/\1/p')

@@ -79,6 +79,13 @@ c.url.searchengines = {
 import os
 import os.path
 
+# fd 2 also receives the SIGUSR1 faulthandler stack dump that qute-kill collects
+_stderr_log = os.path.expanduser('~/.local/state/qutebrowser/stderr.log')
+os.makedirs(os.path.dirname(_stderr_log), exist_ok=True)
+_mode = 'w' if os.path.exists(_stderr_log) and os.path.getsize(_stderr_log) > 10_000_000 else 'a'
+with open(_stderr_log, _mode) as _f:
+    os.dup2(_f.fileno(), 2)
+
 # work config is not in a public git repo
 
 work_config_path = os.path.join(os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config')), 'qutebrowser', 'work_config.py')
