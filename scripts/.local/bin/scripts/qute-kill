@@ -38,8 +38,14 @@ collect_hang_info() {
 	done >"$dir/threads.txt" 2>&1
 	for pid in $pids; do
 		kill -USR1 "$pid"
-		sudo -n eu-stack -p "$pid" >"$dir/native-$pid.txt" 2>&1 || rm -f "$dir/native-$pid.txt"
+		timeout 60 eu-stack -m -s -p "$pid" >"$dir/native-$pid.txt" 2>&1
+		grep -q '^TID' "$dir/native-$pid.txt" ||
+			timeout 60 sudo -n eu-stack -m -s -p "$pid" >>"$dir/native-$pid.txt" 2>&1
+		ss -xp | grep -E "pid=$pid," >"$dir/sockets-$pid.txt"
 	done
+	timeout 3 xprop -root _NET_ACTIVE_WINDOW >"$dir/x-responsive.txt" 2>&1 ||
+		echo "xprop failed or timed out: $?" >>"$dir/x-responsive.txt"
+	pgrep -a picom >"$dir/picom.txt"
 	sleep 1
 	tail -c +"$((offset + 1))" "$log" >"$dir/stderr-tail.txt" 2>/dev/null
 	echo "hang info: $dir"

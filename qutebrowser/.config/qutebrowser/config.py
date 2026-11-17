@@ -86,6 +86,10 @@ _mode = 'w' if os.path.exists(_stderr_log) and os.path.getsize(_stderr_log) > 10
 with open(_stderr_log, _mode) as _f:
     os.dup2(_f.fileno(), 2)
 
+# lets qute-kill take native stacks with eu-stack despite kernel.yama.ptrace_scope=1
+import ctypes
+ctypes.CDLL(None).prctl(0x59616d61, ctypes.c_ulong(-1), 0, 0, 0)  # PR_SET_PTRACER, PR_SET_PTRACER_ANY
+
 # work config is not in a public git repo
 
 work_config_path = os.path.join(os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config')), 'qutebrowser', 'work_config.py')
