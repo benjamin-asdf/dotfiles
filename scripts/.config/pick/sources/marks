@@ -12,8 +12,8 @@ if command -v stumpish >/dev/null \
   (with-open-file (s \"$f\" :direction :output :if-exists :supersede)
     (maphash (lambda (ch m)
                (format s \"mark~c~a  ~a~c~a~%\" #\\Tab ch
-                       (substitute #\\Space #\\Tab (mark-label m)) #\\Tab ch))
-             *marks*))) nil)" >/dev/null 2>&1 && [[ -s "$f" ]]; then
+                       (substitute #\\Space #\\Tab (stumpwm::mark-label m)) #\\Tab ch))
+             stumpwm::*marks*))) nil)" >/dev/null 2>&1 && [[ -s "$f" ]]; then
     sort -t$'\t' -k3 "$f"
     exit 0
 fi

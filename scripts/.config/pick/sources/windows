@@ -9,9 +9,9 @@ trap 'rm -f "$f"' EXIT
 stumpish eval "(with-open-file (s \"$f\" :direction :output :if-exists :supersede)
   (flet ((clean (x) (substitute-if #\\Space (lambda (c) (member c '(#\\Tab #\\Newline #\\Return)))
                                    (princ-to-string (or x \"\")))))
-    (dolist (w (all-windows))
+    (dolist (w (stumpwm::all-windows))
       (format s \"window~c[~a] ~a: ~a~c~d~%\" #\\Tab
               (clean (group-name (window-group w))) (clean (window-class w))
-              (clean (window-name w)) #\\Tab (xlib:window-id (window-xwin w))))) nil)" \
+              (clean (stumpwm::window-name w)) #\\Tab (xlib:window-id (window-xwin w))))) nil)" \
     >/dev/null 2>&1 || exit 0
 cat "$f"
