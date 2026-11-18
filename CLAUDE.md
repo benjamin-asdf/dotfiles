@@ -7,8 +7,7 @@ for shell. See `readme.org` for the full philosophy.
 ## Layout: GNU Stow packages
 
 Each top-level dir is a Stow package — its contents are symlinked into
-`$HOME` from the repo. Hidden packages (`.clj-kondo`, `.lsp`) are real
-packages too, just dotfile-named.
+`$HOME` from the repo.
 
 Active packages (stowed on the current machine):
 
@@ -17,19 +16,23 @@ Active packages (stowed on the current machine):
 - `mememacs` — personal Emacs distro. Not Doom, not Spacemacs.
 - `qutebrowser` — config + bookmarks. Bound to feed URLs back into
   Emacs (org-protocol, kill ring).
-- `ranger` — StumpWM init for the "ranger" laptop. Lives at
+- `ranger` — the main PC's desktop ("PC" in the machines repo), cloned
+  to the other machines: StumpWM init, X startup, user units. Lives at
   `ranger/.stumpwm.d/init.lisp`. The top-level `stumpwm/` dir is
   retired (empty `.stumpwm.d`); always edit `ranger/.stumpwm.d/`.
 - `scripts` — see "Scripts" below.
-- `flameshot`, `dunst`, `mpv`, `gtk`, `dmenu` — desktop apps.
-- `clojure`, `dot-clojure` (git submodule), `bb`, `bbin`, `.clj-kondo`,
-  `.lsp`, `calva` — Clojure toolchain.
+- `flameshot`, `dunst`, `mpv`, `gtk` — desktop apps.
+- `clojure`, `dot-clojure` (git submodule), `bb`, `bbin` — Clojure toolchain.
 - `git-pack` — shared git config.
 - `host-<hostname>` — what differs per machine (dpi in
   `.Xresources.<hostname>`, systemd drop-ins such as the `jvm.slice`
   memory cap, an optional `.stumpwm.d/host.lisp` that `init.lisp` loads
   last). `bootstrap.sh` stows the one matching `hostname`, with
   `--no-folding` (systemd ignores a symlinked drop-in directory).
+
+In the repo but never stowed, because they are not stow-shaped: `dmenu`
+(build script + patch; the wrapper is in `scripts`), `calva` (init.vim),
+`.clj-kondo` and `.lsp` (caches only).
 
 Retired packages kept for reference (do not edit, do not stow):
 `nyxt`, `exwm`, `i3`, `zsh`, `farstar`, `gaia-s`, `gaia-s-stumpwm`,

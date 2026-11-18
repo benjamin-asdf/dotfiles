@@ -21,13 +21,16 @@ ACTIVE=(
     qutebrowser
     ranger
     scripts
-    flameshot dunst mpv gtk dmenu
-    clojure dot-clojure bb bbin .clj-kondo .lsp calva
+    flameshot dunst mpv gtk
+    clojure dot-clojure bb bbin
     git-pack
 )
 
 # Optional packages — uncomment in your local install if you want them:
 #   applications voidrice-scripts mail jetbrains unity nvim
+#
+# Not stow-shaped, never stowed: dmenu (build script + patch), calva
+# (init.vim), .clj-kondo and .lsp (caches only).
 
 # The host package (host-<hostname>, when the repo has one) holds what differs
 # per machine: dpi, memory caps, a StumpWM host.lisp.

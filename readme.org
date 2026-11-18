@@ -46,8 +46,8 @@ By hand:
 #+begin_src sh
 cd ~/dotfiles
 stow bash mememacs qutebrowser ranger scripts \
-     flameshot dunst mpv gtk dmenu \
-     clojure dot-clojure bb bbin .clj-kondo .lsp calva \
+     flameshot dunst mpv gtk \
+     clojure dot-clojure bb bbin \
      git-pack
 #+end_src
 
@@ -61,11 +61,15 @@ move it aside first: `mv ~/.bash_profile ~/.bash_profile.pre-stow.bak`.
 | bash | shell config (rc + profile) |
 | mememacs | personal Emacs distro |
 | qutebrowser | browser config + bookmarks |
-| ranger | StumpWM init, X startup, user units (shared by all machines) |
+| ranger | StumpWM init, X startup, user units: the main PC's desktop, cloned to the other machines |
 | host-<hostname> | per-machine overrides: dpi, memory caps, StumpWM host.lisp |
 | scripts | ~/.local/bin scripts |
-| flameshot, dunst, mpv, gtk, dmenu | desktop apps |
-| clojure, dot-clojure (submodule), bb, bbin, .clj-kondo, .lsp, calva | Clojure toolchain |
+| flameshot, dunst, mpv, gtk | desktop apps |
+| clojure, dot-clojure (submodule), bb, bbin | Clojure toolchain |
+
+In the repo but not stowed (not stow-shaped): =dmenu= (build script + patch;
+the wrapper lives in =scripts=), =calva= (init.vim), =.clj-kondo= and =.lsp=
+(caches only).
 | git-pack | shared git config |
 | applications, voidrice-scripts, mail, jetbrains, unity, nvim | occasional use |
 
