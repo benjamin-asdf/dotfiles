@@ -1,0 +1,35 @@
+[Unit]
+Description=Clipboard history daemon (clipmenud)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+
+# CLIPBOARD only. PRIMARY would log every mouse highlight, which is mostly
+# noise. Wispr Flow pastes by putting its text on CLIPBOARD and sending C-v,
+# so dictations land in the history too.
+Environment=CM_SELECTIONS=clipboard
+
+# Never take ownership of the clipboard (this is the default; spelled out on
+# purpose). With CM_OWN_CLIPBOARD=1 clipmenud re-copies every new clip into
+# the clipboard itself, which would race with Wispr Flow's
+# set-clipboard -> C-v -> restore-clipboard sequence. At 0 clipmenud only
+# reads the selection after clipnotify reports a change.
+Environment=CM_OWN_CLIPBOARD=0
+
+Environment=CM_MAX_CLIPS=1000
+
+# The cache lives in $XDG_RUNTIME_DIR/clipmenu.6.$USER (tmpfs, 0700), which is
+# also what clipmenu run from StumpWM sees, so the two agree.
+#
+# Password exclusion: passmenu-orderless wraps its xclip copy in
+# `clipctl disable` / `clipctl enable`. clipctl finds the daemon with
+# `pgrep -f 'clipmenud$'`, so ExecStart must end in "clipmenud" (no args).
+ExecStart=/usr/bin/clipmenud
+
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=stumpwm-session.target

@@ -1,0 +1,31 @@
+#!/bin/sh
+# Unstick a StumpWM that waits in a key sequence or prompt with the keyboard
+# grabbed: send it C-g, then ask it a question and report whether it answers.
+# Runs from a tty (Ctrl+Alt+F2) as well as from X.
+# The automatic version is ~/.stumpwm.d/modal-timeout.lisp.
+
+export DISPLAY="${DISPLAY:-:0}"
+
+answers() {
+    xprop -root -remove STUMPWM_COMMAND_RESULT 2>/dev/null
+    xprop -root -f STUMPWM_COMMAND 8s -set STUMPWM_COMMAND 'eval (length (stumpwm::all-windows))' || return 1
+    for _ in 1 2 3 4 5 6; do
+        xprop -root STUMPWM_COMMAND | grep -q '=' || return 0
+        sleep 0.5
+    done
+    xprop -root -remove STUMPWM_COMMAND
+    return 1
+}
+
+if answers; then
+    echo "stumpwm answers; nothing to unstick"
+    exit 0
+fi
+
+xdotool key ctrl+g || exit 1
+if answers; then
+    echo "stumpwm was stuck; C-g freed it"
+else
+    echo "stumpwm still does not answer after C-g" >&2
+    exit 1
+fi

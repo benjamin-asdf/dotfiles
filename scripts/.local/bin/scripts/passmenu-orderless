@@ -176,7 +176,16 @@ EOF
         sleep 0.1
         printf '%s' "$password" | xdotool type --clearmodifiers --delay 12 --file -
     else
+        # Keep the secret out of clipmenud's history: pause capture around the
+        # copy. On `enable`, clipmenud snapshots the current clipboard as
+        # already seen, so the pending notification for this copy is dropped
+        # even if it is processed after re-enabling. The empty clear below is
+        # skipped by clipmenud (whitespace-only). No-op if clipmenud is absent.
+        clipctl disable >/dev/null 2>&1 || true
+        sleep 0.1
         printf '%s' "$password" | xclip -selection clipboard
+        sleep 0.2
+        clipctl enable >/dev/null 2>&1 || true
         # notify-send -t 3000 "pass" "Copied $entry to clipboard for ${CLIP_TIME}s"
         # Clear clipboard after timeout
         (sleep "$CLIP_TIME" && printf '' | xclip -selection clipboard) &

@@ -4,7 +4,33 @@
 (defmacro comment (&rest _)
   (declare (ignore _)))
 
+;; needs the terminus-font package, otherwise X falls back to "fixed"
 (set-font "-xos4-terminus-medium-r-normal-*-22-*-*-*-*-*-*-*")
+
+;; mememacs palette, see mememacs/.emacs-mememacs.d/lisp/visual.el
+(defparameter mm/color-bg "black")
+(defparameter mm/color-fg "#faf7f7")        ;; hint-of-red
+(defparameter mm/color-accent "#F689FF")    ;; heliotrope
+(defparameter mm/color-muted "#2e2d35")     ;; woodsmoke-tint-1
+
+(set-fg-color mm/color-fg)
+(set-bg-color mm/color-bg)
+(set-border-color mm/color-muted)
+(set-focus-color "White")
+
+;; fill the frame instead of rounding terminals (xterm) down to whole
+;; character cells, which left a focus-colored gap above and below
+(setf *ignore-wm-inc-hints* t)
+
+(setf *mode-line-background-color* mm/color-bg
+      *mode-line-foreground-color* mm/color-fg
+      *mode-line-border-color* mm/color-muted)
+
+;; ^0..^7 color escapes: black, sweet-pink, mint-green, gimbled,
+;; anakiwa, heliotrope, glacier, hint-of-red
+(setf *colors* (list mm/color-bg "#fe9aa1" "#96fe8f" "#bcb66d"
+                     "#8fcefe" mm/color-accent "#6da2bc" mm/color-fg))
+(update-color-map (current-screen))
 (defvar mm/avy-keys "adfjklophgb")
 
 (setf *frame-number-map* mm/avy-keys
@@ -53,11 +79,8 @@
    (run-or-raise "qutebrowser" '(:class "qutebrowser"))
    (run-shell-command "qute-window")))
 
-(defcommand nyxt () ()
-  (run-or-raise "nyxt" '(:class "Nyxt")))
 ;; todo make a group?
 (define-key *top-map* (kbd "s-u") "browser")
-(define-key *top-map* (kbd "s-n") "nyxt")
 
 (defcommand pull-emacs () ()
   (run-or-pull "emacs" '(:class "Emacs")))
@@ -96,17 +119,6 @@
 (defcommand my-linked-in () ()
   (window-send-string "https://www.linkedin.com/in/benjamin-schwerdtner-4987a1140/"))
 
-(defcommand
-    start-or-stop-recording
-    ()
-    ()
-  (message
-   (if (probe-file
-        "/tmp/recordingpid")
-       "stop recording"
-       "select for recording"))
-  (run-shell-command
-   "video-selected"))
 
 (defmacro def-just-a-shell-command
     (name script)
@@ -243,6 +255,14 @@
 ;;                     (when win
 ;;                       (focus-all win)))))))))))))
 
+;; Feature files, each its own module: s-, y / t / c / R / o / . and s-' below.
+(load "~/.stumpwm.d/clipboard.lisp")
+(load "~/.stumpwm.d/timelog.lisp")
+(load "~/.stumpwm.d/claude-sel.lisp")
+(load "~/.stumpwm.d/record.lisp")
+(load "~/.stumpwm.d/marks.lisp")
+(load "~/.stumpwm.d/pick.lisp")
+(load "~/.stumpwm.d/modal-timeout.lisp")
 
 (defparameter *my-comma-map*
   (let ((m (stumpwm:make-sparse-keymap)))
@@ -254,6 +274,12 @@
     (stumpwm:define-key m (kbd "e") "edit-string-with-emacs")
     (stumpwm:define-key m (kbd "w") "swap-this-window")
     (stumpwm:define-key m (kbd "r") "start-or-stop-recording")
+    (stumpwm:define-key m (kbd "R") '*record-map*)
+    (stumpwm:define-key m (kbd "y") "clipboard-history")
+    (stumpwm:define-key m (kbd "t") "timelog-today")
+    (stumpwm:define-key m (kbd "c") '*claude-sel-map*)
+    (stumpwm:define-key m (kbd "o") '*pick-map*)
+    (stumpwm:define-key m (kbd ".") "act-selection")
     ;; (stumpwm:define-key m (kbd "y")
     ;;   (def-just-a-shell-command emacs-kill-xselection "ec-kill-xselection"))
     ;; (stumpwm:define-key m (kbd "c")
@@ -274,6 +300,7 @@
 (define-key *top-map* (kbd "s-t") "run-or-raise-teams")
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
+(define-key *top-map* (kbd "s-y") "clipboard-history")
 
 (defcommand close-all-fullscreens-in-screen () ()
      (loop for window in (screen-windows (current-screen))
@@ -317,6 +344,10 @@
   (run-shell-command "xterm -e bash -ic 'cd ~/repos/game && pc'"))
 (define-key *top-map* (kbd "s-c") "pc")
 
+(defcommand c-nc () ()
+  (run-shell-command "xterm -e bash -ic 'cd ~/repos/nc-platform && c'"))
+(define-key *top-map* (kbd "s-v") "c-nc")
+
 (defcommand cmd-xkill () () (run-shell-command "xkill"))
 (define-key *top-map* (kbd "s-]") "cmd-xkill")
 
@@ -349,17 +380,96 @@
   ((kbd "d") "ratclick 1")
   ((kbd "c") "ratclick 3"))
 
+(defun mm/nth-group (n)
+  "The Nth (1-based) visible group in group-number order."
+  (nth (1- n) (non-hidden-groups (sort-groups (current-screen)))))
+
+(defcommand mm/gselect-nth (n) ((:number "Group position: "))
+  "Switch to the Nth group by position (the group number map uses letters,
+so plain `gselect 1' does not work)."
+  (let ((group (mm/nth-group n)))
+    (if group
+        (switch-to-group group)
+        (message "No group at position ~a." n))))
+
+(defcommand mm/gmove-nth (n) ((:number "Group position: "))
+  "Send the current window to the Nth group by position, staying here."
+  (let ((group (mm/nth-group n))
+        (win (current-window)))
+    (cond ((null group) (message "No group at position ~a." n))
+          (win (move-window-to-group win group)))))
+
+(defcommand gother-with-window () ()
+  "Go back to the last group, taking the current window along."
+  (let ((groups (screen-groups (current-screen)))
+        (win (current-window)))
+    (if (> (length groups) 1)
+        (let ((other (second groups)))
+          (switch-to-group other)
+          (when win
+            (move-window-to-group win other)
+            (focus-all win)))
+        (message "No other group."))))
+
+(defcommand gnew-with-window (name) ((:string "Group name: "))
+  "Create a new group and move the current window into it."
+  (unless name (throw 'error :abort))
+  (let ((win (current-window))
+        (group (add-group (current-screen) name)))
+    (switch-to-group group)
+    (when win
+      (move-window-to-group win group)
+      (focus-all win))))
+
+;; Trailing t = exit group mode after the command.
 (define-interactive-keymap
     mm/group-mode ()
+  ;; navigate / carry window (stay in mode)
   ((kbd "j") "gnext")
   ((kbd "k") "gprev")
-  ((kbd "n") "gnew")
   ((kbd "K") "gprev-with-window")
   ((kbd "J") "gnext-with-window")
+  ((kbd "o") "gother")
+  ((kbd "O") "gother-with-window")
   ((kbd ",") "grouplist")
-  ((kbd "a") "gselect"))
+  ((kbd "'") "grouplist")
+  ;; create / destroy / reshape
+  ((kbd "n") "gnew")
+  ((kbd "N") "gnewbg")
+  ((kbd "F") "gnew-float")
+  ((kbd "c") "gnew-with-window" t)
+  ((kbd "w") "create-group-from-curr-class-windows" t)
+  ((kbd "g") "gmerge")
+  ((kbd "x") "gkill")
+  ((kbd "X") "gkill-other")
+  ((kbd "r") "grename" t)
+  ;; move windows between groups
+  ((kbd "m") "gmove")
+  ((kbd "f") "gmove-and-follow" t)
+  ((kbd "p") "pull-window-across-groups")
+  ;; jump by name / position
+  ((kbd "a") "gselect" t)
+  ((kbd "1") "mm/gselect-nth 1" t)
+  ((kbd "2") "mm/gselect-nth 2" t)
+  ((kbd "3") "mm/gselect-nth 3" t)
+  ((kbd "4") "mm/gselect-nth 4" t)
+  ((kbd "5") "mm/gselect-nth 5" t)
+  ((kbd "6") "mm/gselect-nth 6" t)
+  ((kbd "7") "mm/gselect-nth 7" t)
+  ((kbd "8") "mm/gselect-nth 8" t)
+  ((kbd "9") "mm/gselect-nth 9" t)
+  ((kbd "!") "mm/gmove-nth 1")
+  ((kbd "@") "mm/gmove-nth 2")
+  ((kbd "#") "mm/gmove-nth 3")
+  ((kbd "$") "mm/gmove-nth 4")
+  ((kbd "%") "mm/gmove-nth 5")
+  ((kbd "^") "mm/gmove-nth 6")
+  ((kbd "&") "mm/gmove-nth 7")
+  ((kbd "*") "mm/gmove-nth 8")
+  ((kbd "(") "mm/gmove-nth 9"))
 
 (define-key *groups-map* (kbd "s-g") "mm/group-mode")
+(define-key *groups-map* (kbd "f") "gmove-and-follow")
 
 (defun class-windows (class group)
   (remove-if-not
@@ -479,10 +589,7 @@ FORM should be a quoted list."
 
 
 (define-remapped-keys
- '(("Nyxt"
-    ("M-n"   . "Down")
-    ("M-p"   . "Up"))
-   ("jetbrains-rider"
+ '(("jetbrains-rider"
     ("M-n"   . "Down")
     ("M-p"   . "Up"))
    ("teams-for-linux"
@@ -544,6 +651,27 @@ FORM should be a quoted list."
  (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
  (tile-group-current-frame (current-group))
  (group-windows (current-group)))
+
+
+;;; Forced outputs count as heads
+;; Upstream `output->head' only takes outputs that report :connected. A mode
+;; forced onto an empty port (machines/bin/mac-display: DP-2 shown over VNC on
+;; the Mac) stays "disconnected" but has a CRTC, so accept any output that is
+;; actually driving part of the screen.
+(defun output->head (output count)
+  (multiple-value-bind
+        (request-status _0 crtc _1 _2 status _3 _4 _5 _6 _7 name)
+      (xlib:rr-get-output-info *display* output (get-universal-time))
+    (declare (ignore _0 _1 _2 _3 _4 _5 _6 _7 status))
+    (when (and (eq request-status :success)
+               (plusp crtc))
+      (multiple-value-bind
+            (request-status config-timestamp x y width height)
+          (xlib:rr-get-crtc-info *display* crtc (get-universal-time))
+        (declare (ignore config-timestamp))
+        (when (eq request-status :success)
+          (make-head :number count :x x :y y :width width :height height
+                     :window nil :name name))))))
 
 
 ;;; Window picker: temporary tiled view of all windows
@@ -687,4 +815,3 @@ FORM should be a quoted list."
 (defcommand verstanden () ()
   (set-x-selection "〰️ Verstanden." '(:primary :clipboard)))
 
-(define-key *top-map* (kbd "s-v") "verstanden")
