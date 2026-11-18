@@ -1,0 +1,20 @@
+# claude-sel prompts — one verb per line:
+#
+#   <key> <name> <prompt text...>
+#
+# key    single character; becomes the StumpWM key in *claude-sel-map*
+#        ("-" = no key, only reachable via the dmenu picker / CLI).
+#        Avoid SPC and the C-<x> prefixes used by claude-sel.lisp.
+# name   used on the command line: `claude-sel <name>`
+# prompt the instruction given to Claude. The selected text is the input.
+#        The special prompt "?" asks for an ad-hoc instruction via dmenu.
+#
+# Blank lines and lines starting with # are ignored. After editing,
+# run the StumpWM command `claude-sel-reload` to rebuild the keymap.
+
+g fix-german  Correct grammar, spelling and punctuation of this German text. Keep the meaning, wording and tone as close to the original as possible; change only what is wrong.
+e english     Translate this text into natural, idiomatic English. Keep tone and formatting.
+m email       Rewrite this as a concise, professional email. Keep the language of the input (German stays German). Keep all facts; drop filler. No subject line unless the input has one.
+s summarize   Summarize this text in a few short bullet points. Use the language of the input.
+x explain     Explain this text plainly and briefly: what it means and anything non-obvious. Use the language of the input.
+f free        ?

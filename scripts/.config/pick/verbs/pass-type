@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# types: pass
+# desc: type the password into the focused window
+v=$(cat)
+pw=$(pass show "$v" 2>/dev/null | head -1) || exit 1
+sleep 0.2
+printf '%s' "$pw" | xdotool type --clearmodifiers --delay 12 --file -

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# types: url file
+# default: url file
+# desc: open (URLs in qutebrowser, files with xdg-open)
+v=$(cat)
+case "$1" in
+    url) setsid -f qutebrowser "$v" >/dev/null 2>&1 ;;
+    *)   setsid -f xdg-open "$v" >/dev/null 2>&1 ;;
+esac

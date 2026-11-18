@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# desc: pass entries
+# key: a
+# verb: pass-copy
+dir="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+[[ -d "$dir" ]] || dir="$HOME/.local/.password-store"
+[[ -d "$dir" ]] || exit 0
+find -L "$dir" -name '*.gpg' -type f 2>/dev/null \
+    | sed -e "s|^$dir/||" -e 's|\.gpg$||' | sort | awk '{ print "pass\t" $0 }'

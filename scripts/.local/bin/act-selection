@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# act-selection: "Embark for X". Take PRIMARY (fallback CLIPBOARD), detect
+# its type (url / file / text) and offer the applicable pick verbs.
+#
+#   act-selection [-m MONITOR] [-c] [VERB]     -c: read CLIPBOARD only
+#
+# Everything after the options is passed to `act`.
+
+set -uo pipefail
+
+SEL=auto
+args=()
+while (( $# )); do
+    case "$1" in
+        -c) SEL=clipboard ;;
+        -m) args+=(-m "$2"); shift ;;
+        *) args+=("$1") ;;
+    esac
+    shift
+done
+
+read_sel() { xclip -o -selection "$1" 2>/dev/null; }
+if [[ "$SEL" == clipboard ]]; then
+    TEXT=$(read_sel clipboard)
+else
+    TEXT=$(read_sel primary)
+    [[ -n "${TEXT//[[:space:]]/}" ]] || TEXT=$(read_sel clipboard)
+fi
+
+if [[ -z "${TEXT//[[:space:]]/}" ]]; then
+    notify-send -a pick "act-selection: nothing selected" 2>/dev/null
+    exit 1
+fi
+
+# Trim surrounding whitespace so a selected URL or path is detected as such.
+TEXT=$(printf '%s' "$TEXT" | sed -e '1s/^[[:space:]]*//' -e '$s/[[:space:]]*$//')
+printf '%s' "$TEXT" | exec act -s selection "${args[@]}"

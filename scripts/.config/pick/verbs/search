@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# types: text
+# desc: web search in qutebrowser (default search engine)
+v=$(tr '\n\t' '  ' | sed 's/^ *//; s/ *$//')
+[[ -n "$v" ]] || exit 1
+setsid -f qutebrowser ":open -t $v" >/dev/null 2>&1

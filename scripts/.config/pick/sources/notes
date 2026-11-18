@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# desc: denote notes, newest first
+# key: n
+# Directories come from the running Emacs (denote-directories), else ~/notes.
+# Lines: file<TAB>YYYY-MM-DD title  #kw #kw<TAB>path
+dirs=()
+if command -v emacsclient >/dev/null; then
+    while IFS= read -r d; do dirs+=("$d"); done < <(
+        timeout 3 emacsclient --eval '(if (fboundp (quote denote-directories)) (denote-directories) denote-directory)' 2>/dev/null \
+            | grep -o '"[^"]*"' | tr -d '"')
+fi
+(( ${#dirs[@]} )) || dirs=("$HOME/notes")
+for d in "${dirs[@]}"; do
+    d="${d/#\~/$HOME}"
+    [[ -d "$d" ]] && find "$d" -maxdepth 2 -type f -name '[0-9]*T[0-9]*--*' ! -name '*~' ! -name '.#*'
+done | awk -F/ '{
+    path = $0; f = $NF; id = substr(f, 1, 8)
+    date = substr(id, 1, 4) "-" substr(id, 5, 2) "-" substr(id, 7, 2)
+    rest = f; sub(/^[^-]*--/, "", rest); sub(/\.[^.]*$/, "", rest)
+    kw = ""; if (index(rest, "__")) { kw = substr(rest, index(rest, "__") + 2); rest = substr(rest, 1, index(rest, "__") - 1) }
+    sub(/==.*/, "", rest); gsub(/-/, " ", rest); gsub(/_/, " #", kw)
+    printf "%s\tfile\t%s %s%s\t%s\n", substr(f, 1, 15), date, rest, (kw == "" ? "" : "  #" kw), path
+}' | sort -r | cut -f2-

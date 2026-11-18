@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# desc: screen recordings in ~/Pictures (rec-*, screen-*, box-*), newest first
+# key: r
+# verb: play
+dir="${PICK_REC_DIR:-$HOME/Pictures}"
+shopt -s nullglob
+files=("$dir"/rec-* "$dir"/screen-* "$dir"/box-*)
+(( ${#files[@]} )) || exit 0
+ls -t -- "${files[@]}" | while IFS= read -r f; do
+    printf 'file\t%s  (%s, %s)\t%s\n' "${f##*/}" "$(du -h -- "$f" | cut -f1)" \
+        "$(date -r "$f" '+%Y-%m-%d %H:%M')" "$f"
+done

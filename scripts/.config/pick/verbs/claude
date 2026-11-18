@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# types: text file
+# desc: claude-sel: pick a prompt, result to clipboard (PICK_CLAUDE_OUT=emacs|paste)
+# Files are fed by content. All prompt logic lives in claude-sel.
+if [[ "$1" == file ]]; then
+    f=$(cat); exec claude-sel -i stdin -o "${PICK_CLAUDE_OUT:-clipboard}" pick <"$f"
+fi
+exec claude-sel -i stdin -o "${PICK_CLAUDE_OUT:-clipboard}" pick

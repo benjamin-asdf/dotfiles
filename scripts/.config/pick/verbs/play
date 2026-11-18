@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# types: file
+# desc: play with mpv
+v=$(cat)
+setsid -f mpv --force-window=yes -- "$v" >/dev/null 2>&1

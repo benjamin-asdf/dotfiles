@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# types: *
+# default: text
+# desc: copy to CLIPBOARD
+v=$(cat)
+printf '%s' "$v" | xclip -selection clipboard -i >/dev/null 2>&1
+notify-send -a pick -u low "copied" "$(printf '%s' "$v" | head -c 120)" 2>/dev/null || true

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# types: text url file
+# desc: denote: capture = append to today's journal, note = new note
+# `note` is a symlink to this file; the basename picks the behaviour:
+#   capture  "* HH:MM heading" + body appended to ~/notes/*--YYYY-MM-DD__journal.org
+#            (created with denote when missing)
+#   note     new denote note titled after the first line, keyword "capture"
+# Done in the running Emacs without showing anything. Env: PICK_NOTES_DIR
+# (default: Emacs' mm/denote-home), PICK_NOTE_KEYWORDS (default: capture).
+set -uo pipefail
+v=$(cat)
+mode=${0##*/}
+
+el() { local s=${1//\\/\\\\}; printf '"%s"' "${s//\"/\\\"}"; }
+
+dir=${PICK_NOTES_DIR:-$(emacsclient --eval '(if (boundp (quote mm/denote-home)) mm/denote-home "~/notes/")' 2>/dev/null | tr -d '"')}
+dir=${dir:-~/notes/}
+
+first=$(printf '%s' "${PICK_DISPLAY:-$v}" | sed -n '/[^[:space:]]/{s/^[[:space:]]*//;p;q}' | cut -c1-70)
+case "$1" in
+    url)  d=${PICK_DISPLAY:-$v}; d=${d//]/)}; d=${d//[/(}
+          if [[ "$d" == "$v" ]]; then body="[[$v]]"; else body="[[$v][$d]]"; fi ;;
+    file) body="[[file:$v]]" ;;
+    *)    body="$v" ;;
+esac
+
+entry=$(mktemp --suffix=.pick-capture)
+trap 'rm -f "$entry"' EXIT
+
+if [[ "$mode" == note ]]; then
+    printf '%s\n' "$body" >"$entry"
+    kws=""
+    for k in ${PICK_NOTE_KEYWORDS:-capture}; do kws+=" $(el "$k")"; done
+    target="(let ((denote-directory dir))
+              (save-window-excursion
+                (or (denote $(el "$first") (list$kws) 'org dir) (buffer-file-name))))"
+else
+    # text: the first line becomes the heading, the rest the body
+    [[ "$1" == text ]] && body=$(printf '%s' "$v" | sed '0,/[^[:space:]]/d')
+    { printf '\n* %s %s\n' "$(date +%H:%M)" "$first"; [[ -n "$body" ]] && printf '%s\n' "$body"; } >"$entry"
+    target="(let ((date (format-time-string \"%Y-%m-%d\")))
+              (or (car (last (file-expand-wildcards (concat dir \"*--\" date \"__journal*.org\"))))
+                  (let ((denote-directory dir))
+                    (save-window-excursion
+                      (or (denote date '(\"journal\") 'org dir) (buffer-file-name))))))"
+fi
+
+out=$(emacsclient --eval "(let* ((dir (file-name-as-directory (expand-file-name $(el "$dir"))))
+       (before (buffer-list))
+       (f $target)
+       (buf (or (find-buffer-visiting f) (find-file-noselect f))))
+  (with-current-buffer buf
+    (save-excursion
+      (goto-char (point-max))
+      (unless (bolp) (insert \"\\n\"))
+      (insert-file-contents $(el "$entry")))
+    (save-buffer))
+  (unless (memq buf before) (kill-buffer buf))
+  f)" 2>&1) || { notify-send -a pick -u critical "$mode failed" "$out" 2>/dev/null; echo "$out" >&2; exit 1; }
+notify-send -a pick -u low "$mode → ${out//\"/}" "$first" 2>/dev/null || true
+echo "${out//\"/}"

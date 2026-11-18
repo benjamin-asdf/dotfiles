@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# types: file text
+# desc: visit the file / show the text in Emacs (buffer *pick*)
+v=$(cat)
+raise='(select-frame-set-input-focus (selected-frame))'
+case "$1" in
+    file)
+        esc=${v//\\/\\\\}; esc=${esc//\"/\\\"}
+        emacsclient --eval "(progn (find-file \"$esc\") $raise nil)" >/dev/null ;;
+    *)
+        f=$(mktemp --suffix=.pick)
+        printf '%s' "$v" >"$f"
+        emacsclient --eval "(progn
+          (with-current-buffer (get-buffer-create \"*pick*\")
+            (erase-buffer) (insert-file-contents \"$f\") (goto-char (point-min)))
+          (pop-to-buffer \"*pick*\") $raise nil)" >/dev/null
+        rm -f "$f" ;;
+esac

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# types: text url file
+# desc: type it into the focused window (xdotool)
+v=$(cat)
+sleep 0.2   # let dmenu release the keyboard and focus return
+printf '%s' "$v" | xdotool type --clearmodifiers --delay 4 --file -

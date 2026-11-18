@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# desc: StumpWM window marks (marks.lisp)
+# key: m
+# verb: focus
+# Lines: mark<TAB>a  group/frame Class: title<TAB>a
+# Asks the running StumpWM (live windows, "(gone)" flags); falls back to the
+# persisted ~/.local/share/stumpwm/marks.sexp when StumpWM is unreachable.
+f=$(mktemp "${TMPDIR:-/tmp}/pick-marks.XXXXXX")
+trap 'rm -f "$f"' EXIT
+if command -v stumpish >/dev/null \
+   && stumpish eval "(progn (ignore-errors
+  (with-open-file (s \"$f\" :direction :output :if-exists :supersede)
+    (maphash (lambda (ch m)
+               (format s \"mark~c~a  ~a~c~a~%\" #\\Tab ch
+                       (substitute #\\Space #\\Tab (mark-label m)) #\\Tab ch))
+             *marks*))) nil)" >/dev/null 2>&1 && [[ -s "$f" ]]; then
+    sort -t$'\t' -k3 "$f"
+    exit 0
+fi
+sexp="$HOME/.local/share/stumpwm/marks.sexp"
+[[ -r "$sexp" ]] || exit 0
+perl -0777 -ne 'while (/\(#\\(\w)\s+(.*?)\)/sg) { my ($c, $p) = ($1, $2);
+    my %m = $p =~ /:(\w+)\s+("(?:[^"\\]|\\.)*"|\S+)/g; s/^"|"$//g, s/\\(.)/$1/g for values %m;
+    print "mark\t$c  $m{GROUP}/$m{FRAME} $m{CLASS}: $m{TITLE}\t$c\n" }' "$sexp"

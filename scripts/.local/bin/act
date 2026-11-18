@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# act: run a pick verb on a value read from stdin ("Embark" half of pick).
+#
+#   act [-t TYPE] [-d DISPLAY] [-s SOURCE] [-V PREFERRED] [-m MONITOR] [VERB]
+#   act -l [-t TYPE]       list the verbs applicable to TYPE (all without -t)
+#
+#   echo foo | act claude
+#   echo https://example.com | act        # dmenu over the url verbs
+#
+# Without -t the type is detected: a single-line URL -> url, an existing
+# path (~ expanded) -> file, anything else -> text. Without VERB, dmenu
+# offers the verbs applicable to the type; order: PREFERRED (-V, pick passes
+# the source's "# verb:"), then verbs whose "# default:" lists the type,
+# then the rest alphabetically. The verb contract is documented in `pick`.
+
+set -uo pipefail
+
+VERBS_DIR="${PICK_VERBS:-$HOME/.config/pick/verbs}"
+TYPE="" DISPLAY_="" SOURCE="" PREFERRED="" LIST=0
+
+while getopts "t:d:s:V:m:lh" opt; do
+    case "$opt" in
+        t) TYPE="$OPTARG" ;;
+        d) DISPLAY_="$OPTARG" ;;
+        s) SOURCE="$OPTARG" ;;
+        V) PREFERRED="$OPTARG" ;;
+        m) export DMENU_MONITOR="$OPTARG" ;;
+        l) LIST=1 ;;
+        h) sed -n '2,14s/^# \{0,1\}//p' "$0"; exit 0 ;;
+        *) exit 2 ;;
+    esac
+done
+shift $((OPTIND - 1))
+VERB="${1:-}"
+
+notify() { notify-send -a pick -u "${1}" "${2}" "${3:-}" 2>/dev/null || true; }
+die() { notify critical "act: $1" "${2:-}"; echo "act: $1 ${2:-}" >&2; exit 1; }
+
+# header FILE KEY -> the value of a "# KEY: ..." line in the first 15 lines
+header() { sed -n "1,15s/^# *$2: *//p" "$1" | head -1; }
+
+applies() { # verb-file type
+    local types; types=" $(header "$1" types) "
+    [[ -z "$2" || "$types" == *" * "* || "$types" == *" $2 "* ]]
+}
+
+verbs_for() { # type -> verb names in menu order
+    local f n rest=() defaults=()
+    for f in "$VERBS_DIR"/*; do
+        [[ -x "$f" && -f "$f" ]] || continue
+        applies "$f" "$1" || continue
+        n=${f##*/}
+        [[ "$n" == "$PREFERRED" ]] && continue
+        if [[ -n "$1" && " $(header "$f" default) " == *" $1 "* ]]; then
+            defaults+=("$n")
+        else
+            rest+=("$n")
+        fi
+    done
+    [[ -n "$PREFERRED" && -x "$VERBS_DIR/$PREFERRED" ]] && applies "$VERBS_DIR/$PREFERRED" "$1" \
+        && echo "$PREFERRED"
+    printf '%s\n' "${defaults[@]}" "${rest[@]}" | sed '/^$/d'
+}
+
+if (( LIST )); then
+    verbs_for "$TYPE" | while read -r n; do
+        printf '%-10s %s\n' "$n" "$(header "$VERBS_DIR/$n" desc)"
+    done
+    exit 0
+fi
+
+VALUE=$(cat)
+[[ -n "${VALUE//[[:space:]]/}" ]] || die "empty value"
+
+if [[ -z "$TYPE" ]]; then
+    exp="${VALUE/#\~/$HOME}"
+    if [[ "$VALUE" != *$'\n'* && "$VALUE" =~ ^([a-zA-Z][a-zA-Z0-9+.-]*://|www\.)[^[:space:]]+$ ]]; then
+        TYPE=url
+    elif [[ "$VALUE" != *$'\n'* && -e "$exp" ]]; then
+        TYPE=file VALUE="$exp"
+    else
+        TYPE=text
+    fi
+fi
+
+if [[ -z "$VERB" ]]; then
+    preview=$(printf '%s' "${DISPLAY_:-$VALUE}" | head -1 | cut -c1-50)
+    VERB=$(verbs_for "$TYPE" | while read -r n; do
+               printf '%-10s %s\n' "$n" "$(header "$VERBS_DIR/$n" desc)"
+           done | dmenu -i -p "$TYPE: $preview") || exit 0
+    VERB="${VERB%% *}"
+fi
+
+[[ -x "$VERBS_DIR/$VERB" ]] || die "unknown verb" "$VERB (see $VERBS_DIR)"
+applies "$VERBS_DIR/$VERB" "$TYPE" || die "verb $VERB does not take type $TYPE"
+
+export PICK_TYPE="$TYPE" PICK_DISPLAY="${DISPLAY_:-$VALUE}" PICK_SOURCE="$SOURCE"
+printf '%s' "$VALUE" | "$VERBS_DIR/$VERB" "$TYPE"

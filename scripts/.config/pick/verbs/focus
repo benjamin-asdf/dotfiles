@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# types: window mark
+# default: window mark
+# desc: focus the window (StumpWM)
+v=$(cat)
+case "$1" in
+    window)
+        [[ "$v" =~ ^[0-9]+$ ]] || exit 1
+        stumpish eval "(let ((w (find $v (all-windows) :key (lambda (w) (xlib:window-id (window-xwin w))))))
+                         (if w (progn (focus-all w) t) (progn (message \"window gone\") nil)))" >/dev/null ;;
+    mark)
+        [[ "$v" =~ ^[a-z]$ ]] || exit 1
+        stumpish eval "(progn (mark-jump #\\$v (current-window)) (marks-save) t)" >/dev/null ;;
+esac

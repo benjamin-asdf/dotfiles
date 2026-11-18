@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# desc: clipboard history (clipmenu), newest first
+# key: y
+# Reads clipmenu 6's cache ($XDG_RUNTIME_DIR/clipmenu.6.$USER: line_cache with
+# "<ns> <first line>" lines, each clip in a file named `cksum <<< line`).
+# Without clipmenu (or its cache) it offers the current CLIPBOARD and PRIMARY.
+# Values are \-escaped (multi-line clips).
+MAX="${PICK_CLIP_MAX:-100}"
+esc() { awk 'BEGIN { ORS = "" } { gsub(/\\/, "\\\\"); gsub(/\t/, "\\t"); if (NR > 1) print "\\n"; print }'; }
+disp() { tr '\t' ' ' | cut -c1-150; }
+
+dir=$(ls -d "${CM_DIR:-${XDG_RUNTIME_DIR:-/tmp}}"/clipmenu.6."$USER" 2>/dev/null | head -1)
+if command -v clipmenu >/dev/null && [[ -r "$dir/line_cache" ]]; then
+    LC_ALL=C sort -rnk1 "$dir/line_cache" | cut -d' ' -f2- | awk '!seen[$0]++' \
+        | head -n "$MAX" | while IFS= read -r l; do
+            f="$dir/$(cksum <<<"$l")"
+            [[ -r "$f" ]] || continue
+            printf 'text\t%s\t%s\n' "$(printf '%s' "$l" | disp)" "$(esc <"$f")"
+        done
+    exit 0
+fi
+for sel in clipboard primary; do
+    v=$(xclip -o -selection "$sel" 2>/dev/null) || continue
+    [[ -n "${v//[[:space:]]/}" ]] || continue
+    printf 'text\t%s: %s\t%s\n' "$sel" "$(printf '%s' "$v" | head -1 | disp)" "$(printf '%s' "$v" | esc)"
+done

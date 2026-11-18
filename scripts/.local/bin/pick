@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# pick: sources x verbs. Choose a candidate from a source with dmenu, then
+# act on it with a verb (see `act`).
+#
+#   pick [-m MONITOR] [SOURCE [VERB]]   dmenu over SOURCE, then over verbs
+#   pick SOURCE -p                      print the chosen value (for pipes)
+#   pick SOURCE -P                      print the raw source line
+#   pick -l                             list sources
+#   pick                                dmenu over the sources first
+#
+#   pick bookmarks -p | act copy        echo foo | act claude
+#   act-selection                       PRIMARY/CLIPBOARD -> verb menu
+#
+# CONTRACT -- add a source or verb by dropping an executable file:
+#
+# Source: ~/.config/pick/sources/NAME, no args, prints one candidate per line:
+#     TYPE<TAB>DISPLAY<TAB>VALUE
+#   "TYPE<TAB>VALUE" (display = value) and a bare "VALUE" (type text) work too.
+#   VALUE is one line; escape \ newline tab as \\ \n \t (pick decodes them).
+#   Types in use: url file text window mark pass. A new type just works; give
+#   some verb that type in its "# types:" line.
+#   Optional headers (in the first 15 lines):
+#     # desc: one line for menus      # key: k   (letter in StumpWM *pick-map*)
+#     # verb: NAME  (verb offered first for this source, e.g. play, focus)
+#   Keep it fast; cache slow things in ${XDG_CACHE_HOME:-~/.cache}/pick/.
+#   Print nothing (exit 0) when the backing tool is missing.
+#
+# Verb: ~/.config/pick/verbs/NAME, gets the TYPE as $1 and the VALUE on stdin
+#   (no trailing newline). Env: PICK_TYPE PICK_DISPLAY PICK_SOURCE.
+#   Headers:
+#     # types: url text        types it accepts ("*" = all)  [required]
+#     # default: url           types for which it goes to the top of the menu
+#     # desc: one line for menus
+#
+# dmenu goes to DMENU_MONITOR (-m sets it); StumpWM passes its current head.
+
+set -uo pipefail
+
+SOURCES_DIR="${PICK_SOURCES:-$HOME/.config/pick/sources}"
+PRINT="" ARGS=()
+
+while (( $# )); do
+    case "$1" in
+        -p) PRINT=value ;;
+        -P) PRINT=line ;;
+        -m) export DMENU_MONITOR="$2"; shift ;;
+        -l) PRINT=sources ;;
+        -h|--help) sed -n '2,36s/^# \{0,1\}//p' "$0"; exit 0 ;;
+        *) ARGS+=("$1") ;;
+    esac
+    shift
+done
+SOURCE="${ARGS[0]:-}" VERB="${ARGS[1]:-}"
+
+header() { sed -n "1,15s/^# *$2: *//p" "$1" | head -1; }
+
+list_sources() {
+    local f
+    for f in "$SOURCES_DIR"/*; do
+        [[ -x "$f" && -f "$f" ]] || continue
+        printf '%-12s %s\n' "${f##*/}" "$(header "$f" desc)"
+    done
+}
+
+if [[ "$PRINT" == sources ]]; then list_sources; exit 0; fi
+
+if [[ -z "$SOURCE" ]]; then
+    SOURCE=$(list_sources | dmenu -i -p "pick") || exit 0
+    SOURCE="${SOURCE%% *}"
+fi
+SRC="$SOURCES_DIR/$SOURCE"
+[[ -x "$SRC" ]] || { echo "pick: no source $SOURCE in $SOURCES_DIR" >&2; exit 1; }
+
+# Normalize source output to TYPE\tDISPLAY\tVALUE.
+LINES=$("$SRC" | awk -F'\t' 'NF == 0 || $0 == "" { next }
+    NF == 1 { print "text\t" $1 "\t" $1; next }
+    NF == 2 { print $1 "\t" $2 "\t" $2; next }
+    { print $1 "\t" $2 "\t" $3 }')
+
+choice=$(printf '%s\n' "$LINES" | cut -f2 | sed '/^$/d' \
+             | dmenu -i -p "$SOURCE") || exit 0
+[[ -n "$choice" ]] || exit 0
+
+line=$(printf '%s\n' "$LINES" | C="$choice" awk -F'\t' '$2 == ENVIRON["C"] { print; exit }')
+
+decode() { # undo \\ \n \t escaping
+    awk 'BEGIN { RS = "^$"; ORS = "" } {
+        s = $0; sub(/\n$/, "", s); out = ""; n = length(s)
+        for (i = 1; i <= n; i++) {
+            ch = substr(s, i, 1)
+            if (ch == "\\" && i < n) {
+                d = substr(s, ++i, 1)
+                if (d == "n") ch = "\n"; else if (d == "t") ch = "\t"
+                else if (d == "\\") ch = "\\"; else ch = "\\" d
+            }
+            out = out ch
+        }
+        print out }'
+}
+
+if [[ -n "$line" ]]; then
+    TYPE=$(cut -f1 <<<"$line") DISPLAY_=$(cut -f2 <<<"$line") VALUE=$(cut -f3- <<<"$line")
+    [[ "$VALUE" == *\\* ]] && VALUE=$(printf '%s' "$VALUE" | decode)
+else
+    # Typed something that is not a candidate: act on the typed text.
+    TYPE="" DISPLAY_="$choice" VALUE="$choice"
+fi
+
+case "$PRINT" in
+    value) printf '%s\n' "$VALUE"; exit 0 ;;
+    line) printf '%s\n' "${line:-text	$choice	$choice}"; exit 0 ;;
+esac
+
+args=(-s "$SOURCE" -d "$DISPLAY_")
+[[ -n "$TYPE" ]] && args+=(-t "$TYPE")
+pref=$(header "$SRC" verb)
+[[ -n "$pref" ]] && args+=(-V "$pref")
+[[ -n "$VERB" ]] && args+=("$VERB")
+printf '%s' "$VALUE" | exec act "${args[@]}"

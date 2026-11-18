@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# desc: GitHub PRs waiting for my review (cached 5 min)
+# key: g
+# Repo/search via PICK_PRS_REPO / PICK_PRS_SEARCH. Prints the cache at once
+# and refreshes it in the background when stale; fetches synchronously only
+# when there is no cache yet.
+REPO="${PICK_PRS_REPO:-UnitedSignals/nc-platform}"
+SEARCH="${PICK_PRS_SEARCH:-review-requested:@me}"
+MAX_AGE="${PICK_PRS_MAX_AGE:-300}"
+command -v gh >/dev/null || exit 0
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/pick/prs-$(printf '%s %s' "$REPO" "$SEARCH" | cksum | cut -d' ' -f1).tsv"
+mkdir -p "${cache%/*}"
+fetch() {
+    local tmp="$cache.$$"
+    timeout 15 gh pr list -R "$REPO" --search "$SEARCH" --limit 50 \
+        --json number,title,url,author \
+        --template '{{range .}}url	#{{.number}} {{.title}} ({{.author.login}})	{{.url}}{{"\n"}}{{end}}' \
+        >"$tmp" 2>/dev/null && mv "$tmp" "$cache" || rm -f "$tmp"
+}
+if [[ -f "$cache" ]]; then
+    cat "$cache"
+    age=$(( $(date +%s) - $(stat -c %Y "$cache") ))
+    (( age > MAX_AGE )) && { fetch & disown; } >/dev/null 2>&1
+else
+    fetch; cat "$cache" 2>/dev/null
+fi
+exit 0
