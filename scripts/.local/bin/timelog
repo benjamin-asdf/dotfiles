@@ -1,0 +1,130 @@
+#!/usr/bin/env bb
+;; timelog -- report on the StumpWM focus log (~/.local/share/timelog/*.tsv,
+;; written by ~/.stumpwm.d/timelog.lisp).
+;;
+;;   timelog                    today
+;;   timelog today|yesterday|week
+;;   timelog 2026-10-01         one day
+;;   timelog 2026-10-01..2026-10-15
+;;   timelog ... --short        compact (for notifications)
+;;
+;; Each entry lasts until the next one, capped at `cap-seconds`. IDLE
+;; markers (written backdated to when input stopped) end the running entry,
+;; and entries logged during the idle stretch are dropped.
+
+(require '[clojure.string :as str]
+         '[babashka.fs :as fs])
+(import '[java.time LocalDate LocalDateTime Duration DayOfWeek])
+
+(def log-dir (or (System/getenv "TIMELOG_DIR") (str (fs/home) "/.local/share/timelog")))
+
+;; Longest a single entry may count. The logger heartbeats every 300s, so a
+;; longer gap means suspend/WM restart rather than work.
+(def cap-seconds 420)
+
+;; Activity rules: first match wins. :class and :title are regexes (either
+;; may be omitted); :activity gets the regex match of :title (a string, or a
+;; vector when the regex has groups) and the entry map, returns a string.
+(def rules
+  [{:class #"(?i)teams" :activity (constantly "Teams")}
+   {:class #"(?i)slack" :activity (constantly "Slack")}
+   ;; Denote notes: 20261015T100000--slug__tags.org
+   {:class #"Emacs" :title #"^\d{8}T\d{6}--" :activity (constantly "emacs: notes")}
+   ;; frame-title-format is "mememacs %b [serverless]"; project windows show
+   ;; just the project name.
+   {:class #"Emacs" :title #"^(?:mememacs )?(.*?)(?: \[serverless\])?$"
+    :activity (fn [[_ t] _] (str "emacs: " t))}
+   {:class #"qutebrowser" :title #"· ([\w.-]+/[\w.-]+)(?: - qutebrowser)?$"
+    :activity (fn [[_ repo] _] (str "github: " repo))}
+   ;; Otherwise the site is usually the last " - ", " | ", " · " or " — "
+   ;; segment of the page title.
+   {:class #"qutebrowser"
+    :activity (fn [_ {:keys [title]}]
+                (let [t (str/replace title #" - qutebrowser$" "")]
+                  (str "web: " (str/trim (last (str/split t #" [-|·—–] "))))))}
+   ;; Claude Code sets the xterm title to "<spinner> <session name>".
+   {:class #"XTerm" :title #"^[✳◐◑◒◓⠁-⣿·✻✽✶✢*]+\s*(.*)$"
+    :activity (fn [[_ t] _] (str "claude: " t))}
+   {:class #"XTerm" :activity (constantly "terminal")}])
+
+(defn activity [{:keys [class title] :as e}]
+  (or (some (fn [{c :class t :title f :activity}]
+              (when (and (or (nil? c) (re-find c class)))
+                (if t
+                  (when-let [m (re-find t title)] (f m e))
+                  (f nil e))))
+            rules)
+      class))
+
+;; ---------------------------------------------------------------------------
+
+(defn parse-line [line]
+  (let [[ts group class title] (str/split line #"\t" -1)]
+    (when-let [t (try (LocalDateTime/parse ts) (catch Exception _ nil))]
+      (if (= group "IDLE")
+        {:t t :idle true :until (.plusSeconds t (parse-long (str/trim (or title "0"))))}
+        {:t t :group group :class (or class "") :title (or title "")}))))
+
+(defn read-day [^LocalDate d]
+  (let [f (fs/file log-dir (str d ".tsv"))]
+    (when (fs/exists? f)
+      (keep parse-line (str/split-lines (slurp f))))))
+
+(defn secs [a b] (.getSeconds (Duration/between a b)))
+
+(defn spans
+  "Entries of one day -> active entries with :secs."
+  [entries]
+  (let [now (LocalDateTime/now)
+        es (sort-by :t entries)]
+    (loop [[e & more] es, idle-until nil, out []]
+      (if-not e
+        out
+        (let [nxt (first more)
+              end (if nxt (:t nxt) now)
+              skip? (or (:idle e) (and idle-until (.isBefore (:t e) idle-until)))]
+          (recur more
+                 (if (:idle e) (:until e) idle-until)
+                 (if skip? out
+                     (conj out (assoc e :secs (min cap-seconds (max 0 (secs (:t e) end))))))))))))
+
+(defn date-range [args]
+  (let [today (LocalDate/now)
+        arg (or (first (remove #(str/starts-with? % "--") args)) "today")]
+    (case arg
+      "today" [today today]
+      "yesterday" (let [y (.minusDays today 1)] [y y])
+      "week" [(.with today DayOfWeek/MONDAY) today]
+      (let [[a b] (str/split arg #"\.\.")]
+        [(LocalDate/parse a) (LocalDate/parse (or b a))]))))
+
+(defn days [[a b]]
+  (take-while #(not (.isAfter % b)) (iterate #(.plusDays % 1) a)))
+
+(defn hm [s] (format "%d:%02d" (quot s 3600) (quot (mod s 3600) 60)))
+
+(defn table [title k es total n]
+  (let [rows (->> (group-by k es)
+                  (map (fn [[x xs]] [x (reduce + (map :secs xs))]))
+                  (filter (fn [[_ s]] (>= s 60)))
+                  (sort-by (comp - second))
+                  (take n))
+        w (min 60 (reduce max 10 (map (comp count str first) rows)))]
+    (println (str "\n" title))
+    (doseq [[x s] rows]
+      (println (format (str "  %-" w "s %6s %4d%%") (subs (str x) 0 (min w (count (str x))))
+                       (hm s) (if (pos? total) (quot (* 100 s) total) 0))))))
+
+(let [args *command-line-args*
+      short? (some #{"--short"} args)
+      [a b :as r] (date-range args)
+      es (mapcat (comp spans read-day) (days r))
+      es (map #(assoc % :activity (activity %)) es)
+      total (reduce + (map :secs es))]
+  (println (str (if (= a b) a (str a " .. " b)) "  total " (hm total)))
+  (if short?
+    (do (table "groups" :group es total 6)
+        (table "activities" :activity es total 10))
+    (do (table "by group" :group es total 30)
+        (table "by class" :class es total 30)
+        (table "by activity" :activity es total 40))))

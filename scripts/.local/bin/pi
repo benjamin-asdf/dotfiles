@@ -1,0 +1,2 @@
+#!/bin/sh
+PATH="$HOME/.local/share/pi-node/current/bin:$PATH" exec "$HOME/.local/share/pi/bin/pi" "$@"

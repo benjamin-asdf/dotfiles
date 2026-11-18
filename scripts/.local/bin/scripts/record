@@ -1,0 +1,122 @@
+#!/bin/bash
+# record — one screen recorder for every target. Running it while a
+# recording is active stops that recording (whatever the args).
+#
+#   record [TARGET] [-a AUDIO] [-r FPS] [-o FILE]
+#
+#   TARGET  region   drag a box, or click a window (slop)   [default]
+#           window   the focused window
+#           monitor  the monitor under the mouse
+#           full     all monitors
+#           X,Y,WxH  explicit geometry, e.g. 1920,0,2560x1440
+#   AUDIO   none [default] | mic | sys | both
+#           mic = default source, sys = monitor of the default sink,
+#           so it follows whatever headset/interface is active.
+#
+#   record status    exit 0 and print the pid if a recording is running
+#
+# Writes ~/Pictures/rec-<target>-<date>.mp4. The pidfile is shared with
+# the StumpWM modeline ("RECORDING").
+
+set -euo pipefail
+
+pidfile=/tmp/recordingpid
+outinfo=/tmp/recordingfile
+
+notify() { notify-send -a record "$@" 2>/dev/null || true; }
+
+running() { [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; }
+
+stop() {
+    local pid file
+    pid=$(cat "$pidfile")
+    file=$(cat "$outinfo" 2>/dev/null || true)
+    ## SIGINT lets ffmpeg write the mp4 trailer; SIGKILL would leave
+    ## an unplayable file.
+    kill -INT "$pid" 2>/dev/null || true
+    while kill -0 "$pid" 2>/dev/null; do sleep 0.2; done
+    rm -f "$pidfile" "$outinfo"
+    notify "Recording saved" "$file"
+    echo "$file"
+}
+
+if [ "${1:-}" = status ]; then
+    running && cat "$pidfile"
+    exit
+fi
+
+if running; then stop; exit; fi
+rm -f "$pidfile"
+
+target=region audio=none fps=30 out=""
+case "${1:-}" in
+    -*|"") ;;
+    *) target=$1; shift ;;
+esac
+while getopts "a:r:o:" opt; do
+    case $opt in
+        a) audio=$OPTARG ;;
+        r) fps=$OPTARG ;;
+        o) out=$OPTARG ;;
+        *) sed -n '2,20p' "$0"; exit 2 ;;
+    esac
+done
+
+## Geometry as X Y W H.
+case $target in
+    region)
+        geom=$(slop -f "%x %y %w %h") || { notify "Recording cancelled"; exit 1; } ;;
+    window)
+        eval "$(xdotool getactivewindow getwindowgeometry --shell)"
+        geom="$X $Y $WIDTH $HEIGHT" ;;
+    monitor)
+        eval "$(xdotool getmouselocation --shell)"
+        mx=$X my=$Y
+        ## xrandr: " 0: +*DP-3 2560/700x1440/390+1920+0  DP-3"
+        geom=$(xrandr --listmonitors | awk -v mx="$mx" -v my="$my" 'NR>1 {
+            split($3, a, /[\/x+]/); w=a[1]; h=a[3]; x=a[5]; y=a[6]
+            if (mx>=x && mx<x+w && my>=y && my<y+h) { print x, y, w, h; exit } }') ;;
+    full)
+        geom=$(xdpyinfo | awk '/dimensions:/ { split($2, d, "x"); print 0, 0, d[1], d[2] }') ;;
+    *,*,*x*)
+        IFS=',x' read -r gx gy gw gh <<<"$target"
+        geom="$gx $gy $gw $gh"; target=geom ;;
+    *) echo "record: unknown target '$target'" >&2; sed -n '2,20p' "$0" >&2; exit 2 ;;
+esac
+[ -n "$geom" ] || { notify "Recording failed" "no geometry for $target"; exit 1; }
+read -r x y w h <<<"$geom"
+## libx264 + yuv420p need even dimensions.
+w=$(( w / 2 * 2 )) h=$(( h / 2 * 2 ))
+
+mic=$(pactl get-default-source)
+sys="$(pactl get-default-sink).monitor"
+audio_in=() audio_map=()
+case $audio in
+    none) ;;
+    mic)  audio_in=(-f pulse -i "$mic") audio_map=(-map 1:a) ;;
+    sys)  audio_in=(-f pulse -i "$sys") audio_map=(-map 1:a) ;;
+    both) audio_in=(-f pulse -i "$mic" -f pulse -i "$sys")
+          audio_map=(-filter_complex "[1:a][2:a]amix=inputs=2:duration=longest[a]" -map "[a]") ;;
+    *) echo "record: unknown audio '$audio'" >&2; exit 2 ;;
+esac
+[ ${#audio_map[@]} -gt 0 ] && audio_map+=(-c:a aac -b:a 160k)
+
+out=${out:-"$HOME/Pictures/rec-$target-$(date '+%y%m%d-%H%M-%S').mp4"}
+
+ffmpeg -nostdin -loglevel error \
+    -f x11grab -framerate "$fps" -video_size "${w}x${h}" -i "${DISPLAY:-:0}+$x,$y" \
+    "${audio_in[@]}" \
+    -map 0:v "${audio_map[@]}" \
+    -c:v libx264 -preset ultrafast -crf 23 -pix_fmt yuv420p \
+    "$out" </dev/null >/tmp/record.log 2>&1 &
+pid=$!
+echo "$pid" > "$pidfile"
+echo "$out" > "$outinfo"
+
+sleep 0.5
+if ! kill -0 "$pid" 2>/dev/null; then
+    rm -f "$pidfile" "$outinfo"
+    notify -u critical "Recording failed" "$(tail -3 /tmp/record.log)"
+    exit 1
+fi
+notify "Recording $target (${w}x${h}, audio: $audio)" "run record again to stop"
