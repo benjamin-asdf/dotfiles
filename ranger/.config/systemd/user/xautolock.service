@@ -11,7 +11,7 @@ Type=simple
 # does not include ~/.local/bin*, so spell it out here.
 Environment=PATH=%h/.local/bin/scripts:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 
-# -time 15: was 5, which is brutal for a workflow with reading, thinking and
+# -time 10: was 5, then 15; 5 is brutal for a workflow with reading, thinking and
 #   voice dictation -- and xautolock 2.2 under-counts activity on top of that.
 #   Its main loop is `queryIdleTime; queryPointer; evaluateTriggers; sleep(1)`,
 #   so the poll period is strictly over a second, while queryIdleTime only
@@ -23,7 +23,7 @@ Environment=PATH=%h/.local/bin/scripts:%h/.local/bin:/usr/local/bin:/usr/bin:/bi
 # -detectsleep: resets the lock timer when the clock jumps more than 3s, so a
 #   resume from suspend does not fire a countdown that expired while asleep.
 ExecStart=/usr/bin/xautolock \
-    -time 15 \
+    -time 10 \
     -locker %h/.local/bin/scripts/lock-screen.sh \
     -detectsleep \
     -notify 30 \

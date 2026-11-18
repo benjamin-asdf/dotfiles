@@ -10,7 +10,9 @@
 # input events; one plug produces a burst of them, so wait for the burst to
 # settle and run the setup once.
 
-udevadm monitor --udev --subsystem-match=input | while read -r line; do
+## stdbuf: line-buffer udevadm's output into the pipe, so an event isn't held
+## back in a block buffer until more events arrive.
+stdbuf -oL udevadm monitor --udev --subsystem-match=input | while read -r line; do
   case $line in
     *" add "*)
       ## Drain the rest of the burst (read times out after 1 s of quiet), then

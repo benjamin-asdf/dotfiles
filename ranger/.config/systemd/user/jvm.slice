@@ -45,3 +45,7 @@ MemorySwapMax=4G
 # of user@1000.service carry: JVMs yield roughly 2:1 when, and only when, the
 # machine is actually oversubscribed.
 CPUWeight=50
+
+# No oomd swap rule here: the swap backstop is earlyoom (process level, never
+# kills Xorg/StumpWM). oomd's cgroup-level swap kill took down session-1.scope
+# on 2026-11-03. See /etc/default/earlyoom.
