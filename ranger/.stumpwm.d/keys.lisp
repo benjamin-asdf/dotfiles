@@ -1,6 +1,6 @@
 ;; keys.lisp -- discoverability for the key bindings.
 ;;
-;;   which-key: after a prefix key (s-, s-g s-r C-t ...) the bindings of that
+;;   which-key: after a prefix key (s-, s-g s-r ..., not plain C-t) the bindings of that
 ;;   map are shown until the next key.
 ;;
 ;;   mm/write-key-bindings: every command reachable from *top-map*, one line
@@ -12,8 +12,16 @@
 
 (in-package :stumpwm)
 
+(defun mm/which-key-hook (key key-seq cmd)
+  "which-key, except right after the prefix key: C-t C-t and friends are
+muscle memory, and the root map popup flashes up before the second key."
+  (unless (and (null (rest key-seq))
+               (equalp (first key-seq) *escape-key*))
+    (which-key-mode-key-press-hook key key-seq cmd)))
+
 ;; add-hook adjoins, so a reload does not toggle it off like `which-key-mode'.
-(add-hook *key-press-hook* 'which-key-mode-key-press-hook)
+(remove-hook *key-press-hook* 'which-key-mode-key-press-hook)
+(add-hook *key-press-hook* 'mm/which-key-hook)
 
 (defun mm/binding-kmap (command)
   "The keymap COMMAND stands for, nil when it is a command string."
