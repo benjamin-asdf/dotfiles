@@ -55,7 +55,6 @@
 
 ;; todo when emacs thee maximize
 (define-key *top-map* (kbd "s-f") "fullscreen")
-(define-key *top-map* (kbd "s-w") "fselect")
 (define-key *top-map* (kbd "s-d") "delete-window")
 (define-key *top-map* (kbd "s-o") "only")
 
@@ -128,8 +127,6 @@
      (defcommand ,name () ()
        (run-shell-command ,script)))))
 
-(defvar framelist nil)
-
 (defcommand (swap-this-window tile-group) () ()
   (let* ((f1
            (tile-group-current-frame (current-group)))
@@ -181,45 +178,8 @@
 (defcommand slack () ()
   (run-or-raise "slack" '(:class "Slack")))
 
-(defun mm/select-window-dmenu ()
-  "Select a window across all groups using dmenu. Returns the window or nil."
-  (let* ((windows (apply #'append
-                         (mapcar #'group-windows
-                                 (screen-groups (current-screen)))))
-         (tmpfile "/tmp/stumpwm-windows"))
-    (with-open-file (s tmpfile :direction :output :if-exists :supersede)
-      (dolist (w windows)
-        (format s "~d~c~d [~a] ~a: ~a~%"
-                (xlib:window-id (window-xwin w))
-                #\Tab
-                (xlib:window-id (window-xwin w))
-                (group-name (window-group w))
-                (window-class w)
-                (window-title w))))
-    (let ((result (string-trim '(#\Newline #\Space #\Tab)
-                               (run-shell-command
-                                (format nil "stump-window-select ~d"
-                                        (head-number (current-head)))
-                                t))))
-      (when (and result (not (string= result "")))
-        (let* ((xid (parse-integer result :junk-allowed t)))
-          (when xid
-            (find xid windows
-                  :key (lambda (w) (xlib:window-id (window-xwin w))))))))))
-
-(defcommand pull-window-across-groups () ()
-  (let ((window (mm/select-window-dmenu)))
-    (when window
-      (move-window-to-group window (current-group))
-      (pull-window window))))
-
-(defcommand mm/find-window () ()
-  (let ((win (mm/select-window-dmenu)))
-    (when win
-      (focus-all win))))
-
 (defun mm/write-stumpwm-windows ()
-  "Write window list to /tmp/stumpwm-windows."
+  "Write the windows of all groups to /tmp/stumpwm-windows and return them."
   (let ((windows (apply #'append
                         (mapcar #'group-windows
                                 (screen-groups (current-screen))))))
@@ -234,28 +194,33 @@
                 (window-title w))))
     windows))
 
-;; (defcommand mm/visual-find-window () ()
-;;   "Visual window switcher with screenshot previews. Non-blocking."
-;;   (let ((windows (mm/write-stumpwm-windows)))
-;;     (sb-thread:make-thread
-;;      (lambda ()
-;;        (let ((result (string-trim
-;;                       '(#\Newline #\Space #\Tab)
-;;                       (run-shell-command
-;;                        "timeout 30 /home/benj/repos/clj-windowswitcher/windowswitcher"
-;;                        t))))
-;;          (when (and result (not (string= result "")))
-;;            (let ((xid (parse-integer result :junk-allowed t)))
-;;              (when xid
-;;                (call-in-main-thread
-;;                 (lambda ()
-;;                   (let ((win (find xid windows
-;;                                    :key (lambda (w)
-;;                                           (xlib:window-id (window-xwin w))))))
-;;                     (when win
-;;                       (focus-all win)))))))))))))
+(defun mm/select-window-dmenu ()
+  "Select a window across all groups using dmenu. Returns the window or nil."
+  (let* ((windows (mm/write-stumpwm-windows))
+         (result (string-trim '(#\Newline #\Space #\Tab)
+                              (run-shell-command
+                               (format nil "stump-window-select ~d"
+                                       (head-number (current-head)))
+                               t)))
+         (xid (parse-integer result :junk-allowed t)))
+    (when xid
+      (find xid windows
+            :key (lambda (w) (xlib:window-id (window-xwin w)))))))
+
+(defcommand pull-window-across-groups () ()
+  (let ((window (mm/select-window-dmenu)))
+    (when window
+      (move-window-to-group window (current-group))
+      (pull-window window))))
+
+(defcommand mm/find-window () ()
+  (let ((win (mm/select-window-dmenu)))
+    (when win
+      (focus-all win))))
 
 ;; Feature files, each its own module: s-, y / t / c / R / o / . and s-' below.
+;; keys.lisp: which-key popup after a prefix, all bindings as pick source k.
+(load "~/.stumpwm.d/keys.lisp")
 (load "~/.stumpwm.d/clipboard.lisp")
 (load "~/.stumpwm.d/timelog.lisp")
 (load "~/.stumpwm.d/claude-sel.lisp")
@@ -280,20 +245,10 @@
     (stumpwm:define-key m (kbd "c") '*claude-sel-map*)
     (stumpwm:define-key m (kbd "o") '*pick-map*)
     (stumpwm:define-key m (kbd ".") "act-selection")
-    ;; (stumpwm:define-key m (kbd "y")
-    ;;   (def-just-a-shell-command emacs-kill-xselection "ec-kill-xselection"))
-    ;; (stumpwm:define-key m (kbd "c")
-    ;;   (def-just-a-shell-command dunst-close-all "dunstctl close-all"))
-    ;; (stumpwm:define-key m (kbd "x")
-    ;;   (def-just-a-shell-command dunst-close-all "kill-unity"))
     (stumpwm:define-key m (kbd "n") "normie-mode")
-    
     (stumpwm:define-key m (kbd "s") "run-or-raise-teams")
-    
     (stumpwm:define-key m (kbd "a") "mm/find-window")
-    ;; (stumpwm:define-key m (kbd "v") "mm/visual-find-window")
     (stumpwm:define-key m (kbd "A") "pull-window-across-groups")
-    
     m))
 
 (define-key *top-map* (kbd "s-s") "slack")
@@ -327,8 +282,6 @@
      ""))
 
 (add-screen-mode-line-formatter #\R 'rec-modeline)
-
-(setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R")
 
 (load-module "battery-portable")
 (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
@@ -581,13 +534,6 @@ FORM should be a quoted list."
 (define-key *top-map* (kbd "s-x") "mm-kill-window-or-in-emacs")
 (define-key *top-map* (kbd "s-RET") "make-emacs-or-shell")
 
-;;; SLY setup
-
-;; (ql:quickload :slynk)
-;; (defvar *slynk-port* slynk::default-server-port)
-;; (defparameter *stumpwm-slynk-session* nil)
-
-
 (define-remapped-keys
  '(("jetbrains-rider"
     ("M-n"   . "Down")
@@ -598,11 +544,6 @@ FORM should be a quoted list."
    ("Slack"
     ("M-n"   . "Down")
     ("M-p"   . "Up"))))
-
-
-;; (load-module "battery-portable")
-;; (setf *screen-mode-line-format* "[^B%n^b] %C | %M  %R %B")
-
 
 (comment
  ;; (progn
