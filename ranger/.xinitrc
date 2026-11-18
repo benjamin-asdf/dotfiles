@@ -37,6 +37,9 @@ unclutter &
 dunst &
 
 xrdb -merge ~/.Xresources
+[ -f ~/.Xresources."$(hostname)" ] && xrdb -merge ~/.Xresources."$(hostname)"
+# X core fonts (terminus-font) for StumpWM's set-font
+xset +fp /usr/share/fonts/misc && xset fp rehash
 
 
 

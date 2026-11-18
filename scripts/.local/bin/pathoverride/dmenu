@@ -21,7 +21,7 @@ fi
 exec /usr/bin/dmenu \
     -m "$MONITOR" \
     -l 20 \
-    -fn "monospace:size=18" \
+    -fn "Fira Code:size=18" \
     -nb "$COLOR_BG" \
     -nf "$COLOR_FG" \
     -sb "$COLOR_BG" \

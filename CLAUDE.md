@@ -34,6 +34,20 @@ top-level `stumpwm` (empty — superseded by `ranger/.stumpwm.d/`).
 package list it uses is the source of truth; if you add or retire a
 package, update both `bootstrap.sh` and `readme.org`.
 
+## Visual style
+
+One palette everywhere: `mememacs/.emacs-mememacs.d/lisp/visual.el`
+is the source of truth (black bg, `#faf7f7` fg, `#F689FF` heliotrope
+accent, `#2e2d35` muted). Copies of it live in StumpWM `init.lisp`,
+qutebrowser `config.py`, the dmenu wrapper, `dunstrc`,
+`flameshot.ini` and `ranger/.Xresources` — change them together.
+xterm keeps Fixed 18 and `reverseVideo` (swapped fg/bg in
+`.Xresources`) because Claude Code runs there and its look relies on it.
+Monospace font is Fira Code; GTK is dark Adwaita (gsettings set by
+`bootstrap.sh`). StumpWM uses an X core font (Terminus), which needs
+the `terminus-font` package and `/usr/share/fonts/misc` on the X font
+path (`ranger/.xinitrc` adds it).
+
 ## Scripts
 
 The `scripts` package is unusually nested. After `stow scripts`:
@@ -68,6 +82,15 @@ it. **After editing any elisp file, always reload it via emacsclient:**
 `nil`, a quoted string, etc.) — handy for verifying a `defun` landed
 (`(fboundp 'mm/foo)` → `t`). For multi-step reloads chain forms with
 `(progn ...)`.
+
+## Designing productivity features
+
+Prefer composable building blocks over one global keybind per action
+(StumpWM, Emacs, qutebrowser): prefix keymaps / verbs that combine with
+existing ones (e.g. a `s-,` sub-map with letters, a prompt file the user
+extends, a dmenu picker), and reuse existing entry points. Example: no
+"global quickmarks via dmenu" — opening qutebrowser and typing the
+quickmark already composes.
 
 ## Editing this repo
 

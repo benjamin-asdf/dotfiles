@@ -76,6 +76,17 @@ for pkg in "${packages[@]}"; do
     fi
 done
 
+# GTK 4 / libadwaita / Electron read the dark preference from gsettings,
+# not from gtk/.config/gtk-3.0/settings.ini.
+if [[ " ${packages[*]} " == *" gtk "* ]] && [[ " ${stow_flags[*]} " != *" -n "* ]] \
+       && command -v gsettings >/dev/null; then
+    gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+    gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+    gsettings set org.gnome.desktop.interface cursor-theme Adwaita
+    gsettings set org.gnome.desktop.interface font-name 'Noto Sans 10'
+    gsettings set org.gnome.desktop.interface monospace-font-name 'Fira Code 10'
+fi
+
 if [ ${#failed[@]} -gt 0 ]; then
     echo
     echo "FAILED: ${failed[*]}"
