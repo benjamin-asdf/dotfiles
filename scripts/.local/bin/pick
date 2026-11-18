@@ -17,7 +17,7 @@
 #     TYPE<TAB>DISPLAY<TAB>VALUE
 #   "TYPE<TAB>VALUE" (display = value) and a bare "VALUE" (type text) work too.
 #   VALUE is one line; escape \ newline tab as \\ \n \t (pick decodes them).
-#   Types in use: url file text window mark pass. A new type just works; give
+#   Types in use: url file text window mark pass command. A new type just works; give
 #   some verb that type in its "# types:" line.
 #   Optional headers (in the first 15 lines):
 #     # desc: one line for menus      # key: k   (letter in StumpWM *pick-map*)

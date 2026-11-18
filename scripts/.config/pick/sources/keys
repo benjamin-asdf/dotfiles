@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# desc: StumpWM key bindings (keys.lisp)
+# key: k
+# verb: run
+# Lines: command<TAB>keys  command<TAB>command
+command -v stumpish >/dev/null || exit 0
+f=$(mktemp "${TMPDIR:-/tmp}/pick-keys.XXXXXX")
+trap 'rm -f "$f"' EXIT
+stumpish eval "(progn (stumpwm::mm/write-key-bindings \"$f\") nil)" >/dev/null 2>&1 || exit 0
+cat "$f"

@@ -23,7 +23,7 @@ selection / clipboard ── act-selection (Embark for X)
 | `s-, .`        | act on the selection (shortcut for `s-, o .`)           |
 
 Source keys: `w` windows · `m` marks · `y` clipboard · `a` pass · `n` notes ·
-`g` PRs · `r` recordings · `b` bookmarks.
+`g` PRs · `r` recordings · `b` bookmarks · `k` StumpWM key bindings.
 
 Run `pick-reload` (StumpWM command) after you add a source or change a
 `# key:`. Front end: `ranger/.stumpwm.d/pick.lisp`. Every command runs
@@ -128,6 +128,7 @@ is a symlink to `capture`: `capture` appends to today's denote journal, and
 | prs         | g   | url         |            | `gh`, review-requested, cached|
 | recordings  | r   | file        | play       | `~/Pictures` rec-/screen-/box-|
 | bookmarks   | b   | url         |            | qutebrowser quickmarks + bookmarks |
+| keys        | k   | command     | run        | every StumpWM binding (`keys.lisp`) |
 
 **Verbs**
 
@@ -143,6 +144,7 @@ is a symlink to `capture`: `capture` appends to today's denote journal, and
 | capture   | text url file   | append to today's denote journal                         |
 | note      | text url file   | new denote note                                          |
 | play      | file            | mpv                                                      |
+| run       | command         | run the StumpWM command                                  |
 | pass-copy | pass            | `pass -c`, clipmenud paused while copying (default)      |
 | pass-type | pass            | type the password into the focused window                |
 

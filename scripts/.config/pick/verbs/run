@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# types: command
+# default: command
+# desc: run the StumpWM command
+v=$(cat)
+[[ -n "$v" ]] || exit 1
+stumpish "$v" >/dev/null
