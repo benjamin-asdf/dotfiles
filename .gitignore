@@ -46,3 +46,6 @@
 # the symlink is meaningless on any other box.
 /scripts/.local/bin/weave
 /scripts/.local/bin/whisper
+/mail/emacs-dummy-pkg/emacs-dummy-1-2-any.pkg.tar.zst
+/scripts/.local/bin/audiowmark
+/scripts/.local/bin/fpcalc
