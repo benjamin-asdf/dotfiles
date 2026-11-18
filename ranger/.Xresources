@@ -15,6 +15,7 @@ emacs*useXIM: off
 ! mememacs palette, see mememacs/.emacs-mememacs.d/lisp/visual.el.
 ! fg/bg are swapped on purpose: XTerm*reverseVideo turns them into
 ! black background + hint-of-red text (the Claude Code look depends on it).
+! palette: _ hint-of-red mint-bright-4 mint-bright-3 mint-bright-3 mint-bright-3
 *foreground: #000000
 *background: #faf7f7
 *pointerColor:           #d5ffd2
@@ -25,6 +26,7 @@ emacs*useXIM: off
 *fadeColor: black
 
 !! black: woodsmoke-tint-1 / scarpa-flow
+! palette: woodsmoke-tint-1 scarpa-flow sweet-pink sundown fruit-salad mint-green gimbled peach-orange
 *color0:  #2e2d35
 *color8:  #5d5c62
 !! red: sweet-pink / sundown
@@ -37,6 +39,7 @@ emacs*useXIM: off
 *color3:  #bcb66d
 *color11: #ffd2a0
 !! blue: horison / anakiwa
+! palette: horison anakiwa heliotrope mauve glacier aquamarine _ hint-of-red
 *color4:  #5F89A9
 *color12: #8fcefe
 !! magenta: heliotrope / mauve

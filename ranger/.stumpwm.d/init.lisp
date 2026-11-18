@@ -8,6 +8,8 @@
 (set-font "-xos4-terminus-medium-r-normal-*-22-*-*-*-*-*-*-*")
 
 ;; mememacs palette, see mememacs/.emacs-mememacs.d/lisp/visual.el
+;; (kept in sync by palette.bb)
+;; palette: hint-of-red heliotrope woodsmoke-tint-1
 (defparameter mm/color-bg "black")
 (defparameter mm/color-fg "#faf7f7")        ;; hint-of-red
 (defparameter mm/color-accent "#F689FF")    ;; heliotrope
@@ -28,6 +30,7 @@
 
 ;; ^0..^7 color escapes: black, sweet-pink, mint-green, gimbled,
 ;; anakiwa, heliotrope, glacier, hint-of-red
+;; palette: sweet-pink mint-green gimbled anakiwa glacier
 (setf *colors* (list mm/color-bg "#fe9aa1" "#96fe8f" "#bcb66d"
                      "#8fcefe" mm/color-accent "#6da2bc" mm/color-fg))
 (update-color-map (current-screen))
@@ -750,3 +753,8 @@ FORM should be a quoted list."
 (defcommand verstanden () ()
   (set-x-selection "〰️ Verstanden." '(:primary :clipboard)))
 
+;; Per-host layer: stow package host-<hostname> (see bootstrap.sh) may bring
+;; a host.lisp; it loads last, so it can override anything above.
+(let ((host-file (merge-pathnames ".stumpwm.d/host.lisp" (user-homedir-pathname))))
+  (when (probe-file host-file)
+    (load host-file)))

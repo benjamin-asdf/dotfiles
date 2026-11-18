@@ -110,7 +110,8 @@ c.editor.command = ['emacsclient', "-c", "--eval", "(mm/edit-with-editor \"{file
 c.fonts.default_family = "Fira Code"
 c.fonts.default_size = "14pt"
 
-# Mememacs color scheme (from visual.el)
+# Mememacs color scheme (from visual.el, kept in sync by palette.bb)
+# palette: hint-of-red heliotrope brown mint-green fruit-salad hit-pink woodsmoke-tint-1 anakiwa horison sweet-pink
 bg = "black"
 fg = "#faf7f7"                # hint-of-red
 heliotrope = "#F689FF"

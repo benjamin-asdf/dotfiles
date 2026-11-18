@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # dmenu wrapper with mememacs color scheme
 
-# Colors from mememacs visual.el
+# Colors from mememacs visual.el (kept in sync by palette.bb)
+# palette: hint-of-red heliotrope
 COLOR_BG="black"
 COLOR_FG="#faf7f7"           # hint-of-red
 COLOR_SEL_FG="#F689FF"       # heliotrope

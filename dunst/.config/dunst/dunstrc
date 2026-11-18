@@ -10,24 +10,28 @@
     horizontal_padding = 2
     transparency = 0
     frame_width = 2
+    # palette: woodsmoke-tint-1
     frame_color = "#2e2d35"
     corner_radius = 8
     font = Fira Code 22px
     format = "<b>%s</b>\n%b"
 
 [urgency_low]
+    # palette: _ amethyst-smoke woodsmoke-tint-1
     background = "#000000"
     foreground = "#Ac98bf"
     frame_color = "#2e2d35"
     timeout = 3
 
 [urgency_normal]
+    # palette: _ hint-of-red mint-bright
     background = "#000000"
     foreground = "#faf7f7"
     frame_color = "#a1fe9a"
     timeout = 5
 
 [urgency_critical]
+    # palette: _ hint-of-red hit-pink
     background = "#000000"
     foreground = "#faf7f7"
     frame_color = "#feb48f"

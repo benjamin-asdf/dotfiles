@@ -25,12 +25,20 @@ Active packages (stowed on the current machine):
 - `clojure`, `dot-clojure` (git submodule), `bb`, `bbin`, `.clj-kondo`,
   `.lsp`, `calva` — Clojure toolchain.
 - `git-pack` — shared git config.
+- `host-<hostname>` — what differs per machine (dpi in
+  `.Xresources.<hostname>`, systemd drop-ins such as the `jvm.slice`
+  memory cap, an optional `.stumpwm.d/host.lisp` that `init.lisp` loads
+  last). `bootstrap.sh` stows the one matching `hostname`, with
+  `--no-folding` (systemd ignores a symlinked drop-in directory).
 
 Retired packages kept for reference (do not edit, do not stow):
 `nyxt`, `exwm`, `i3`, `zsh`, `farstar`, `gaia-s`, `gaia-s-stumpwm`,
 top-level `stumpwm` (empty — superseded by `ranger/.stumpwm.d/`).
 
-`bootstrap.sh` at the repo root stows the active set in one go. The
+`bootstrap.sh` at the repo root stows the active set in one go;
+`./bootstrap.sh --check` changes nothing and reports missing links, stow
+conflicts, dangling links, missing commands/fonts, failed user units and
+palette drift. The
 package list it uses is the source of truth; if you add or retire a
 package, update both `bootstrap.sh` and `readme.org`.
 
@@ -40,7 +48,9 @@ One palette everywhere: `mememacs/.emacs-mememacs.d/lisp/visual.el`
 is the source of truth (black bg, `#faf7f7` fg, `#F689FF` heliotrope
 accent, `#2e2d35` muted). Copies of it live in StumpWM `init.lisp`,
 qutebrowser `config.py`, the dmenu wrapper, `dunstrc`,
-`flameshot.ini` and `ranger/.Xresources` — change them together.
+`flameshot.ini` and `ranger/.Xresources`. The copies are tagged with
+`palette: NAME ...` comments; after changing a color in `visual.el` run
+`bb palette.bb` to rewrite them (`--check` only reports drift).
 xterm keeps Fixed 18 and `reverseVideo` (swapped fg/bg in
 `.Xresources`) because Claude Code runs there and its look relies on it.
 Monospace font is Fira Code; GTK is dark Adwaita (gsettings set by

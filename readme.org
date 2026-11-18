@@ -39,6 +39,10 @@ shared packages live alongside machine-specific overlays.
 
 ** Install
 
+=./bootstrap.sh= stows the active set plus the =host-<hostname>= package;
+=./bootstrap.sh --check= reports what is off without changing anything.
+By hand:
+
 #+begin_src sh
 cd ~/dotfiles
 stow bash mememacs qutebrowser ranger scripts \
@@ -57,7 +61,8 @@ move it aside first: `mv ~/.bash_profile ~/.bash_profile.pre-stow.bak`.
 | bash | shell config (rc + profile) |
 | mememacs | personal Emacs distro |
 | qutebrowser | browser config + bookmarks |
-| ranger | StumpWM init + per-host bits for the "ranger" laptop |
+| ranger | StumpWM init, X startup, user units (shared by all machines) |
+| host-<hostname> | per-machine overrides: dpi, memory caps, StumpWM host.lisp |
 | scripts | ~/.local/bin scripts |
 | flameshot, dunst, mpv, gtk, dmenu | desktop apps |
 | clojure, dot-clojure (submodule), bb, bbin, .clj-kondo, .lsp, calva | Clojure toolchain |

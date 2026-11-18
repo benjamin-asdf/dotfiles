@@ -9,6 +9,7 @@
 #   ./bootstrap.sh             # stow active packages
 #   ./bootstrap.sh -n          # dry run (pass through to stow)
 #   ./bootstrap.sh foo bar     # stow just these packages
+#   ./bootstrap.sh --check     # change nothing, report what is off
 
 set -euo pipefail
 
@@ -28,10 +29,23 @@ ACTIVE=(
 # Optional packages — uncomment in your local install if you want them:
 #   applications voidrice-scripts mail jetbrains unity nvim
 
+# The host package (host-<hostname>, when the repo has one) holds what differs
+# per machine: dpi, memory caps, a StumpWM host.lisp.
+host_pkg="host-$(hostname)"
+[ -d "$host_pkg" ] && ACTIVE+=("$host_pkg")
+
+# Host packages are stowed file by file: systemd ignores a drop-in directory
+# (jvm.slice.d) that is itself a symlink.
+pkg_flags() {
+    case "$1" in host-*) echo --no-folding ;; esac
+}
+
 stow_flags=()
 packages=()
+check=""
 for arg in "$@"; do
     case "$arg" in
+        --check) check=1 ;;
         -*) stow_flags+=("$arg") ;;
         *)  packages+=("$arg") ;;
     esac
@@ -43,12 +57,102 @@ if ! command -v stow >/dev/null; then
     exit 1
 fi
 
+check() {
+    local problems=0 pkg out missing link cmd unit foreign
+    ok()  { printf '  ok    %s\n' "$1"; }
+    bad() { printf '  FAIL  %s\n' "$1"; problems=$((problems + 1)); }
+
+    echo "stow packages"
+    for pkg in "${packages[@]}"; do
+        if [ ! -d "$pkg" ]; then
+            bad "$pkg: not a directory in the repo"
+        elif ! out=$(stow -nv -t "$HOME" $(pkg_flags "$pkg") "$pkg" 2>&1); then
+            # a target linked into the package by hand (absolute link) is fine
+            foreign=0
+            while IFS= read -r link; do
+                case "$(readlink -f "$HOME/$link")" in
+                    "$PWD/$pkg"/*) ;;
+                    *) foreign=$((foreign + 1)) ;;
+                esac
+            done < <(printf '%s\n' "$out" | sed -n -E 's|.*existing target is [^:]+: (.*)|\1|p')
+            if [ "$foreign" -gt 0 ] || ! printf '%s\n' "$out" | grep -q 'existing target is'; then
+                bad "$pkg: $(printf '%s\n' "$out" | grep -c '^  \* ') stow conflicts (stow -nv -t ~ $pkg)"
+            else
+                ok "$pkg (linked by hand)"
+            fi
+        else
+            missing=$(printf '%s\n' "$out" | grep -c '^LINK: ' || true)
+            if [ "$missing" -gt 0 ]; then
+                bad "$pkg: $missing links missing (./bootstrap.sh $pkg)"
+            else
+                ok "$pkg"
+            fi
+        fi
+    done
+
+    echo "dangling links into the repo"
+    out=$(find "$HOME" -maxdepth 5 -xtype l -lname '*dotfiles/*' \
+               -not -path '*/node_modules/*' -not -path "$PWD/*" 2>/dev/null || true)
+    if [ -n "$out" ]; then
+        while IFS= read -r link; do bad "$link"; done <<<"$out"
+    else
+        ok "none"
+    fi
+    # stumpish points into the StumpWM contrib modules, not into the repo
+    if [ -x "$HOME/.local/bin/stumpish" ]; then ok "stumpish"; else bad "stumpish: ~/.stumpwm.d/modules is missing"; fi
+
+    echo "commands the config calls"
+    for cmd in stumpwm emacs emacsclient qutebrowser xterm dmenu dunst flameshot \
+               bb clojure pass clipmenud xautolock redshift unclutter slop ffmpeg mpv; do
+        if command -v "$cmd" >/dev/null; then ok "$cmd"; else bad "$cmd: not installed"; fi
+    done
+
+    echo "fonts"
+    if [ -n "$(fc-list 'Fira Code' 2>/dev/null)" ]; then ok "Fira Code"; else bad "Fira Code: not installed"; fi
+    if compgen -G '/usr/share/fonts/misc/ter-*' >/dev/null; then
+        ok "Terminus (X core font)"
+    else
+        bad "Terminus: install terminus-font (StumpWM falls back to fixed)"
+    fi
+
+    echo "user units"
+    for unit in ranger/.config/systemd/user/*.service ranger/.config/systemd/user/*.timer; do
+        unit=${unit##*/}
+        if systemctl --user is-failed --quiet "$unit" 2>/dev/null; then
+            bad "$unit: failed (systemctl --user status $unit)"
+        else
+            ok "$unit"
+        fi
+    done
+
+    echo "palette"
+    if ! command -v bb >/dev/null; then
+        bad "palette: bb is missing, cannot check"
+    elif out=$(bb palette.bb --check 2>&1); then
+        ok "$(printf '%s\n' "$out" | tail -1)"
+    else
+        bad "$(printf '%s\n' "$out" | tail -1) (bb palette.bb fixes drift)"
+    fi
+
+    echo
+    if [ "$problems" -gt 0 ]; then
+        echo "$problems problem(s)"
+        return 1
+    fi
+    echo "all good"
+}
+
+if [ -n "$check" ]; then
+    check
+    exit
+fi
+
 backup_conflicts() {
     local pkg="$1"
     # Ask stow to plan the install; parse its conflict reports and move
     # the offending real files aside.
     local out
-    if out=$(stow -nv -t "$HOME" "$pkg" 2>&1); then
+    if out=$(stow -nv -t "$HOME" $(pkg_flags "$pkg") "$pkg" 2>&1); then
         return 0
     fi
     local conflict
@@ -71,7 +175,7 @@ for pkg in "${packages[@]}"; do
     fi
     backup_conflicts "$pkg"
     echo "stow $pkg"
-    if ! stow -t "$HOME" "${stow_flags[@]}" "$pkg"; then
+    if ! stow -t "$HOME" "${stow_flags[@]}" $(pkg_flags "$pkg") "$pkg"; then
         failed+=("$pkg")
     fi
 done

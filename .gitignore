@@ -49,3 +49,9 @@
 /mail/emacs-dummy-pkg/emacs-dummy-1-2-any.pkg.tar.zst
 /scripts/.local/bin/audiowmark
 /scripts/.local/bin/fpcalc
+# links other tools install into ~/.local/bin (machines repo, uv)
+/scripts/.local/bin/claude-mac
+/scripts/.local/bin/mac-display
+/scripts/.local/bin/mac-kvm
+/scripts/.local/bin/ots
+/scripts/.local/bin/ots-git-gpg-wrapper
