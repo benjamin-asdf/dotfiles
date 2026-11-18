@@ -152,7 +152,7 @@
 (global-so-long-mode 1)
 (setf so-long-threshold 5000)
 
-(setf browse-url-generic-program (or (getenv "BROWSER") "nyxt"))
+(setf browse-url-generic-program (or (getenv "BROWSER") "qutebrowser"))
 
 (add-hook
  'after-save-hook

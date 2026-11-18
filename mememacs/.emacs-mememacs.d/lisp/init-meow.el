@@ -533,6 +533,10 @@ when formatting with lispy."
 (define-key meow-normal-state-keymap (kbd "q") #'lispy-ace-paren)
 (define-key meow-normal-state-keymap (kbd "Q") #'lispy-ace-char)
 
+;; Wispr Flow pastes by sending C-v; in insert state make that yank
+;; the kill ring instead of scroll-up-command.
+(define-key meow-insert-state-keymap (kbd "C-v") #'yank)
+
 ;; lispy
 
 (setf

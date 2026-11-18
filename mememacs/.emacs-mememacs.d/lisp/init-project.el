@@ -148,8 +148,8 @@ to directory DIR."
 		      (mememacs/git-ls-files)))))
 
 (setq consult-project-buffer-sources
-      (list `(:hidden nil :narrow ?b ,@consult--source-project-buffer)
-	    `(:hidden nil :narrow ?f ,@consult--source-project-recent-file)
+      (list `(:hidden nil :narrow ?b ,@consult-source-project-buffer)
+	    `(:hidden nil :narrow ?f ,@consult-source-project-recent-file)
 	    `(:hidden t :narrow ?d ,@mm/consult-fd-project-files)
 	    `(:hidden t :narrow ?g ,@mm/consult-git-ls-files)))
 

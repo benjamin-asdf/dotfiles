@@ -321,4 +321,30 @@ Each paragraph stand on its line."
   (let ((fill-column (point-max)))
     (fill-region (region-beginning) (region-end) nil)))
 
+;; Umlaute
+
+(defconst mm/umlaut-replacements
+  '(("\"a" . "ä") ("\"o" . "ö") ("\"u" . "ü")
+    ("\"A" . "Ä") ("\"O" . "Ö") ("\"U" . "Ü")
+    ("\"s" . "ß"))
+  "LaTeX (babel german) -> umlaut pairs used by `mm/umlautify'.")
+
+(defun mm/umlautify (beg end)
+  "Replace LaTeX-style \"a \"o \"u \"A \"O \"U \"s with ä ö ü Ä Ö Ü ß.
+Operates on the active region, otherwise on the entire buffer."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list (point-min) (point-max))))
+  (let ((case-fold-search nil)
+        (count 0)
+        (end (copy-marker end)))
+    (save-excursion
+      (dolist (pair mm/umlaut-replacements)
+        (goto-char beg)
+        (while (search-forward (car pair) end t)
+          (replace-match (cdr pair) t t)
+          (setq count (1+ count)))))
+    (set-marker end nil)
+    (message "%d Ersetzung(en)" count)))
+
 (provide 'functions)
