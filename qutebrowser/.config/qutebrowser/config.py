@@ -90,6 +90,13 @@ with open(_stderr_log, _mode) as _f:
 import ctypes
 ctypes.CDLL(None).prctl(0x59616d61, ctypes.c_ulong(-1), 0, 0, 0)  # PR_SET_PTRACER, PR_SET_PTRACER_ANY
 
+# Mesa: don't wait for vblank on buffer swaps. Every hang dump (qute-kill,
+# 2026-11-17/18) had the main thread in loader_dri3_swap_buffers_msc waiting
+# for a Present event that never came (hidden windows, mac-display's forced
+# mode on a disconnected output). Must be set before Qt creates a GL context;
+# config.py runs early enough.
+os.environ.setdefault('vblank_mode', '0')
+
 # work config is not in a public git repo
 
 work_config_path = os.path.join(os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config')), 'qutebrowser', 'work_config.py')
