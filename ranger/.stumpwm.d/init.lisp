@@ -175,8 +175,6 @@
 
 (defcommand run-or-raise-teams () ()
   (run-or-raise "teams-for-linux" '(:class "teams-for-linux")))
-(defcommand slack () ()
-  (run-or-raise "slack" '(:class "Slack")))
 
 (defun mm/write-stumpwm-windows ()
   "Write the windows of all groups to /tmp/stumpwm-windows and return them."
@@ -251,7 +249,6 @@
     (stumpwm:define-key m (kbd "A") "pull-window-across-groups")
     m))
 
-(define-key *top-map* (kbd "s-s") "slack")
 (define-key *top-map* (kbd "s-t") "run-or-raise-teams")
 
 (define-key *top-map* (kbd "s-,") '*my-comma-map*)
@@ -539,9 +536,6 @@ FORM should be a quoted list."
     ("M-n"   . "Down")
     ("M-p"   . "Up"))
    ("teams-for-linux"
-    ("M-n"   . "Down")
-    ("M-p"   . "Up"))
-   ("Slack"
     ("M-n"   . "Down")
     ("M-p"   . "Up"))))
 
