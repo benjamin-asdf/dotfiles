@@ -220,7 +220,7 @@
       (focus-all win))))
 
 ;; Feature files, each its own module: s-, y / t / c / R / o / . and s-' below.
-;; keys.lisp: which-key popup after a prefix, all bindings as pick source k.
+;; keys.lisp: all bindings as pick source k.
 (load "~/.stumpwm.d/keys.lisp")
 (load "~/.stumpwm.d/clipboard.lisp")
 (load "~/.stumpwm.d/timelog.lisp")
